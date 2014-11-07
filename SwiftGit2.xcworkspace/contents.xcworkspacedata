@@ -4,4 +4,7 @@
    <FileRef
       location = "group:SwiftGit2.xcodeproj">
    </FileRef>
+   <FileRef
+      location = "group:External/Quick/Quick.xcodeproj">
+   </FileRef>
 </Workspace>

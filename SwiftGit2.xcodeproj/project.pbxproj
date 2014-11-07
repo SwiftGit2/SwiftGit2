@@ -9,8 +9,10 @@
 /* Begin PBXBuildFile section */
 		BEB31F291A0D6F7A00F525B9 /* SwiftGit2.h in Headers */ = {isa = PBXBuildFile; fileRef = BEB31F281A0D6F7A00F525B9 /* SwiftGit2.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		BEB31F2F1A0D6F7A00F525B9 /* SwiftGit2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BEB31F231A0D6F7A00F525B9 /* SwiftGit2.framework */; };
-		BEB31F361A0D6F7A00F525B9 /* SwiftGit2Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEB31F351A0D6F7A00F525B9 /* SwiftGit2Tests.swift */; };
+		BEB31F361A0D6F7A00F525B9 /* RepositorySpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEB31F351A0D6F7A00F525B9 /* RepositorySpec.swift */; };
 		BEB31F6D1A0D78F300F525B9 /* Repository.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEB31F6C1A0D78F300F525B9 /* Repository.swift */; };
+		BEB31F7F1A0D79C800F525B9 /* Quick.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BEB31F7E1A0D79C800F525B9 /* Quick.framework */; };
+		BEB31F811A0D79F300F525B9 /* Nimble.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BEB31F801A0D79F300F525B9 /* Nimble.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -29,7 +31,7 @@
 		BEB31F281A0D6F7A00F525B9 /* SwiftGit2.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SwiftGit2.h; sourceTree = "<group>"; };
 		BEB31F2E1A0D6F7A00F525B9 /* SwiftGit2-OSXTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "SwiftGit2-OSXTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		BEB31F341A0D6F7A00F525B9 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		BEB31F351A0D6F7A00F525B9 /* SwiftGit2Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftGit2Tests.swift; sourceTree = "<group>"; };
+		BEB31F351A0D6F7A00F525B9 /* RepositorySpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RepositorySpec.swift; sourceTree = "<group>"; };
 		BEB31F431A0D75EE00F525B9 /* Common.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = Common.xcconfig; sourceTree = "<group>"; };
 		BEB31F451A0D75EE00F525B9 /* Debug.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = Debug.xcconfig; sourceTree = "<group>"; };
 		BEB31F461A0D75EE00F525B9 /* Profile.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = Profile.xcconfig; sourceTree = "<group>"; };
@@ -49,6 +51,8 @@
 		BEB31F571A0D75EE00F525B9 /* Mac-StaticLibrary.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = "Mac-StaticLibrary.xcconfig"; sourceTree = "<group>"; };
 		BEB31F581A0D75EE00F525B9 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		BEB31F6C1A0D78F300F525B9 /* Repository.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Repository.swift; sourceTree = "<group>"; };
+		BEB31F7E1A0D79C800F525B9 /* Quick.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Quick.framework; path = "../../../Library/Developer/Xcode/DerivedData/SwiftGit2-hhirbsygtzljdvasajovfqnfzwwb/Build/Products/Debug/Quick.framework"; sourceTree = "<group>"; };
+		BEB31F801A0D79F300F525B9 /* Nimble.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Nimble.framework; path = ../External/Quick/Externals/Nimble/build/Debug/Nimble.framework; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -63,6 +67,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BEB31F811A0D79F300F525B9 /* Nimble.framework in Frameworks */,
+				BEB31F7F1A0D79C800F525B9 /* Quick.framework in Frameworks */,
 				BEB31F2F1A0D6F7A00F525B9 /* SwiftGit2.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -110,7 +116,7 @@
 		BEB31F321A0D6F7A00F525B9 /* SwiftGit2Tests */ = {
 			isa = PBXGroup;
 			children = (
-				BEB31F351A0D6F7A00F525B9 /* SwiftGit2Tests.swift */,
+				BEB31F351A0D6F7A00F525B9 /* RepositorySpec.swift */,
 				BEB31F331A0D6F7A00F525B9 /* Supporting Files */,
 			);
 			path = SwiftGit2Tests;
@@ -119,6 +125,8 @@
 		BEB31F331A0D6F7A00F525B9 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				BEB31F801A0D79F300F525B9 /* Nimble.framework */,
+				BEB31F7E1A0D79C800F525B9 /* Quick.framework */,
 				BEB31F341A0D6F7A00F525B9 /* Info.plist */,
 			);
 			name = "Supporting Files";
@@ -305,7 +313,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				BEB31F361A0D6F7A00F525B9 /* SwiftGit2Tests.swift in Sources */,
+				BEB31F361A0D6F7A00F525B9 /* RepositorySpec.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -450,6 +458,8 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(DEVELOPER_FRAMEWORKS_DIR)",
 					"$(inherited)",
+					"$(USER_LIBRARY_DIR)/Developer/Xcode/DerivedData/SwiftGit2-hhirbsygtzljdvasajovfqnfzwwb/Build/Products/Debug",
+					"$(PROJECT_DIR)/External/Quick/Externals/Nimble/build/Debug",
 				);
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
@@ -469,6 +479,8 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(DEVELOPER_FRAMEWORKS_DIR)",
 					"$(inherited)",
+					"$(USER_LIBRARY_DIR)/Developer/Xcode/DerivedData/SwiftGit2-hhirbsygtzljdvasajovfqnfzwwb/Build/Products/Debug",
+					"$(PROJECT_DIR)/External/Quick/Externals/Nimble/build/Debug",
 				);
 				INFOPLIST_FILE = SwiftGit2Tests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
