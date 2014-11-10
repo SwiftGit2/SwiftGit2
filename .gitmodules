@@ -4,3 +4,6 @@
 [submodule "External/Quick"]
 	path = External/Quick
 	url = https://github.com/github/Quick.git
+[submodule "External/libgit2"]
+	path = External/libgit2
+	url = https://github.com/libgit2/libgit2.git

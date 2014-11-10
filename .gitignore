@@ -16,3 +16,6 @@ DerivedData
 *.hmap
 *.ipa
 *.xcuserstate
+
+External/libgit2*.a
+

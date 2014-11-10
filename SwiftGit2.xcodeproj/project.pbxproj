@@ -7,12 +7,17 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		BE244A4E1A11707D00F8BE42 /* git2.h in Headers */ = {isa = PBXBuildFile; fileRef = BEB31F9B1A0E581400F525B9 /* git2.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		BE244A501A11709600F8BE42 /* git2 in Resources */ = {isa = PBXBuildFile; fileRef = BE244A4F1A11709600F8BE42 /* git2 */; };
+		BE244A511A11709E00F8BE42 /* git2 in Copy libgit2 Headers */ = {isa = PBXBuildFile; fileRef = BE244A4F1A11709600F8BE42 /* git2 */; };
 		BEB31F291A0D6F7A00F525B9 /* SwiftGit2.h in Headers */ = {isa = PBXBuildFile; fileRef = BEB31F281A0D6F7A00F525B9 /* SwiftGit2.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		BEB31F2F1A0D6F7A00F525B9 /* SwiftGit2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BEB31F231A0D6F7A00F525B9 /* SwiftGit2.framework */; };
 		BEB31F361A0D6F7A00F525B9 /* RepositorySpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEB31F351A0D6F7A00F525B9 /* RepositorySpec.swift */; };
 		BEB31F6D1A0D78F300F525B9 /* Repository.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEB31F6C1A0D78F300F525B9 /* Repository.swift */; };
 		BEB31F7F1A0D79C800F525B9 /* Quick.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BEB31F7E1A0D79C800F525B9 /* Quick.framework */; };
 		BEB31F811A0D79F300F525B9 /* Nimble.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BEB31F801A0D79F300F525B9 /* Nimble.framework */; };
+		BEB31F9E1A0E595100F525B9 /* libiconv.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = BEB31F9D1A0E595100F525B9 /* libiconv.dylib */; };
+		BEB31FA01A0E595600F525B9 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = BEB31F9F1A0E595600F525B9 /* libz.dylib */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -23,9 +28,32 @@
 			remoteGlobalIDString = BEB31F221A0D6F7A00F525B9;
 			remoteInfo = "SwiftGit2-OSX";
 		};
+		BEB31F941A0E56E200F525B9 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = BEB31F1A1A0D6F7A00F525B9 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = BEB31F8E1A0E563900F525B9;
+			remoteInfo = libgit2;
+		};
 /* End PBXContainerItemProxy section */
 
+/* Begin PBXCopyFilesBuildPhase section */
+		BEB31F961A0E579700F525B9 /* Copy libgit2 Headers */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = Headers;
+			dstSubfolderSpec = 1;
+			files = (
+				BE244A511A11709E00F8BE42 /* git2 in Copy libgit2 Headers */,
+			);
+			name = "Copy libgit2 Headers";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
+		BE244A4F1A11709600F8BE42 /* git2 */ = {isa = PBXFileReference; lastKnownFileType = folder; name = git2; path = External/libgit2/include/git2; sourceTree = "<group>"; };
+		BE244A521A117DA100F8BE42 /* SwiftGit2.modulemap */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = "sourcecode.module-map"; path = SwiftGit2.modulemap; sourceTree = "<group>"; };
 		BEB31F231A0D6F7A00F525B9 /* SwiftGit2.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SwiftGit2.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		BEB31F271A0D6F7A00F525B9 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		BEB31F281A0D6F7A00F525B9 /* SwiftGit2.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SwiftGit2.h; sourceTree = "<group>"; };
@@ -53,6 +81,10 @@
 		BEB31F6C1A0D78F300F525B9 /* Repository.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Repository.swift; sourceTree = "<group>"; };
 		BEB31F7E1A0D79C800F525B9 /* Quick.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Quick.framework; path = "../../../Library/Developer/Xcode/DerivedData/SwiftGit2-hhirbsygtzljdvasajovfqnfzwwb/Build/Products/Debug/Quick.framework"; sourceTree = "<group>"; };
 		BEB31F801A0D79F300F525B9 /* Nimble.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Nimble.framework; path = ../External/Quick/Externals/Nimble/build/Debug/Nimble.framework; sourceTree = "<group>"; };
+		BEB31F8F1A0E563900F525B9 /* liblibgit2.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = liblibgit2.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		BEB31F9B1A0E581400F525B9 /* git2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = git2.h; path = External/libgit2/include/git2.h; sourceTree = "<group>"; };
+		BEB31F9D1A0E595100F525B9 /* libiconv.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libiconv.dylib; path = usr/lib/libiconv.dylib; sourceTree = SDKROOT; };
+		BEB31F9F1A0E595600F525B9 /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -60,6 +92,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BEB31FA01A0E595600F525B9 /* libz.dylib in Frameworks */,
+				BEB31F9E1A0E595100F525B9 /* libiconv.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -81,6 +115,8 @@
 			children = (
 				BEB31F251A0D6F7A00F525B9 /* SwiftGit2 */,
 				BEB31F321A0D6F7A00F525B9 /* SwiftGit2Tests */,
+				BEB31F9A1A0E57FC00F525B9 /* libgit2 */,
+				BEB31FA11A0E63C100F525B9 /* Libraries */,
 				BEB31F411A0D75EE00F525B9 /* Configuration */,
 				BEB31F241A0D6F7A00F525B9 /* Products */,
 			);
@@ -91,6 +127,7 @@
 			children = (
 				BEB31F231A0D6F7A00F525B9 /* SwiftGit2.framework */,
 				BEB31F2E1A0D6F7A00F525B9 /* SwiftGit2-OSXTests.xctest */,
+				BEB31F8F1A0E563900F525B9 /* liblibgit2.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -109,6 +146,7 @@
 			isa = PBXGroup;
 			children = (
 				BEB31F271A0D6F7A00F525B9 /* Info.plist */,
+				BE244A521A117DA100F8BE42 /* SwiftGit2.modulemap */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -198,6 +236,24 @@
 			path = "Mac OS X";
 			sourceTree = "<group>";
 		};
+		BEB31F9A1A0E57FC00F525B9 /* libgit2 */ = {
+			isa = PBXGroup;
+			children = (
+				BE244A4F1A11709600F8BE42 /* git2 */,
+				BEB31F9B1A0E581400F525B9 /* git2.h */,
+			);
+			name = libgit2;
+			sourceTree = "<group>";
+		};
+		BEB31FA11A0E63C100F525B9 /* Libraries */ = {
+			isa = PBXGroup;
+			children = (
+				BEB31F9D1A0E595100F525B9 /* libiconv.dylib */,
+				BEB31F9F1A0E595600F525B9 /* libz.dylib */,
+			);
+			name = Libraries;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
@@ -206,6 +262,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				BEB31F291A0D6F7A00F525B9 /* SwiftGit2.h in Headers */,
+				BE244A4E1A11707D00F8BE42 /* git2.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -216,6 +273,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = BEB31F391A0D6F7A00F525B9 /* Build configuration list for PBXNativeTarget "SwiftGit2-OSX" */;
 			buildPhases = (
+				BEB31F961A0E579700F525B9 /* Copy libgit2 Headers */,
 				BEB31F1E1A0D6F7A00F525B9 /* Sources */,
 				BEB31F1F1A0D6F7A00F525B9 /* Frameworks */,
 				BEB31F201A0D6F7A00F525B9 /* Headers */,
@@ -224,6 +282,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				BEB31F951A0E56E200F525B9 /* PBXTargetDependency */,
 			);
 			name = "SwiftGit2-OSX";
 			productName = "SwiftGit2-OSX";
@@ -248,6 +307,21 @@
 			productReference = BEB31F2E1A0D6F7A00F525B9 /* SwiftGit2-OSXTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
+		BEB31F8E1A0E563900F525B9 /* libgit2 */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = BEB31F901A0E563900F525B9 /* Build configuration list for PBXNativeTarget "libgit2" */;
+			buildPhases = (
+				BEB31F931A0E567000F525B9 /* ShellScript */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = libgit2;
+			productName = libgit2;
+			productReference = BEB31F8F1A0E563900F525B9 /* liblibgit2.a */;
+			productType = "com.apple.product-type.library.static";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -261,6 +335,9 @@
 						CreatedOnToolsVersion = 6.1;
 					};
 					BEB31F2D1A0D6F7A00F525B9 = {
+						CreatedOnToolsVersion = 6.1;
+					};
+					BEB31F8E1A0E563900F525B9 = {
 						CreatedOnToolsVersion = 6.1;
 					};
 				};
@@ -279,6 +356,7 @@
 			targets = (
 				BEB31F221A0D6F7A00F525B9 /* SwiftGit2-OSX */,
 				BEB31F2D1A0D6F7A00F525B9 /* SwiftGit2-OSXTests */,
+				BEB31F8E1A0E563900F525B9 /* libgit2 */,
 			);
 		};
 /* End PBXProject section */
@@ -288,6 +366,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BE244A501A11709600F8BE42 /* git2 in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -299,6 +378,22 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		BEB31F931A0E567000F525B9 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = script/update_libgit2;
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		BEB31F1E1A0D6F7A00F525B9 /* Sources */ = {
@@ -324,6 +419,11 @@
 			isa = PBXTargetDependency;
 			target = BEB31F221A0D6F7A00F525B9 /* SwiftGit2-OSX */;
 			targetProxy = BEB31F301A0D6F7A00F525B9 /* PBXContainerItemProxy */;
+		};
+		BEB31F951A0E56E200F525B9 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = BEB31F8E1A0E563900F525B9 /* libgit2 */;
+			targetProxy = BEB31F941A0E56E200F525B9 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -363,6 +463,14 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = (
+					External/libgit2/include,
+					/usr/local/include,
+				);
+				LIBRARY_SEARCH_PATHS = (
+					.,
+					External,
+				);
 				MACOSX_DEPLOYMENT_TARGET = 10.10;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -403,6 +511,14 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = (
+					External/libgit2/include,
+					/usr/local/include,
+				);
+				LIBRARY_SEARCH_PATHS = (
+					.,
+					External,
+				);
 				MACOSX_DEPLOYMENT_TARGET = 10.10;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = macosx;
@@ -425,6 +541,15 @@
 				INFOPLIST_FILE = SwiftGit2/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
+				MODULEMAP_FILE = SwiftGit2/SwiftGit2.modulemap;
+				OTHER_LDFLAGS = (
+					"-lgit2",
+					"-force_load",
+					External/libgit2.a,
+					/usr/local/lib/libssh2.a,
+					"-lcrypto",
+					"-lssl",
+				);
 				PRODUCT_NAME = SwiftGit2;
 				SKIP_INSTALL = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -445,6 +570,15 @@
 				INFOPLIST_FILE = SwiftGit2/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
+				MODULEMAP_FILE = SwiftGit2/SwiftGit2.modulemap;
+				OTHER_LDFLAGS = (
+					"-lgit2",
+					"-force_load",
+					External/libgit2.a,
+					/usr/local/lib/libssh2.a,
+					"-lcrypto",
+					"-lssl",
+				);
 				PRODUCT_NAME = SwiftGit2;
 				SKIP_INSTALL = YES;
 			};
@@ -488,6 +622,26 @@
 			};
 			name = Release;
 		};
+		BEB31F911A0E563900F525B9 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				EXECUTABLE_PREFIX = lib;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		BEB31F921A0E563900F525B9 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				EXECUTABLE_PREFIX = lib;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -514,6 +668,15 @@
 			buildConfigurations = (
 				BEB31F3D1A0D6F7A00F525B9 /* Debug */,
 				BEB31F3E1A0D6F7A00F525B9 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		BEB31F901A0E563900F525B9 /* Build configuration list for PBXNativeTarget "libgit2" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				BEB31F911A0E563900F525B9 /* Debug */,
+				BEB31F921A0E563900F525B9 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
