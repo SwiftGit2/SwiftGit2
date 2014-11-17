@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		BE14AA321A15AA510015B439 /* LlamaKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE14AA311A15AA510015B439 /* LlamaKit.framework */; };
+		BE14AA501A1974010015B439 /* SwiftGit2.m in Sources */ = {isa = PBXBuildFile; fileRef = BE14AA4F1A1974010015B439 /* SwiftGit2.m */; };
 		BE244A4E1A11707D00F8BE42 /* git2.h in Headers */ = {isa = PBXBuildFile; fileRef = BEB31F9B1A0E581400F525B9 /* git2.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		BE244A501A11709600F8BE42 /* git2 in Resources */ = {isa = PBXBuildFile; fileRef = BE244A4F1A11709600F8BE42 /* git2 */; };
 		BE244A511A11709E00F8BE42 /* git2 in Copy libgit2 Headers */ = {isa = PBXBuildFile; fileRef = BE244A4F1A11709600F8BE42 /* git2 */; };
@@ -54,6 +55,7 @@
 
 /* Begin PBXFileReference section */
 		BE14AA311A15AA510015B439 /* LlamaKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = LlamaKit.framework; path = External/LlamaKit/build/Debug/LlamaKit.framework; sourceTree = "<group>"; };
+		BE14AA4F1A1974010015B439 /* SwiftGit2.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SwiftGit2.m; sourceTree = "<group>"; };
 		BE244A4F1A11709600F8BE42 /* git2 */ = {isa = PBXFileReference; lastKnownFileType = folder; name = git2; path = External/libgit2/include/git2; sourceTree = "<group>"; };
 		BE244A521A117DA100F8BE42 /* SwiftGit2.modulemap */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = "sourcecode.module-map"; path = SwiftGit2.modulemap; sourceTree = "<group>"; };
 		BEB31F231A0D6F7A00F525B9 /* SwiftGit2.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SwiftGit2.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -139,6 +141,7 @@
 			isa = PBXGroup;
 			children = (
 				BEB31F281A0D6F7A00F525B9 /* SwiftGit2.h */,
+				BE14AA4F1A1974010015B439 /* SwiftGit2.m */,
 				BEB31F6C1A0D78F300F525B9 /* Repository.swift */,
 				BEB31F261A0D6F7A00F525B9 /* Supporting Files */,
 			);
@@ -405,6 +408,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				BEB31F6D1A0D78F300F525B9 /* Repository.swift in Sources */,
+				BE14AA501A1974010015B439 /* SwiftGit2.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
