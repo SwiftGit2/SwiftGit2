@@ -9,6 +9,9 @@
 /* Begin PBXBuildFile section */
 		BE14AA321A15AA510015B439 /* LlamaKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE14AA311A15AA510015B439 /* LlamaKit.framework */; };
 		BE14AA501A1974010015B439 /* SwiftGit2.m in Sources */ = {isa = PBXBuildFile; fileRef = BE14AA4F1A1974010015B439 /* SwiftGit2.m */; };
+		BE14AA551A1984550015B439 /* Fixtures.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE14AA541A1984550015B439 /* Fixtures.swift */; };
+		BE14AA571A198C6E0015B439 /* simple-repository.zip in Resources */ = {isa = PBXBuildFile; fileRef = BE14AA561A198C6E0015B439 /* simple-repository.zip */; };
+		BE14AA591A1996B70015B439 /* FixturesSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE14AA581A1996B70015B439 /* FixturesSpec.swift */; };
 		BE244A4E1A11707D00F8BE42 /* git2.h in Headers */ = {isa = PBXBuildFile; fileRef = BEB31F9B1A0E581400F525B9 /* git2.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		BE244A501A11709600F8BE42 /* git2 in Resources */ = {isa = PBXBuildFile; fileRef = BE244A4F1A11709600F8BE42 /* git2 */; };
 		BE244A511A11709E00F8BE42 /* git2 in Copy libgit2 Headers */ = {isa = PBXBuildFile; fileRef = BE244A4F1A11709600F8BE42 /* git2 */; };
@@ -56,6 +59,9 @@
 /* Begin PBXFileReference section */
 		BE14AA311A15AA510015B439 /* LlamaKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = LlamaKit.framework; path = External/LlamaKit/build/Debug/LlamaKit.framework; sourceTree = "<group>"; };
 		BE14AA4F1A1974010015B439 /* SwiftGit2.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SwiftGit2.m; sourceTree = "<group>"; };
+		BE14AA541A1984550015B439 /* Fixtures.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Fixtures.swift; sourceTree = "<group>"; };
+		BE14AA561A198C6E0015B439 /* simple-repository.zip */ = {isa = PBXFileReference; lastKnownFileType = archive.zip; path = "simple-repository.zip"; sourceTree = "<group>"; };
+		BE14AA581A1996B70015B439 /* FixturesSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FixturesSpec.swift; sourceTree = "<group>"; };
 		BE244A4F1A11709600F8BE42 /* git2 */ = {isa = PBXFileReference; lastKnownFileType = folder; name = git2; path = External/libgit2/include/git2; sourceTree = "<group>"; };
 		BE244A521A117DA100F8BE42 /* SwiftGit2.modulemap */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = "sourcecode.module-map"; path = SwiftGit2.modulemap; sourceTree = "<group>"; };
 		BEB31F231A0D6F7A00F525B9 /* SwiftGit2.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SwiftGit2.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -115,6 +121,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		BE14AA531A1983520015B439 /* Fixtures */ = {
+			isa = PBXGroup;
+			children = (
+				BE14AA541A1984550015B439 /* Fixtures.swift */,
+				BE14AA561A198C6E0015B439 /* simple-repository.zip */,
+			);
+			path = Fixtures;
+			sourceTree = "<group>";
+		};
 		BEB31F191A0D6F7A00F525B9 = {
 			isa = PBXGroup;
 			children = (
@@ -160,7 +175,9 @@
 		BEB31F321A0D6F7A00F525B9 /* SwiftGit2Tests */ = {
 			isa = PBXGroup;
 			children = (
+				BE14AA531A1983520015B439 /* Fixtures */,
 				BEB31F351A0D6F7A00F525B9 /* RepositorySpec.swift */,
+				BE14AA581A1996B70015B439 /* FixturesSpec.swift */,
 				BEB31F331A0D6F7A00F525B9 /* Supporting Files */,
 			);
 			path = SwiftGit2Tests;
@@ -381,6 +398,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BE14AA571A198C6E0015B439 /* simple-repository.zip in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -417,6 +435,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				BEB31F361A0D6F7A00F525B9 /* RepositorySpec.swift in Sources */,
+				BE14AA591A1996B70015B439 /* FixturesSpec.swift in Sources */,
+				BE14AA551A1984550015B439 /* Fixtures.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
