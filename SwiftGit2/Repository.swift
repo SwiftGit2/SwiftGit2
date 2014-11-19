@@ -11,8 +11,8 @@ import LlamaKit
 
 /// A git repository.
 final public class Repository {
-	/// The underlying libgit2 `git_repository` object.
-	public let git_repository: COpaquePointer
+	
+	// MARK: - Creating Repositories
 	
 	/// Load the repository at the given URL.
 	///
@@ -33,6 +33,8 @@ final public class Repository {
 		return success(repository)
 	}
 	
+	// MARK: - Initializers
+	
 	/// Create an instance with a libgit2 `git_repository` object.
 	public init(git_repository: COpaquePointer) {
 		self.git_repository = git_repository
@@ -44,6 +46,11 @@ final public class Repository {
 	deinit {
 		git_repository_free(git_repository)
 	}
+	
+	// MARK: - Properties
+	
+	/// The underlying libgit2 `git_repository` object.
+	public let git_repository: COpaquePointer
 	
 	/// The URL of the repository's working directory, or `nil` if the
 	/// repository is bare.
