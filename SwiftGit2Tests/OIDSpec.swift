@@ -38,5 +38,29 @@ class OIDSpec: QuickSpec {
 				expect(oid.description).to(equal(SHA))
 			}
 		}
+		
+		describe("==") {
+			it("should be equal when identical") {
+				let SHA = "1234567890123456789012345678901234567890"
+				let oid1 = OID(string: SHA)!
+				let oid2 = OID(string: SHA)!
+				expect(oid1).to(equal(oid2))
+			}
+			
+			it("should be not equal when different") {
+				let oid1 = OID(string: "1234567890123456789012345678901234567890")!
+				let oid2 = OID(string: "0000000000000000000000000000000000000000")!
+				expect(oid1).notTo(equal(oid2))
+			}
+		}
+		
+		describe("hashValue") {
+			it("should be equal when OIDs are equal") {
+				let SHA = "1234567890123456789012345678901234567890"
+				let oid1 = OID(string: SHA)!
+				let oid2 = OID(string: SHA)!
+				expect(oid1.hashValue).to(equal(oid2.hashValue))
+			}
+		}
 	}
 }

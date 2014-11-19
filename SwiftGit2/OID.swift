@@ -35,6 +35,11 @@ public struct OID {
 		pointer.dealloc(1)
 	}
 	
+	/// Create an instance from a libgit2 `git_oid`.
+	public init(oid: git_oid) {
+		self.oid = oid
+	}
+	
 	// MARK: - Properties
 	
 	public let oid: git_oid
@@ -49,4 +54,16 @@ extension OID: Printable {
 		
 		return String(bytesNoCopy: string, length: length, encoding: NSASCIIStringEncoding, freeWhenDone: true)!
 	}
+}
+
+extension OID: Hashable {
+	public var hashValue: Int {
+		return Int(self.oid.id.0) ^ Int(self.oid.id.1) ^ Int(self.oid.id.2)
+	}
+}
+
+public func == (lhs: OID, rhs: OID) -> Bool {
+	var left = lhs.oid
+	var right = rhs.oid
+	return git_oid_cmp(&left, &right) == 0
 }
