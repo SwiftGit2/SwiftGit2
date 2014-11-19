@@ -28,7 +28,7 @@ final public class Repository {
 			return failure()
 		}
 		
-		let repository = Repository(git_repository: pointer.memory)
+		let repository = Repository(pointer: pointer.memory)
 		pointer.dealloc(1)
 		return success(repository)
 	}
@@ -36,21 +36,21 @@ final public class Repository {
 	// MARK: - Initializers
 	
 	/// Create an instance with a libgit2 `git_repository` object.
-	public init(git_repository: COpaquePointer) {
-		self.git_repository = git_repository
+	public init(pointer: COpaquePointer) {
+		self.pointer = pointer
 		
-		let path = git_repository_workdir(git_repository)
+		let path = git_repository_workdir(pointer)
 		self.directoryURL = (path == nil ? nil : NSURL.fileURLWithPath(NSString(CString: path, encoding: NSUTF8StringEncoding)!, isDirectory: true))
 	}
 	
 	deinit {
-		git_repository_free(git_repository)
+		git_repository_free(pointer)
 	}
 	
 	// MARK: - Properties
 	
 	/// The underlying libgit2 `git_repository` object.
-	public let git_repository: COpaquePointer
+	public let pointer: COpaquePointer
 	
 	/// The URL of the repository's working directory, or `nil` if the
 	/// repository is bare.
