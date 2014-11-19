@@ -9,11 +9,11 @@
 import Foundation
 import SwiftGit2
 
-struct Fixtures {
+final class Fixtures {
 	
 	// MARK: Lifecycle
 	
-	static var sharedInstance: Fixtures {
+	class var sharedInstance: Fixtures {
 		struct Singleton {
 			static let instance = Fixtures()
 		}
@@ -64,5 +64,7 @@ struct Fixtures {
 	
 	// MARK: - The Fixtures
 	
-	static let simpleRepository = Fixtures.sharedInstance.repositoryWithName("simple-repository")
+	class var simpleRepository: Repository {
+		return Fixtures.sharedInstance.repositoryWithName("simple-repository")
+	}
 }
