@@ -10,7 +10,7 @@ import Foundation
 import LlamaKit
 
 /// A git repository.
-public class Repository {
+final public class Repository {
 	let git_repository: COpaquePointer
 	
 	/// Load the repository at the given URL.
