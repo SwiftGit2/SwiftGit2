@@ -24,7 +24,7 @@ public struct OID {
 		}
 		
 		let pointer = UnsafeMutablePointer<git_oid>.alloc(1)
-		let result = git_oid_fromstr(pointer, string.cStringUsingEncoding(NSASCIIStringEncoding)!)
+		let result = git_oid_fromstr(pointer, string.cStringUsingEncoding(NSUTF8StringEncoding)!)
 		
 		if result < GIT_OK.value {
 			pointer.dealloc(1)
