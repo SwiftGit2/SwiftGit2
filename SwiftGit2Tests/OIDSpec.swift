@@ -23,7 +23,7 @@ class OIDSpec: QuickSpec {
 			}
 
 			it("should not be nil if string is just right") {
-				expect(OID(string: "1234567890123456789012345678901234567890")).notTo(beNil())
+				expect(OID(string: "1234567890123456789012345678ABCDEFabcdef")).notTo(beNil())
 			}
 			
 			it("should be nil with non-hex characters") {
