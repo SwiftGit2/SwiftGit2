@@ -55,4 +55,28 @@ final public class Repository {
 	/// The URL of the repository's working directory, or `nil` if the
 	/// repository is bare.
 	public let directoryURL: NSURL?
+	
+	// MARK: - Object Lookups
+
+	/// Loads the commit with the given OID.
+	///
+	/// oid - The OID of the commit to lookup.
+	///
+	/// Returns the commit if it exists, or an error.
+	public func commitWithOID(oid: OID) -> Result<Commit> {
+		let pointer = UnsafeMutablePointer<COpaquePointer>.alloc(1)
+		let repository = self.pointer
+		var oid = oid.oid
+		let result = git_object_lookup(pointer, repository, &oid, GIT_OBJ_COMMIT)
+		
+		if result < GIT_OK.value {
+			pointer.dealloc(1)
+			return failure()
+		}
+		
+		let commit = Commit(pointer: pointer.memory)
+		git_object_free(pointer.memory)
+		pointer.dealloc(1)
+		return success(commit)
+	}
 }
