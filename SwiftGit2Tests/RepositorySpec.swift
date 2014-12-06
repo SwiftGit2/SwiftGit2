@@ -26,7 +26,7 @@ class RepositorySpec: QuickSpec {
 			}
 		}
 		
-		describe("-commitWithOID") {
+		describe("-commitWithOID()") {
 			it("should return the commit if it exists") {
 				let repo = Fixtures.simpleRepository
 				let oid = OID(string: "dc220a3f0c22920dab86d4a8d3a3cb7e69d6205a")!
