@@ -36,6 +36,19 @@ public struct Signature {
 	}
 }
 
+extension Signature: Hashable {
+	public var hashValue: Int {
+		return name.hashValue ^ email.hashValue ^ Int(time.timeIntervalSince1970)
+	}
+}
+
+public func == (lhs: Signature, rhs: Signature) -> Bool {
+	return lhs.name == rhs.name
+		&& lhs.email == rhs.email
+		&& lhs.time == rhs.time
+		&& lhs.timeZone.secondsFromGMT == rhs.timeZone.secondsFromGMT
+}
+
 /// A git commit.
 public struct Commit: Object {
 	public let oid: OID

@@ -40,6 +40,49 @@ class SignatureSpec: QuickSpec {
 				expect(signature.timeZone.abbreviation).to(equal("GMT-5"))
 			}
 		}
+		
+		describe("==") {
+			it("should be true with equal objects") {
+				let repo = Fixtures.simpleRepository
+				let oid = OID(string: "dc220a3f0c22920dab86d4a8d3a3cb7e69d6205a")!
+				
+				let author1 = from_git_object(repo, oid) { commit in
+					Signature(signature: git_commit_author(commit).memory)
+				}
+				let author2 = author1
+				
+				expect(author1).to(equal(author2))
+			}
+			
+			it("should be false with unequal objects") {
+				let repo = Fixtures.simpleRepository
+				let oid1 = OID(string: "dc220a3f0c22920dab86d4a8d3a3cb7e69d6205a")!
+				let oid2 = OID(string: "24e1e40ee77525d9e279f079f9906ad6d98c8940")!
+				
+				let author1 = from_git_object(repo, oid1) { commit in
+					Signature(signature: git_commit_author(commit).memory)
+				}
+				let author2 = from_git_object(repo, oid2) { commit in
+					Signature(signature: git_commit_author(commit).memory)
+				}
+				
+				expect(author1).notTo(equal(author2))
+			}
+		}
+		
+		describe("hashValue") {
+			it("should be equal with equal objects") {
+				let repo = Fixtures.simpleRepository
+				let oid = OID(string: "dc220a3f0c22920dab86d4a8d3a3cb7e69d6205a")!
+				
+				let author1 = from_git_object(repo, oid) { commit in
+					Signature(signature: git_commit_author(commit).memory)
+				}
+				let author2 = author1
+				
+				expect(author1.hashValue).to(equal(author2.hashValue))
+			}
+		}
 	}
 }
 
