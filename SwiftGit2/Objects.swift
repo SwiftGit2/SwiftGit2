@@ -54,6 +54,12 @@ public struct Commit: Object {
 	/// The OID of the commit.
 	public let oid: OID
 	
+	/// The OID of the commit's tree.
+	public let tree: OID
+	
+	/// The OIDs of the commit's parents.
+	public let parents: [OID]
+	
 	/// The author of the commit.
 	public let author: Signature
 	
@@ -69,5 +75,13 @@ public struct Commit: Object {
 		message = String.fromCString(git_commit_message(pointer))!
 		author = Signature(signature: git_commit_author(pointer).memory)
 		committer = Signature(signature: git_commit_committer(pointer).memory)
+		tree = OID(oid: git_commit_tree_id(pointer).memory)
+		
+		var parents: [OID] = []
+		for idx in 0..<git_commit_parentcount(pointer) {
+			let oid = git_commit_parent_id(pointer, idx).memory
+			parents.append(OID(oid: oid))
+		}
+		self.parents = parents
 	}
 }

@@ -91,7 +91,7 @@ class CommitSpec: QuickSpec {
 		describe("init(pointer:)") {
 			it("should initialize its properties") {
 				let repo = Fixtures.simpleRepository
-				let oid = OID(string: "dc220a3f0c22920dab86d4a8d3a3cb7e69d6205a")!
+				let oid = OID(string: "24e1e40ee77525d9e279f079f9906ad6d98c8940")!
 				
 				let commit = from_git_object(repo, oid) { Commit(pointer: $0) }
 				let author = from_git_object(repo, oid) { commit in
@@ -100,10 +100,36 @@ class CommitSpec: QuickSpec {
 				let committer = from_git_object(repo, oid) { commit in
 					Signature(signature: git_commit_committer(commit).memory)
 				}
+				let tree = OID(string: "219e9f39c2fb59ed1dfb3e78ed75055a57528f31")!
+				let parents = [
+					OID(string: "dc220a3f0c22920dab86d4a8d3a3cb7e69d6205a")!,
+				]
 				expect(commit.oid).to(equal(oid))
-				expect(commit.message).to(equal("Create a README\n"))
+				expect(commit.tree).to(equal(tree))
+				expect(commit.parents).to(equal(parents))
+				expect(commit.message).to(equal("List branches in README\n"))
 				expect(commit.author).to(equal(author))
 				expect(commit.committer).to(equal(committer))
+			}
+			
+			it("should handle 0 parents") {
+				let repo = Fixtures.simpleRepository
+				let oid = OID(string: "dc220a3f0c22920dab86d4a8d3a3cb7e69d6205a")!
+				
+				let commit = from_git_object(repo, oid) { Commit(pointer: $0) }
+				expect(commit.parents).to(equal([]))
+			}
+			
+			it("should handle multiple parents") {
+				let repo = Fixtures.simpleRepository
+				let oid = OID(string: "c4ed03a6b7d7ce837d31d83757febbe84dd465fd")!
+				
+				let commit = from_git_object(repo, oid) { Commit(pointer: $0) }
+				let parents = [
+					OID(string: "315b3f344221db91ddc54b269f3c9af422da0f2e")!,
+					OID(string: "57f6197561d1f99b03c160f4026a07f06b43cf20")!,
+				]
+				expect(commit.parents).to(equal(parents))
 			}
 		}
 	}
