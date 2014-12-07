@@ -166,3 +166,116 @@ class CommitSpec: QuickSpec {
 		}
 	}
 }
+
+class TreeEntrySpec: QuickSpec {
+	override func spec() {
+		describe("init(attributes:type:oid:name:)") {
+			it("should set its properties") {
+				let attributes = Int(GIT_FILEMODE_BLOB.value)
+				let type = ObjectType.Blob
+				let oid = OID(string: "41078396f5187daed5f673e4a13b185bbad71fba")!
+				let name = "README.md"
+				
+				let entry = Tree.Entry(attributes: attributes, type: type, oid: oid, name: name)
+				expect(entry.attributes).to(equal(attributes))
+				expect(entry.type).to(equal(type))
+				expect(entry.oid).to(equal(oid))
+				expect(entry.name).to(equal(name))
+			}
+		}
+		
+		describe("init(pointer:") {
+			it("should set its properties") {
+				let repo = Fixtures.simpleRepository
+				let oid = OID(string: "219e9f39c2fb59ed1dfb3e78ed75055a57528f31")!
+				
+				let entry = from_git_object(repo, oid) { Tree.Entry(pointer: git_tree_entry_byindex($0, 0)) }
+				expect(entry.attributes).to(equal(Int(GIT_FILEMODE_BLOB.value)))
+				expect(entry.type).to(equal(ObjectType.Blob))
+				expect(entry.oid).to(equal(OID(string: "41078396f5187daed5f673e4a13b185bbad71fba")))
+				expect(entry.name).to(equal("README.md"))
+			}
+		}
+		
+		describe("==") {
+			it("should be true with equal objects") {
+				let repo = Fixtures.simpleRepository
+				let oid = OID(string: "219e9f39c2fb59ed1dfb3e78ed75055a57528f31")!
+				
+				let entry1 = from_git_object(repo, oid) { Tree.Entry(pointer: git_tree_entry_byindex($0, 0)) }
+				let entry2 = entry1
+				expect(entry1).to(equal(entry2))
+			}
+			
+			it("should be false with unequal objects") {
+				let repo = Fixtures.simpleRepository
+				let oid1 = OID(string: "219e9f39c2fb59ed1dfb3e78ed75055a57528f31")!
+				let oid2 = OID(string: "f93e3a1a1525fb5b91020da86e44810c87a2d7bc")!
+				
+				let entry1 = from_git_object(repo, oid1) { Tree.Entry(pointer: git_tree_entry_byindex($0, 0)) }
+				let entry2 = from_git_object(repo, oid2) { Tree.Entry(pointer: git_tree_entry_byindex($0, 0)) }
+				expect(entry1).notTo(equal(entry2))
+			}
+		}
+		
+		describe("hashValue") {
+			it("should be equal with equal objects") {
+				let repo = Fixtures.simpleRepository
+				let oid = OID(string: "219e9f39c2fb59ed1dfb3e78ed75055a57528f31")!
+				
+				let entry1 = from_git_object(repo, oid) { Tree.Entry(pointer: git_tree_entry_byindex($0, 0)) }
+				let entry2 = entry1
+				expect(entry1.hashValue).to(equal(entry2.hashValue))
+			}
+		}
+	}
+}
+
+class TreeSpec: QuickSpec {
+	override func spec() {
+		describe("init(pointer:)") {
+			it("should initialize its properties") {
+				let repo = Fixtures.simpleRepository
+				let oid = OID(string: "219e9f39c2fb59ed1dfb3e78ed75055a57528f31")!
+				
+				let tree = from_git_object(repo, oid) { Tree(pointer: $0) }
+				let entries = [
+					"README.md": Tree.Entry(attributes: Int(GIT_FILEMODE_BLOB.value), type: .Blob, oid: OID(string: "41078396f5187daed5f673e4a13b185bbad71fba")!, name: "README.md"),
+				]
+				expect(tree.entries).to(equal(entries))
+			}
+		}
+		
+		describe("==") {
+			it("should be true with equal objects") {
+				let repo = Fixtures.simpleRepository
+				let oid = OID(string: "219e9f39c2fb59ed1dfb3e78ed75055a57528f31")!
+				
+				let tree1 = from_git_object(repo, oid) { Tree(pointer: $0) }
+				let tree2 = tree1
+				expect(tree1).to(equal(tree2))
+			}
+			
+			it("should be false with unequal objects") {
+				let repo = Fixtures.simpleRepository
+				let oid1 = OID(string: "219e9f39c2fb59ed1dfb3e78ed75055a57528f31")!
+				let oid2 = OID(string: "f93e3a1a1525fb5b91020da86e44810c87a2d7bc")!
+				
+				let tree1 = from_git_object(repo, oid1) { Tree(pointer: $0) }
+				let tree2 = from_git_object(repo, oid2) { Tree(pointer: $0) }
+				expect(tree1).notTo(equal(tree2))
+			}
+		}
+		
+		describe("hashValue") {
+			it("should be equal with equal objects") {
+				let repo = Fixtures.simpleRepository
+				let oid = OID(string: "219e9f39c2fb59ed1dfb3e78ed75055a57528f31")!
+				
+				let tree1 = from_git_object(repo, oid) { Tree(pointer: $0) }
+				let tree2 = tree1
+				expect(tree1.hashValue).to(equal(tree2.hashValue))
+			}
+		}
+	}
+}
