@@ -60,7 +60,7 @@ final public class Repository {
 
 	/// Loads the commit with the given OID.
 	///
-	/// oid - The OID of the commit to lookup.
+	/// oid - The OID of the commit to look up.
 	///
 	/// Returns the commit if it exists, or an error.
 	public func commitWithOID(oid: OID) -> Result<Commit> {
@@ -78,5 +78,27 @@ final public class Repository {
 		git_object_free(pointer.memory)
 		pointer.dealloc(1)
 		return success(commit)
+	}
+	
+	/// Loads the tree with the given OID.
+	///
+	/// oid - The OID of the tree to look up.
+	///
+	/// Returns the tree if it exists, or an error.
+	public func treeWithOID(oid: OID) -> Result<Tree> {
+		let pointer = UnsafeMutablePointer<COpaquePointer>.alloc(1)
+		let repository = self.pointer
+		var oid = oid.oid
+		let result = git_object_lookup(pointer, repository, &oid, GIT_OBJ_TREE)
+		
+		if result < GIT_OK.value {
+			pointer.dealloc(1)
+			return failure()
+		}
+		
+		let tree = Tree(pointer: pointer.memory)
+		git_object_free(pointer.memory)
+		pointer.dealloc(1)
+		return success(tree)
 	}
 }

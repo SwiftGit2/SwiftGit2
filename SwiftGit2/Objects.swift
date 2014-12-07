@@ -95,3 +95,13 @@ extension Commit: Hashable {
 public func == (lhs: Commit, rhs: Commit) -> Bool {
 	return lhs.oid == rhs.oid
 }
+
+/// A git tree.
+public struct Tree: Object {
+	/// The OID of the tree.
+	public let oid: OID
+	
+	public init(pointer: COpaquePointer) {
+		oid = OID(oid: git_object_id(pointer).memory)
+	}
+}

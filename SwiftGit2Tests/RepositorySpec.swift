@@ -54,5 +54,34 @@ class RepositorySpec: QuickSpec {
 				expect(result.error()).notTo(beNil())
 			}
 		}
+		
+		describe("-treeWithOID()") {
+			it("should return the tree if it exists") {
+				let repo = Fixtures.simpleRepository
+				let oid = OID(string: "f93e3a1a1525fb5b91020da86e44810c87a2d7bc")!
+				
+				let result = repo.treeWithOID(oid)
+				let tree = result.value()
+				expect(tree).notTo(beNil())
+				expect(tree?.oid).to(equal(oid))
+			}
+			
+			it("should error if the tree doesn't exist") {
+				let repo = Fixtures.simpleRepository
+				let oid = OID(string: "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")!
+				
+				let result = repo.treeWithOID(oid)
+				expect(result.error()).notTo(beNil())
+			}
+			
+			it("should error if the oid doesn't point to a commit") {
+				let repo = Fixtures.simpleRepository
+				// This is a commit in the repository
+				let oid = OID(string: "dc220a3f0c22920dab86d4a8d3a3cb7e69d6205a")!
+				
+				let result = repo.treeWithOID(oid)
+				expect(result.error()).notTo(beNil())
+			}
+		}
 	}
 }
