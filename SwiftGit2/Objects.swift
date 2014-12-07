@@ -51,12 +51,23 @@ public func == (lhs: Signature, rhs: Signature) -> Bool {
 
 /// A git commit.
 public struct Commit: Object {
+	/// The OID of the commit.
 	public let oid: OID
+	
+	/// The author of the commit.
+	public let author: Signature
+	
+	/// The committer of the commit.
+	public let committer: Signature
+	
+	/// The full message of the commit.
 	public let message: String
 	
 	/// Create an instance with a libgit2 `git_commit` object.
 	public init(pointer: COpaquePointer) {
 		oid = OID(oid: git_object_id(pointer).memory)
 		message = String.fromCString(git_commit_message(pointer))!
+		author = Signature(signature: git_commit_author(pointer).memory)
+		committer = Signature(signature: git_commit_committer(pointer).memory)
 	}
 }

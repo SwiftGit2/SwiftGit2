@@ -94,8 +94,16 @@ class CommitSpec: QuickSpec {
 				let oid = OID(string: "dc220a3f0c22920dab86d4a8d3a3cb7e69d6205a")!
 				
 				let commit = from_git_object(repo, oid) { Commit(pointer: $0) }
+				let author = from_git_object(repo, oid) { commit in
+					Signature(signature: git_commit_author(commit).memory)
+				}
+				let committer = from_git_object(repo, oid) { commit in
+					Signature(signature: git_commit_committer(commit).memory)
+				}
 				expect(commit.oid).to(equal(oid))
 				expect(commit.message).to(equal("Create a README\n"))
+				expect(commit.author).to(equal(author))
+				expect(commit.committer).to(equal(committer))
 			}
 		}
 	}
