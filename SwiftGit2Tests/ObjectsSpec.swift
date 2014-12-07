@@ -132,5 +132,37 @@ class CommitSpec: QuickSpec {
 				expect(commit.parents).to(equal(parents))
 			}
 		}
+		
+		describe("==") {
+			it("should be true with equal objects") {
+				let repo = Fixtures.simpleRepository
+				let oid = OID(string: "dc220a3f0c22920dab86d4a8d3a3cb7e69d6205a")!
+				
+				let commit1 = from_git_object(repo, oid) { Commit(pointer: $0) }
+				let commit2 = commit1
+				expect(commit1).to(equal(commit2))
+			}
+			
+			it("should be false with unequal objects") {
+				let repo = Fixtures.simpleRepository
+				let oid1 = OID(string: "dc220a3f0c22920dab86d4a8d3a3cb7e69d6205a")!
+				let oid2 = OID(string: "c4ed03a6b7d7ce837d31d83757febbe84dd465fd")!
+				
+				let commit1 = from_git_object(repo, oid1) { Commit(pointer: $0) }
+				let commit2 = from_git_object(repo, oid2) { Commit(pointer: $0) }
+				expect(commit1).notTo(equal(commit2))
+			}
+		}
+		
+		describe("hashValue") {
+			it("should be equal with equal objects") {
+				let repo = Fixtures.simpleRepository
+				let oid = OID(string: "dc220a3f0c22920dab86d4a8d3a3cb7e69d6205a")!
+				
+				let commit1 = from_git_object(repo, oid) { Commit(pointer: $0) }
+				let commit2 = commit1
+				expect(commit1.hashValue).to(equal(commit2.hashValue))
+			}
+		}
 	}
 }

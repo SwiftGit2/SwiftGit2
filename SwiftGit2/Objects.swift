@@ -85,3 +85,13 @@ public struct Commit: Object {
 		self.parents = parents
 	}
 }
+
+extension Commit: Hashable {
+	public var hashValue: Int {
+		return self.oid.hashValue
+	}
+}
+
+public func == (lhs: Commit, rhs: Commit) -> Bool {
+	return lhs.oid == rhs.oid
+}
