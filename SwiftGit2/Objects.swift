@@ -223,3 +223,31 @@ extension Tree: Hashable {
 public func == (lhs: Tree, rhs: Tree) -> Bool {
 	return lhs.oid == rhs.oid
 }
+
+/// A git blob.
+public struct Blob: Object {
+	/// The OID of the blob.
+	public let oid: OID
+	
+	/// The contents of the blob.
+	public let data: NSData
+	
+	/// Create an instance with a libgit2 `git_blob`.
+	public init(pointer: COpaquePointer) {
+		oid = OID(oid: git_object_id(pointer).memory)
+		
+		// Swift doesn't get the types right without `Int(Int64(...))` :(
+		let length = Int(Int64(git_blob_rawsize(pointer).value))
+		data = NSData(bytes: git_blob_rawcontent(pointer), length: length)
+	}
+}
+
+extension Blob: Hashable {
+	public var hashValue: Int {
+		return oid.hashValue
+	}
+}
+
+public func == (lhs: Blob, rhs: Blob) -> Bool {
+	return lhs.oid == rhs.oid
+}

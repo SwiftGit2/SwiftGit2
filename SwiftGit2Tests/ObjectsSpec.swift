@@ -279,3 +279,52 @@ class TreeSpec: QuickSpec {
 		}
 	}
 }
+
+class BlobSpec: QuickSpec {
+	override func spec() {
+		describe("init(pointer:)") {
+			it("should initialize its properties") {
+				let repo = Fixtures.simpleRepository
+				let oid = OID(string: "41078396f5187daed5f673e4a13b185bbad71fba")!
+				
+				let blob = from_git_object(repo, oid) { Blob(pointer: $0) }
+				let contents = "# Simple Repository\nA simple repository used for testing SwiftGit2.\n\n## Branches\n\n- master\n\n"
+				let data = (contents as NSString).dataUsingEncoding(NSUTF8StringEncoding)!
+				expect(blob.oid).to(equal(oid))
+				expect(blob.data).to(equal(data))
+			}
+		}
+		
+		describe("==") {
+			it("should be true with equal objects") {
+				let repo = Fixtures.simpleRepository
+				let oid = OID(string: "41078396f5187daed5f673e4a13b185bbad71fba")!
+				
+				let blob1 = from_git_object(repo, oid) { Blob(pointer: $0) }
+				let blob2 = blob1
+				expect(blob1).to(equal(blob2))
+			}
+			
+			it("should be false with unequal objects") {
+				let repo = Fixtures.simpleRepository
+				let oid1 = OID(string: "41078396f5187daed5f673e4a13b185bbad71fba")!
+				let oid2 = OID(string: "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391")!
+				
+				let blob1 = from_git_object(repo, oid1) { Blob(pointer: $0) }
+				let blob2 = from_git_object(repo, oid2) { Blob(pointer: $0) }
+				expect(blob1).notTo(equal(blob2))
+			}
+		}
+		
+		describe("hashValue") {
+			it("should be equal with equal objects") {
+				let repo = Fixtures.simpleRepository
+				let oid = OID(string: "41078396f5187daed5f673e4a13b185bbad71fba")!
+				
+				let blob1 = from_git_object(repo, oid) { Blob(pointer: $0) }
+				let blob2 = blob1
+				expect(blob1.hashValue).to(equal(blob2.hashValue))
+			}
+		}
+	}
+}
