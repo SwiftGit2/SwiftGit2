@@ -251,3 +251,44 @@ extension Blob: Hashable {
 public func == (lhs: Blob, rhs: Blob) -> Bool {
 	return lhs.oid == rhs.oid
 }
+
+/// An annotated git tag.
+public struct Tag: Object {
+	/// The OID of the tag.
+	public let oid: OID
+	
+	/// The OID of the tagged object.
+	public let object: OID
+	
+	/// The type of the tagged object.
+	public let objectType: ObjectType
+	
+	/// The name of the tag.
+	public let name: String
+	
+	/// The tagger (author) of the tag.
+	public let tagger: Signature
+	
+	/// The message of the tag.
+	public let message: String
+	
+	/// Create an instance with a libgit2 `git_tag`.
+	public init(pointer: COpaquePointer) {
+		oid = OID(oid: git_object_id(pointer).memory)
+		object = OID(oid: git_tag_target_id(pointer).memory)
+		objectType = ObjectType.fromLibgit2Type(git_tag_target_type(pointer))!
+		name = String.fromCString(git_tag_name(pointer))!
+		tagger = Signature(signature: git_tag_tagger(pointer).memory)
+		message = String.fromCString(git_tag_message(pointer))!
+	}
+}
+
+extension Tag: Hashable {
+	public var hashValue: Int {
+		return oid.hashValue
+	}
+}
+
+public func == (lhs: Tag, rhs: Tag) -> Bool {
+	return lhs.oid == rhs.oid
+}

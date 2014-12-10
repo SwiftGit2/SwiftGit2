@@ -84,6 +84,36 @@ class RepositorySpec: QuickSpec {
 			}
 		}
 		
+		describe("-tagWithOID()") {
+// This test crashes the swift complier. :'(
+//			it("should return the tag if it exists") {
+//				let repo = Fixtures.simpleRepository
+//				let oid = OID(string: "57943b8ee00348180ceeedc960451562750f6d33")!
+//				
+//				let result = repo.tagWithOID(oid)
+//				let tag = result.value()
+//				expect(tag).notTo(beNil())
+//				expect(tag?.oid).to(equal(oid))
+//			}
+			
+			it("should error if the tag doesn't exist") {
+				let repo = Fixtures.simpleRepository
+				let oid = OID(string: "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")!
+				
+				let result = repo.tagWithOID(oid)
+				expect(result.error()).notTo(beNil())
+			}
+			
+			it("should error if the oid doesn't point to a tag") {
+				let repo = Fixtures.simpleRepository
+				// This is a commit in the repository
+				let oid = OID(string: "dc220a3f0c22920dab86d4a8d3a3cb7e69d6205a")!
+				
+				let result = repo.tagWithOID(oid)
+				expect(result.error()).notTo(beNil())
+			}
+		}
+		
 		describe("-treeWithOID()") {
 			it("should return the tree if it exists") {
 				let repo = Fixtures.simpleRepository
@@ -103,7 +133,7 @@ class RepositorySpec: QuickSpec {
 				expect(result.error()).notTo(beNil())
 			}
 			
-			it("should error if the oid doesn't point to a commit") {
+			it("should error if the oid doesn't point to a tree") {
 				let repo = Fixtures.simpleRepository
 				// This is a commit in the repository
 				let oid = OID(string: "dc220a3f0c22920dab86d4a8d3a3cb7e69d6205a")!

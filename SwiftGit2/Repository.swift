@@ -102,6 +102,28 @@ final public class Repository {
 		return success(commit)
 	}
 	
+	/// Loads the tag with the given OID.
+	///
+	/// oid - The OID of the tag to look up.
+	///
+	/// Returns the tag if it exists, or an error.
+	public func tagWithOID(oid: OID) -> Result<Tag> {
+		let pointer = UnsafeMutablePointer<COpaquePointer>.alloc(1)
+		let repository = self.pointer
+		var oid = oid.oid
+		let result = git_object_lookup(pointer, repository, &oid, GIT_OBJ_TAG)
+		
+		if result < GIT_OK.value {
+			pointer.dealloc(1)
+			return failure()
+		}
+		
+		let tag = Tag(pointer: pointer.memory)
+		git_object_free(pointer.memory)
+		pointer.dealloc(1)
+		return success(tag)
+	}
+	
 	/// Loads the tree with the given OID.
 	///
 	/// oid - The OID of the tree to look up.

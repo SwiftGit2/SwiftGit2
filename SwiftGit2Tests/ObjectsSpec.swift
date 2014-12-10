@@ -328,3 +328,56 @@ class BlobSpec: QuickSpec {
 		}
 	}
 }
+
+class TagSpec: QuickSpec {
+	override func spec() {
+		describe("init(pointer:)") {
+			it("should set its properties") {
+				let repo = Fixtures.simpleRepository
+				let oid = OID(string: "57943b8ee00348180ceeedc960451562750f6d33")!
+				
+				let tag = from_git_object(repo, oid) { Tag(pointer: $0) }
+				let tagger = from_git_object(repo, oid) { Signature(signature: git_tag_tagger($0).memory) }
+				
+				expect(tag.oid).to(equal(oid))
+				expect(tag.object).to(equal(OID(string: "dc220a3f0c22920dab86d4a8d3a3cb7e69d6205a")))
+				expect(tag.objectType).to(equal(ObjectType.Commit))
+				expect(tag.name).to(equal("tag-1"))
+				expect(tag.tagger).to(equal(tagger))
+				expect(tag.message).to(equal("tag-1\n"))
+			}
+		}
+		
+		describe("==") {
+			it("should be true with equal objects") {
+				let repo = Fixtures.simpleRepository
+				let oid = OID(string: "57943b8ee00348180ceeedc960451562750f6d33")!
+				
+				let tag1 = from_git_object(repo, oid) { Tag(pointer: $0) }
+				let tag2 = tag1
+				expect(tag1).to(equal(tag2))
+			}
+			
+			it("should be false with unequal objects") {
+				let repo = Fixtures.simpleRepository
+				let oid1 = OID(string: "57943b8ee00348180ceeedc960451562750f6d33")!
+				let oid2 = OID(string: "13bda91157f255ab224ff88d0a11a82041c9d0c1")!
+				
+				let tag1 = from_git_object(repo, oid1) { Tag(pointer: $0) }
+				let tag2 = from_git_object(repo, oid2) { Tag(pointer: $0) }
+				expect(tag1).notTo(equal(tag2))
+			}
+		}
+		
+		describe("hashValue") {
+			it("should be equal with equal objects") {
+				let repo = Fixtures.simpleRepository
+				let oid = OID(string: "57943b8ee00348180ceeedc960451562750f6d33")!
+				
+				let tag1 = from_git_object(repo, oid) { Tag(pointer: $0) }
+				let tag2 = tag1
+				expect(tag1.hashValue).to(equal(tag2.hashValue))
+			}
+		}
+	}
+}
