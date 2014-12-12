@@ -148,7 +148,7 @@ public struct Tree: Object {
 	/// An entry in a `Tree`.
 	public struct Entry {
 		/// The entry's UNIX file attributes.
-		public let attributes: Int
+		public let attributes: Int32
 		
 		/// The type of object pointed to by the entry.
 		public let type: ObjectType
@@ -161,14 +161,14 @@ public struct Tree: Object {
 		
 		/// Create an instance with a libgit2 `git_tree_entry`.
 		public init(_ pointer: COpaquePointer) {
-			attributes = Int(git_tree_entry_filemode(pointer).value)
+			attributes = Int32(git_tree_entry_filemode(pointer).value)
 			type = ObjectType.fromLibgit2Type(git_tree_entry_type(pointer))!
 			oid = OID(git_tree_entry_id(pointer).memory)
 			name = String.fromCString(git_tree_entry_name(pointer))!
 		}
 		
 		/// Create an instance with the individual values.
-		public init(attributes: Int, type: ObjectType, oid: OID, name: String) {
+		public init(attributes: Int32, type: ObjectType, oid: OID, name: String) {
 			self.attributes = attributes
 			self.type = type
 			self.oid = oid
@@ -197,7 +197,7 @@ public struct Tree: Object {
 
 extension Tree.Entry: Hashable {
 	public var hashValue: Int {
-		return attributes ^ oid.hashValue ^ name.hashValue
+		return Int(attributes) ^ oid.hashValue ^ name.hashValue
 	}
 }
 

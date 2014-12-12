@@ -171,7 +171,7 @@ class TreeEntrySpec: QuickSpec {
 	override func spec() {
 		describe("init(attributes:type:oid:name:)") {
 			it("should set its properties") {
-				let attributes = Int(GIT_FILEMODE_BLOB.value)
+				let attributes = Int32(GIT_FILEMODE_BLOB.value)
 				let type = ObjectType.Blob
 				let oid = OID(string: "41078396f5187daed5f673e4a13b185bbad71fba")!
 				let name = "README.md"
@@ -190,7 +190,7 @@ class TreeEntrySpec: QuickSpec {
 				let oid = OID(string: "219e9f39c2fb59ed1dfb3e78ed75055a57528f31")!
 				
 				let entry = from_git_object(repo, oid) { Tree.Entry(git_tree_entry_byindex($0, 0)) }
-				expect(entry.attributes).to(equal(Int(GIT_FILEMODE_BLOB.value)))
+				expect(entry.attributes).to(equal(Int32(GIT_FILEMODE_BLOB.value)))
 				expect(entry.type).to(equal(ObjectType.Blob))
 				expect(entry.oid).to(equal(OID(string: "41078396f5187daed5f673e4a13b185bbad71fba")))
 				expect(entry.name).to(equal("README.md"))
@@ -240,7 +240,7 @@ class TreeSpec: QuickSpec {
 				
 				let tree = from_git_object(repo, oid) { Tree($0) }
 				let entries = [
-					"README.md": Tree.Entry(attributes: Int(GIT_FILEMODE_BLOB.value), type: .Blob, oid: OID(string: "41078396f5187daed5f673e4a13b185bbad71fba")!, name: "README.md"),
+					"README.md": Tree.Entry(attributes: Int32(GIT_FILEMODE_BLOB.value), type: .Blob, oid: OID(string: "41078396f5187daed5f673e4a13b185bbad71fba")!, name: "README.md"),
 				]
 				expect(tree.entries).to(equal(entries))
 			}
