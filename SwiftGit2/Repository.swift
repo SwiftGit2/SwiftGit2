@@ -74,7 +74,7 @@ final public class Repository {
 			return failure()
 		}
 		
-		let commit = Blob(pointer: pointer.memory)
+		let commit = Blob(pointer.memory)
 		git_object_free(pointer.memory)
 		pointer.dealloc(1)
 		return success(commit)
@@ -96,7 +96,7 @@ final public class Repository {
 			return failure()
 		}
 		
-		let commit = Commit(pointer: pointer.memory)
+		let commit = Commit(pointer.memory)
 		git_object_free(pointer.memory)
 		pointer.dealloc(1)
 		return success(commit)
@@ -118,7 +118,7 @@ final public class Repository {
 			return failure()
 		}
 		
-		let tag = Tag(pointer: pointer.memory)
+		let tag = Tag(pointer.memory)
 		git_object_free(pointer.memory)
 		pointer.dealloc(1)
 		return success(tag)
@@ -140,7 +140,7 @@ final public class Repository {
 			return failure()
 		}
 		
-		let tree = Tree(pointer: pointer.memory)
+		let tree = Tree(pointer.memory)
 		git_object_free(pointer.memory)
 		pointer.dealloc(1)
 		return success(tree)

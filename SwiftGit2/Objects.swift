@@ -75,7 +75,7 @@ public struct Signature {
 	public let timeZone: NSTimeZone
 	
 	/// Create an instance with a libgit2 `git_signature`.
-	public init(signature: git_signature) {
+	public init(_ signature: git_signature) {
 		name = String.fromCString(signature.name)!
 		email = String.fromCString(signature.email)!
 		time = NSDate(timeIntervalSince1970: NSTimeInterval(signature.when.time))
@@ -117,17 +117,17 @@ public struct Commit: Object {
 	public let message: String
 	
 	/// Create an instance with a libgit2 `git_commit` object.
-	public init(pointer: COpaquePointer) {
-		oid = OID(oid: git_object_id(pointer).memory)
+	public init(_ pointer: COpaquePointer) {
+		oid = OID(git_object_id(pointer).memory)
 		message = String.fromCString(git_commit_message(pointer))!
-		author = Signature(signature: git_commit_author(pointer).memory)
-		committer = Signature(signature: git_commit_committer(pointer).memory)
-		tree = OID(oid: git_commit_tree_id(pointer).memory)
+		author = Signature(git_commit_author(pointer).memory)
+		committer = Signature(git_commit_committer(pointer).memory)
+		tree = OID(git_commit_tree_id(pointer).memory)
 		
 		var parents: [OID] = []
 		for idx in 0..<git_commit_parentcount(pointer) {
 			let oid = git_commit_parent_id(pointer, idx).memory
-			parents.append(OID(oid: oid))
+			parents.append(OID(oid))
 		}
 		self.parents = parents
 	}
@@ -160,10 +160,10 @@ public struct Tree: Object {
 		public let name: String
 		
 		/// Create an instance with a libgit2 `git_tree_entry`.
-		public init(pointer: COpaquePointer) {
+		public init(_ pointer: COpaquePointer) {
 			attributes = Int(git_tree_entry_filemode(pointer).value)
 			type = ObjectType.fromLibgit2Type(git_tree_entry_type(pointer))!
-			oid = OID(oid: git_tree_entry_id(pointer).memory)
+			oid = OID(git_tree_entry_id(pointer).memory)
 			name = String.fromCString(git_tree_entry_name(pointer))!
 		}
 		
@@ -183,12 +183,12 @@ public struct Tree: Object {
 	public let entries: [String: Entry]
 	
 	/// Create an instance with a libgit2 `git_tree`.
-	public init(pointer: COpaquePointer) {
-		oid = OID(oid: git_object_id(pointer).memory)
+	public init(_ pointer: COpaquePointer) {
+		oid = OID(git_object_id(pointer).memory)
 		
 		var entries: [String: Entry] = [:]
 		for idx in 0..<git_tree_entrycount(pointer) {
-			let entry = Entry(pointer: git_tree_entry_byindex(pointer, idx))
+			let entry = Entry(git_tree_entry_byindex(pointer, idx))
 			entries[entry.name] = entry
 		}
 		self.entries = entries
@@ -233,8 +233,8 @@ public struct Blob: Object {
 	public let data: NSData
 	
 	/// Create an instance with a libgit2 `git_blob`.
-	public init(pointer: COpaquePointer) {
-		oid = OID(oid: git_object_id(pointer).memory)
+	public init(_ pointer: COpaquePointer) {
+		oid = OID(git_object_id(pointer).memory)
 		
 		// Swift doesn't get the types right without `Int(Int64(...))` :(
 		let length = Int(Int64(git_blob_rawsize(pointer).value))
@@ -273,12 +273,12 @@ public struct Tag: Object {
 	public let message: String
 	
 	/// Create an instance with a libgit2 `git_tag`.
-	public init(pointer: COpaquePointer) {
-		oid = OID(oid: git_object_id(pointer).memory)
-		object = OID(oid: git_tag_target_id(pointer).memory)
+	public init(_ pointer: COpaquePointer) {
+		oid = OID(git_object_id(pointer).memory)
+		object = OID(git_tag_target_id(pointer).memory)
 		objectType = ObjectType.fromLibgit2Type(git_tag_target_type(pointer))!
 		name = String.fromCString(git_tag_name(pointer))!
-		tagger = Signature(signature: git_tag_tagger(pointer).memory)
+		tagger = Signature(git_tag_tagger(pointer).memory)
 		message = String.fromCString(git_tag_message(pointer))!
 	}
 }
