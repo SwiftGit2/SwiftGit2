@@ -85,7 +85,7 @@ public struct Signature {
 
 extension Signature: Hashable {
 	public var hashValue: Int {
-		return name.hashValue ^ email.hashValue ^ Int(time.timeIntervalSince1970)
+		return name.hashValue ^ email.hashValue ^ time.timeIntervalSince1970.hashValue
 	}
 }
 
