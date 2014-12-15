@@ -58,26 +58,39 @@ final public class Repository {
 	
 	// MARK: - Object Lookups
 	
+	/// Load a libgit2 object and transform it to something else.
+	///
+	/// oid       - The OID of the object to look up.
+	/// type      - The type of the object to look up.
+	/// transform - A function that takes the libgit2 object and transforms it
+	///             into something else.
+	///
+	/// Returns the result of calling `transform` or an error if the object
+	/// cannot be loaded.
+	func withLibgit2Object<T>(oid: OID, type: git_otype, transform: COpaquePointer -> T) -> Result<T> {
+		let pointer = UnsafeMutablePointer<COpaquePointer>.alloc(1)
+		let repository = self.pointer
+		var oid = oid.oid
+		let result = git_object_lookup(pointer, repository, &oid, type)
+		
+		if result != GIT_OK.value {
+			pointer.dealloc(1)
+			return failure()
+		}
+		
+		let value = transform(pointer.memory)
+		git_object_free(pointer.memory)
+		pointer.dealloc(1)
+		return success(value)
+	}
+	
 	/// Loads the blob with the given OID.
 	///
 	/// oid - The OID of the blob to look up.
 	///
 	/// Returns the blob if it exists, or an error.
 	public func blobWithOID(oid: OID) -> Result<Blob> {
-		let pointer = UnsafeMutablePointer<COpaquePointer>.alloc(1)
-		let repository = self.pointer
-		var oid = oid.oid
-		let result = git_object_lookup(pointer, repository, &oid, GIT_OBJ_BLOB)
-		
-		if result < GIT_OK.value {
-			pointer.dealloc(1)
-			return failure()
-		}
-		
-		let blob = Blob(pointer.memory)
-		git_object_free(pointer.memory)
-		pointer.dealloc(1)
-		return success(blob)
+		return self.withLibgit2Object(oid, type: GIT_OBJ_BLOB) { Blob($0) }
 	}
 
 	/// Loads the commit with the given OID.
@@ -86,20 +99,7 @@ final public class Repository {
 	///
 	/// Returns the commit if it exists, or an error.
 	public func commitWithOID(oid: OID) -> Result<Commit> {
-		let pointer = UnsafeMutablePointer<COpaquePointer>.alloc(1)
-		let repository = self.pointer
-		var oid = oid.oid
-		let result = git_object_lookup(pointer, repository, &oid, GIT_OBJ_COMMIT)
-		
-		if result < GIT_OK.value {
-			pointer.dealloc(1)
-			return failure()
-		}
-		
-		let commit = Commit(pointer.memory)
-		git_object_free(pointer.memory)
-		pointer.dealloc(1)
-		return success(commit)
+		return self.withLibgit2Object(oid, type: GIT_OBJ_COMMIT) { Commit($0) }
 	}
 	
 	/// Loads the tag with the given OID.
@@ -108,20 +108,7 @@ final public class Repository {
 	///
 	/// Returns the tag if it exists, or an error.
 	public func tagWithOID(oid: OID) -> Result<Tag> {
-		let pointer = UnsafeMutablePointer<COpaquePointer>.alloc(1)
-		let repository = self.pointer
-		var oid = oid.oid
-		let result = git_object_lookup(pointer, repository, &oid, GIT_OBJ_TAG)
-		
-		if result < GIT_OK.value {
-			pointer.dealloc(1)
-			return failure()
-		}
-		
-		let tag = Tag(pointer.memory)
-		git_object_free(pointer.memory)
-		pointer.dealloc(1)
-		return success(tag)
+		return self.withLibgit2Object(oid, type: GIT_OBJ_TAG) { Tag($0) }
 	}
 	
 	/// Loads the tree with the given OID.
@@ -130,19 +117,6 @@ final public class Repository {
 	///
 	/// Returns the tree if it exists, or an error.
 	public func treeWithOID(oid: OID) -> Result<Tree> {
-		let pointer = UnsafeMutablePointer<COpaquePointer>.alloc(1)
-		let repository = self.pointer
-		var oid = oid.oid
-		let result = git_object_lookup(pointer, repository, &oid, GIT_OBJ_TREE)
-		
-		if result < GIT_OK.value {
-			pointer.dealloc(1)
-			return failure()
-		}
-		
-		let tree = Tree(pointer.memory)
-		git_object_free(pointer.memory)
-		pointer.dealloc(1)
-		return success(tree)
+		return self.withLibgit2Object(oid, type: GIT_OBJ_TREE) { Tree($0) }
 	}
 }
