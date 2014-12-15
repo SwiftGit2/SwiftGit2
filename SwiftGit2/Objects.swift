@@ -61,6 +61,10 @@ public protocol Object {
 	var oid: OID { get }
 }
 
+public func == <O: Object>(lhs: O, rhs: O) -> Bool {
+	return lhs.oid == rhs.oid
+}
+
 public struct Signature {
 	/// The name of the person.
 	public let name: String
@@ -134,10 +138,6 @@ extension Commit: Hashable {
 	public var hashValue: Int {
 		return self.oid.hashValue
 	}
-}
-
-public func == (lhs: Commit, rhs: Commit) -> Bool {
-	return lhs.oid == rhs.oid
 }
 
 /// A git tree.
@@ -217,10 +217,6 @@ extension Tree: Hashable {
 	}
 }
 
-public func == (lhs: Tree, rhs: Tree) -> Bool {
-	return lhs.oid == rhs.oid
-}
-
 /// A git blob.
 public struct Blob: Object {
 	/// The OID of the blob.
@@ -243,10 +239,6 @@ extension Blob: Hashable {
 	public var hashValue: Int {
 		return oid.hashValue
 	}
-}
-
-public func == (lhs: Blob, rhs: Blob) -> Bool {
-	return lhs.oid == rhs.oid
 }
 
 /// An annotated git tag.
@@ -284,8 +276,4 @@ extension Tag: Hashable {
 	public var hashValue: Int {
 		return oid.hashValue
 	}
-}
-
-public func == (lhs: Tag, rhs: Tag) -> Bool {
-	return lhs.oid == rhs.oid
 }
