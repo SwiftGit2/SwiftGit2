@@ -124,12 +124,9 @@ public struct Commit: Object {
 		committer = Signature(git_commit_committer(pointer).memory)
 		tree = OID(git_commit_tree_id(pointer).memory)
 		
-		var parents: [OID] = []
-		for idx in 0..<git_commit_parentcount(pointer) {
-			let oid = git_commit_parent_id(pointer, idx).memory
-			parents.append(OID(oid))
+		self.parents = map(0..<git_commit_parentcount(pointer)) {
+			return OID(git_commit_parent_id(pointer, $0).memory)
 		}
-		self.parents = parents
 	}
 }
 
