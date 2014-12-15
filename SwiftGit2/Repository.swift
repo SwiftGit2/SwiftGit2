@@ -74,10 +74,10 @@ final public class Repository {
 			return failure()
 		}
 		
-		let commit = Blob(pointer.memory)
+		let blob = Blob(pointer.memory)
 		git_object_free(pointer.memory)
 		pointer.dealloc(1)
-		return success(commit)
+		return success(blob)
 	}
 
 	/// Loads the commit with the given OID.
