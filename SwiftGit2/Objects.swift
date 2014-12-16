@@ -9,39 +9,58 @@
 import Foundation
 
 /// The types of git objects.
-public enum ObjectType: Equatable {
-	case Commit
-	case Tree
-	case Blob
-	case Tag
+public enum ObjectType {
+	case Commit(OID)
+	case Tree(OID)
+	case Blob(OID)
+	case Tag(OID)
 	
-	static func fromLibgit2Type(type: git_otype) -> ObjectType? {
+    var oid: OID {
+        switch self {
+        case let .Commit(oid):
+            return oid
+        case let .Tree(oid):
+            return oid
+        case let .Blob(oid):
+            return oid
+        case let .Tag(oid):
+            return oid
+        }
+    }
+    
+    init?(oid: OID, type: git_otype) {
 		switch type.value {
 		case GIT_OBJ_COMMIT.value:
-			return .Commit
+			self = .Commit(oid)
 		case GIT_OBJ_TREE.value:
-			return .Tree
+			self = .Tree(oid)
 		case GIT_OBJ_BLOB.value:
-			return .Blob
+			self = .Blob(oid)
 		case GIT_OBJ_TAG.value:
-			return .Tag
+			self = .Tag(oid)
 		default:
 			return nil
-		}
-	}
+        }
+    }
+}
+
+extension ObjectType: Hashable {
+    public var hashValue: Int {
+        return oid.hashValue
+    }
 }
 
 extension ObjectType: Printable {
 	public var description: String {
 		switch self {
 		case .Commit:
-			return "commit"
+			return "commit(\(oid))"
 		case .Tree:
-			return "tree"
+			return "tree(\(oid))"
 		case .Blob:
-			return "blob"
+			return "blob(\(oid))"
 		case .Tag:
-			return "tag"
+			return "tag(\(oid))"
 		}
 	}
 }
@@ -49,7 +68,7 @@ extension ObjectType: Printable {
 public func == (lhs: ObjectType, rhs: ObjectType) -> Bool {
 	switch (lhs, rhs) {
 	case (.Commit, .Commit), (.Tree, .Tree), (.Blob, .Blob), (.Tag, .Tag):
-		return true
+		return lhs.oid == rhs.oid
 	default:
 		return false
 	}
@@ -147,28 +166,24 @@ public struct Tree: Object {
 		/// The entry's UNIX file attributes.
 		public let attributes: Int32
 		
-		/// The type of object pointed to by the entry.
-		public let type: ObjectType
-		
-		/// The OID of the object pointed to by the entry.
-		public let oid: OID
+		/// The object pointed to by the entry.
+		public let object: ObjectType
 		
 		/// The file name of the entry.
 		public let name: String
 		
 		/// Create an instance with a libgit2 `git_tree_entry`.
 		public init(_ pointer: COpaquePointer) {
+            let oid = OID(git_tree_entry_id(pointer).memory)
 			attributes = Int32(git_tree_entry_filemode(pointer).value)
-			type = ObjectType.fromLibgit2Type(git_tree_entry_type(pointer))!
-			oid = OID(git_tree_entry_id(pointer).memory)
+			object = ObjectType(oid: oid, type: git_tree_entry_type(pointer))!
 			name = String.fromCString(git_tree_entry_name(pointer))!
 		}
 		
 		/// Create an instance with the individual values.
-		public init(attributes: Int32, type: ObjectType, oid: OID, name: String) {
+		public init(attributes: Int32, object: ObjectType, name: String) {
 			self.attributes = attributes
-			self.type = type
-			self.oid = oid
+			self.object = object
 			self.name = name
 		}
 	}
@@ -194,20 +209,19 @@ public struct Tree: Object {
 
 extension Tree.Entry: Hashable {
 	public var hashValue: Int {
-		return Int(attributes) ^ oid.hashValue ^ name.hashValue
+		return Int(attributes) ^ object.hashValue ^ name.hashValue
 	}
 }
 
 extension Tree.Entry: Printable {
 	public var description: String {
-		return "\(attributes) \(type) \(oid) \(name)"
+		return "\(attributes) \(object) \(name)"
 	}
 }
 
 public func == (lhs: Tree.Entry, rhs: Tree.Entry) -> Bool {
 	return lhs.attributes == rhs.attributes
-		&& lhs.type == rhs.type
-		&& lhs.oid == rhs.oid
+		&& lhs.object == rhs.object
 		&& lhs.name == rhs.name
 }
 
@@ -246,11 +260,8 @@ public struct Tag: Object {
 	/// The OID of the tag.
 	public let oid: OID
 	
-	/// The OID of the tagged object.
-	public let object: OID
-	
-	/// The type of the tagged object.
-	public let objectType: ObjectType
+	/// The tagged object.
+	public let target: ObjectType
 	
 	/// The name of the tag.
 	public let name: String
@@ -264,8 +275,8 @@ public struct Tag: Object {
 	/// Create an instance with a libgit2 `git_tag`.
 	public init(_ pointer: COpaquePointer) {
 		oid = OID(git_object_id(pointer).memory)
-		object = OID(git_tag_target_id(pointer).memory)
-		objectType = ObjectType.fromLibgit2Type(git_tag_target_type(pointer))!
+		let targetOID = OID(git_tag_target_id(pointer).memory)
+        target = ObjectType(oid: targetOID, type: git_tag_target_type(pointer))!
 		name = String.fromCString(git_tag_name(pointer))!
 		tagger = Signature(git_tag_tagger(pointer).memory)
 		message = String.fromCString(git_tag_message(pointer))!
