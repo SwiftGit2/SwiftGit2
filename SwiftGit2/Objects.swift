@@ -9,7 +9,7 @@
 import Foundation
 
 /// The types of git objects.
-public enum ObjectType {
+public enum Object {
 	case Commit(OID)
 	case Tree(OID)
 	case Blob(OID)
@@ -44,13 +44,13 @@ public enum ObjectType {
     }
 }
 
-extension ObjectType: Hashable {
+extension Object: Hashable {
     public var hashValue: Int {
         return oid.hashValue
     }
 }
 
-extension ObjectType: Printable {
+extension Object: Printable {
 	public var description: String {
 		switch self {
 		case .Commit:
@@ -65,7 +65,7 @@ extension ObjectType: Printable {
 	}
 }
 
-public func == (lhs: ObjectType, rhs: ObjectType) -> Bool {
+public func == (lhs: Object, rhs: Object) -> Bool {
 	switch (lhs, rhs) {
 	case (.Commit, .Commit), (.Tree, .Tree), (.Blob, .Blob), (.Tag, .Tag):
 		return lhs.oid == rhs.oid
@@ -75,12 +75,12 @@ public func == (lhs: ObjectType, rhs: ObjectType) -> Bool {
 }
 
 /// A git object.
-public protocol Object {
+public protocol ObjectType {
 	/// The OID of the object.
 	var oid: OID { get }
 }
 
-public func == <O: Object>(lhs: O, rhs: O) -> Bool {
+public func == <O: ObjectType>(lhs: O, rhs: O) -> Bool {
 	return lhs.oid == rhs.oid
 }
 
@@ -120,7 +120,7 @@ public func == (lhs: Signature, rhs: Signature) -> Bool {
 }
 
 /// A git commit.
-public struct Commit: Object {
+public struct Commit: ObjectType {
 	/// The OID of the commit.
 	public let oid: OID
 	
@@ -160,14 +160,14 @@ extension Commit: Hashable {
 }
 
 /// A git tree.
-public struct Tree: Object {
+public struct Tree: ObjectType {
 	/// An entry in a `Tree`.
 	public struct Entry {
 		/// The entry's UNIX file attributes.
 		public let attributes: Int32
 		
 		/// The object pointed to by the entry.
-		public let object: ObjectType
+		public let object: Object
 		
 		/// The file name of the entry.
 		public let name: String
@@ -176,12 +176,12 @@ public struct Tree: Object {
 		public init(_ pointer: COpaquePointer) {
             let oid = OID(git_tree_entry_id(pointer).memory)
 			attributes = Int32(git_tree_entry_filemode(pointer).value)
-			object = ObjectType(oid: oid, type: git_tree_entry_type(pointer))!
+			object = Object(oid: oid, type: git_tree_entry_type(pointer))!
 			name = String.fromCString(git_tree_entry_name(pointer))!
 		}
 		
 		/// Create an instance with the individual values.
-		public init(attributes: Int32, object: ObjectType, name: String) {
+		public init(attributes: Int32, object: Object, name: String) {
 			self.attributes = attributes
 			self.object = object
 			self.name = name
@@ -232,7 +232,7 @@ extension Tree: Hashable {
 }
 
 /// A git blob.
-public struct Blob: Object {
+public struct Blob: ObjectType {
 	/// The OID of the blob.
 	public let oid: OID
 	
@@ -256,12 +256,12 @@ extension Blob: Hashable {
 }
 
 /// An annotated git tag.
-public struct Tag: Object {
+public struct Tag: ObjectType {
 	/// The OID of the tag.
 	public let oid: OID
 	
 	/// The tagged object.
-	public let target: ObjectType
+	public let target: Object
 	
 	/// The name of the tag.
 	public let name: String
@@ -276,7 +276,7 @@ public struct Tag: Object {
 	public init(_ pointer: COpaquePointer) {
 		oid = OID(git_object_id(pointer).memory)
 		let targetOID = OID(git_tag_target_id(pointer).memory)
-        target = ObjectType(oid: targetOID, type: git_tag_target_type(pointer))!
+        target = Object(oid: targetOID, type: git_tag_target_type(pointer))!
 		name = String.fromCString(git_tag_name(pointer))!
 		tagger = Signature(git_tag_tagger(pointer).memory)
 		message = String.fromCString(git_tag_message(pointer))!

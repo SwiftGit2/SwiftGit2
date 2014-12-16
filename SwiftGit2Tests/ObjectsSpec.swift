@@ -172,7 +172,7 @@ class TreeEntrySpec: QuickSpec {
 		describe("init(attributes:object:name:)") {
 			it("should set its properties") {
 				let attributes = Int32(GIT_FILEMODE_BLOB.value)
-				let object = ObjectType.Blob(OID(string: "41078396f5187daed5f673e4a13b185bbad71fba")!)
+				let object = Object.Blob(OID(string: "41078396f5187daed5f673e4a13b185bbad71fba")!)
 				let name = "README.md"
 				
                 let entry = Tree.Entry(attributes: attributes, object: object, name: name)
@@ -189,7 +189,7 @@ class TreeEntrySpec: QuickSpec {
 				
 				let entry = from_git_object(repo, oid) { Tree.Entry(git_tree_entry_byindex($0, 0)) }
 				expect(entry.attributes).to(equal(Int32(GIT_FILEMODE_BLOB.value)))
-				expect(entry.object).to(equal(ObjectType.Blob(OID(string: "41078396f5187daed5f673e4a13b185bbad71fba")!)))
+				expect(entry.object).to(equal(Object.Blob(OID(string: "41078396f5187daed5f673e4a13b185bbad71fba")!)))
 				expect(entry.name).to(equal("README.md"))
 			}
 		}
@@ -337,7 +337,7 @@ class TagSpec: QuickSpec {
 				let tagger = from_git_object(repo, oid) { Signature(git_tag_tagger($0).memory) }
 				
 				expect(tag.oid).to(equal(oid))
-				expect(tag.target).to(equal(ObjectType.Commit(OID(string: "dc220a3f0c22920dab86d4a8d3a3cb7e69d6205a")!)))
+				expect(tag.target).to(equal(Object.Commit(OID(string: "dc220a3f0c22920dab86d4a8d3a3cb7e69d6205a")!)))
 				expect(tag.name).to(equal("tag-1"))
 				expect(tag.tagger).to(equal(tagger))
 				expect(tag.message).to(equal("tag-1\n"))
