@@ -17,13 +17,13 @@ public enum Object {
 	
 	var oid: OID {
 		switch self {
-		case let .Commit(oid):
+		case let Commit(oid):
 			return oid
-		case let .Tree(oid):
+		case let Tree(oid):
 			return oid
-		case let .Blob(oid):
+		case let Blob(oid):
 			return oid
-		case let .Tag(oid):
+		case let Tag(oid):
 			return oid
 		}
 	}
@@ -31,13 +31,13 @@ public enum Object {
 	init?(oid: OID, type: git_otype) {
 		switch type.value {
 		case GIT_OBJ_COMMIT.value:
-			self = .Commit(oid)
+			self = Commit(oid)
 		case GIT_OBJ_TREE.value:
-			self = .Tree(oid)
+			self = Tree(oid)
 		case GIT_OBJ_BLOB.value:
-			self = .Blob(oid)
+			self = Blob(oid)
 		case GIT_OBJ_TAG.value:
-			self = .Tag(oid)
+			self = Tag(oid)
 		default:
 			return nil
 		}
@@ -53,13 +53,13 @@ extension Object: Hashable {
 extension Object: Printable {
 	public var description: String {
 		switch self {
-		case .Commit:
+		case Commit:
 			return "commit(\(oid))"
-		case .Tree:
+		case Tree:
 			return "tree(\(oid))"
-		case .Blob:
+		case Blob:
 			return "blob(\(oid))"
-		case .Tag:
+		case Tag:
 			return "tag(\(oid))"
 		}
 	}
