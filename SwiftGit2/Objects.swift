@@ -15,20 +15,20 @@ public enum Object {
 	case Blob(OID)
 	case Tag(OID)
 	
-    var oid: OID {
-        switch self {
-        case let .Commit(oid):
-            return oid
-        case let .Tree(oid):
-            return oid
-        case let .Blob(oid):
-            return oid
-        case let .Tag(oid):
-            return oid
-        }
-    }
-    
-    init?(oid: OID, type: git_otype) {
+	var oid: OID {
+		switch self {
+		case let .Commit(oid):
+			return oid
+		case let .Tree(oid):
+			return oid
+		case let .Blob(oid):
+			return oid
+		case let .Tag(oid):
+			return oid
+		}
+	}
+	
+	init?(oid: OID, type: git_otype) {
 		switch type.value {
 		case GIT_OBJ_COMMIT.value:
 			self = .Commit(oid)
@@ -40,14 +40,14 @@ public enum Object {
 			self = .Tag(oid)
 		default:
 			return nil
-        }
-    }
+		}
+	}
 }
 
 extension Object: Hashable {
-    public var hashValue: Int {
-        return oid.hashValue
-    }
+	public var hashValue: Int {
+		return oid.hashValue
+	}
 }
 
 extension Object: Printable {
@@ -174,7 +174,7 @@ public struct Tree: ObjectType {
 		
 		/// Create an instance with a libgit2 `git_tree_entry`.
 		public init(_ pointer: COpaquePointer) {
-            let oid = OID(git_tree_entry_id(pointer).memory)
+			let oid = OID(git_tree_entry_id(pointer).memory)
 			attributes = Int32(git_tree_entry_filemode(pointer).value)
 			object = Object(oid: oid, type: git_tree_entry_type(pointer))!
 			name = String.fromCString(git_tree_entry_name(pointer))!
@@ -276,7 +276,7 @@ public struct Tag: ObjectType {
 	public init(_ pointer: COpaquePointer) {
 		oid = OID(git_object_id(pointer).memory)
 		let targetOID = OID(git_tag_target_id(pointer).memory)
-        target = Object(oid: targetOID, type: git_tag_target_type(pointer))!
+		target = Object(oid: targetOID, type: git_tag_target_type(pointer))!
 		name = String.fromCString(git_tag_name(pointer))!
 		tagger = Signature(git_tag_tagger(pointer).memory)
 		message = String.fromCString(git_tag_message(pointer))!

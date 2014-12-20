@@ -175,7 +175,7 @@ class TreeEntrySpec: QuickSpec {
 				let object = Object.Blob(OID(string: "41078396f5187daed5f673e4a13b185bbad71fba")!)
 				let name = "README.md"
 				
-                let entry = Tree.Entry(attributes: attributes, object: object, name: name)
+				let entry = Tree.Entry(attributes: attributes, object: object, name: name)
 				expect(entry.attributes).to(equal(attributes))
 				expect(entry.object).to(equal(object))
 				expect(entry.name).to(equal(name))
