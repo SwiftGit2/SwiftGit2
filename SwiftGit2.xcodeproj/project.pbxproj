@@ -149,6 +149,7 @@
 				BEB31F241A0D6F7A00F525B9 /* Products */,
 			);
 			sourceTree = "<group>";
+			usesTabs = 1;
 		};
 		BEB31F241A0D6F7A00F525B9 /* Products */ = {
 			isa = PBXGroup;
