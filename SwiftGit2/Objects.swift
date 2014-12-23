@@ -9,13 +9,26 @@
 import Foundation
 
 /// A pointer to a git object.
-public enum Pointer {
+public protocol PointerType: Equatable, Hashable {
+	/// The OID of the referenced object.
+	var oid: OID { get }
+	
+	/// The libgit2 `git_otype` of the referenced object.
+	var type: git_otype { get }
+}
+
+public func == <P: PointerType>(lhs: P, rhs: P) -> Bool {
+	return lhs.oid == rhs.oid && lhs.type.value == rhs.type.value
+}
+
+/// A pointer to a git object.
+public enum Pointer: PointerType {
 	case Commit(OID)
 	case Tree(OID)
 	case Blob(OID)
 	case Tag(OID)
 	
-	var oid: OID {
+	public var oid: OID {
 		switch self {
 		case let Commit(oid):
 			return oid
@@ -28,6 +41,20 @@ public enum Pointer {
 		}
 	}
 	
+	public var type: git_otype {
+		switch self {
+		case let Commit(oid):
+			return GIT_OBJ_COMMIT
+		case let Tree(oid):
+			return GIT_OBJ_TREE
+		case let Blob(oid):
+			return GIT_OBJ_BLOB
+		case let Tag(oid):
+			return GIT_OBJ_TAG
+		}
+	}
+	
+	/// Create an instance with an OID and a libgit2 `git_otype`.
 	init?(oid: OID, type: git_otype) {
 		switch type.value {
 		case GIT_OBJ_COMMIT.value:
@@ -62,15 +89,6 @@ extension Pointer: Printable {
 		case Tag:
 			return "tag(\(oid))"
 		}
-	}
-}
-
-public func == (lhs: Pointer, rhs: Pointer) -> Bool {
-	switch (lhs, rhs) {
-	case (.Commit, .Commit), (.Tree, .Tree), (.Blob, .Blob), (.Tag, .Tag):
-		return lhs.oid == rhs.oid
-	default:
-		return false
 	}
 }
 
