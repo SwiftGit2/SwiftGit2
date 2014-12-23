@@ -7,75 +7,72 @@
 //
 
 import Foundation
+import LlamaKit
 
-/// A pointer to a git object.
-public enum Pointer {
-	case Commit(OID)
-	case Tree(OID)
-	case Blob(OID)
-	case Tag(OID)
-	
-	var oid: OID {
-		switch self {
-		case let Commit(oid):
-			return oid
-		case let Tree(oid):
-			return oid
-		case let Blob(oid):
-			return oid
-		case let Tag(oid):
-			return oid
-		}
-	}
-	
-	init?(oid: OID, type: git_otype) {
-		switch type.value {
-		case GIT_OBJ_COMMIT.value:
-			self = Commit(oid)
-		case GIT_OBJ_TREE.value:
-			self = Tree(oid)
-		case GIT_OBJ_BLOB.value:
-			self = Blob(oid)
-		case GIT_OBJ_TAG.value:
-			self = Tag(oid)
-		default:
-			return nil
-		}
-	}
+public protocol PointerType: Equatable, Hashable {
+	var oid: OID { get }
+
+	func loadFromRepository<T: ObjectType>(repository: Repository) -> Result<T>
 }
 
-extension Pointer: Hashable {
+public struct ObjectPointer: PointerType {
+	public let oid: OID
+	public let type: git_otype
+
 	public var hashValue: Int {
 		return oid.hashValue
 	}
+
+	public init(oid: OID, type: git_otype) {
+		self.oid = oid
+		self.type = type
+	}
+
+	public func loadFromRepository<T: ObjectType>(repository: Repository) -> Result<T> {
+		return failure()
+	}
 }
 
-extension Pointer: Printable {
-	public var description: String {
-		switch self {
-		case Commit:
-			return "commit(\(oid))"
-		case Tree:
-			return "tree(\(oid))"
-		case Blob:
-			return "blob(\(oid))"
-		case Tag:
-			return "tag(\(oid))"
+public func == (lhs: ObjectPointer, rhs: ObjectPointer) -> Bool {
+	return lhs.oid == rhs.oid && lhs.type.value == rhs.type.value
+}
+
+public struct PointerOf<T: ObjectType>: PointerType {
+	public let oid: OID
+
+	public var objectPointer: ObjectPointer {
+		return ObjectPointer(oid: self.oid, type: T.otype)
+	}
+
+	public var hashValue: Int {
+		return oid.hashValue
+	}
+
+	public init(_ oid: OID) {
+		self.oid = oid
+	}
+
+	public init?(_ objectPointer: ObjectPointer) {
+		if objectPointer.type.value != T.otype.value {
+			return nil
 		}
+
+		self.init(objectPointer.oid)
+	}
+
+	public func loadFromRepository<T: ObjectType>(repository: Repository) -> Result<T> {
+		return objectPointer.loadFromRepository(repository)
 	}
 }
 
-public func == (lhs: Pointer, rhs: Pointer) -> Bool {
-	switch (lhs, rhs) {
-	case (.Commit, .Commit), (.Tree, .Tree), (.Blob, .Blob), (.Tag, .Tag):
-		return lhs.oid == rhs.oid
-	default:
-		return false
-	}
+public func == <T: ObjectType>(lhs: PointerOf<T>, rhs: PointerOf<T>) -> Bool {
+	return lhs.oid == rhs.oid
 }
 
 /// A git object.
 public protocol ObjectType {
+	class var otype: git_otype { get }
+
 	/// The OID of the object.
 	var oid: OID { get }
 }
@@ -87,16 +84,16 @@ public func == <O: ObjectType>(lhs: O, rhs: O) -> Bool {
 public struct Signature {
 	/// The name of the person.
 	public let name: String
-	
+
 	/// The email of the person.
 	public let email: String
-	
+
 	/// The time when the action happened.
 	public let time: NSDate
-	
+
 	/// The time zone that `time` should be interpreted relative to.
 	public let timeZone: NSTimeZone
-	
+
 	/// Create an instance with a libgit2 `git_signature`.
 	public init(_ signature: git_signature) {
 		name = String.fromCString(signature.name)!
@@ -121,24 +118,26 @@ public func == (lhs: Signature, rhs: Signature) -> Bool {
 
 /// A git commit.
 public struct Commit: ObjectType {
+	public static let otype = GIT_OBJ_COMMIT
+
 	/// The OID of the commit.
 	public let oid: OID
-	
+
 	/// The OID of the commit's tree.
 	public let tree: OID
-	
+
 	/// The OIDs of the commit's parents.
 	public let parents: [OID]
-	
+
 	/// The author of the commit.
 	public let author: Signature
-	
+
 	/// The committer of the commit.
 	public let committer: Signature
-	
+
 	/// The full message of the commit.
 	public let message: String
-	
+
 	/// Create an instance with a libgit2 `git_commit` object.
 	public init(_ pointer: COpaquePointer) {
 		oid = OID(git_object_id(pointer).memory)
@@ -146,7 +145,7 @@ public struct Commit: ObjectType {
 		author = Signature(git_commit_author(pointer).memory)
 		committer = Signature(git_commit_committer(pointer).memory)
 		tree = OID(git_commit_tree_id(pointer).memory)
-		
+
 		self.parents = map(0..<git_commit_parentcount(pointer)) {
 			return OID(git_commit_parent_id(pointer, $0).memory)
 		}
@@ -161,27 +160,29 @@ extension Commit: Hashable {
 
 /// A git tree.
 public struct Tree: ObjectType {
+	public static let otype = GIT_OBJ_TREE
+
 	/// An entry in a `Tree`.
 	public struct Entry {
 		/// The entry's UNIX file attributes.
 		public let attributes: Int32
-		
+
 		/// The object pointed to by the entry.
-		public let object: Pointer
-		
+		public let object: ObjectPointer
+
 		/// The file name of the entry.
 		public let name: String
-		
+
 		/// Create an instance with a libgit2 `git_tree_entry`.
 		public init(_ pointer: COpaquePointer) {
 			let oid = OID(git_tree_entry_id(pointer).memory)
 			attributes = Int32(git_tree_entry_filemode(pointer).value)
-			object = Pointer(oid: oid, type: git_tree_entry_type(pointer))!
+			object = ObjectPointer(oid: oid, type: git_tree_entry_type(pointer))
 			name = String.fromCString(git_tree_entry_name(pointer))!
 		}
-		
+
 		/// Create an instance with the individual values.
-		public init(attributes: Int32, object: Pointer, name: String) {
+		public init(attributes: Int32, object: ObjectPointer, name: String) {
 			self.attributes = attributes
 			self.object = object
 			self.name = name
@@ -190,14 +191,14 @@ public struct Tree: ObjectType {
 
 	/// The OID of the tree.
 	public let oid: OID
-	
+
 	/// The entries in the tree.
 	public let entries: [String: Entry]
-	
+
 	/// Create an instance with a libgit2 `git_tree`.
 	public init(_ pointer: COpaquePointer) {
 		oid = OID(git_object_id(pointer).memory)
-		
+
 		var entries: [String: Entry] = [:]
 		for idx in 0..<git_tree_entrycount(pointer) {
 			let entry = Entry(git_tree_entry_byindex(pointer, idx))
@@ -233,16 +234,18 @@ extension Tree: Hashable {
 
 /// A git blob.
 public struct Blob: ObjectType {
+	public static let otype = GIT_OBJ_BLOB
+
 	/// The OID of the blob.
 	public let oid: OID
-	
+
 	/// The contents of the blob.
 	public let data: NSData
-	
+
 	/// Create an instance with a libgit2 `git_blob`.
 	public init(_ pointer: COpaquePointer) {
 		oid = OID(git_object_id(pointer).memory)
-		
+
 		// Swift doesn't get the types right without `Int(Int64(...))` :(
 		let length = Int(Int64(git_blob_rawsize(pointer).value))
 		data = NSData(bytes: git_blob_rawcontent(pointer), length: length)
@@ -257,26 +260,28 @@ extension Blob: Hashable {
 
 /// An annotated git tag.
 public struct Tag: ObjectType {
+	public static let otype = GIT_OBJ_TAG
+
 	/// The OID of the tag.
 	public let oid: OID
-	
+
 	/// The tagged object.
-	public let target: Pointer
-	
+	public let target: ObjectPointer
+
 	/// The name of the tag.
 	public let name: String
-	
+
 	/// The tagger (author) of the tag.
 	public let tagger: Signature
-	
+
 	/// The message of the tag.
 	public let message: String
-	
+
 	/// Create an instance with a libgit2 `git_tag`.
 	public init(_ pointer: COpaquePointer) {
 		oid = OID(git_object_id(pointer).memory)
 		let targetOID = OID(git_tag_target_id(pointer).memory)
-		target = Pointer(oid: targetOID, type: git_tag_target_type(pointer))!
+		target = ObjectPointer(oid: targetOID, type: git_tag_target_type(pointer))
 		name = String.fromCString(git_tag_name(pointer))!
 		tagger = Signature(git_tag_tagger(pointer).memory)
 		message = String.fromCString(git_tag_message(pointer))!
