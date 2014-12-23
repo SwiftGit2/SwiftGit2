@@ -8,8 +8,8 @@
 
 import Foundation
 
-/// The types of git objects.
-public enum Object {
+/// A pointer to a git object.
+public enum Pointer {
 	case Commit(OID)
 	case Tree(OID)
 	case Blob(OID)
@@ -44,13 +44,13 @@ public enum Object {
 	}
 }
 
-extension Object: Hashable {
+extension Pointer: Hashable {
 	public var hashValue: Int {
 		return oid.hashValue
 	}
 }
 
-extension Object: Printable {
+extension Pointer: Printable {
 	public var description: String {
 		switch self {
 		case Commit:
@@ -65,7 +65,7 @@ extension Object: Printable {
 	}
 }
 
-public func == (lhs: Object, rhs: Object) -> Bool {
+public func == (lhs: Pointer, rhs: Pointer) -> Bool {
 	switch (lhs, rhs) {
 	case (.Commit, .Commit), (.Tree, .Tree), (.Blob, .Blob), (.Tag, .Tag):
 		return lhs.oid == rhs.oid
@@ -167,7 +167,7 @@ public struct Tree: ObjectType {
 		public let attributes: Int32
 		
 		/// The object pointed to by the entry.
-		public let object: Object
+		public let object: Pointer
 		
 		/// The file name of the entry.
 		public let name: String
@@ -176,12 +176,12 @@ public struct Tree: ObjectType {
 		public init(_ pointer: COpaquePointer) {
 			let oid = OID(git_tree_entry_id(pointer).memory)
 			attributes = Int32(git_tree_entry_filemode(pointer).value)
-			object = Object(oid: oid, type: git_tree_entry_type(pointer))!
+			object = Pointer(oid: oid, type: git_tree_entry_type(pointer))!
 			name = String.fromCString(git_tree_entry_name(pointer))!
 		}
 		
 		/// Create an instance with the individual values.
-		public init(attributes: Int32, object: Object, name: String) {
+		public init(attributes: Int32, object: Pointer, name: String) {
 			self.attributes = attributes
 			self.object = object
 			self.name = name
@@ -261,7 +261,7 @@ public struct Tag: ObjectType {
 	public let oid: OID
 	
 	/// The tagged object.
-	public let target: Object
+	public let target: Pointer
 	
 	/// The name of the tag.
 	public let name: String
@@ -276,7 +276,7 @@ public struct Tag: ObjectType {
 	public init(_ pointer: COpaquePointer) {
 		oid = OID(git_object_id(pointer).memory)
 		let targetOID = OID(git_tag_target_id(pointer).memory)
-		target = Object(oid: targetOID, type: git_tag_target_type(pointer))!
+		target = Pointer(oid: targetOID, type: git_tag_target_type(pointer))!
 		name = String.fromCString(git_tag_name(pointer))!
 		tagger = Signature(git_tag_tagger(pointer).memory)
 		message = String.fromCString(git_tag_message(pointer))!
