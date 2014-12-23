@@ -93,3 +93,21 @@ extension Pointer: Printable {
 		}
 	}
 }
+
+public struct PointerTo<T: ObjectType>: PointerType {
+	public let oid: OID
+	
+	public var type: git_otype {
+		return T.type
+	}
+
+	public init(_ oid: OID) {
+		self.oid = oid
+	}
+}
+
+extension PointerTo: Hashable {
+	public var hashValue: Int {
+		return oid.hashValue
+	}
+}
