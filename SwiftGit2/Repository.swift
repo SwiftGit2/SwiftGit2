@@ -128,4 +128,22 @@ final public class Repository {
 	public func objectFromPointer<T>(pointer: PointerTo<T>) -> Result<T> {
 		return self.withLibgit2Object(pointer.oid, type: pointer.type) { T($0) }
 	}
+	
+	/// Loads the referenced object from the pointer.
+	///
+	/// pointer - A pointer to an object.
+	///
+	/// Returns the object if it exists, or an error.
+	public func objectFromPointer(pointer: Pointer) -> Result<ObjectType> {
+		switch pointer {
+		case let .Blob(oid):
+			return blobWithOID(oid).map { $0 as ObjectType }
+		case let .Commit(oid):
+			return commitWithOID(oid).map { $0 as ObjectType }
+		case let .Tag(oid):
+			return tagWithOID(oid).map { $0 as ObjectType }
+		case let .Tree(oid):
+			return treeWithOID(oid).map { $0 as ObjectType }
+		}
+	}
 }

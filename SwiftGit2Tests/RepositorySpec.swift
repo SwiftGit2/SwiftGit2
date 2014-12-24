@@ -143,7 +143,7 @@ class RepositorySpec: QuickSpec {
 			}
 		}
 		
-		describe("-objectFromPointer()") {
+		describe("-objectFromPointer(PointerTo)") {
 			it("should work with commits") {
 				let repo = Fixtures.simpleRepository
 				let oid = OID(string: "dc220a3f0c22920dab86d4a8d3a3cb7e69d6205a")!
@@ -178,6 +178,48 @@ class RepositorySpec: QuickSpec {
 				let pointer = PointerTo<Tag>(oid)
 				let tag = repo.tagWithOID(oid).value()!
 				expect(repo.objectFromPointer(pointer).value()).to(equal(tag))
+			}
+		}
+		
+		describe("-objectFromPointer(Pointer)") {
+			it("should work with commits") {
+				let repo = Fixtures.simpleRepository
+				let oid = OID(string: "dc220a3f0c22920dab86d4a8d3a3cb7e69d6205a")!
+				
+				let pointer = Pointer.Commit(oid)
+				let commit = repo.commitWithOID(oid).value()!
+				let result = repo.objectFromPointer(pointer).map { $0 as Commit }.value()
+				expect(result).to(equal(commit))
+			}
+			
+			it("should work with trees") {
+				let repo = Fixtures.simpleRepository
+				let oid = OID(string: "f93e3a1a1525fb5b91020da86e44810c87a2d7bc")!
+				
+				let pointer = Pointer.Tree(oid)
+				let tree = repo.treeWithOID(oid).value()!
+				let result = repo.objectFromPointer(pointer).map { $0 as Tree }.value()
+				expect(result).to(equal(tree))
+			}
+			
+			it("should work with blobs") {
+				let repo = Fixtures.simpleRepository
+				let oid = OID(string: "41078396f5187daed5f673e4a13b185bbad71fba")!
+				
+				let pointer = Pointer.Blob(oid)
+				let blob = repo.blobWithOID(oid).value()!
+				let result = repo.objectFromPointer(pointer).map { $0 as Blob }.value()
+				expect(result).to(equal(blob))
+			}
+			
+			it("should work with tags") {
+				let repo = Fixtures.simpleRepository
+				let oid = OID(string: "57943b8ee00348180ceeedc960451562750f6d33")!
+				
+				let pointer = Pointer.Tag(oid)
+				let tag = repo.tagWithOID(oid).value()!
+				let result = repo.objectFromPointer(pointer).map { $0 as Tag }.value()
+				expect(result).to(equal(tag))
 			}
 		}
 	}
