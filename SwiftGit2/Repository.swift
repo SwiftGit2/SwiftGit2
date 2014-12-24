@@ -119,4 +119,13 @@ final public class Repository {
 	public func treeWithOID(oid: OID) -> Result<Tree> {
 		return self.withLibgit2Object(oid, type: GIT_OBJ_TREE) { Tree($0) }
 	}
+	
+	/// Loads the referenced object from the pointer.
+	///
+	/// pointer - A pointer to an object.
+	///
+	/// Returns the object if it exists, or an error.
+	public func objectFromPointer<T>(pointer: PointerTo<T>) -> Result<T> {
+		return self.withLibgit2Object(pointer.oid, type: pointer.type) { T($0) }
+	}
 }

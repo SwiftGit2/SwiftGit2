@@ -14,6 +14,9 @@ public protocol ObjectType {
 	
 	/// The OID of the object.
 	var oid: OID { get }
+	
+	/// Create an instance with the underlying libgit2 type.
+	init(_ pointer: COpaquePointer)
 }
 
 public func == <O: ObjectType>(lhs: O, rhs: O) -> Bool {
