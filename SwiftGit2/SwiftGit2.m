@@ -11,5 +11,5 @@
 
 __attribute__((constructor))
 static void SwiftGit2Init(void) {
-	git_threads_init();
+	git_libgit2_init();
 }
