@@ -34,7 +34,7 @@ class OIDSpec: QuickSpec {
 		describe("init(oid:)") {
 			it("should equal an OID with the same git_oid") {
 				let oid = OID(string: "1234567890123456789012345678901234567890")!
-				expect(OID(oid: oid.oid)).to(equal(oid))
+				expect(OID(oid.oid)).to(equal(oid))
 			}
 		}
 		

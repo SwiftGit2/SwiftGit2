@@ -36,7 +36,7 @@ public struct OID {
 	}
 	
 	/// Create an instance from a libgit2 `git_oid`.
-	public init(oid: git_oid) {
+	public init(_ oid: git_oid) {
 		self.oid = oid
 	}
 	
