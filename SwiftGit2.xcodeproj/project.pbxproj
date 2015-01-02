@@ -28,6 +28,8 @@
 		BEB31F811A0D79F300F525B9 /* Nimble.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BEB31F801A0D79F300F525B9 /* Nimble.framework */; };
 		BEB31F9E1A0E595100F525B9 /* libiconv.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = BEB31F9D1A0E595100F525B9 /* libiconv.dylib */; };
 		BEB31FA01A0E595600F525B9 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = BEB31F9F1A0E595600F525B9 /* libz.dylib */; };
+		BECB5F6A1A56F19900999413 /* References.swift in Sources */ = {isa = PBXBuildFile; fileRef = BECB5F691A56F19900999413 /* References.swift */; };
+		BECB5F6C1A56F1B400999413 /* ReferencesSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = BECB5F6B1A56F1B400999413 /* ReferencesSpec.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -105,6 +107,8 @@
 		BEB31F9B1A0E581400F525B9 /* git2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = git2.h; path = External/libgit2/include/git2.h; sourceTree = "<group>"; };
 		BEB31F9D1A0E595100F525B9 /* libiconv.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libiconv.dylib; path = usr/lib/libiconv.dylib; sourceTree = SDKROOT; };
 		BEB31F9F1A0E595600F525B9 /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
+		BECB5F691A56F19900999413 /* References.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = References.swift; sourceTree = "<group>"; };
+		BECB5F6B1A56F1B400999413 /* ReferencesSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReferencesSpec.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -172,6 +176,7 @@
 				BE70B3E41A1ACB1A002C3F4E /* OID.swift */,
 				BE7A753E1A4A2BCC002DA7E3 /* Pointers.swift */,
 				BEB31F6C1A0D78F300F525B9 /* Repository.swift */,
+				BECB5F691A56F19900999413 /* References.swift */,
 				BEB31F261A0D6F7A00F525B9 /* Supporting Files */,
 			);
 			path = SwiftGit2;
@@ -193,6 +198,7 @@
 				BE70B3E61A1ACB37002C3F4E /* OIDSpec.swift */,
 				BE2E3BE71A31262800C67092 /* ObjectsSpec.swift */,
 				BEB31F351A0D6F7A00F525B9 /* RepositorySpec.swift */,
+				BECB5F6B1A56F1B400999413 /* ReferencesSpec.swift */,
 				BE14AA581A1996B70015B439 /* FixturesSpec.swift */,
 				BEB31F331A0D6F7A00F525B9 /* Supporting Files */,
 			);
@@ -444,6 +450,7 @@
 				BE70B3E51A1ACB1A002C3F4E /* OID.swift in Sources */,
 				BEB31F6D1A0D78F300F525B9 /* Repository.swift in Sources */,
 				BE2E3BE61A31261300C67092 /* Objects.swift in Sources */,
+				BECB5F6A1A56F19900999413 /* References.swift in Sources */,
 				BE7A753F1A4A2BCC002DA7E3 /* Pointers.swift in Sources */,
 				BE14AA501A1974010015B439 /* SwiftGit2.m in Sources */,
 			);
@@ -457,6 +464,7 @@
 				BE2E3BE81A31262800C67092 /* ObjectsSpec.swift in Sources */,
 				BE14AA591A1996B70015B439 /* FixturesSpec.swift in Sources */,
 				BE14AA551A1984550015B439 /* Fixtures.swift in Sources */,
+				BECB5F6C1A56F1B400999413 /* ReferencesSpec.swift in Sources */,
 				BE70B3E71A1ACB37002C3F4E /* OIDSpec.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
