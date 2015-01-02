@@ -30,6 +30,8 @@
 		BEB31FA01A0E595600F525B9 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = BEB31F9F1A0E595600F525B9 /* libz.dylib */; };
 		BECB5F6A1A56F19900999413 /* References.swift in Sources */ = {isa = PBXBuildFile; fileRef = BECB5F691A56F19900999413 /* References.swift */; };
 		BECB5F6C1A56F1B400999413 /* ReferencesSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = BECB5F6B1A56F1B400999413 /* ReferencesSpec.swift */; };
+		BECB5F6E1A57284700999413 /* Remotes.swift in Sources */ = {isa = PBXBuildFile; fileRef = BECB5F6D1A57284700999413 /* Remotes.swift */; };
+		BECB5F701A57286200999413 /* RemotesSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = BECB5F6F1A57286200999413 /* RemotesSpec.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -109,6 +111,8 @@
 		BEB31F9F1A0E595600F525B9 /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
 		BECB5F691A56F19900999413 /* References.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = References.swift; sourceTree = "<group>"; };
 		BECB5F6B1A56F1B400999413 /* ReferencesSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReferencesSpec.swift; sourceTree = "<group>"; };
+		BECB5F6D1A57284700999413 /* Remotes.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Remotes.swift; sourceTree = "<group>"; };
+		BECB5F6F1A57286200999413 /* RemotesSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RemotesSpec.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -177,6 +181,7 @@
 				BE7A753E1A4A2BCC002DA7E3 /* Pointers.swift */,
 				BEB31F6C1A0D78F300F525B9 /* Repository.swift */,
 				BECB5F691A56F19900999413 /* References.swift */,
+				BECB5F6D1A57284700999413 /* Remotes.swift */,
 				BEB31F261A0D6F7A00F525B9 /* Supporting Files */,
 			);
 			path = SwiftGit2;
@@ -199,6 +204,7 @@
 				BE2E3BE71A31262800C67092 /* ObjectsSpec.swift */,
 				BEB31F351A0D6F7A00F525B9 /* RepositorySpec.swift */,
 				BECB5F6B1A56F1B400999413 /* ReferencesSpec.swift */,
+				BECB5F6F1A57286200999413 /* RemotesSpec.swift */,
 				BE14AA581A1996B70015B439 /* FixturesSpec.swift */,
 				BEB31F331A0D6F7A00F525B9 /* Supporting Files */,
 			);
@@ -448,6 +454,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				BE70B3E51A1ACB1A002C3F4E /* OID.swift in Sources */,
+				BECB5F6E1A57284700999413 /* Remotes.swift in Sources */,
 				BEB31F6D1A0D78F300F525B9 /* Repository.swift in Sources */,
 				BE2E3BE61A31261300C67092 /* Objects.swift in Sources */,
 				BECB5F6A1A56F19900999413 /* References.swift in Sources */,
@@ -462,6 +469,7 @@
 			files = (
 				BEB31F361A0D6F7A00F525B9 /* RepositorySpec.swift in Sources */,
 				BE2E3BE81A31262800C67092 /* ObjectsSpec.swift in Sources */,
+				BECB5F701A57286200999413 /* RemotesSpec.swift in Sources */,
 				BE14AA591A1996B70015B439 /* FixturesSpec.swift in Sources */,
 				BE14AA551A1984550015B439 /* Fixtures.swift in Sources */,
 				BECB5F6C1A56F1B400999413 /* ReferencesSpec.swift in Sources */,
