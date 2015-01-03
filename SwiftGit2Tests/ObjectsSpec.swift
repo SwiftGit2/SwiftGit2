@@ -11,7 +11,7 @@ import SwiftGit2
 import Nimble
 import Quick
 
-func from_git_object<T>(repository: Repository, oid: OID, f: COpaquePointer -> T) -> T{
+func from_git_object<T>(repository: Repository, oid: OID, f: COpaquePointer -> T) -> T {
 	let repository = repository.pointer
 	var oid = oid.oid
 	

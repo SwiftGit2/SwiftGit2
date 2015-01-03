@@ -146,4 +146,55 @@ final public class Repository {
 			return treeWithOID(oid).map { $0 as ObjectType }
 		}
 	}
+	
+	// MARK: - Remote Lookups
+	
+	/// Loads all the remotes in the repository.
+	///
+	/// Returns an array of remotes, or an error.
+	public func allRemotes() -> Result<[Remote]> {
+		let pointer = UnsafeMutablePointer<git_strarray>.alloc(1)
+		let repository = self.pointer
+		let result = git_remote_list(pointer, repository)
+		
+		if result != GIT_OK.value {
+			pointer.dealloc(1)
+			return failure()
+		}
+		
+		let strarray = pointer.memory
+		let remotes: [Result<Remote>] = map(0..<strarray.count) {
+			let idx = Int($0)
+			let name = String.fromCString(strarray.strings[idx])!
+			return self.remoteWithName(name)
+		}
+		pointer.dealloc(1)
+		
+		let error = remotes.reduce(nil) { $0 == nil ? $0 : $1.error() }
+		if let error = error {
+			return failure(error)
+		}
+		return success(remotes.map { $0.value()! })
+	}
+	
+	/// Load a remote from the repository.
+	///
+	/// name - The name of the remote.
+	///
+	/// Returns the remote if it exists, or an error.
+	public func remoteWithName(name: String) -> Result<Remote> {
+		let pointer = UnsafeMutablePointer<COpaquePointer>.alloc(1)
+		let repository = self.pointer
+		let result = git_remote_lookup(pointer, repository, name.cStringUsingEncoding(NSUTF8StringEncoding)!)
+		
+		if result != GIT_OK.value {
+			pointer.dealloc(1)
+			return failure()
+		}
+		
+		let value = Remote(pointer.memory)
+		git_remote_free(pointer.memory)
+		pointer.dealloc(1)
+		return success(value)
+	}
 }

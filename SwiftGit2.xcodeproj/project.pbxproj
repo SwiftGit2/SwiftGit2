@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		BE0991F71A578FB1007D4E6A /* Mantle.zip in Resources */ = {isa = PBXBuildFile; fileRef = BE0991F61A578FB1007D4E6A /* Mantle.zip */; };
 		BE14AA321A15AA510015B439 /* LlamaKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE14AA311A15AA510015B439 /* LlamaKit.framework */; };
 		BE14AA501A1974010015B439 /* SwiftGit2.m in Sources */ = {isa = PBXBuildFile; fileRef = BE14AA4F1A1974010015B439 /* SwiftGit2.m */; };
 		BE14AA551A1984550015B439 /* Fixtures.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE14AA541A1984550015B439 /* Fixtures.swift */; };
@@ -66,6 +67,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		BE0991F61A578FB1007D4E6A /* Mantle.zip */ = {isa = PBXFileReference; lastKnownFileType = archive.zip; path = Mantle.zip; sourceTree = "<group>"; };
 		BE14AA311A15AA510015B439 /* LlamaKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = LlamaKit.framework; path = External/LlamaKit/build/Debug/LlamaKit.framework; sourceTree = "<group>"; };
 		BE14AA4F1A1974010015B439 /* SwiftGit2.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SwiftGit2.m; sourceTree = "<group>"; };
 		BE14AA541A1984550015B439 /* Fixtures.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Fixtures.swift; sourceTree = "<group>"; };
@@ -143,6 +145,7 @@
 			isa = PBXGroup;
 			children = (
 				BE14AA541A1984550015B439 /* Fixtures.swift */,
+				BE0991F61A578FB1007D4E6A /* Mantle.zip */,
 				BE14AA561A198C6E0015B439 /* simple-repository.zip */,
 			);
 			path = Fixtures;
@@ -426,6 +429,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BE0991F71A578FB1007D4E6A /* Mantle.zip in Resources */,
 				BE14AA571A198C6E0015B439 /* simple-repository.zip in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
