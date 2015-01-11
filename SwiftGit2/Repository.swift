@@ -67,7 +67,7 @@ final public class Repository {
 	///
 	/// Returns the result of calling `transform` or an error if the object
 	/// cannot be loaded.
-	func withLibgit2Object<T>(oid: OID, type: git_otype, transform: COpaquePointer -> T) -> Result<T> {
+	func withLibgit2Object<T>(oid: OID, type: git_otype, transform: COpaquePointer -> Result<T>) -> Result<T> {
 		let pointer = UnsafeMutablePointer<COpaquePointer>.alloc(1)
 		let repository = self.pointer
 		var oid = oid.oid
@@ -81,7 +81,31 @@ final public class Repository {
 		let value = transform(pointer.memory)
 		git_object_free(pointer.memory)
 		pointer.dealloc(1)
-		return success(value)
+		return value
+	}
+	func withLibgit2Object<T>(oid: OID, type: git_otype, transform: COpaquePointer -> T) -> Result<T> {
+		return withLibgit2Object(oid, type: type) { success(transform($0)) }
+	}
+	
+	/// Loads the object with the given OID.
+	///
+	/// oid - The OID of the blob to look up.
+	///
+	/// Returns a `Blob`, `Commit`, `Tag`, or `Tree` if one exists, or an error.
+	public func objectWithOID(oid: OID) -> Result<ObjectType> {
+		return withLibgit2Object(oid, type: GIT_OBJ_ANY) { object in
+			let type = git_object_type(object)
+			if type == Blob.type {
+				return success(Blob(object))
+			} else if type == Commit.type {
+				return success(Commit(object))
+			} else if type == Tag.type {
+				return success(Tag(object))
+			} else if type == Tree.type {
+				return success(Tree(object))
+			}
+			return failure()
+		}
 	}
 	
 	/// Loads the blob with the given OID.

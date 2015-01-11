@@ -18,6 +18,7 @@
 		BE244A511A11709E00F8BE42 /* git2 in Copy libgit2 Headers */ = {isa = PBXBuildFile; fileRef = BE244A4F1A11709600F8BE42 /* git2 */; };
 		BE2E3BE61A31261300C67092 /* Objects.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE2E3BE51A31261300C67092 /* Objects.swift */; };
 		BE2E3BE81A31262800C67092 /* ObjectsSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE2E3BE71A31262800C67092 /* ObjectsSpec.swift */; };
+		BE36354C1A632C9700D37EC8 /* Libgit2.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE36354B1A632C9700D37EC8 /* Libgit2.swift */; };
 		BE70B3E51A1ACB1A002C3F4E /* OID.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE70B3E41A1ACB1A002C3F4E /* OID.swift */; };
 		BE70B3E71A1ACB37002C3F4E /* OIDSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE70B3E61A1ACB37002C3F4E /* OIDSpec.swift */; };
 		BE7A753F1A4A2BCC002DA7E3 /* Pointers.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE7A753E1A4A2BCC002DA7E3 /* Pointers.swift */; };
@@ -77,6 +78,7 @@
 		BE244A521A117DA100F8BE42 /* SwiftGit2.modulemap */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = "sourcecode.module-map"; path = SwiftGit2.modulemap; sourceTree = "<group>"; };
 		BE2E3BE51A31261300C67092 /* Objects.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Objects.swift; sourceTree = "<group>"; };
 		BE2E3BE71A31262800C67092 /* ObjectsSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ObjectsSpec.swift; sourceTree = "<group>"; };
+		BE36354B1A632C9700D37EC8 /* Libgit2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Libgit2.swift; sourceTree = "<group>"; };
 		BE70B3E41A1ACB1A002C3F4E /* OID.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OID.swift; sourceTree = "<group>"; };
 		BE70B3E61A1ACB37002C3F4E /* OIDSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OIDSpec.swift; sourceTree = "<group>"; };
 		BE7A753E1A4A2BCC002DA7E3 /* Pointers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Pointers.swift; sourceTree = "<group>"; };
@@ -179,6 +181,7 @@
 			children = (
 				BEB31F281A0D6F7A00F525B9 /* SwiftGit2.h */,
 				BE14AA4F1A1974010015B439 /* SwiftGit2.m */,
+				BE36354B1A632C9700D37EC8 /* Libgit2.swift */,
 				BE2E3BE51A31261300C67092 /* Objects.swift */,
 				BE70B3E41A1ACB1A002C3F4E /* OID.swift */,
 				BE7A753E1A4A2BCC002DA7E3 /* Pointers.swift */,
@@ -462,6 +465,7 @@
 				BEB31F6D1A0D78F300F525B9 /* Repository.swift in Sources */,
 				BE2E3BE61A31261300C67092 /* Objects.swift in Sources */,
 				BECB5F6A1A56F19900999413 /* References.swift in Sources */,
+				BE36354C1A632C9700D37EC8 /* Libgit2.swift in Sources */,
 				BE7A753F1A4A2BCC002DA7E3 /* Pointers.swift in Sources */,
 				BE14AA501A1974010015B439 /* SwiftGit2.m in Sources */,
 			);

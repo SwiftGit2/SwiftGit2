@@ -142,6 +142,51 @@ class RepositorySpec: QuickSpec {
 			}
 		}
 		
+		describe("-objectWithOID()") {
+			it("should work with a blob") {
+				let repo   = Fixtures.simpleRepository
+				let oid    = OID(string: "41078396f5187daed5f673e4a13b185bbad71fba")!
+				let blob   = repo.blobWithOID(oid).value()
+				let result = repo.objectWithOID(oid)
+				expect(result.value()).notTo(beNil())
+				expect(result.value() as Blob?).to(equal(blob))
+			}
+			
+			it("should work with a commit") {
+				let repo   = Fixtures.simpleRepository
+				let oid    = OID(string: "dc220a3f0c22920dab86d4a8d3a3cb7e69d6205a")!
+				let commit = repo.commitWithOID(oid).value()
+				let result = repo.objectWithOID(oid)
+				expect(result.value()).notTo(beNil())
+				expect(result.value() as Commit?).to(equal(commit))
+			}
+			
+			it("should work with a tag") {
+				let repo   = Fixtures.simpleRepository
+				let oid    = OID(string: "57943b8ee00348180ceeedc960451562750f6d33")!
+				let tag    = repo.tagWithOID(oid).value()
+				let result = repo.objectWithOID(oid)
+				expect(result.value()).notTo(beNil())
+				expect(result.value() as Tag?).to(equal(tag))
+			}
+			
+			it("should work with a tree") {
+				let repo   = Fixtures.simpleRepository
+				let oid    = OID(string: "f93e3a1a1525fb5b91020da86e44810c87a2d7bc")!
+				let tree   = repo.treeWithOID(oid).value()
+				let result = repo.objectWithOID(oid)
+				expect(result.value()).notTo(beNil())
+				expect(result.value() as Tree?).to(equal(tree))
+			}
+			
+			it("should error if there's no object with that oid") {
+				let repo   = Fixtures.simpleRepository
+				let oid    = OID(string: "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")!
+				let result = repo.objectWithOID(oid)
+				expect(result.error()).notTo(beNil())
+			}
+		}
+		
 		describe("-objectFromPointer(PointerTo)") {
 			it("should work with commits") {
 				let repo = Fixtures.simpleRepository
