@@ -85,16 +85,15 @@ class RepositorySpec: QuickSpec {
 		}
 		
 		describe("-tagWithOID()") {
-// This test crashes the swift complier. :'(
-//			it("should return the tag if it exists") {
-//				let repo = Fixtures.simpleRepository
-//				let oid = OID(string: "57943b8ee00348180ceeedc960451562750f6d33")!
-//				
-//				let result = repo.tagWithOID(oid)
-//				let tag = result.value()
-//				expect(tag).notTo(beNil())
-//				expect(tag?.oid).to(equal(oid))
-//			}
+			it("should return the tag if it exists") {
+				let repo = Fixtures.simpleRepository
+				let oid = OID(string: "57943b8ee00348180ceeedc960451562750f6d33")!
+				
+				let result = repo.tagWithOID(oid)
+				let tag = result.value()
+				expect(tag).notTo(beNil())
+				expect(tag?.oid).to(equal(oid))
+			}
 			
 			it("should error if the tag doesn't exist") {
 				let repo = Fixtures.simpleRepository
