@@ -58,4 +58,48 @@ public struct Branch: ReferenceType {
 	public var oid: OID { return commit.oid }
 }
 
+/// A git tag reference, which can be either a lightweight tag or a Tag object.
+public enum TagReference: ReferenceType {
+	/// A lightweight tag, which is just a name and an OID.
+	case Lightweight(String, OID)
+	
+	/// An annotated tag, which points to a Tag object.
+	case Annotated(String, Tag)
+	
+	/// The full name of the reference (e.g., `refs/tags/my-tag`).
+	public var longName: String {
+		switch self {
+		case let .Lightweight(name, _):
+			return name
+		case let .Annotated(name, _):
+			return name
+		}
+	}
+	
+	/// The short human-readable name of the branch (e.g., `master`).
+	public var name: String {
+		return longName.substringFromIndex("refs/tags/".endIndex)
+	}
+	
+	/// The OID of the target object.
+	///
+	/// If this is an annotated tag, the OID will be the tag's target.
+	public var oid: OID {
+		switch self {
+		case let .Lightweight(_, oid):
+			return oid
+		case let .Annotated(_, tag):
+			return tag.target.oid
+		}
+	}
+	
+	// MARK: Derived Properties
+	
+	/// The short human-readable name of the branch (e.g., `master`).
+	///
+	/// This is the same as `name`, but is declared with an Optional type to adhere to
+	/// `ReferenceType`.
+	public var shortName: String? { return name }
+}
+
 
