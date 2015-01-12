@@ -189,8 +189,7 @@ final public class Repository {
 		
 		let strarray = pointer.memory
 		let remotes: [Result<Remote>] = map(0..<strarray.count) {
-			let idx = Int($0)
-			let name = String.fromCString(strarray.strings[idx])!
+			let name = String.fromCString(strarray.strings[Int($0)])!
 			return self.remoteWithName(name)
 		}
 		pointer.dealloc(1)
