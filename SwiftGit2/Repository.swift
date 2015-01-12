@@ -83,6 +83,7 @@ final public class Repository {
 		pointer.dealloc(1)
 		return value
 	}
+	
 	func withLibgit2Object<T>(oid: OID, type: git_otype, transform: COpaquePointer -> T) -> Result<T> {
 		return withLibgit2Object(oid, type: type) { success(transform($0)) }
 	}
