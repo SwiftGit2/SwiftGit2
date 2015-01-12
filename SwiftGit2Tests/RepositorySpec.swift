@@ -276,24 +276,24 @@ class RepositorySpec: QuickSpec {
 			
 			it("should return all the remotes") {
 				let repo = Fixtures.mantleRepository
-                let remotes = repo.allRemotes().value()
-                let names = remotes?.map { $0.name }
-                expect(remotes?.count).to(equal(2))
-                expect(names).to(contain("origin", "upstream"))
+				let remotes = repo.allRemotes().value()
+				let names = remotes?.map { $0.name }
+				expect(remotes?.count).to(equal(2))
+				expect(names).to(contain("origin", "upstream"))
 			}
 		}
 		
 		describe("-remoteWithName()") {
 			it("should return the remote if it exists") {
 				let repo = Fixtures.mantleRepository
-                let result = repo.remoteWithName("upstream")
-                expect(result.value()?.name).to(equal("upstream"))
+				let result = repo.remoteWithName("upstream")
+				expect(result.value()?.name).to(equal("upstream"))
 			}
 			
 			it("should error if the remote doesn't exist") {
 				let repo = Fixtures.simpleRepository
-                let result = repo.remoteWithName("nonexistent")
-                expect(result.error()).notTo(beNil())
+				let result = repo.remoteWithName("nonexistent")
+				expect(result.error()).notTo(beNil())
 			}
 		}
 	}
