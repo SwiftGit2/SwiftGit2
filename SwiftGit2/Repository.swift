@@ -221,4 +221,34 @@ final public class Repository {
 		pointer.dealloc(1)
 		return success(value)
 	}
+	
+	// MARK: - Reference Lookups
+	
+	public func referenceWithName(name: String) -> Result<Reference> {
+		return failure()
+	}
+	
+	public func allBranches() -> Result<[Branch]> {
+		return failure()
+	}
+	
+	public func localBranches() -> Result<[Branch]> {
+		return failure()
+	}
+	
+	public func remoteBranches() -> Result<[Branch]> {
+		return failure()
+	}
+	
+	public func branchWithName(name: String) -> Result<Branch> {
+		return failure()
+	}
+	
+	public func allTags() -> Result<[TagReference]> {
+		return failure()
+	}
+	
+	public func tagWithName(name: String) -> Result<TagReference> {
+		return failure()
+	}
 }
