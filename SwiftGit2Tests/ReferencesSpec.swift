@@ -10,3 +10,29 @@ import LlamaKit
 import SwiftGit2
 import Nimble
 import Quick
+
+func from_git_reference<T>(repository: Repository, name: String, f: COpaquePointer -> T) -> T {
+	let repository = repository.pointer
+	
+	let pointer = UnsafeMutablePointer<COpaquePointer>.alloc(1)
+	git_reference_lookup(pointer, repository, name.cStringUsingEncoding(NSUTF8StringEncoding)!)
+	let result = f(pointer.memory)
+	git_object_free(pointer.memory)
+	pointer.dealloc(1)
+	
+	return result
+}
+
+class ReferenceSpec: QuickSpec {
+	override func spec() {
+		describe("init()") {
+			it("should initialize its properties") {
+				let repo = Fixtures.simpleRepository
+				let ref = from_git_reference(repo, "refs/heads/master") { Reference($0) }
+				expect(ref.longName).to(equal("refs/heads/master"))
+				expect(ref.shortName).to(equal("master"))
+				expect(ref.oid).to(equal(OID(string: "c4ed03a6b7d7ce837d31d83757febbe84dd465fd")!))
+			}
+		}
+	}
+}

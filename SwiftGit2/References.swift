@@ -28,6 +28,14 @@ public struct Reference: ReferenceType {
 	
 	/// The OID of the referenced object.
 	public let oid: OID
+	
+	/// Create an instance with a libgit2 `git_reference` object.
+	public init(_ pointer: COpaquePointer) {
+		let shorthand = String.fromCString(git_reference_shorthand(pointer))!
+		longName = String.fromCString(git_reference_name(pointer))!
+		shortName = (shorthand == longName ? nil : shorthand)
+		oid = OID(git_reference_target(pointer).memory)
+	}
 }
 
 /// A git branch.
