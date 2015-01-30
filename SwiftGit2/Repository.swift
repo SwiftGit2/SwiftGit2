@@ -225,7 +225,19 @@ final public class Repository {
 	// MARK: - Reference Lookups
 	
 	public func referenceWithName(name: String) -> Result<Reference> {
-		return failure()
+		let pointer = UnsafeMutablePointer<COpaquePointer>.alloc(1)
+		let repository = self.pointer
+		let result = git_reference_lookup(pointer, repository, name.cStringUsingEncoding(NSUTF8StringEncoding)!)
+		
+		if result != GIT_OK.value {
+			pointer.dealloc(1)
+			return failure()
+		}
+		
+		let value = Reference(pointer.memory)
+		git_reference_free(pointer.memory)
+		pointer.dealloc(1)
+		return success(value)
 	}
 	
 	public func allBranches() -> Result<[Branch]> {

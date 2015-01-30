@@ -296,5 +296,18 @@ class RepositorySpec: QuickSpec {
 				expect(result.error()).notTo(beNil())
 			}
 		}
+		
+		describe("-referenceWithName()") {
+			it("should return the reference if it exists") {
+				let name = "refs/heads/another-branch"
+				let result = Fixtures.simpleRepository.referenceWithName(name)
+				expect(result.value()?.longName).to(equal(name))
+			}
+			
+			it("should error if the reference doesn't exist") {
+				let result = Fixtures.simpleRepository.referenceWithName("refs/heads/nonexistent")
+				expect(result.error()).notTo(beNil())
+			}
+		}
 	}
 }
