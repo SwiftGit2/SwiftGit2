@@ -38,6 +38,17 @@ public struct Reference: ReferenceType {
 	}
 }
 
+extension Reference: Hashable {
+	public var hashValue: Int {
+		return longName.hashValue ^ oid.hashValue
+	}
+}
+
+public func == (lhs: Reference, rhs: Reference) -> Bool {
+	return lhs.longName == rhs.longName
+		&& lhs.oid == rhs.oid
+}
+
 /// A git branch.
 public struct Branch: ReferenceType {
 	/// The full name of the reference (e.g., `refs/heads/master`).

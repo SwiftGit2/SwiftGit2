@@ -34,5 +34,30 @@ class ReferenceSpec: QuickSpec {
 				expect(ref.oid).to(equal(OID(string: "c4ed03a6b7d7ce837d31d83757febbe84dd465fd")!))
 			}
 		}
+		
+		describe("==") {
+			it("should be true with equal references") {
+				let repo = Fixtures.simpleRepository
+				let ref1 = from_git_reference(repo, "refs/heads/master") { Reference($0) }
+				let ref2 = from_git_reference(repo, "refs/heads/master") { Reference($0) }
+				expect(ref1).to(equal(ref2))
+			}
+			
+			it("should be false with unequal references") {
+				let repo = Fixtures.simpleRepository
+				let ref1 = from_git_reference(repo, "refs/heads/master") { Reference($0) }
+				let ref2 = from_git_reference(repo, "refs/heads/another-branch") { Reference($0) }
+				expect(ref1).notTo(equal(ref2))
+			}
+		}
+
+		describe("hashValue") {
+			it("should be equal with equal references") {
+				let repo = Fixtures.simpleRepository
+				let ref1 = from_git_reference(repo, "refs/heads/master") { Reference($0) }
+				let ref2 = from_git_reference(repo, "refs/heads/master") { Reference($0) }
+				expect(ref1.hashValue).to(equal(ref2.hashValue))
+			}
+		}
 	}
 }
