@@ -309,5 +309,17 @@ class RepositorySpec: QuickSpec {
 				expect(result.error()).notTo(beNil())
 			}
 		}
+		
+		describe("-localBranchWithName()") {
+			it("should return the branch if it exists") {
+				let result = Fixtures.simpleRepository.localBranchWithName("master")
+				expect(result.value()?.longName).to(equal("refs/heads/master"))
+			}
+			
+			it("should error if the branch doesn't exists") {
+				let result = Fixtures.simpleRepository.localBranchWithName("nonexistent")
+				expect(result.error()).notTo(beNil())
+			}
+		}
 	}
 }

@@ -252,8 +252,20 @@ final public class Repository {
 		return failure()
 	}
 	
-	public func branchWithName(name: String) -> Result<Branch> {
-		return failure()
+	public func localBranchWithName(name: String) -> Result<Branch> {
+		let pointer = UnsafeMutablePointer<COpaquePointer>.alloc(1)
+		let repository = self.pointer
+		let result = git_branch_lookup(pointer, repository, name.cStringUsingEncoding(NSUTF8StringEncoding)!, GIT_BRANCH_LOCAL)
+		
+		if result != GIT_OK.value {
+			pointer.dealloc(1)
+			return failure()
+		}
+		
+		let value = Branch(pointer.memory)!
+		git_reference_free(pointer.memory)
+		pointer.dealloc(1)
+		return success(value)
 	}
 	
 	public func allTags() -> Result<[TagReference]> {
