@@ -54,9 +54,6 @@ public struct Branch: ReferenceType {
 	/// The full name of the reference (e.g., `refs/heads/master`).
 	public let longName: String
 	
-	/// The name of the remote this branch belongs to, or nil if it's a local branch.
-	public let remoteName: String?
-	
 	/// The short human-readable name of the branch (e.g., `master`).
 	public let name: String
 	
@@ -75,6 +72,23 @@ public struct Branch: ReferenceType {
 	///
 	/// This is the same as `commit.oid`, but is declared here to adhere to `ReferenceType`.
 	public var oid: OID { return commit.oid }
+	
+	/// Create an instance with a libgit2 `git_reference` object.
+	///
+	/// Returns `nil` if the pointer isn't a branch.
+	public init?(_ pointer: COpaquePointer) {
+		let namePointer = UnsafeMutablePointer<UnsafePointer<Int8>>.alloc(1)
+		let success = git_branch_name(namePointer, pointer)
+		if success != GIT_OK.value {
+			namePointer.dealloc(1)
+			return nil
+		}
+		name = String.fromCString(namePointer.memory)!
+		namePointer.dealloc(1)
+		
+		longName = String.fromCString(git_reference_name(pointer))!
+		commit = PointerTo<Commit>(OID(git_reference_target(pointer).memory))
+	}
 }
 
 /// A git tag reference, which can be either a lightweight tag or a Tag object.

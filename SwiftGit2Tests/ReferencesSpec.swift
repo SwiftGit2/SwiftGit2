@@ -61,3 +61,19 @@ class ReferenceSpec: QuickSpec {
 		}
 	}
 }
+
+class BranchSpec: QuickSpec {
+	override func spec() {
+		describe("init()") {
+			it("should initialize its properties") {
+				let repo = Fixtures.mantleRepository
+				let branch = from_git_reference(repo, "refs/heads/master") { Branch($0)! }
+				expect(branch.longName).to(equal("refs/heads/master"))
+				expect(branch.name).to(equal("master"))
+				expect(branch.shortName).to(equal(branch.name))
+				expect(branch.commit.oid).to(equal(OID(string: "f797bd4837b61d37847a4833024aab268599a681")!))
+				expect(branch.oid).to(equal(branch.commit.oid))
+			}
+		}
+	}
+}
