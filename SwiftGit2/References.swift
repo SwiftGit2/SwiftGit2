@@ -91,6 +91,17 @@ public struct Branch: ReferenceType {
 	}
 }
 
+extension Branch: Hashable {
+	public var hashValue: Int {
+		return longName.hashValue ^ oid.hashValue
+	}
+}
+
+public func == (lhs: Branch, rhs: Branch) -> Bool {
+	return lhs.longName == rhs.longName
+		&& lhs.oid == rhs.oid
+}
+
 /// A git tag reference, which can be either a lightweight tag or a Tag object.
 public enum TagReference: ReferenceType {
 	/// A lightweight tag, which is just a name and an OID.

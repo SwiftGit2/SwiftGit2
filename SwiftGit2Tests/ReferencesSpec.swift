@@ -75,5 +75,30 @@ class BranchSpec: QuickSpec {
 				expect(branch.oid).to(equal(branch.commit.oid))
 			}
 		}
+		
+		describe("==") {
+			it("should be true with equal branches") {
+				let repo = Fixtures.simpleRepository
+				let branch1 = from_git_reference(repo, "refs/heads/master") { Branch($0)! }
+				let branch2 = from_git_reference(repo, "refs/heads/master") { Branch($0)! }
+				expect(branch1).to(equal(branch2))
+			}
+			
+			it("should be false with unequal branches") {
+				let repo = Fixtures.simpleRepository
+				let branch1 = from_git_reference(repo, "refs/heads/master") { Branch($0)! }
+				let branch2 = from_git_reference(repo, "refs/heads/another-branch") { Branch($0)! }
+				expect(branch1).notTo(equal(branch2))
+			}
+		}
+
+		describe("hashValue") {
+			it("should be equal with equal references") {
+				let repo = Fixtures.simpleRepository
+				let branch1 = from_git_reference(repo, "refs/heads/master") { Branch($0)! }
+				let branch2 = from_git_reference(repo, "refs/heads/master") { Branch($0)! }
+				expect(branch1.hashValue).to(equal(branch2.hashValue))
+			}
+		}
 	}
 }
