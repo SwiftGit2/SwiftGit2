@@ -311,19 +311,7 @@ final public class Repository {
 	
 	/// Load the local branch with the given name (e.g., "master").
 	public func localBranchWithName(name: String) -> Result<Branch> {
-		let pointer = UnsafeMutablePointer<COpaquePointer>.alloc(1)
-		let repository = self.pointer
-		let result = git_branch_lookup(pointer, repository, name, GIT_BRANCH_LOCAL)
-		
-		if result != GIT_OK.value {
-			pointer.dealloc(1)
-			return failure()
-		}
-		
-		let value = Branch(pointer.memory)!
-		git_reference_free(pointer.memory)
-		pointer.dealloc(1)
-		return success(value)
+		return referenceWithName("refs/heads/" + name).map { $0 as Branch }
 	}
 	
 	/// Load and return a list of all the `TagReference`s.
@@ -336,13 +324,6 @@ final public class Repository {
 	
 	/// Load the tag with the given name (e.g., "tag-2").
 	public func tagWithName(name: String) -> Result<TagReference> {
-		return referenceWithName("refs/tags/" + name)
-			.flatMap {
-				if let tag = $0 as? TagReference {
-					return success(tag)
-				} else {
-					return failure()
-				}
-			}
+		return referenceWithName("refs/tags/" + name).map { $0 as TagReference }
 	}
 }
