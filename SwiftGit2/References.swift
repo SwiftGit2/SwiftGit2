@@ -169,4 +169,14 @@ public enum TagReference: ReferenceType {
 	}
 }
 
+extension TagReference: Hashable {
+	public var hashValue: Int {
+		return longName.hashValue ^ oid.hashValue
+	}
+}
+
+public func == (lhs: TagReference, rhs: TagReference) -> Bool {
+	return lhs.longName == rhs.longName
+		&& lhs.oid == rhs.oid
+}
 

@@ -130,5 +130,30 @@ class TagReferenceSpec: QuickSpec {
 				expect(tag).to(beNil())
 			}
 		}
+		
+		describe("==") {
+			it("should be true with equal tag references") {
+				let repo = Fixtures.simpleRepository
+				let tag1 = from_git_reference(repo, "refs/tags/tag-2") { TagReference($0)! }
+				let tag2 = from_git_reference(repo, "refs/tags/tag-2") { TagReference($0)! }
+				expect(tag1).to(equal(tag2))
+			}
+			
+			it("should be false with unequal tag references") {
+				let repo = Fixtures.simpleRepository
+				let tag1 = from_git_reference(repo, "refs/tags/tag-1") { TagReference($0)! }
+				let tag2 = from_git_reference(repo, "refs/tags/tag-2") { TagReference($0)! }
+				expect(tag1).notTo(equal(tag2))
+			}
+		}
+
+		describe("hashValue") {
+			it("should be equal with equal references") {
+				let repo = Fixtures.simpleRepository
+				let tag1 = from_git_reference(repo, "refs/tags/tag-2") { TagReference($0)! }
+				let tag2 = from_git_reference(repo, "refs/tags/tag-2") { TagReference($0)! }
+				expect(tag1.hashValue).to(equal(tag2.hashValue))
+			}
+		}
 	}
 }
