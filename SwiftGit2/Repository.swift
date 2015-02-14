@@ -297,10 +297,6 @@ final public class Repository {
 		return success(value)
 	}
 	
-	public func allBranches() -> Result<[Branch]> {
-		return failure()
-	}
-	
 	/// Load and return a list of all local branches.
 	public func localBranches() -> Result<[Branch]> {
 		return referencesWithPrefix("refs/heads/")
