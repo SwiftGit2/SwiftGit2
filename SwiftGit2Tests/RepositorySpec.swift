@@ -324,6 +324,18 @@ class RepositorySpec: QuickSpec {
 			}
 		}
 		
+		describe("-localBranches()") {
+			it("should return all the local branches") {
+				let repo = Fixtures.simpleRepository
+				let expected = [
+					repo.localBranchWithName("another-branch").value()!,
+					repo.localBranchWithName("master").value()!,
+					repo.localBranchWithName("yet-another-branch").value()!,
+				]
+				expect(repo.localBranches().value()).to(equal(expected))
+			}
+		}
+		
 		describe("-localBranchWithName()") {
 			it("should return the branch if it exists") {
 				let result = Fixtures.simpleRepository.localBranchWithName("master")

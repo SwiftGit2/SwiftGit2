@@ -10,6 +10,10 @@ import Foundation
 import LlamaKit
 
 extension git_strarray {
+	func filter(f: (String) -> Bool) -> [String] {
+		return map { $0 }.filter(f)
+	}
+	
 	func map<T>(f: (String) -> T) -> [T] {
 		return Swift.map(0..<self.count) {
 			let string = String.fromCString(self.strings[Int($0)])!
@@ -268,8 +272,33 @@ final public class Repository {
 		return failure()
 	}
 	
+	/// Load and return a list of all local branches.
 	public func localBranches() -> Result<[Branch]> {
-		return failure()
+		let pointer = UnsafeMutablePointer<git_strarray>.alloc(1)
+		let repository = self.pointer
+		let result = git_reference_list(pointer, repository)
+		
+		if result != GIT_OK.value {
+			pointer.dealloc(1)
+			return failure()
+		}
+		
+		let strarray = pointer.memory
+		let branches = strarray
+			.filter {
+				$0.hasPrefix("refs/heads/")
+			}
+			.map {
+				self.referenceWithName($0).map { $0 as Branch }
+			}
+		git_strarray_free(pointer)
+		pointer.dealloc(1)
+		
+		let error = branches.reduce(nil) { $0 == nil ? $0 : $1.error() }
+		if let error = error {
+			return failure(error)
+		}
+		return success(branches.map { $0.value()! })
 	}
 	
 	public func remoteBranches() -> Result<[Branch]> {
