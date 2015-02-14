@@ -226,6 +226,11 @@ final public class Repository {
 	
 	// MARK: - Reference Lookups
 	
+	/// Load the reference with the given long name (e.g. "refs/heads/master")
+	///
+	/// If the reference is a branch, a `Branch` will be returned. If the
+	/// reference is a tag, a `TagReference` will be returned. Otherwise, a
+	/// `Reference` will be returned.
 	public func referenceWithName(name: String) -> Result<ReferenceType> {
 		let pointer = UnsafeMutablePointer<COpaquePointer>.alloc(1)
 		let repository = self.pointer
@@ -262,6 +267,7 @@ final public class Repository {
 		return failure()
 	}
 	
+	/// Load the local branch with the given name (e.g., "master").
 	public func localBranchWithName(name: String) -> Result<Branch> {
 		let pointer = UnsafeMutablePointer<COpaquePointer>.alloc(1)
 		let repository = self.pointer
@@ -282,6 +288,7 @@ final public class Repository {
 		return failure()
 	}
 	
+	/// Load the tag with the given name (e.g., "tag-2").
 	public func tagWithName(name: String) -> Result<TagReference> {
 		return referenceWithName("refs/tags/" + name)
 			.flatMap {
