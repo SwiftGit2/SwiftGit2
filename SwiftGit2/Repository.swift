@@ -194,6 +194,7 @@ final public class Repository {
 			let name = String.fromCString(strarray.strings[Int($0)])!
 			return self.remoteWithName(name)
 		}
+		git_strarray_free(pointer)
 		pointer.dealloc(1)
 		
 		let error = remotes.reduce(nil) { $0 == nil ? $0 : $1.error() }
