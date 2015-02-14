@@ -28,7 +28,7 @@ final public class Repository {
 			return failure()
 		}
 		
-		let repository = Repository(pointer: pointer.memory)
+		let repository = Repository(pointer.memory)
 		pointer.dealloc(1)
 		return success(repository)
 	}
@@ -36,7 +36,9 @@ final public class Repository {
 	// MARK: - Initializers
 	
 	/// Create an instance with a libgit2 `git_repository` object.
-	public init(pointer: COpaquePointer) {
+	///
+	/// The Repository assumes ownership of the `git_repository` object.
+	public init(_ pointer: COpaquePointer) {
 		self.pointer = pointer
 		
 		let path = git_repository_workdir(pointer)
