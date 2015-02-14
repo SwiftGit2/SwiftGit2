@@ -18,6 +18,11 @@ public protocol ReferenceType {
 	var oid: OID { get }
 }
 
+public func ==<T: ReferenceType>(lhs: T, rhs: T) -> Bool {
+	return lhs.longName == rhs.longName
+		&& lhs.oid == rhs.oid
+}
+
 /// A generic reference to a git object.
 public struct Reference: ReferenceType {
 	/// The full name of the reference (e.g., `refs/heads/master`).
@@ -42,11 +47,6 @@ extension Reference: Hashable {
 	public var hashValue: Int {
 		return longName.hashValue ^ oid.hashValue
 	}
-}
-
-public func == (lhs: Reference, rhs: Reference) -> Bool {
-	return lhs.longName == rhs.longName
-		&& lhs.oid == rhs.oid
 }
 
 /// A git branch.
@@ -95,11 +95,6 @@ extension Branch: Hashable {
 	public var hashValue: Int {
 		return longName.hashValue ^ oid.hashValue
 	}
-}
-
-public func == (lhs: Branch, rhs: Branch) -> Bool {
-	return lhs.longName == rhs.longName
-		&& lhs.oid == rhs.oid
 }
 
 /// A git tag reference, which can be either a lightweight tag or a Tag object.
@@ -173,10 +168,5 @@ extension TagReference: Hashable {
 	public var hashValue: Int {
 		return longName.hashValue ^ oid.hashValue
 	}
-}
-
-public func == (lhs: TagReference, rhs: TagReference) -> Bool {
-	return lhs.longName == rhs.longName
-		&& lhs.oid == rhs.oid
 }
 
