@@ -212,7 +212,7 @@ final public class Repository {
 	public func remoteWithName(name: String) -> Result<Remote> {
 		let pointer = UnsafeMutablePointer<COpaquePointer>.alloc(1)
 		let repository = self.pointer
-		let result = git_remote_lookup(pointer, repository, name.cStringUsingEncoding(NSUTF8StringEncoding)!)
+		let result = git_remote_lookup(pointer, repository, name)
 		
 		if result != GIT_OK.value {
 			pointer.dealloc(1)
@@ -235,7 +235,7 @@ final public class Repository {
 	public func referenceWithName(name: String) -> Result<ReferenceType> {
 		let pointer = UnsafeMutablePointer<COpaquePointer>.alloc(1)
 		let repository = self.pointer
-		let result = git_reference_lookup(pointer, repository, name.cStringUsingEncoding(NSUTF8StringEncoding)!)
+		let result = git_reference_lookup(pointer, repository, name)
 		
 		if result != GIT_OK.value {
 			pointer.dealloc(1)
@@ -272,7 +272,7 @@ final public class Repository {
 	public func localBranchWithName(name: String) -> Result<Branch> {
 		let pointer = UnsafeMutablePointer<COpaquePointer>.alloc(1)
 		let repository = self.pointer
-		let result = git_branch_lookup(pointer, repository, name.cStringUsingEncoding(NSUTF8StringEncoding)!, GIT_BRANCH_LOCAL)
+		let result = git_branch_lookup(pointer, repository, name, GIT_BRANCH_LOCAL)
 		
 		if result != GIT_OK.value {
 			pointer.dealloc(1)

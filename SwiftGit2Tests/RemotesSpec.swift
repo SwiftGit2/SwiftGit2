@@ -15,7 +15,7 @@ func with_git_remote<T>(repository: Repository, name: String, f: COpaquePointer 
 	let repository = repository.pointer
 	
 	let pointer = UnsafeMutablePointer<COpaquePointer>.alloc(1)
-	git_remote_lookup(pointer, repository, name.cStringUsingEncoding(NSUTF8StringEncoding)!)
+	git_remote_lookup(pointer, repository, name)
 	let result = f(pointer.memory)
 	git_object_free(pointer.memory)
 	pointer.dealloc(1)
