@@ -144,6 +144,29 @@ public enum TagReference: ReferenceType {
 	/// This is the same as `name`, but is declared with an Optional type to adhere to
 	/// `ReferenceType`.
 	public var shortName: String? { return name }
+	
+	/// Create an instance with a libgit2 `git_reference` object.
+	///
+	/// Returns `nil` if the pointer isn't a branch.
+	public init?(_ pointer: COpaquePointer) {
+		if git_reference_is_tag(pointer) == 0 {
+			return nil;
+		}
+		
+		let name = String.fromCString(git_reference_name(pointer))!
+		let repo = git_reference_owner(pointer)
+		var oid = git_reference_target(pointer).memory
+		
+		let pointer = UnsafeMutablePointer<COpaquePointer>.alloc(1)
+		let result = git_object_lookup(pointer, repo, &oid, GIT_OBJ_TAG)
+		if result == GIT_OK.value {
+			self = .Annotated(name, Tag(pointer.memory))
+		} else {
+			self = .Lightweight(name, OID(oid))
+		}
+		git_object_free(pointer.memory)
+		pointer.dealloc(1)
+	}
 }
 
 

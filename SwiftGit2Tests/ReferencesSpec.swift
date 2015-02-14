@@ -102,3 +102,33 @@ class BranchSpec: QuickSpec {
 		}
 	}
 }
+
+class TagReferenceSpec: QuickSpec {
+	override func spec() {
+		describe("init()") {
+			it("should work with an annotated tag") {
+				let repo = Fixtures.simpleRepository
+				let tag = from_git_reference(repo, "refs/tags/tag-2") { TagReference($0)! }
+				expect(tag.longName).to(equal("refs/tags/tag-2"))
+				expect(tag.name).to(equal("tag-2"))
+				expect(tag.shortName).to(equal(tag.name))
+				expect(tag.oid).to(equal(OID(string: "24e1e40ee77525d9e279f079f9906ad6d98c8940")!))
+			}
+			
+			it("should work with a lightweight tag") {
+				let repo = Fixtures.mantleRepository
+				let tag = from_git_reference(repo, "refs/tags/1.5.4") { TagReference($0)! }
+				expect(tag.longName).to(equal("refs/tags/1.5.4"))
+				expect(tag.name).to(equal("1.5.4"))
+				expect(tag.shortName).to(equal(tag.name))
+				expect(tag.oid).to(equal(OID(string: "d9dc95002cfbf3929d2b70d2c8a77e6bf5b1b88a")!))
+			}
+			
+			it("should return nil if not a tag") {
+				let repo = Fixtures.simpleRepository
+				let tag = from_git_reference(repo, "refs/heads/master") { TagReference($0) }
+				expect(tag).to(beNil())
+			}
+		}
+	}
+}
