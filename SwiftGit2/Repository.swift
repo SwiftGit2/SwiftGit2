@@ -9,6 +9,15 @@
 import Foundation
 import LlamaKit
 
+extension git_strarray {
+	func map<T>(f: (String) -> T) -> [T] {
+		return Swift.map(0..<self.count) {
+			let string = String.fromCString(self.strings[Int($0)])!
+			return f(string)
+		}
+	}
+}
+
 /// A git repository.
 final public class Repository {
 	
@@ -190,9 +199,8 @@ final public class Repository {
 		}
 		
 		let strarray = pointer.memory
-		let remotes: [Result<Remote>] = map(0..<strarray.count) {
-			let name = String.fromCString(strarray.strings[Int($0)])!
-			return self.remoteWithName(name)
+		let remotes: [Result<Remote>] = strarray.map {
+			return self.remoteWithName($0)
 		}
 		git_strarray_free(pointer)
 		pointer.dealloc(1)
