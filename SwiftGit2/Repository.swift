@@ -284,7 +284,7 @@ final public class Repository {
 		}
 		
 		var value: ReferenceType
-		if git_reference_is_branch(pointer.memory) != 0 {
+		if git_reference_is_branch(pointer.memory) != 0 || git_reference_is_remote(pointer.memory) != 0 {
 			value = Branch(pointer.memory)!
 		} else if git_reference_is_tag(pointer.memory) != 0 {
 			value = TagReference(pointer.memory)!
@@ -312,6 +312,11 @@ final public class Repository {
 	/// Load the local branch with the given name (e.g., "master").
 	public func localBranchWithName(name: String) -> Result<Branch> {
 		return referenceWithName("refs/heads/" + name).map { $0 as Branch }
+	}
+	
+	/// Load the remote branch with the given name (e.g., "origin/master").
+	public func remoteBranchWithName(name: String) -> Result<Branch> {
+		return referenceWithName("refs/remotes/" + name).map { $0 as Branch }
 	}
 	
 	/// Load and return a list of all the `TagReference`s.

@@ -298,9 +298,16 @@ class RepositorySpec: QuickSpec {
 		}
 		
 		describe("-referenceWithName()") {
-			it("should return a branch if it exists") {
+			it("should return a local branch if it exists") {
 				let name = "refs/heads/master"
 				let result = Fixtures.simpleRepository.referenceWithName(name)
+				expect(result.value()?.longName).to(equal(name))
+				expect(result.value()? as? Branch).notTo(beNil())
+			}
+			
+			it("should return a remote branch if it exists") {
+				let name = "refs/remotes/upstream/master"
+				let result = Fixtures.mantleRepository.referenceWithName(name)
 				expect(result.value()?.longName).to(equal(name))
 				expect(result.value()? as? Branch).notTo(beNil())
 			}
@@ -344,6 +351,18 @@ class RepositorySpec: QuickSpec {
 			
 			it("should error if the branch doesn't exists") {
 				let result = Fixtures.simpleRepository.localBranchWithName("nonexistent")
+				expect(result.error()).notTo(beNil())
+			}
+		}
+		
+		describe("-remoteBranchWithName()") {
+			it("should return the branch if it exists") {
+				let result = Fixtures.mantleRepository.remoteBranchWithName("upstream/master")
+				expect(result.value()?.longName).to(equal("refs/remotes/upstream/master"))
+			}
+			
+			it("should error if the branch doesn't exists") {
+				let result = Fixtures.simpleRepository.remoteBranchWithName("origin/nonexistent")
 				expect(result.error()).notTo(beNil())
 			}
 		}
