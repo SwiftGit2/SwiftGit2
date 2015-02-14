@@ -330,8 +330,12 @@ final public class Repository {
 		return success(value)
 	}
 	
+	/// Load and return a list of all the `TagReference`s.
 	public func allTags() -> Result<[TagReference]> {
-		return failure()
+		return referencesWithPrefix("refs/tags/")
+			.map { (refs: [ReferenceType]) in
+				return refs.map { $0 as TagReference }
+			}
 	}
 	
 	/// Load the tag with the given name (e.g., "tag-2").

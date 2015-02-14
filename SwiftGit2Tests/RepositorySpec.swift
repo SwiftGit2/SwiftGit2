@@ -348,6 +348,17 @@ class RepositorySpec: QuickSpec {
 			}
 		}
 		
+		describe("-allTags()") {
+			it("should return all the tags") {
+				let repo = Fixtures.simpleRepository
+				let expected = [
+					repo.tagWithName("tag-1").value()!,
+					repo.tagWithName("tag-2").value()!,
+				]
+				expect(repo.allTags().value()).to(equal(expected))
+			}
+		}
+		
 		describe("-tagWithName()") {
 			it("should return the tag if it exists") {
 				let result = Fixtures.simpleRepository.tagWithName("tag-2")
