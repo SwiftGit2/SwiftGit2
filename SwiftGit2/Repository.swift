@@ -305,8 +305,12 @@ final public class Repository {
 			}
 	}
 	
+	/// Load and return a list of all remote branches.
 	public func remoteBranches() -> Result<[Branch]> {
-		return failure()
+		return referencesWithPrefix("refs/remotes/")
+			.map { (refs: [ReferenceType]) in
+				return refs.map { $0 as Branch }
+			}
 	}
 	
 	/// Load the local branch with the given name (e.g., "master").

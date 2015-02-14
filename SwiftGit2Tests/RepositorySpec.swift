@@ -343,6 +343,37 @@ class RepositorySpec: QuickSpec {
 			}
 		}
 		
+		describe("-remoteBranches()") {
+			it("should return all the remote branches") {
+				let repo = Fixtures.mantleRepository
+				let expectedNames = [
+					"origin/2.0-development",
+					"origin/HEAD",
+					"origin/bump-config",
+					"origin/bump-xcconfigs",
+					"origin/github-reversible-transformer",
+					"origin/master",
+					"origin/mtlmanagedobject",
+					"origin/reversible-transformer",
+					"origin/subclassing-notes",
+					"upstream/2.0-development",
+					"upstream/bump-config",
+					"upstream/bump-xcconfigs",
+					"upstream/github-reversible-transformer",
+					"upstream/master",
+					"upstream/mtlmanagedobject",
+					"upstream/reversible-transformer",
+					"upstream/subclassing-notes",
+				]
+				let expected = expectedNames.map { repo.remoteBranchWithName($0).value()! }
+				let actual = repo.remoteBranches().value()!.sorted {
+					return lexicographicalCompare($0.longName, $1.longName)
+				}
+				expect(actual).to(equal(expected))
+				expect(actual.map { $0.name }).to(equal(expectedNames))
+			}
+		}
+		
 		describe("-localBranchWithName()") {
 			it("should return the branch if it exists") {
 				let result = Fixtures.simpleRepository.localBranchWithName("master")
