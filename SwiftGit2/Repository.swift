@@ -283,6 +283,13 @@ final public class Repository {
 	}
 	
 	public func tagWithName(name: String) -> Result<TagReference> {
-		return failure()
+		return referenceWithName("refs/tags/" + name)
+			.flatMap {
+				if let tag = $0 as? TagReference {
+					return success(tag)
+				} else {
+					return failure()
+				}
+			}
 	}
 }

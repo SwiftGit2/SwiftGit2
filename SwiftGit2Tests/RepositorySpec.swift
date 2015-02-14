@@ -335,5 +335,17 @@ class RepositorySpec: QuickSpec {
 				expect(result.error()).notTo(beNil())
 			}
 		}
+		
+		describe("-tagWithName()") {
+			it("should return the tag if it exists") {
+				let result = Fixtures.simpleRepository.tagWithName("tag-2")
+				expect(result.value()?.longName).to(equal("refs/tags/tag-2"))
+			}
+			
+			it("should error if the branch doesn't exists") {
+				let result = Fixtures.simpleRepository.tagWithName("nonexistent")
+				expect(result.error()).notTo(beNil())
+			}
+		}
 	}
 }
