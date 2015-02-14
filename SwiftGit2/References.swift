@@ -73,6 +73,12 @@ public struct Branch: ReferenceType {
 	/// This is the same as `commit.oid`, but is declared here to adhere to `ReferenceType`.
 	public var oid: OID { return commit.oid }
 	
+	/// Whether the branch is a local branch.
+	public var isLocal: Bool { return longName.hasPrefix("refs/heads/") }
+	
+	/// Whether the branch is a remote branch.
+	public var isRemote: Bool { return longName.hasPrefix("refs/remotes/") }
+	
 	/// Create an instance with a libgit2 `git_reference` object.
 	///
 	/// Returns `nil` if the pointer isn't a branch.

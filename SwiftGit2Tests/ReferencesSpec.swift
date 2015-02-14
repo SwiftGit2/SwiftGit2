@@ -73,6 +73,8 @@ class BranchSpec: QuickSpec {
 				expect(branch.shortName).to(equal(branch.name))
 				expect(branch.commit.oid).to(equal(OID(string: "f797bd4837b61d37847a4833024aab268599a681")!))
 				expect(branch.oid).to(equal(branch.commit.oid))
+				expect(branch.isLocal).to(beTrue())
+				expect(branch.isRemote).to(beFalse())
 			}
 			
 			it("should work with symoblic refs") {
@@ -83,6 +85,8 @@ class BranchSpec: QuickSpec {
 				expect(branch.shortName).to(equal(branch.name))
 				expect(branch.commit.oid).to(equal(OID(string: "f797bd4837b61d37847a4833024aab268599a681")!))
 				expect(branch.oid).to(equal(branch.commit.oid))
+				expect(branch.isLocal).to(beFalse())
+				expect(branch.isRemote).to(beTrue())
 			}
 		}
 		
