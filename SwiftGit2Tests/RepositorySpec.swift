@@ -298,8 +298,22 @@ class RepositorySpec: QuickSpec {
 		}
 		
 		describe("-referenceWithName()") {
+			it("should return a branch if it exists") {
+				let name = "refs/heads/master"
+				let result = Fixtures.simpleRepository.referenceWithName(name)
+				expect(result.value()?.longName).to(equal(name))
+				expect(result.value()? as? Branch).notTo(beNil())
+			}
+			
+			it("should return a tag if it exists") {
+				let name = "refs/tags/tag-2"
+				let result = Fixtures.simpleRepository.referenceWithName(name)
+				expect(result.value()?.longName).to(equal(name))
+				expect(result.value()? as? TagReference).notTo(beNil())
+			}
+			
 			it("should return the reference if it exists") {
-				let name = "refs/heads/another-branch"
+				let name = "refs/other-ref"
 				let result = Fixtures.simpleRepository.referenceWithName(name)
 				expect(result.value()?.longName).to(equal(name))
 			}
