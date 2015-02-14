@@ -239,6 +239,35 @@ final public class Repository {
 	
 	// MARK: - Reference Lookups
 	
+	/// Load all the references with the given prefix (e.g. "refs/heads/")
+	public func referencesWithPrefix(prefix: String) -> Result<[ReferenceType]> {
+		let pointer = UnsafeMutablePointer<git_strarray>.alloc(1)
+		let repository = self.pointer
+		let result = git_reference_list(pointer, repository)
+		
+		if result != GIT_OK.value {
+			pointer.dealloc(1)
+			return failure()
+		}
+		
+		let strarray = pointer.memory
+		let references = strarray
+			.filter {
+				$0.hasPrefix(prefix)
+			}
+			.map {
+				self.referenceWithName($0)
+			}
+		git_strarray_free(pointer)
+		pointer.dealloc(1)
+		
+		let error = references.reduce(nil) { $0 == nil ? $0 : $1.error() }
+		if let error = error {
+			return failure(error)
+		}
+		return success(references.map { $0.value()! })
+	}
+	
 	/// Load the reference with the given long name (e.g. "refs/heads/master")
 	///
 	/// If the reference is a branch, a `Branch` will be returned. If the
@@ -274,31 +303,10 @@ final public class Repository {
 	
 	/// Load and return a list of all local branches.
 	public func localBranches() -> Result<[Branch]> {
-		let pointer = UnsafeMutablePointer<git_strarray>.alloc(1)
-		let repository = self.pointer
-		let result = git_reference_list(pointer, repository)
-		
-		if result != GIT_OK.value {
-			pointer.dealloc(1)
-			return failure()
-		}
-		
-		let strarray = pointer.memory
-		let branches = strarray
-			.filter {
-				$0.hasPrefix("refs/heads/")
+		return referencesWithPrefix("refs/heads/")
+			.map { (refs: [ReferenceType]) in
+				return refs.map { $0 as Branch }
 			}
-			.map {
-				self.referenceWithName($0).map { $0 as Branch }
-			}
-		git_strarray_free(pointer)
-		pointer.dealloc(1)
-		
-		let error = branches.reduce(nil) { $0 == nil ? $0 : $1.error() }
-		if let error = error {
-			return failure(error)
-		}
-		return success(branches.map { $0.value()! })
 	}
 	
 	public func remoteBranches() -> Result<[Branch]> {
