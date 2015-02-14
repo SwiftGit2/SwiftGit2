@@ -74,6 +74,16 @@ class BranchSpec: QuickSpec {
 				expect(branch.commit.oid).to(equal(OID(string: "f797bd4837b61d37847a4833024aab268599a681")!))
 				expect(branch.oid).to(equal(branch.commit.oid))
 			}
+			
+			it("should work with symoblic refs") {
+				let repo = Fixtures.mantleRepository
+				let branch = from_git_reference(repo, "refs/remotes/origin/HEAD") { Branch($0)! }
+				expect(branch.longName).to(equal("refs/remotes/origin/HEAD"))
+				expect(branch.name).to(equal("origin/HEAD"))
+				expect(branch.shortName).to(equal(branch.name))
+				expect(branch.commit.oid).to(equal(OID(string: "f797bd4837b61d37847a4833024aab268599a681")!))
+				expect(branch.oid).to(equal(branch.commit.oid))
+			}
 		}
 		
 		describe("==") {

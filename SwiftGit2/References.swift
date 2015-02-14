@@ -87,7 +87,22 @@ public struct Branch: ReferenceType {
 		namePointer.dealloc(1)
 		
 		longName = String.fromCString(git_reference_name(pointer))!
-		commit = PointerTo<Commit>(OID(git_reference_target(pointer).memory))
+		
+		var oid: OID
+		if git_reference_type(pointer).value == GIT_REF_SYMBOLIC.value {
+			let resolved = UnsafeMutablePointer<COpaquePointer>.alloc(1)
+			let success = git_reference_resolve(resolved, pointer)
+			if success != GIT_OK.value {
+				resolved.dealloc(1)
+				return nil
+			}
+			oid = OID(git_reference_target(resolved.memory).memory)
+			git_reference_free(resolved.memory)
+			resolved.dealloc(1)
+		} else {
+			oid = OID(git_reference_target(pointer).memory)
+		}
+		commit = PointerTo<Commit>(oid)
 	}
 }
 
