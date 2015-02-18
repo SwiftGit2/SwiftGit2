@@ -59,7 +59,7 @@ final class Fixtures {
 	
 	func repositoryWithName(name: String) -> Repository {
 		let url = directoryURL.URLByAppendingPathComponent(name, isDirectory: true)
-		return Repository.atURL(url).value()!
+		return Repository.atURL(url).value!
 	}
 	
 	// MARK: - The Fixtures
