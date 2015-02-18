@@ -36,9 +36,9 @@ final public class Repository {
 		let pointer = UnsafeMutablePointer<COpaquePointer>.alloc(1)
 		let result = git_repository_open(pointer, URL.fileSystemRepresentation)
 		
-		if result < GIT_OK.value {
+		if result != GIT_OK.value {
 			pointer.dealloc(1)
-			return failure()
+			return failure(libGit2Error(result, libGit2PointOfFailure: "git_repository_open"))
 		}
 		
 		let repository = Repository(pointer.memory)

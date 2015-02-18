@@ -10,6 +10,7 @@ import LlamaKit
 import SwiftGit2
 import Nimble
 import Quick
+import Guanaco
 
 class RepositorySpec: QuickSpec {
 	override func spec() {
@@ -22,7 +23,10 @@ class RepositorySpec: QuickSpec {
 			it("should fail if the repo doesn't exist") {
 				let url = NSURL(fileURLWithPath: "blah")!
 				let result = Repository.atURL(url)
-				expect(result.error).notTo(beNil())
+				expect(result).to(haveFailed(
+					domain: "com.libgit2",
+					localizedDescription: "Failed to resolve path '\(url.path!)': No such file or directory"
+				))
 			}
 		}
 		
