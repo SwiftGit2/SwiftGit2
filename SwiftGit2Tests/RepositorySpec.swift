@@ -24,7 +24,7 @@ class RepositorySpec: QuickSpec {
 				let url = NSURL(fileURLWithPath: "blah")!
 				let result = Repository.atURL(url)
 				expect(result).to(haveFailed(
-					domain: "com.libgit2",
+					domain: libGit2ErrorDomain,
 					localizedDescription: "Failed to resolve path '\(url.path!)': No such file or directory"
 				))
 			}

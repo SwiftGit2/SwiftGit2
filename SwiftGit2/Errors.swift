@@ -1,5 +1,7 @@
 import Foundation
 
+public let libGit2ErrorDomain = "org.libgit2.libgit2"
+
 /// Returns an NSError with an error domain and message for libgit2 errors.
 ///
 /// :param: errorCode An error code returned by a libgit2 function.
@@ -20,7 +22,7 @@ internal func libGit2Error(errorCode: Int32, libGit2PointOfFailure: String? = ni
 		userInfo[NSLocalizedFailureReasonErrorKey] = "\(pointOfFailure) failed."
 	}
 
-	return NSError(domain: "com.libgit2", code: code, userInfo: userInfo)
+	return NSError(domain: libGit2ErrorDomain, code: code, userInfo: userInfo)
 }
 
 
