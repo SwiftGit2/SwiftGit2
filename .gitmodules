@@ -13,3 +13,6 @@
 [submodule "External/Guanaco"]
 	path = External/Guanaco
 	url = https://github.com/modocache/Guanaco.git
+[submodule "External/Nimble"]
+	path = External/Nimble
+	url = https://github.com/Quick/Nimble.git
