@@ -90,7 +90,7 @@ final public class Repository {
 		
 		if result != GIT_OK.value {
 			pointer.dealloc(1)
-			return failure()
+			return failure(libGit2Error(result, libGit2PointOfFailure: "git_object_lookup"))
 		}
 		
 		let value = transform(pointer.memory)
@@ -120,7 +120,15 @@ final public class Repository {
 			} else if type == Tree.type {
 				return success(Tree(object))
 			}
-			return failure()
+
+			let error = NSError(
+				domain: "org.libgit2.SwiftGit2",
+				code: 1,
+				userInfo: [
+					NSLocalizedDescriptionKey: "Unrecognized git_otype '\(type)' for oid '\(oid)'."
+				]
+			)
+			return failure(error)
 		}
 	}
 	
@@ -199,7 +207,7 @@ final public class Repository {
 		
 		if result != GIT_OK.value {
 			pointer.dealloc(1)
-			return failure()
+			return failure(libGit2Error(result, libGit2PointOfFailure: "git_remote_list"))
 		}
 		
 		let strarray = pointer.memory
@@ -228,7 +236,7 @@ final public class Repository {
 		
 		if result != GIT_OK.value {
 			pointer.dealloc(1)
-			return failure()
+			return failure(libGit2Error(result, libGit2PointOfFailure: "git_remote_lookup"))
 		}
 		
 		let value = Remote(pointer.memory)
@@ -247,7 +255,7 @@ final public class Repository {
 		
 		if result != GIT_OK.value {
 			pointer.dealloc(1)
-			return failure()
+			return failure(libGit2Error(result, libGit2PointOfFailure: "git_reference_list"))
 		}
 		
 		let strarray = pointer.memory
@@ -280,7 +288,7 @@ final public class Repository {
 		
 		if result != GIT_OK.value {
 			pointer.dealloc(1)
-			return failure()
+			return failure(libGit2Error(result, libGit2PointOfFailure: "git_reference_lookup"))
 		}
 		
 		var value: ReferenceType
