@@ -8,9 +8,9 @@ SwiftGit2 uses value objects wherever possible. That means using Swift’s `stru
 2. Consuming values won’t result in disk access.
 3. Disk access can be contained to a smaller number of APIs.
 
-This vastly simplifies the design of long-lived applications, which are the most common use case with Swift.
+This vastly simplifies the design of long-lived applications, which are the most common use case with Swift. Consequently, SwiftGit2 APIs don’t necessarily map 1-to-1 with libgit2 APIs.
 
-Consequently, SwiftGit2 APIs don’t necessarily map 1-to-1 with libgit2 APIs. 
+All methods for reading from or writing to a repository are on SwiftGit’s only `class`: `Repository`. This highlights the failability and mutation of these methods, while freeing up all other instances to be immutable `struct`s and `enum`s.
 
 ## Contributions
 We :heart: to receive pull requests! GitHub makes it easy:
