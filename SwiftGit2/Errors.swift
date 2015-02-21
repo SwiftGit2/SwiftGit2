@@ -37,12 +37,12 @@ internal func libGit2Error(errorCode: Int32, libGit2PointOfFailure: String? = ni
 ///           corresponding string representation of that error. Otherwise, it returns
 ///           nil.
 private func errorMessage(errorCode: Int32) -> String? {
-  let last = giterr_last()
-  if last != nil {
-    return String.fromCString(last.memory.message)
-  } else if UInt32(errorCode) == GITERR_OS.value {
-    return String.fromCString(strerror(errno))
-  } else {
-    return nil
-  }
+	let last = giterr_last()
+	if last != nil {
+		return String.fromCString(last.memory.message)
+	} else if UInt32(errorCode) == GITERR_OS.value {
+		return String.fromCString(strerror(errno))
+	} else {
+		return nil
+	}
 }
