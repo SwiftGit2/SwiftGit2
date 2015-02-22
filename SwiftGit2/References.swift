@@ -23,6 +23,17 @@ public func ==<T: ReferenceType>(lhs: T, rhs: T) -> Bool {
 		&& lhs.oid == rhs.oid
 }
 
+/// Create a Reference, Branch, or TagReference from a libgit2 `git_reference`.
+internal func referenceWithLibGit2Reference(pointer: COpaquePointer) -> ReferenceType {
+	if git_reference_is_branch(pointer) != 0 || git_reference_is_remote(pointer) != 0 {
+		return Branch(pointer)!
+	} else if git_reference_is_tag(pointer) != 0 {
+		return TagReference(pointer)!
+	} else {
+		return Reference(pointer)
+	}
+}
+
 /// A generic reference to a git object.
 public struct Reference: ReferenceType {
 	/// The full name of the reference (e.g., `refs/heads/master`).

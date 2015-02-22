@@ -291,14 +291,7 @@ final public class Repository {
 			return failure(libGit2Error(result, libGit2PointOfFailure: "git_reference_lookup"))
 		}
 		
-		var value: ReferenceType
-		if git_reference_is_branch(pointer.memory) != 0 || git_reference_is_remote(pointer.memory) != 0 {
-			value = Branch(pointer.memory)!
-		} else if git_reference_is_tag(pointer.memory) != 0 {
-			value = TagReference(pointer.memory)!
-		} else {
-			value = Reference(pointer.memory)
-		}
+		let value = referenceWithLibGit2Reference(pointer.memory)
 		
 		git_reference_free(pointer.memory)
 		pointer.dealloc(1)
@@ -342,5 +335,21 @@ final public class Repository {
 	/// Load the tag with the given name (e.g., "tag-2").
 	public func tagWithName(name: String) -> Result<TagReference, NSError> {
 		return referenceWithName("refs/tags/" + name).map { $0 as TagReference }
+	}
+	
+	// MARK: - Working Directory
+	
+	/// Load the reference pointed at by HEAD.
+	///
+	/// When on a branch, this will return the current `Branch`.
+	public func HEAD() -> Result<ReferenceType, NSError> {
+		var pointer = COpaquePointer.null()
+		let result = git_repository_head(&pointer, self.pointer)
+		if result != GIT_OK.value {
+			return failure(libGit2Error(result, libGit2PointOfFailure: "git_repository_head"))
+		}
+		let value = referenceWithLibGit2Reference(pointer)
+		git_reference_free(pointer)
+		return success(value)
 	}
 }
