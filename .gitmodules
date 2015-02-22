@@ -1,9 +1,6 @@
 [submodule "External/Configuration"]
 	path = External/Configuration
 	url = https://github.com/jspahrsummers/xcconfigs.git
-[submodule "External/Quick"]
-	path = External/Quick
-	url = https://github.com/github/Quick.git
 [submodule "External/libgit2"]
 	path = External/libgit2
 	url = https://github.com/libgit2/libgit2.git
@@ -16,3 +13,6 @@
 [submodule "External/Nimble"]
 	path = External/Nimble
 	url = https://github.com/Quick/Nimble.git
+[submodule "External/Quick"]
+	path = External/Quick
+	url = https://github.com/Quick/Quick.git

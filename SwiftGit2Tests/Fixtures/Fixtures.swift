@@ -35,7 +35,7 @@ final class Fixtures {
 		NSFileManager.defaultManager().createDirectoryAtURL(directoryURL, withIntermediateDirectories: true, attributes: nil, error: nil)
 		
 		let bundle = NSBundle(identifier: "org.libgit2.SwiftGit2-OSXTests")!
-		let zipURLs = bundle.URLsForResourcesWithExtension("zip", subdirectory: nil)! as [NSURL]
+		let zipURLs = bundle.URLsForResourcesWithExtension("zip", subdirectory: nil)! as! [NSURL]
 		
 		for URL in zipURLs {
 			unzipFileAtURL(URL, intoDirectoryAtURL: directoryURL)

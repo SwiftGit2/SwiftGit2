@@ -26,7 +26,6 @@
 		BEB31F2F1A0D6F7A00F525B9 /* SwiftGit2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BEB31F231A0D6F7A00F525B9 /* SwiftGit2.framework */; };
 		BEB31F361A0D6F7A00F525B9 /* RepositorySpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEB31F351A0D6F7A00F525B9 /* RepositorySpec.swift */; };
 		BEB31F6D1A0D78F300F525B9 /* Repository.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEB31F6C1A0D78F300F525B9 /* Repository.swift */; };
-		BEB31F7F1A0D79C800F525B9 /* Quick.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BEB31F7E1A0D79C800F525B9 /* Quick.framework */; };
 		BEB31F9E1A0E595100F525B9 /* libiconv.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = BEB31F9D1A0E595100F525B9 /* libiconv.dylib */; };
 		BEB31FA01A0E595600F525B9 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = BEB31F9F1A0E595600F525B9 /* libz.dylib */; };
 		BECB5F6A1A56F19900999413 /* References.swift in Sources */ = {isa = PBXBuildFile; fileRef = BECB5F691A56F19900999413 /* References.swift */; };
@@ -36,6 +35,7 @@
 		DA5023A01A969F1A004175D7 /* Nimble.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DA50239F1A969F1A004175D7 /* Nimble.framework */; };
 		DA59146D1A94549A00AED74C /* Guanaco.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DA59146C1A94549A00AED74C /* Guanaco.framework */; };
 		DA5914761A94579000AED74C /* Errors.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA5914751A94579000AED74C /* Errors.swift */; };
+		DAC8143D1A99749D0063D88C /* Quick.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DAC8143C1A99749D0063D88C /* Quick.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -109,7 +109,6 @@
 		BEB31F571A0D75EE00F525B9 /* Mac-StaticLibrary.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = "Mac-StaticLibrary.xcconfig"; sourceTree = "<group>"; };
 		BEB31F581A0D75EE00F525B9 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		BEB31F6C1A0D78F300F525B9 /* Repository.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Repository.swift; sourceTree = "<group>"; };
-		BEB31F7E1A0D79C800F525B9 /* Quick.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Quick.framework; path = "../../../Library/Developer/Xcode/DerivedData/SwiftGit2-hhirbsygtzljdvasajovfqnfzwwb/Build/Products/Debug/Quick.framework"; sourceTree = "<group>"; };
 		BEB31F8F1A0E563900F525B9 /* liblibgit2.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = liblibgit2.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		BEB31F9B1A0E581400F525B9 /* git2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = git2.h; path = External/libgit2/include/git2.h; sourceTree = "<group>"; };
 		BEB31F9D1A0E595100F525B9 /* libiconv.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libiconv.dylib; path = usr/lib/libiconv.dylib; sourceTree = SDKROOT; };
@@ -121,6 +120,7 @@
 		DA50239F1A969F1A004175D7 /* Nimble.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Nimble.framework; path = ../External/Nimble/build/Debug/Nimble.framework; sourceTree = "<group>"; };
 		DA59146C1A94549A00AED74C /* Guanaco.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Guanaco.framework; path = ../External/Guanaco/build/Debug/Guanaco.framework; sourceTree = "<group>"; };
 		DA5914751A94579000AED74C /* Errors.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Errors.swift; sourceTree = "<group>"; };
+		DAC8143C1A99749D0063D88C /* Quick.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Quick.framework; path = "../../../../Library/Developer/Xcode/DerivedData/SwiftGit2-ezqqkevntxbroughwcioyxqriijk/Build/Products/Debug/Quick.framework"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -140,7 +140,7 @@
 			files = (
 				DA59146D1A94549A00AED74C /* Guanaco.framework in Frameworks */,
 				DA5023A01A969F1A004175D7 /* Nimble.framework in Frameworks */,
-				BEB31F7F1A0D79C800F525B9 /* Quick.framework in Frameworks */,
+				DAC8143D1A99749D0063D88C /* Quick.framework in Frameworks */,
 				BEB31F2F1A0D6F7A00F525B9 /* SwiftGit2.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -227,7 +227,7 @@
 			isa = PBXGroup;
 			children = (
 				DA50239F1A969F1A004175D7 /* Nimble.framework */,
-				BEB31F7E1A0D79C800F525B9 /* Quick.framework */,
+				DAC8143C1A99749D0063D88C /* Quick.framework */,
 				DA59146C1A94549A00AED74C /* Guanaco.framework */,
 				BEB31F341A0D6F7A00F525B9 /* Info.plist */,
 			);

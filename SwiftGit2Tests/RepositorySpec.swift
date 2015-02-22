@@ -144,7 +144,7 @@ class RepositorySpec: QuickSpec {
 				let oid    = OID(string: "41078396f5187daed5f673e4a13b185bbad71fba")!
 				let blob   = repo.blobWithOID(oid).value
 				let result = repo.objectWithOID(oid)
-				expect(result.map { $0 as Blob }).to(haveSucceeded(equal(blob)))
+				expect(result.map { $0 as! Blob }).to(haveSucceeded(equal(blob)))
 			}
 			
 			it("should work with a commit") {
@@ -152,7 +152,7 @@ class RepositorySpec: QuickSpec {
 				let oid    = OID(string: "dc220a3f0c22920dab86d4a8d3a3cb7e69d6205a")!
 				let commit = repo.commitWithOID(oid).value
 				let result = repo.objectWithOID(oid)
-				expect(result.map { $0 as Commit }).to(haveSucceeded(equal(commit)))
+				expect(result.map { $0 as! Commit }).to(haveSucceeded(equal(commit)))
 			}
 			
 			it("should work with a tag") {
@@ -160,7 +160,7 @@ class RepositorySpec: QuickSpec {
 				let oid    = OID(string: "57943b8ee00348180ceeedc960451562750f6d33")!
 				let tag    = repo.tagWithOID(oid).value
 				let result = repo.objectWithOID(oid)
-				expect(result.map { $0 as Tag }).to(haveSucceeded(equal(tag)))
+				expect(result.map { $0 as! Tag }).to(haveSucceeded(equal(tag)))
 			}
 			
 			it("should work with a tree") {
@@ -168,7 +168,7 @@ class RepositorySpec: QuickSpec {
 				let oid    = OID(string: "f93e3a1a1525fb5b91020da86e44810c87a2d7bc")!
 				let tree   = repo.treeWithOID(oid).value
 				let result = repo.objectWithOID(oid)
-				expect(result.map { $0 as Tree }).to(haveSucceeded(equal(tree)))
+				expect(result.map { $0 as! Tree }).to(haveSucceeded(equal(tree)))
 			}
 			
 			it("should error if there's no object with that oid") {
@@ -224,7 +224,7 @@ class RepositorySpec: QuickSpec {
 				
 				let pointer = Pointer.Commit(oid)
 				let commit = repo.commitWithOID(oid).value!
-				let result = repo.objectFromPointer(pointer).map { $0 as Commit }
+				let result = repo.objectFromPointer(pointer).map { $0 as! Commit }
 				expect(result).to(haveSucceeded(equal(commit)))
 			}
 			
@@ -234,7 +234,7 @@ class RepositorySpec: QuickSpec {
 				
 				let pointer = Pointer.Tree(oid)
 				let tree = repo.treeWithOID(oid).value!
-				let result = repo.objectFromPointer(pointer).map { $0 as Tree }
+				let result = repo.objectFromPointer(pointer).map { $0 as! Tree }
 				expect(result).to(haveSucceeded(equal(tree)))
 			}
 			
@@ -244,7 +244,7 @@ class RepositorySpec: QuickSpec {
 				
 				let pointer = Pointer.Blob(oid)
 				let blob = repo.blobWithOID(oid).value!
-				let result = repo.objectFromPointer(pointer).map { $0 as Blob }
+				let result = repo.objectFromPointer(pointer).map { $0 as! Blob }
 				expect(result).to(haveSucceeded(equal(blob)))
 			}
 			
@@ -254,7 +254,7 @@ class RepositorySpec: QuickSpec {
 				
 				let pointer = Pointer.Tag(oid)
 				let tag = repo.tagWithOID(oid).value!
-				let result = repo.objectFromPointer(pointer).map { $0 as Tag }
+				let result = repo.objectFromPointer(pointer).map { $0 as! Tag }
 				expect(result).to(haveSucceeded(equal(tag)))
 			}
 		}
@@ -294,21 +294,21 @@ class RepositorySpec: QuickSpec {
 				let name = "refs/heads/master"
 				let result = Fixtures.simpleRepository.referenceWithName(name)
 				expect(result.map { $0.longName }).to(haveSucceeded(equal(name)))
-				expect(result.value? as? Branch).notTo(beNil())
+				expect(result.value as? Branch).notTo(beNil())
 			}
-			
+
 			it("should return a remote branch if it exists") {
 				let name = "refs/remotes/upstream/master"
 				let result = Fixtures.mantleRepository.referenceWithName(name)
 				expect(result.map { $0.longName }).to(haveSucceeded(equal(name)))
-				expect(result.value? as? Branch).notTo(beNil())
+				expect(result.value as? Branch).notTo(beNil())
 			}
 			
 			it("should return a tag if it exists") {
 				let name = "refs/tags/tag-2"
 				let result = Fixtures.simpleRepository.referenceWithName(name)
 				expect(result.value?.longName).to(equal(name))
-				expect(result.value? as? TagReference).notTo(beNil())
+				expect(result.value as? TagReference).notTo(beNil())
 			}
 			
 			it("should return the reference if it exists") {
