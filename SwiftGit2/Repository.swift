@@ -348,6 +348,8 @@ final public class Repository {
 		if result != GIT_OK.value {
 			return failure(libGit2Error(result, libGit2PointOfFailure: "git_repository_head"))
 		}
-		return success(referenceWithLibGit2Reference(pointer))
+		let value = referenceWithLibGit2Reference(pointer)
+		git_reference_free(pointer)
+		return success(value)
 	}
 }
