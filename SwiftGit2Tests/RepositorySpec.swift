@@ -412,5 +412,22 @@ class RepositorySpec: QuickSpec {
 				expect(result).to(haveFailed(beAnError(domain: equal(libGit2ErrorDomain))))
 			}
 		}
+		
+		describe("-HEAD()") {
+			it("should work when on a branch") {
+				let result = Fixtures.simpleRepository.HEAD()
+				expect(result.value?.longName).to(equal("refs/heads/master"))
+				expect(result.value?.shortName).to(equal("master"))
+				expect(result.value? as? Branch).notTo(beNil())
+			}
+			
+			it("should work when on a detached HEAD") {
+				let result = Fixtures.detachedHeadRepository.HEAD()
+				expect(result.value?.longName).to(equal("HEAD"))
+				expect(result.value?.shortName).to(beNil())
+				expect(result.value?.oid).to(equal(OID(string: "315b3f344221db91ddc54b269f3c9af422da0f2e")!))
+				expect(result.value? as? Reference).notTo(beNil())
+			}
+		}
 	}
 }
