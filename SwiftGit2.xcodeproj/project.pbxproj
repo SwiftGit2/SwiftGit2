@@ -424,6 +424,7 @@
 			children = (
 				BEB31F281A0D6F7A00F525B9 /* SwiftGit2.h */,
 				BE14AA4F1A1974010015B439 /* SwiftGit2.m */,
+				DA5914751A94579000AED74C /* Errors.swift */,
 				BE36354B1A632C9700D37EC8 /* Libgit2.swift */,
 				BE2E3BE51A31261300C67092 /* Objects.swift */,
 				BE70B3E41A1ACB1A002C3F4E /* OID.swift */,
@@ -431,7 +432,6 @@
 				BEB31F6C1A0D78F300F525B9 /* Repository.swift */,
 				BECB5F691A56F19900999413 /* References.swift */,
 				BECB5F6D1A57284700999413 /* Remotes.swift */,
-				DA5914751A94579000AED74C /* Errors.swift */,
 				BEB31F261A0D6F7A00F525B9 /* Supporting Files */,
 			);
 			path = SwiftGit2;
