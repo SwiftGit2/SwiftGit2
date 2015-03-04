@@ -4,8 +4,8 @@ framework module SwiftGit2 {
   
 	header "git2/annotated_commit.h"
 	header "git2/attr.h"
-	header "git2/blob.h"
 	header "git2/blame.h"
+	header "git2/blob.h"
 	header "git2/branch.h"
 	header "git2/buffer.h"
 	header "git2/checkout.h"
