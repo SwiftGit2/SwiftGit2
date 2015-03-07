@@ -343,7 +343,7 @@ final public class Repository {
 	///
 	/// When on a branch, this will return the current `Branch`.
 	public func HEAD() -> Result<ReferenceType, NSError> {
-		var pointer = COpaquePointer.null()
+		var pointer: COpaquePointer = nil
 		let result = git_repository_head(&pointer, self.pointer)
 		if result != GIT_OK.value {
 			return failure(libGit2Error(result, libGit2PointOfFailure: "git_repository_head"))

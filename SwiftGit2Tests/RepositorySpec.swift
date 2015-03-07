@@ -418,7 +418,7 @@ class RepositorySpec: QuickSpec {
 				let result = Fixtures.simpleRepository.HEAD()
 				expect(result.value?.longName).to(equal("refs/heads/master"))
 				expect(result.value?.shortName).to(equal("master"))
-				expect(result.value? as? Branch).notTo(beNil())
+				expect(result.value as? Branch).notTo(beNil())
 			}
 			
 			it("should work when on a detached HEAD") {
@@ -426,7 +426,7 @@ class RepositorySpec: QuickSpec {
 				expect(result.value?.longName).to(equal("HEAD"))
 				expect(result.value?.shortName).to(beNil())
 				expect(result.value?.oid).to(equal(OID(string: "315b3f344221db91ddc54b269f3c9af422da0f2e")!))
-				expect(result.value? as? Reference).notTo(beNil())
+				expect(result.value as? Reference).notTo(beNil())
 			}
 		}
 	}
