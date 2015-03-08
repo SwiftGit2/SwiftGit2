@@ -10,7 +10,7 @@ import Foundation
 
 /// A git object.
 public protocol ObjectType {
-	class var type: git_otype { get }
+	static var type: git_otype { get }
 	
 	/// The OID of the object.
 	var oid: OID { get }

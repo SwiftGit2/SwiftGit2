@@ -55,7 +55,7 @@ final public class Repository {
 		self.pointer = pointer
 		
 		let path = git_repository_workdir(pointer)
-		self.directoryURL = (path == nil ? nil : NSURL.fileURLWithPath(NSString(CString: path, encoding: NSUTF8StringEncoding)!, isDirectory: true))
+		self.directoryURL = (path == nil ? nil : NSURL.fileURLWithPath(String.fromCString(path)!, isDirectory: true))
 	}
 	
 	deinit {
@@ -302,7 +302,7 @@ final public class Repository {
 	public func localBranches() -> Result<[Branch], NSError> {
 		return referencesWithPrefix("refs/heads/")
 			.map { (refs: [ReferenceType]) in
-				return refs.map { $0 as Branch }
+				return refs.map { $0 as! Branch }
 			}
 	}
 	
@@ -310,31 +310,31 @@ final public class Repository {
 	public func remoteBranches() -> Result<[Branch], NSError> {
 		return referencesWithPrefix("refs/remotes/")
 			.map { (refs: [ReferenceType]) in
-				return refs.map { $0 as Branch }
+				return refs.map { $0 as! Branch }
 			}
 	}
 	
 	/// Load the local branch with the given name (e.g., "master").
 	public func localBranchWithName(name: String) -> Result<Branch, NSError> {
-		return referenceWithName("refs/heads/" + name).map { $0 as Branch }
+		return referenceWithName("refs/heads/" + name).map { $0 as! Branch }
 	}
 	
 	/// Load the remote branch with the given name (e.g., "origin/master").
 	public func remoteBranchWithName(name: String) -> Result<Branch, NSError> {
-		return referenceWithName("refs/remotes/" + name).map { $0 as Branch }
+		return referenceWithName("refs/remotes/" + name).map { $0 as! Branch }
 	}
 	
 	/// Load and return a list of all the `TagReference`s.
 	public func allTags() -> Result<[TagReference], NSError> {
 		return referencesWithPrefix("refs/tags/")
 			.map { (refs: [ReferenceType]) in
-				return refs.map { $0 as TagReference }
+				return refs.map { $0 as! TagReference }
 			}
 	}
 	
 	/// Load the tag with the given name (e.g., "tag-2").
 	public func tagWithName(name: String) -> Result<TagReference, NSError> {
-		return referenceWithName("refs/tags/" + name).map { $0 as TagReference }
+		return referenceWithName("refs/tags/" + name).map { $0 as! TagReference }
 	}
 	
 	// MARK: - Working Directory
@@ -343,7 +343,7 @@ final public class Repository {
 	///
 	/// When on a branch, this will return the current `Branch`.
 	public func HEAD() -> Result<ReferenceType, NSError> {
-		var pointer = COpaquePointer.null()
+		var pointer: COpaquePointer = nil
 		let result = git_repository_head(&pointer, self.pointer)
 		if result != GIT_OK.value {
 			return failure(libGit2Error(result, libGit2PointOfFailure: "git_repository_head"))
