@@ -9,19 +9,6 @@
 import Foundation
 import LlamaKit
 
-extension git_strarray {
-	func filter(f: (String) -> Bool) -> [String] {
-		return map { $0 }.filter(f)
-	}
-	
-	func map<T>(f: (String) -> T) -> [T] {
-		return Swift.map(0..<self.count) {
-			let string = String.fromCString(self.strings[Int($0)])!
-			return f(string)
-		}
-	}
-}
-
 /// A git repository.
 final public class Repository {
 	
