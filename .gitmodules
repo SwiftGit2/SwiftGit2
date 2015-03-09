@@ -1,18 +1,18 @@
-[submodule "External/Configuration"]
-	path = External/Configuration
-	url = https://github.com/jspahrsummers/xcconfigs.git
 [submodule "External/libgit2"]
 	path = External/libgit2
 	url = https://github.com/libgit2/libgit2.git
-[submodule "External/LlamaKit"]
-	path = External/LlamaKit
-	url = https://github.com/LlamaKit/LlamaKit.git
-[submodule "External/Guanaco"]
-	path = External/Guanaco
+[submodule "Carthage/Checkouts/Guanaco"]
+	path = Carthage/Checkouts/Guanaco
 	url = https://github.com/modocache/Guanaco.git
-[submodule "External/Nimble"]
-	path = External/Nimble
+[submodule "Carthage/Checkouts/LlamaKit"]
+	path = Carthage/Checkouts/LlamaKit
+	url = https://github.com/LlamaKit/LlamaKit.git
+[submodule "Carthage/Checkouts/Nimble"]
+	path = Carthage/Checkouts/Nimble
 	url = https://github.com/Quick/Nimble.git
-[submodule "External/Quick"]
-	path = External/Quick
+[submodule "Carthage/Checkouts/Quick"]
+	path = Carthage/Checkouts/Quick
 	url = https://github.com/Quick/Quick.git
+[submodule "Carthage/Checkouts/xcconfigs"]
+	path = Carthage/Checkouts/xcconfigs
+	url = https://github.com/jspahrsummers/xcconfigs.git
