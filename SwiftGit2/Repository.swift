@@ -33,16 +33,14 @@ final public class Repository {
 	///
 	/// Returns a `Result` with a `Repository` or an error.
 	class public func atURL(URL: NSURL) -> Result<Repository, NSError> {
-		let pointer = UnsafeMutablePointer<COpaquePointer>.alloc(1)
-		let result = git_repository_open(pointer, URL.fileSystemRepresentation)
+		var pointer: COpaquePointer = nil
+		let result = git_repository_open(&pointer, URL.fileSystemRepresentation)
 		
 		if result != GIT_OK.value {
-			pointer.dealloc(1)
 			return failure(libGit2Error(result, libGit2PointOfFailure: "git_repository_open"))
 		}
 		
-		let repository = Repository(pointer.memory)
-		pointer.dealloc(1)
+		let repository = Repository(pointer)
 		return success(repository)
 	}
 	
@@ -83,19 +81,17 @@ final public class Repository {
 	/// Returns the result of calling `transform` or an error if the object
 	/// cannot be loaded.
 	func withLibgit2Object<T>(oid: OID, type: git_otype, transform: COpaquePointer -> Result<T, NSError>) -> Result<T, NSError> {
-		let pointer = UnsafeMutablePointer<COpaquePointer>.alloc(1)
+		var pointer: COpaquePointer = nil
 		let repository = self.pointer
 		var oid = oid.oid
-		let result = git_object_lookup(pointer, repository, &oid, type)
+		let result = git_object_lookup(&pointer, repository, &oid, type)
 		
 		if result != GIT_OK.value {
-			pointer.dealloc(1)
 			return failure(libGit2Error(result, libGit2PointOfFailure: "git_object_lookup"))
 		}
 		
-		let value = transform(pointer.memory)
-		git_object_free(pointer.memory)
-		pointer.dealloc(1)
+		let value = transform(pointer)
+		git_object_free(pointer)
 		return value
 	}
 	
@@ -230,18 +226,16 @@ final public class Repository {
 	///
 	/// Returns the remote if it exists, or an error.
 	public func remoteWithName(name: String) -> Result<Remote, NSError> {
-		let pointer = UnsafeMutablePointer<COpaquePointer>.alloc(1)
+		var pointer: COpaquePointer = nil
 		let repository = self.pointer
-		let result = git_remote_lookup(pointer, repository, name)
+		let result = git_remote_lookup(&pointer, repository, name)
 		
 		if result != GIT_OK.value {
-			pointer.dealloc(1)
 			return failure(libGit2Error(result, libGit2PointOfFailure: "git_remote_lookup"))
 		}
 		
-		let value = Remote(pointer.memory)
-		git_remote_free(pointer.memory)
-		pointer.dealloc(1)
+		let value = Remote(pointer)
+		git_remote_free(pointer)
 		return success(value)
 	}
 	
@@ -282,19 +276,16 @@ final public class Repository {
 	/// reference is a tag, a `TagReference` will be returned. Otherwise, a
 	/// `Reference` will be returned.
 	public func referenceWithName(name: String) -> Result<ReferenceType, NSError> {
-		let pointer = UnsafeMutablePointer<COpaquePointer>.alloc(1)
+		var pointer: COpaquePointer = nil
 		let repository = self.pointer
-		let result = git_reference_lookup(pointer, repository, name)
+		let result = git_reference_lookup(&pointer, repository, name)
 		
 		if result != GIT_OK.value {
-			pointer.dealloc(1)
 			return failure(libGit2Error(result, libGit2PointOfFailure: "git_reference_lookup"))
 		}
 		
-		let value = referenceWithLibGit2Reference(pointer.memory)
-		
-		git_reference_free(pointer.memory)
-		pointer.dealloc(1)
+		let value = referenceWithLibGit2Reference(pointer)
+		git_reference_free(pointer)
 		return success(value)
 	}
 	

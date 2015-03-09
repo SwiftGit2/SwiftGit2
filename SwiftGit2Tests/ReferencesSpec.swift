@@ -14,11 +14,10 @@ import Quick
 func from_git_reference<T>(repository: Repository, name: String, f: COpaquePointer -> T) -> T {
 	let repository = repository.pointer
 	
-	let pointer = UnsafeMutablePointer<COpaquePointer>.alloc(1)
-	git_reference_lookup(pointer, repository, name)
-	let result = f(pointer.memory)
-	git_object_free(pointer.memory)
-	pointer.dealloc(1)
+	var pointer: COpaquePointer = nil
+	git_reference_lookup(&pointer, repository, name)
+	let result = f(pointer)
+	git_object_free(pointer)
 	
 	return result
 }

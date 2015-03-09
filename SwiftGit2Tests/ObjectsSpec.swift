@@ -15,11 +15,10 @@ func from_git_object<T>(repository: Repository, oid: OID, f: COpaquePointer -> T
 	let repository = repository.pointer
 	var oid = oid.oid
 	
-	let pointer = UnsafeMutablePointer<COpaquePointer>.alloc(1)
-	git_object_lookup(pointer, repository, &oid, GIT_OBJ_ANY)
-	let result = f(pointer.memory)
-	git_object_free(pointer.memory)
-	pointer.dealloc(1)
+	var pointer: COpaquePointer = nil
+	git_object_lookup(&pointer, repository, &oid, GIT_OBJ_ANY)
+	let result = f(pointer)
+	git_object_free(pointer)
 	
 	return result
 }
