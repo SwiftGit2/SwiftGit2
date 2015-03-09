@@ -13,7 +13,7 @@ import Quick
 
 class OIDSpec: QuickSpec {
 	override func spec() {
-		describe("init(string:)") {
+		describe("OID(string:)") {
 			it("should be nil if string is too short") {
 				expect(OID(string: "123456789012345678901234567890123456789")).to(beNil())
 			}
@@ -31,14 +31,14 @@ class OIDSpec: QuickSpec {
 			}
 		}
 		
-		describe("init(oid:)") {
+		describe("OID(oid)") {
 			it("should equal an OID with the same git_oid") {
 				let oid = OID(string: "1234567890123456789012345678901234567890")!
 				expect(OID(oid.oid)).to(equal(oid))
 			}
 		}
 		
-		describe("description") {
+		describe("OID.description") {
 			it("should return the SHA") {
 				let SHA = "1234567890123456789012345678901234567890"
 				let oid = OID(string: SHA)!
@@ -46,7 +46,7 @@ class OIDSpec: QuickSpec {
 			}
 		}
 		
-		describe("==") {
+		describe("==(OID, OID)") {
 			it("should be equal when identical") {
 				let SHA = "1234567890123456789012345678901234567890"
 				let oid1 = OID(string: SHA)!
@@ -61,7 +61,7 @@ class OIDSpec: QuickSpec {
 			}
 		}
 		
-		describe("hashValue") {
+		describe("OID.hashValue") {
 			it("should be equal when OIDs are equal") {
 				let SHA = "1234567890123456789012345678901234567890"
 				let oid1 = OID(string: SHA)!

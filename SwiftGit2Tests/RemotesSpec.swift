@@ -24,7 +24,7 @@ func with_git_remote<T>(repository: Repository, name: String, f: COpaquePointer 
 
 class RemoteSpec: QuickSpec {
 	override func spec() {
-		describe("init(pointer:)") {
+		describe("Remote(pointer)") {
 			it("should initialize its properties") {
 				let repo = Fixtures.mantleRepository
 				let remote = with_git_remote(repo, "upstream") { Remote($0) }
@@ -34,7 +34,7 @@ class RemoteSpec: QuickSpec {
 			}
 		}
 		
-		describe("==") {
+		describe("==(Remote, Remote)") {
 			it("should be true with equal objects") {
 				let repo = Fixtures.mantleRepository
 				let remote1 = with_git_remote(repo, "upstream") { Remote($0) }
@@ -50,7 +50,7 @@ class RemoteSpec: QuickSpec {
 			}
 		}
 		
-		describe("hashValue") {
+		describe("Remote.hashValue") {
 			it("should be equal with equal objcets") {
 				let repo = Fixtures.mantleRepository
 				let remote1 = with_git_remote(repo, "upstream") { Remote($0) }
