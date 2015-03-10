@@ -31,6 +31,17 @@ This vastly simplifies the design of long-lived applications, which are the most
 
 All methods for reading from or writing to a repository are on SwiftGit’s only `class`: `Repository`. This highlights the failability and mutation of these methods, while freeing up all other instances to be immutable `struct`s and `enum`s.
 
+## Importing SwiftGit2
+The easiest way to add SwiftGit2 to your project is to use [Carthage](https://github.com/Carthage/Carthage). Simply add `github "SwiftGit2/SwiftGit2"` to your `Cartfile` and run `carthage update`.
+
+If you’d like, you can do things the ~~hard~~ old-fashioned way:
+
+1. Add SwiftGit2 as a submodule of your project’s repository.
+2. Run `git submodule update —init —recursive` to fetch all of SwiftGit2’s depedencies.
+3. Add `SwiftGit2.xcodeproj` to your project’s Xcode project or workspace.
+4. On the “Build Phases” tab of your application target, add `SwiftGit2.framework` to the “Link Binary With Libraries” phase. SwiftGit2 must also be added to a “Copy Frameworks” build phase.
+5. **If you added RAC to a project (not a workspace)**, you will also need to add the appropriate SwiftGit2 target to the “Target Dependencies” of your application.
+
 ## Contributions
 We :heart: to receive pull requests! GitHub makes it easy:
 
