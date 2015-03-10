@@ -37,7 +37,7 @@ The easiest way to add SwiftGit2 to your project is to use [Carthage](https://gi
 If you’d like, you can do things the ~~hard~~ old-fashioned way:
 
 1. Add SwiftGit2 as a submodule of your project’s repository.
-2. Run `git submodule update —init —recursive` to fetch all of SwiftGit2’s depedencies.
+2. Run `git submodule update --init --recursive` to fetch all of SwiftGit2’s depedencies.
 3. Add `SwiftGit2.xcodeproj` to your project’s Xcode project or workspace.
 4. On the “Build Phases” tab of your application target, add `SwiftGit2.framework` to the “Link Binary With Libraries” phase. SwiftGit2 must also be added to a “Copy Frameworks” build phase.
 5. **If you added SwiftGit2 to a project (not a workspace)**, you will also need to add the appropriate SwiftGit2 target to the “Target Dependencies” of your application.
