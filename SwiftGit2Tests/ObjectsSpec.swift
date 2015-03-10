@@ -15,18 +15,17 @@ func from_git_object<T>(repository: Repository, oid: OID, f: COpaquePointer -> T
 	let repository = repository.pointer
 	var oid = oid.oid
 	
-	let pointer = UnsafeMutablePointer<COpaquePointer>.alloc(1)
-	git_object_lookup(pointer, repository, &oid, GIT_OBJ_ANY)
-	let result = f(pointer.memory)
-	git_object_free(pointer.memory)
-	pointer.dealloc(1)
+	var pointer: COpaquePointer = nil
+	git_object_lookup(&pointer, repository, &oid, GIT_OBJ_ANY)
+	let result = f(pointer)
+	git_object_free(pointer)
 	
 	return result
 }
 
 class SignatureSpec: QuickSpec {
 	override func spec() {
-		describe("init(signature:)") {
+		describe("Signature(signature)") {
 			it("should initialize its properties") {
 				let repo = Fixtures.simpleRepository
 				let oid = OID(string: "dc220a3f0c22920dab86d4a8d3a3cb7e69d6205a")!
@@ -41,7 +40,7 @@ class SignatureSpec: QuickSpec {
 			}
 		}
 		
-		describe("==") {
+		describe("==(Signature, Signature)") {
 			it("should be true with equal objects") {
 				let repo = Fixtures.simpleRepository
 				let oid = OID(string: "dc220a3f0c22920dab86d4a8d3a3cb7e69d6205a")!
@@ -70,7 +69,7 @@ class SignatureSpec: QuickSpec {
 			}
 		}
 		
-		describe("hashValue") {
+		describe("Signature.hashValue") {
 			it("should be equal with equal objects") {
 				let repo = Fixtures.simpleRepository
 				let oid = OID(string: "dc220a3f0c22920dab86d4a8d3a3cb7e69d6205a")!
@@ -88,7 +87,7 @@ class SignatureSpec: QuickSpec {
 
 class CommitSpec: QuickSpec {
 	override func spec() {
-		describe("init(pointer:)") {
+		describe("Commit(pointer)") {
 			it("should initialize its properties") {
 				let repo = Fixtures.simpleRepository
 				let oid = OID(string: "24e1e40ee77525d9e279f079f9906ad6d98c8940")!
@@ -133,7 +132,7 @@ class CommitSpec: QuickSpec {
 			}
 		}
 		
-		describe("==") {
+		describe("==(Commit, Commit)") {
 			it("should be true with equal objects") {
 				let repo = Fixtures.simpleRepository
 				let oid = OID(string: "dc220a3f0c22920dab86d4a8d3a3cb7e69d6205a")!
@@ -154,7 +153,7 @@ class CommitSpec: QuickSpec {
 			}
 		}
 		
-		describe("hashValue") {
+		describe("Commit.hashValue") {
 			it("should be equal with equal objects") {
 				let repo = Fixtures.simpleRepository
 				let oid = OID(string: "dc220a3f0c22920dab86d4a8d3a3cb7e69d6205a")!
@@ -169,7 +168,7 @@ class CommitSpec: QuickSpec {
 
 class TreeEntrySpec: QuickSpec {
 	override func spec() {
-		describe("init(attributes:object:name:)") {
+		describe("Tree.Entry(attributes:object:name:)") {
 			it("should set its properties") {
 				let attributes = Int32(GIT_FILEMODE_BLOB.value)
 				let object = Pointer.Blob(OID(string: "41078396f5187daed5f673e4a13b185bbad71fba")!)
@@ -182,7 +181,7 @@ class TreeEntrySpec: QuickSpec {
 			}
 		}
 		
-		describe("init(pointer:") {
+		describe("Tree.Entry(pointer)") {
 			it("should set its properties") {
 				let repo = Fixtures.simpleRepository
 				let oid = OID(string: "219e9f39c2fb59ed1dfb3e78ed75055a57528f31")!
@@ -194,7 +193,7 @@ class TreeEntrySpec: QuickSpec {
 			}
 		}
 		
-		describe("==") {
+		describe("==(Tree.Entry, Tree.Entry)") {
 			it("should be true with equal objects") {
 				let repo = Fixtures.simpleRepository
 				let oid = OID(string: "219e9f39c2fb59ed1dfb3e78ed75055a57528f31")!
@@ -215,7 +214,7 @@ class TreeEntrySpec: QuickSpec {
 			}
 		}
 		
-		describe("hashValue") {
+		describe("Tree.Entry.hashValue") {
 			it("should be equal with equal objects") {
 				let repo = Fixtures.simpleRepository
 				let oid = OID(string: "219e9f39c2fb59ed1dfb3e78ed75055a57528f31")!
@@ -230,7 +229,7 @@ class TreeEntrySpec: QuickSpec {
 
 class TreeSpec: QuickSpec {
 	override func spec() {
-		describe("init(pointer:)") {
+		describe("Tree(pointer)") {
 			it("should initialize its properties") {
 				let repo = Fixtures.simpleRepository
 				let oid = OID(string: "219e9f39c2fb59ed1dfb3e78ed75055a57528f31")!
@@ -243,7 +242,7 @@ class TreeSpec: QuickSpec {
 			}
 		}
 		
-		describe("==") {
+		describe("==(Tree, Tree)") {
 			it("should be true with equal objects") {
 				let repo = Fixtures.simpleRepository
 				let oid = OID(string: "219e9f39c2fb59ed1dfb3e78ed75055a57528f31")!
@@ -264,7 +263,7 @@ class TreeSpec: QuickSpec {
 			}
 		}
 		
-		describe("hashValue") {
+		describe("Tree.hashValue") {
 			it("should be equal with equal objects") {
 				let repo = Fixtures.simpleRepository
 				let oid = OID(string: "219e9f39c2fb59ed1dfb3e78ed75055a57528f31")!
@@ -279,7 +278,7 @@ class TreeSpec: QuickSpec {
 
 class BlobSpec: QuickSpec {
 	override func spec() {
-		describe("init(pointer:)") {
+		describe("Blob(pointer)") {
 			it("should initialize its properties") {
 				let repo = Fixtures.simpleRepository
 				let oid = OID(string: "41078396f5187daed5f673e4a13b185bbad71fba")!
@@ -292,7 +291,7 @@ class BlobSpec: QuickSpec {
 			}
 		}
 		
-		describe("==") {
+		describe("==(Blob, Blob)") {
 			it("should be true with equal objects") {
 				let repo = Fixtures.simpleRepository
 				let oid = OID(string: "41078396f5187daed5f673e4a13b185bbad71fba")!
@@ -313,7 +312,7 @@ class BlobSpec: QuickSpec {
 			}
 		}
 		
-		describe("hashValue") {
+		describe("Blob.hashValue") {
 			it("should be equal with equal objects") {
 				let repo = Fixtures.simpleRepository
 				let oid = OID(string: "41078396f5187daed5f673e4a13b185bbad71fba")!
@@ -328,7 +327,7 @@ class BlobSpec: QuickSpec {
 
 class TagSpec: QuickSpec {
 	override func spec() {
-		describe("init(pointer:)") {
+		describe("Tag(pointer)") {
 			it("should set its properties") {
 				let repo = Fixtures.simpleRepository
 				let oid = OID(string: "57943b8ee00348180ceeedc960451562750f6d33")!
@@ -344,7 +343,7 @@ class TagSpec: QuickSpec {
 			}
 		}
 		
-		describe("==") {
+		describe("==(Tag, Tag)") {
 			it("should be true with equal objects") {
 				let repo = Fixtures.simpleRepository
 				let oid = OID(string: "57943b8ee00348180ceeedc960451562750f6d33")!
@@ -365,7 +364,7 @@ class TagSpec: QuickSpec {
 			}
 		}
 		
-		describe("hashValue") {
+		describe("Tag.hashValue") {
 			it("should be equal with equal objects") {
 				let repo = Fixtures.simpleRepository
 				let oid = OID(string: "57943b8ee00348180ceeedc960451562750f6d33")!

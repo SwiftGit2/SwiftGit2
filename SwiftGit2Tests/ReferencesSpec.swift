@@ -14,18 +14,17 @@ import Quick
 func from_git_reference<T>(repository: Repository, name: String, f: COpaquePointer -> T) -> T {
 	let repository = repository.pointer
 	
-	let pointer = UnsafeMutablePointer<COpaquePointer>.alloc(1)
-	git_reference_lookup(pointer, repository, name)
-	let result = f(pointer.memory)
-	git_object_free(pointer.memory)
-	pointer.dealloc(1)
+	var pointer: COpaquePointer = nil
+	git_reference_lookup(&pointer, repository, name)
+	let result = f(pointer)
+	git_object_free(pointer)
 	
 	return result
 }
 
 class ReferenceSpec: QuickSpec {
 	override func spec() {
-		describe("init()") {
+		describe("Reference(pointer)") {
 			it("should initialize its properties") {
 				let repo = Fixtures.simpleRepository
 				let ref = from_git_reference(repo, "refs/heads/master") { Reference($0) }
@@ -35,7 +34,7 @@ class ReferenceSpec: QuickSpec {
 			}
 		}
 		
-		describe("==") {
+		describe("==(Reference, Reference)") {
 			it("should be true with equal references") {
 				let repo = Fixtures.simpleRepository
 				let ref1 = from_git_reference(repo, "refs/heads/master") { Reference($0) }
@@ -51,7 +50,7 @@ class ReferenceSpec: QuickSpec {
 			}
 		}
 
-		describe("hashValue") {
+		describe("Reference.hashValue") {
 			it("should be equal with equal references") {
 				let repo = Fixtures.simpleRepository
 				let ref1 = from_git_reference(repo, "refs/heads/master") { Reference($0) }
@@ -64,7 +63,7 @@ class ReferenceSpec: QuickSpec {
 
 class BranchSpec: QuickSpec {
 	override func spec() {
-		describe("init()") {
+		describe("Branch(pointer)") {
 			it("should initialize its properties") {
 				let repo = Fixtures.mantleRepository
 				let branch = from_git_reference(repo, "refs/heads/master") { Branch($0)! }
@@ -90,7 +89,7 @@ class BranchSpec: QuickSpec {
 			}
 		}
 		
-		describe("==") {
+		describe("==(Branch, Branch)") {
 			it("should be true with equal branches") {
 				let repo = Fixtures.simpleRepository
 				let branch1 = from_git_reference(repo, "refs/heads/master") { Branch($0)! }
@@ -106,7 +105,7 @@ class BranchSpec: QuickSpec {
 			}
 		}
 
-		describe("hashValue") {
+		describe("Branch.hashValue") {
 			it("should be equal with equal references") {
 				let repo = Fixtures.simpleRepository
 				let branch1 = from_git_reference(repo, "refs/heads/master") { Branch($0)! }
@@ -119,7 +118,7 @@ class BranchSpec: QuickSpec {
 
 class TagReferenceSpec: QuickSpec {
 	override func spec() {
-		describe("init()") {
+		describe("TagReference(pointer)") {
 			it("should work with an annotated tag") {
 				let repo = Fixtures.simpleRepository
 				let tag = from_git_reference(repo, "refs/tags/tag-2") { TagReference($0)! }
@@ -145,7 +144,7 @@ class TagReferenceSpec: QuickSpec {
 			}
 		}
 		
-		describe("==") {
+		describe("==(TagReference, TagReference)") {
 			it("should be true with equal tag references") {
 				let repo = Fixtures.simpleRepository
 				let tag1 = from_git_reference(repo, "refs/tags/tag-2") { TagReference($0)! }
@@ -161,7 +160,7 @@ class TagReferenceSpec: QuickSpec {
 			}
 		}
 
-		describe("hashValue") {
+		describe("TagReference.hashValue") {
 			it("should be equal with equal references") {
 				let repo = Fixtures.simpleRepository
 				let tag1 = from_git_reference(repo, "refs/tags/tag-2") { TagReference($0)! }

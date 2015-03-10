@@ -14,7 +14,7 @@ import Guanaco
 
 class RepositorySpec: QuickSpec {
 	override func spec() {
-		describe("+atURL()") {
+		describe("Repository.Type.atURL()") {
 			it("should work if the repo exists") {
 				let repo = Fixtures.simpleRepository
 				expect(repo.directoryURL).notTo(beNil())
@@ -30,7 +30,7 @@ class RepositorySpec: QuickSpec {
 			}
 		}
 		
-		describe("-blobWithOID()") {
+		describe("Repository.blobWithOID()") {
 			it("should return the commit if it exists") {
 				let repo = Fixtures.simpleRepository
 				let oid = OID(string: "41078396f5187daed5f673e4a13b185bbad71fba")!
@@ -57,7 +57,7 @@ class RepositorySpec: QuickSpec {
 			}
 		}
 		
-		describe("-commitWithOID()") {
+		describe("Repository.commitWithOID()") {
 			it("should return the commit if it exists") {
 				let repo = Fixtures.simpleRepository
 				let oid = OID(string: "dc220a3f0c22920dab86d4a8d3a3cb7e69d6205a")!
@@ -84,7 +84,7 @@ class RepositorySpec: QuickSpec {
 			}
 		}
 		
-		describe("-tagWithOID()") {
+		describe("Repository.tagWithOID()") {
 			it("should return the tag if it exists") {
 				let repo = Fixtures.simpleRepository
 				let oid = OID(string: "57943b8ee00348180ceeedc960451562750f6d33")!
@@ -111,7 +111,7 @@ class RepositorySpec: QuickSpec {
 			}
 		}
 		
-		describe("-treeWithOID()") {
+		describe("Repository.treeWithOID()") {
 			it("should return the tree if it exists") {
 				let repo = Fixtures.simpleRepository
 				let oid = OID(string: "f93e3a1a1525fb5b91020da86e44810c87a2d7bc")!
@@ -138,7 +138,7 @@ class RepositorySpec: QuickSpec {
 			}
 		}
 		
-		describe("-objectWithOID()") {
+		describe("Repository.objectWithOID()") {
 			it("should work with a blob") {
 				let repo   = Fixtures.simpleRepository
 				let oid    = OID(string: "41078396f5187daed5f673e4a13b185bbad71fba")!
@@ -179,7 +179,7 @@ class RepositorySpec: QuickSpec {
 			}
 		}
 		
-		describe("-objectFromPointer(PointerTo)") {
+		describe("Repsoitory.objectFromPointer(PointerTo)") {
 			it("should work with commits") {
 				let repo = Fixtures.simpleRepository
 				let oid = OID(string: "dc220a3f0c22920dab86d4a8d3a3cb7e69d6205a")!
@@ -217,7 +217,7 @@ class RepositorySpec: QuickSpec {
 			}
 		}
 		
-		describe("-objectFromPointer(Pointer)") {
+		describe("Repository.objectFromPointer(Pointer)") {
 			it("should work with commits") {
 				let repo = Fixtures.simpleRepository
 				let oid = OID(string: "dc220a3f0c22920dab86d4a8d3a3cb7e69d6205a")!
@@ -259,7 +259,7 @@ class RepositorySpec: QuickSpec {
 			}
 		}
 		
-		describe("-allRemotes()") {
+		describe("Repository.allRemotes()") {
 			it("should return an empty list if there are no remotes") {
 				let repo = Fixtures.simpleRepository
 				let result = repo.allRemotes()
@@ -275,7 +275,7 @@ class RepositorySpec: QuickSpec {
 			}
 		}
 		
-		describe("-remoteWithName()") {
+		describe("Repository.remoteWithName()") {
 			it("should return the remote if it exists") {
 				let repo = Fixtures.mantleRepository
 				let result = repo.remoteWithName("upstream")
@@ -289,7 +289,7 @@ class RepositorySpec: QuickSpec {
 			}
 		}
 		
-		describe("-referenceWithName()") {
+		describe("Repository.referenceWithName()") {
 			it("should return a local branch if it exists") {
 				let name = "refs/heads/master"
 				let result = Fixtures.simpleRepository.referenceWithName(name)
@@ -323,7 +323,7 @@ class RepositorySpec: QuickSpec {
 			}
 		}
 		
-		describe("-localBranches()") {
+		describe("Repository.localBranches()") {
 			it("should return all the local branches") {
 				let repo = Fixtures.simpleRepository
 				let expected = [
@@ -335,7 +335,7 @@ class RepositorySpec: QuickSpec {
 			}
 		}
 		
-		describe("-remoteBranches()") {
+		describe("Repository.remoteBranches()") {
 			it("should return all the remote branches") {
 				let repo = Fixtures.mantleRepository
 				let expectedNames = [
@@ -366,7 +366,7 @@ class RepositorySpec: QuickSpec {
 			}
 		}
 		
-		describe("-localBranchWithName()") {
+		describe("Repository.localBranchWithName()") {
 			it("should return the branch if it exists") {
 				let result = Fixtures.simpleRepository.localBranchWithName("master")
 				expect(result.value?.longName).to(equal("refs/heads/master"))
@@ -378,7 +378,7 @@ class RepositorySpec: QuickSpec {
 			}
 		}
 		
-		describe("-remoteBranchWithName()") {
+		describe("Repository.remoteBranchWithName()") {
 			it("should return the branch if it exists") {
 				let result = Fixtures.mantleRepository.remoteBranchWithName("upstream/master")
 				expect(result.value?.longName).to(equal("refs/remotes/upstream/master"))
@@ -390,7 +390,7 @@ class RepositorySpec: QuickSpec {
 			}
 		}
 		
-		describe("-allTags()") {
+		describe("Repository.allTags()") {
 			it("should return all the tags") {
 				let repo = Fixtures.simpleRepository
 				let expected = [
@@ -401,7 +401,7 @@ class RepositorySpec: QuickSpec {
 			}
 		}
 		
-		describe("-tagWithName()") {
+		describe("Repository.tagWithName()") {
 			it("should return the tag if it exists") {
 				let result = Fixtures.simpleRepository.tagWithName("tag-2")
 				expect(result.value?.longName).to(equal("refs/tags/tag-2"))
@@ -413,7 +413,7 @@ class RepositorySpec: QuickSpec {
 			}
 		}
 		
-		describe("-HEAD()") {
+		describe("Repository.HEAD()") {
 			it("should work when on a branch") {
 				let result = Fixtures.simpleRepository.HEAD()
 				expect(result.value?.longName).to(equal("refs/heads/master"))
