@@ -1,6 +1,23 @@
 # SwiftGit2
 Swift bindings to [libgit2](https://github.com/libgit2/libgit2).
 
+```swift
+let URL: NSURL = ...
+let repo = Repository.atURL(URL)
+if let repo = repo.value {
+    let latestCommit: Result<Commit, NSError> = repo
+        .HEAD()
+        .flatMap { repo.commitWithOID($0.oid) }
+    if let commit = latestCommit.value {
+        println("Latest Commit: \(commit.message) by \(commit.author.name)")
+    } else {
+        println("Could not get commit: \(latestCommit.error)")
+    }
+} else {
+    println("Could not open repository: \(repo.error)")
+}
+```
+
 ## Design
 SwiftGit2 uses value objects wherever possible. That means using Swift’s `struct`s and `enum`s without holding references to libgit2 objects. This has a number of advantages:
 
