@@ -35,7 +35,7 @@ final class Fixtures {
 		NSFileManager.defaultManager().createDirectoryAtURL(directoryURL, withIntermediateDirectories: true, attributes: nil, error: nil)
 		
 		let bundle = NSBundle(identifier: "org.libgit2.SwiftGit2-OSXTests")!
-		let zipURLs = bundle.URLsForResourcesWithExtension("zip", subdirectory: nil)! as [NSURL]
+		let zipURLs = bundle.URLsForResourcesWithExtension("zip", subdirectory: nil)! as! [NSURL]
 		
 		for URL in zipURLs {
 			unzipFileAtURL(URL, intoDirectoryAtURL: directoryURL)
@@ -59,10 +59,14 @@ final class Fixtures {
 	
 	func repositoryWithName(name: String) -> Repository {
 		let url = directoryURL.URLByAppendingPathComponent(name, isDirectory: true)
-		return Repository.atURL(url).value()!
+		return Repository.atURL(url).value!
 	}
 	
 	// MARK: - The Fixtures
+	
+	class var detachedHeadRepository: Repository {
+		return Fixtures.sharedInstance.repositoryWithName("detached-head")
+	}
 	
 	class var simpleRepository: Repository {
 		return Fixtures.sharedInstance.repositoryWithName("simple-repository")

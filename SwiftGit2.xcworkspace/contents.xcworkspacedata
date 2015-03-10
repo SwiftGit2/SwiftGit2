@@ -5,9 +5,15 @@
       location = "group:SwiftGit2.xcodeproj">
    </FileRef>
    <FileRef
-      location = "group:External/LlamaKit/LlamaKit.xcodeproj">
+      location = "group:Carthage/Checkouts/LlamaKit/LlamaKit.xcodeproj">
    </FileRef>
    <FileRef
-      location = "group:External/Quick/Quick.xcodeproj">
+      location = "group:Carthage/Checkouts/Quick/Quick.xcodeproj">
+   </FileRef>
+   <FileRef
+      location = "group:Carthage/Checkouts/Nimble/Nimble.xcodeproj">
+   </FileRef>
+   <FileRef
+      location = "group:Carthage/Checkouts/Guanaco/Guanaco.xcodeproj">
    </FileRef>
 </Workspace>
