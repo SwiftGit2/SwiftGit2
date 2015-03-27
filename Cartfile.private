@@ -1,4 +1,4 @@
 github "jspahrsummers/xcconfigs" >= 0.7.2
 github "Quick/Quick" "155f858bce082373fc60d0c0a63415bf336c676b"
-github "Quick/Nimble" "c511bc1558c1cbd4685cdb326a58c6c6b026140e"
+github "Quick/Nimble" ~> 0.4.1
 github "modocache/Guanaco" "18126c0c8ba9a7cb3cc5d43aec83c81047410ab6"
