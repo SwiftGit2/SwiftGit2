@@ -353,9 +353,11 @@ final public class Repository {
 	
 	/// Check out HEAD.
 	///
+	/// :param: strategy The checkout strategy to use.
 	/// :returns: Returns a result with void or the error that occurred.
-	public func checkout() -> Result<(), NSError> {
+	public func checkout(#strategy: CheckoutStrategy) -> Result<(), NSError> {
 		var options = git_checkout_options()
+		options.checkout_strategy = strategy.git_checkout_strategy.value
 		let result1 = git_checkout_init_options(&options, UInt32(GIT_CHECKOUT_OPTIONS_VERSION))
 		if result1 != 0 {
 			return failure(libGit2Error(result1, libGit2PointOfFailure: "git_checkout_init_options"))
@@ -371,16 +373,18 @@ final public class Repository {
 	/// Check out the given OID.
 	///
 	/// :param: oid The OID of the commit to check out.
+	/// :param: strategy The checkout strategy to use.
 	/// :returns: Returns a result with void or the error that occurred.
-	public func checkout(oid: OID) -> Result<(), NSError> {
-		return setHEAD(oid).flatMap { self.checkout() }
+	public func checkout(oid: OID, strategy: CheckoutStrategy) -> Result<(), NSError> {
+		return setHEAD(oid).flatMap { self.checkout(strategy: strategy) }
 	}
 	
 	/// Check out the given reference.
 	///
 	/// :param: reference The reference to check out.
+	/// :param: strategy The checkout strategy to use.
 	/// :returns: Returns a result with void or the error that occurred.
-	public func checkout(reference: ReferenceType) -> Result<(), NSError> {
-		return setHEAD(reference).flatMap { self.checkout() }
+	public func checkout(reference: ReferenceType, strategy: CheckoutStrategy) -> Result<(), NSError> {
+		return setHEAD(reference).flatMap { self.checkout(strategy: strategy) }
 	}
 }

@@ -471,12 +471,12 @@ class RepositorySpec: QuickSpec {
 				let oid = OID(string: "315b3f344221db91ddc54b269f3c9af422da0f2e")!
 				expect(repo.HEAD().value?.shortName).to(equal("master"))
 				
-				expect(repo.checkout(oid)).to(haveSucceeded())
+				expect(repo.checkout(oid, strategy: CheckoutStrategy.None)).to(haveSucceeded())
 				let HEAD = repo.HEAD().value
 				expect(HEAD?.longName).to(equal("HEAD"))
 				expect(HEAD?.oid).to(equal(oid))
 				
-				expect(repo.checkout(repo.localBranchWithName("master").value!)).to(haveSucceeded())
+				expect(repo.checkout(repo.localBranchWithName("master").value!, strategy: CheckoutStrategy.None)).to(haveSucceeded())
 				expect(repo.HEAD().value?.shortName).to(equal("master"))
 			}
 		}
@@ -488,10 +488,10 @@ class RepositorySpec: QuickSpec {
 				expect(repo.HEAD().value?.longName).to(equal("HEAD"))
 				
 				let branch = repo.localBranchWithName("another-branch").value!
-				expect(repo.checkout(branch)).to(haveSucceeded())
+				expect(repo.checkout(branch, strategy: CheckoutStrategy.None)).to(haveSucceeded())
 				expect(repo.HEAD().value?.shortName).to(equal(branch.name))
 				
-				expect(repo.checkout(oid)).to(haveSucceeded())
+				expect(repo.checkout(oid, strategy: CheckoutStrategy.None)).to(haveSucceeded())
 				expect(repo.HEAD().value?.longName).to(equal("HEAD"))
 			}
 		}
