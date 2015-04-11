@@ -9,6 +9,8 @@
 import Foundation
 import LlamaKit
 
+public typealias CheckoutProgressBlock = SG2CheckoutProgressBlock
+
 /// A git repository.
 final public class Repository {
 	
@@ -354,19 +356,17 @@ final public class Repository {
 	/// Check out HEAD.
 	///
 	/// :param: strategy The checkout strategy to use.
+	/// :param: progress A block that's called with the progress of the checkout.
 	/// :returns: Returns a result with void or the error that occurred.
-	public func checkout(#strategy: CheckoutStrategy) -> Result<(), NSError> {
-		var options = git_checkout_options()
+	public func checkout(#strategy: CheckoutStrategy, progress: CheckoutProgressBlock? = nil) -> Result<(), NSError> {
+		var options = SG2CheckoutOptions(progress)
 		options.checkout_strategy = strategy.git_checkout_strategy.value
-		let result1 = git_checkout_init_options(&options, UInt32(GIT_CHECKOUT_OPTIONS_VERSION))
-		if result1 != 0 {
-			return failure(libGit2Error(result1, libGit2PointOfFailure: "git_checkout_init_options"))
+		
+		let result = git_checkout_head(self.pointer, &options)
+		if result != GIT_OK.value {
+			return failure(libGit2Error(result, libGit2PointOfFailure: "git_checkout_head"))
 		}
 		
-		let result2 = git_checkout_head(self.pointer, &options)
-		if result2 != GIT_OK.value {
-			return failure(libGit2Error(result2, libGit2PointOfFailure: "git_checkout_head"))
-		}
 		return success()
 	}
 	
@@ -374,17 +374,19 @@ final public class Repository {
 	///
 	/// :param: oid The OID of the commit to check out.
 	/// :param: strategy The checkout strategy to use.
+	/// :param: progress A block that's called with the progress of the checkout.
 	/// :returns: Returns a result with void or the error that occurred.
-	public func checkout(oid: OID, strategy: CheckoutStrategy) -> Result<(), NSError> {
-		return setHEAD(oid).flatMap { self.checkout(strategy: strategy) }
+	public func checkout(oid: OID, strategy: CheckoutStrategy, progress: CheckoutProgressBlock? = nil) -> Result<(), NSError> {
+		return setHEAD(oid).flatMap { self.checkout(strategy: strategy, progress: progress) }
 	}
 	
 	/// Check out the given reference.
 	///
 	/// :param: reference The reference to check out.
 	/// :param: strategy The checkout strategy to use.
+	/// :param: progress A block that's called with the progress of the checkout.
 	/// :returns: Returns a result with void or the error that occurred.
-	public func checkout(reference: ReferenceType, strategy: CheckoutStrategy) -> Result<(), NSError> {
-		return setHEAD(reference).flatMap { self.checkout(strategy: strategy) }
+	public func checkout(reference: ReferenceType, strategy: CheckoutStrategy, progress: CheckoutProgressBlock? = nil) -> Result<(), NSError> {
+		return setHEAD(reference).flatMap { self.checkout(strategy: strategy, progress: progress) }
 	}
 }
