@@ -26,7 +26,7 @@ function cleanup ()
 function build_ssl () 
 {
     rm -rf "/tmp/openssl"
-    cp -r "${ROOT_PATH}/External/openssl" "/tmp/"
+    cp -r "${ROOT_PATH}/External/ios-openssl" "/tmp/"
     pushd "/tmp/openssl" > /dev/null
 
     if [ "${ARCH}" == "arm64" ] || [ "${ARCH}" == "x86_64" ]
