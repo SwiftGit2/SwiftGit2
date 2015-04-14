@@ -830,9 +830,9 @@
 			productReference = BEB31F2E1A0D6F7A00F525B9 /* SwiftGit2-OSXTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
-		BEB31F8E1A0E563900F525B9 /* libgit2 */ = {
+		BEB31F8E1A0E563900F525B9 /* libgit2-OSX */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = BEB31F901A0E563900F525B9 /* Build configuration list for PBXNativeTarget "libgit2" */;
+			buildConfigurationList = BEB31F901A0E563900F525B9 /* Build configuration list for PBXNativeTarget "libgit2-OSX" */;
 			buildPhases = (
 				BEB31F931A0E567000F525B9 /* ShellScript */,
 			);
@@ -840,7 +840,7 @@
 			);
 			dependencies = (
 			);
-			name = libgit2;
+			name = "libgit2-OSX";
 			productName = libgit2;
 			productReference = BEB31F8F1A0E563900F525B9 /* liblibgit2.a */;
 			productType = "com.apple.product-type.library.static";
@@ -924,7 +924,7 @@
 				BEB31F2D1A0D6F7A00F525B9 /* SwiftGit2-OSXTests */,
 				F807D4991ADCA66800A2DC7A /* SwiftGit2-iOS */,
 				F807D4A31ADCA66800A2DC7A /* SwiftGit2-iOSTests */,
-				BEB31F8E1A0E563900F525B9 /* libgit2 */,
+				BEB31F8E1A0E563900F525B9 /* libgit2-OSX */,
 			);
 		};
 /* End PBXProject section */
@@ -1035,7 +1035,7 @@
 		};
 		BEB31F951A0E56E200F525B9 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = BEB31F8E1A0E563900F525B9 /* libgit2 */;
+			target = BEB31F8E1A0E563900F525B9 /* libgit2-OSX */;
 			targetProxy = BEB31F941A0E56E200F525B9 /* PBXContainerItemProxy */;
 		};
 		F807D4A71ADCA66800A2DC7A /* PBXTargetDependency */ = {
@@ -1045,7 +1045,7 @@
 		};
 		F807D4C61ADCABD800A2DC7A /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = BEB31F8E1A0E563900F525B9 /* libgit2 */;
+			target = BEB31F8E1A0E563900F525B9 /* libgit2-OSX */;
 			targetProxy = F807D4C51ADCABD800A2DC7A /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
@@ -1389,7 +1389,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		BEB31F901A0E563900F525B9 /* Build configuration list for PBXNativeTarget "libgit2" */ = {
+		BEB31F901A0E563900F525B9 /* Build configuration list for PBXNativeTarget "libgit2-OSX" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				BEB31F911A0E563900F525B9 /* Debug */,
