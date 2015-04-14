@@ -19,3 +19,6 @@
 [submodule "External/ios-openssl"]
 	path = External/ios-openssl
 	url = https://github.com/openssl/openssl.git
+[submodule "External/libssh2"]
+	path = External/libssh2
+	url = https://github.com/libssh2/libssh2.git
