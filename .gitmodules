@@ -16,3 +16,6 @@
 [submodule "Carthage/Checkouts/Result"]
 	path = Carthage/Checkouts/Result
 	url = https://github.com/antitypical/Result.git
+[submodule "External/ios-openssl"]
+	path = External/ios-openssl
+	url = https://github.com/openssl/openssl.git
