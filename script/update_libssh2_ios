@@ -28,14 +28,11 @@ function build_ssh2 ()
     export CPPFLAGS="-arch ${ARCH} -pipe -no-cpp-precomp -isysroot ${SDKROOT} -miphoneos-version-min=${IPHONEOS_DEPLOYMENT_TARGET}"
 
     mkdir -p "${ROOT_PATH}/External/libssh2-ios/bin/${SDKNAME}-${ARCH}.sdk"
-    LOG="${ROOT_PATH}/External/libssh2-ios/bin/${SDKNAME}-${ARCH}.sdk/build-libssh2.log"
 
-    echo "${LOG}"
-
-    ./buildconf >> "${LOG}" 2>&1
-    ./configure --host=${HOST} --prefix="${ROOT_PATH}/External/libssh2-ios/bin/${SDKNAME}-${ARCH}.sdk" --with-openssl --with-libssl-prefix="${ROOT_PATH}/External/ios-openssl" --disable-shared --enable-static >> "${LOG}" 2>&1
-    make >> "${LOG}" 2>&1
-    make install >> "${LOG}" 2>&1
+    ./buildconf
+    ./configure --host=${HOST} --prefix="${ROOT_PATH}/External/libssh2-ios/bin/${SDKNAME}-${ARCH}.sdk" --with-openssl --with-libssl-prefix="${ROOT_PATH}/External/ios-openssl" --disable-shared --enable-static
+    make
+    make install
     popd > /dev/null
 
     BUILT_LIBS+=("${ROOT_PATH}/External/libssh2-ios/bin/${SDKNAME}-${ARCH}.sdk/lib/libssh2.a")
