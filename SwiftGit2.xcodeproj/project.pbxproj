@@ -474,7 +474,6 @@
 		F807D5061ADCAC8300A2DC7A /* libiconv.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libiconv.dylib; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS8.3.sdk/usr/lib/libiconv.dylib; sourceTree = DEVELOPER_DIR; };
 		F807D50E1ADCC0D300A2DC7A /* LlamaKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = LlamaKit.framework; path = "../../../../../Volumes/DerivedData/SwiftGit2-bgqrwlxrlrptmnbsrxlmvchxawjd/Build/Products/Debug-iphoneos/LlamaKit.framework"; sourceTree = "<group>"; };
 		F807D52F1ADCDC3B00A2DC7A /* liblibgit2.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = liblibgit2.a; sourceTree = BUILT_PRODUCTS_DIR; };
-		F807D53F1ADCDC3C00A2DC7A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		F807D5471ADCDCF300A2DC7A /* script */ = {isa = PBXFileReference; lastKnownFileType = folder; path = script; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -603,15 +602,13 @@
 		BEB31F191A0D6F7A00F525B9 = {
 			isa = PBXGroup;
 			children = (
-				BEB31F411A0D75EE00F525B9 /* Configuration */,
-				BEB31F9A1A0E57FC00F525B9 /* libgit2 */,
-				F807D5301ADCDC3C00A2DC7A /* libgit2 */,
-				F807D53D1ADCDC3C00A2DC7A /* libgit2Tests */,
-				BEB31FA11A0E63C100F525B9 /* Libraries */,
-				BEB31F241A0D6F7A00F525B9 /* Products */,
-				F807D5471ADCDCF300A2DC7A /* script */,
 				BEB31F251A0D6F7A00F525B9 /* SwiftGit2 */,
 				BEB31F321A0D6F7A00F525B9 /* SwiftGit2Tests */,
+				BEB31F9A1A0E57FC00F525B9 /* libgit2 */,
+				BEB31FA11A0E63C100F525B9 /* Libraries */,
+				BEB31F411A0D75EE00F525B9 /* Configuration */,
+				BEB31F241A0D6F7A00F525B9 /* Products */,
+				F807D5471ADCDCF300A2DC7A /* script */,
 			);
 			sourceTree = "<group>";
 			usesTabs = 1;
@@ -788,29 +785,6 @@
 				BE14AA311A15AA510015B439 /* LlamaKit.framework */,
 			);
 			name = "OS X";
-			sourceTree = "<group>";
-		};
-		F807D5301ADCDC3C00A2DC7A /* libgit2 */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = libgit2;
-			sourceTree = "<group>";
-		};
-		F807D53D1ADCDC3C00A2DC7A /* libgit2Tests */ = {
-			isa = PBXGroup;
-			children = (
-				F807D53E1ADCDC3C00A2DC7A /* Supporting Files */,
-			);
-			path = libgit2Tests;
-			sourceTree = "<group>";
-		};
-		F807D53E1ADCDC3C00A2DC7A /* Supporting Files */ = {
-			isa = PBXGroup;
-			children = (
-				F807D53F1ADCDC3C00A2DC7A /* Info.plist */,
-			);
-			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
