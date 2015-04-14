@@ -16,3 +16,6 @@
 [submodule "Carthage/Checkouts/xcconfigs"]
 	path = Carthage/Checkouts/xcconfigs
 	url = https://github.com/jspahrsummers/xcconfigs.git
+[submodule "External/ios-openssl"]
+	path = External/ios-openssl
+	url = https://github.com/openssl/openssl.git
