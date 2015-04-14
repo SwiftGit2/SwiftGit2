@@ -355,6 +355,15 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		F807D54A1ADCE68400A2DC7A /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "include/$(PRODUCT_NAME)";
+			dstSubfolderSpec = 16;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
@@ -475,6 +484,7 @@
 		F807D50E1ADCC0D300A2DC7A /* LlamaKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = LlamaKit.framework; path = "../../../../../Volumes/DerivedData/SwiftGit2-bgqrwlxrlrptmnbsrxlmvchxawjd/Build/Products/Debug-iphoneos/LlamaKit.framework"; sourceTree = "<group>"; };
 		F807D52F1ADCDC3B00A2DC7A /* liblibgit2.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = liblibgit2.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		F807D5471ADCDCF300A2DC7A /* script */ = {isa = PBXFileReference; lastKnownFileType = folder; path = script; sourceTree = "<group>"; };
+		F807D54C1ADCE68400A2DC7A /* libOpenSSL-iOS.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libOpenSSL-iOS.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -622,6 +632,7 @@
 				F807D49A1ADCA66800A2DC7A /* SwiftGit2.framework */,
 				F807D4A41ADCA66800A2DC7A /* SwiftGit2-iOSTests.xctest */,
 				F807D52F1ADCDC3B00A2DC7A /* liblibgit2.a */,
+				F807D54C1ADCE68400A2DC7A /* libOpenSSL-iOS.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -916,6 +927,22 @@
 			productReference = F807D52F1ADCDC3B00A2DC7A /* liblibgit2.a */;
 			productType = "com.apple.product-type.library.static";
 		};
+		F807D54B1ADCE68400A2DC7A /* OpenSSL-iOS */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = F807D55D1ADCE68500A2DC7A /* Build configuration list for PBXNativeTarget "OpenSSL-iOS" */;
+			buildPhases = (
+				F807D5631ADCE73600A2DC7A /* ShellScript */,
+				F807D54A1ADCE68400A2DC7A /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "OpenSSL-iOS";
+			productName = "OpenSSL-iOS";
+			productReference = F807D54C1ADCE68400A2DC7A /* libOpenSSL-iOS.a */;
+			productType = "com.apple.product-type.library.static";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -944,6 +971,9 @@
 					F807D52E1ADCDC3B00A2DC7A = {
 						CreatedOnToolsVersion = 6.3;
 					};
+					F807D54B1ADCE68400A2DC7A = {
+						CreatedOnToolsVersion = 6.3;
+					};
 				};
 			};
 			buildConfigurationList = BEB31F1D1A0D6F7A00F525B9 /* Build configuration list for PBXProject "SwiftGit2" */;
@@ -964,6 +994,7 @@
 				F807D4A31ADCA66800A2DC7A /* SwiftGit2-iOSTests */,
 				BEB31F8E1A0E563900F525B9 /* libgit2-OSX */,
 				F807D52E1ADCDC3B00A2DC7A /* libgit2-iOS */,
+				F807D54B1ADCE68400A2DC7A /* OpenSSL-iOS */,
 			);
 		};
 /* End PBXProject section */
@@ -1014,6 +1045,19 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = script/update_libgit2_ios;
+		};
+		F807D5631ADCE73600A2DC7A /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = script/update_libssl_ios;
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -1144,6 +1188,7 @@
 				HEADER_SEARCH_PATHS = (
 					External/libgit2/include,
 					/usr/local/include,
+					"External/ios-openssl/include",
 				);
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LIBRARY_SEARCH_PATHS = (
@@ -1194,6 +1239,7 @@
 				HEADER_SEARCH_PATHS = (
 					External/libgit2/include,
 					/usr/local/include,
+					"External/ios-openssl/include",
 				);
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LIBRARY_SEARCH_PATHS = (
@@ -1460,6 +1506,35 @@
 			};
 			name = Release;
 		};
+		F807D55E1ADCE68500A2DC7A /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				IPHONEOS_DEPLOYMENT_TARGET = 8.3;
+				OTHER_LDFLAGS = "-ObjC";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+			};
+			name = Debug;
+		};
+		F807D55F1ADCE68500A2DC7A /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.3;
+				OTHER_LDFLAGS = "-ObjC";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -1522,6 +1597,14 @@
 			buildConfigurations = (
 				F807D5401ADCDC3C00A2DC7A /* Debug */,
 				F807D5411ADCDC3C00A2DC7A /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+		F807D55D1ADCE68500A2DC7A /* Build configuration list for PBXNativeTarget "OpenSSL-iOS" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F807D55E1ADCE68500A2DC7A /* Debug */,
+				F807D55F1ADCE68500A2DC7A /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 		};
