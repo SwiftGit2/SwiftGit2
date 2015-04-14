@@ -867,7 +867,6 @@
 					/usr/local/lib/libssh2.a,
 					"-lcrypto",
 					"-lssl",
-					"-L/opt/local/lib/",
 				);
 				PRODUCT_NAME = SwiftGit2;
 				SKIP_INSTALL = YES;
@@ -897,7 +896,6 @@
 					/usr/local/lib/libssh2.a,
 					"-lcrypto",
 					"-lssl",
-					"-L/opt/local/lib/",
 				);
 				PRODUCT_NAME = SwiftGit2;
 				SKIP_INSTALL = YES;
