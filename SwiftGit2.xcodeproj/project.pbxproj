@@ -94,6 +94,88 @@
 		DA59146D1A94549A00AED74C /* Guanaco.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DA59146C1A94549A00AED74C /* Guanaco.framework */; };
 		DA5914761A94579000AED74C /* Errors.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA5914751A94579000AED74C /* Errors.swift */; };
 		DAC8143D1A99749D0063D88C /* Quick.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DAC8143C1A99749D0063D88C /* Quick.framework */; };
+		F807D4A51ADCA66800A2DC7A /* SwiftGit2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F807D49A1ADCA66800A2DC7A /* SwiftGit2.framework */; };
+		F807D4B31ADCAAF500A2DC7A /* Errors.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA5914751A94579000AED74C /* Errors.swift */; };
+		F807D4B41ADCAAF800A2DC7A /* Libgit2.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE36354B1A632C9700D37EC8 /* Libgit2.swift */; };
+		F807D4B51ADCAAFB00A2DC7A /* SwiftGit2.m in Sources */ = {isa = PBXBuildFile; fileRef = BE14AA4F1A1974010015B439 /* SwiftGit2.m */; };
+		F807D4B61ADCAB0200A2DC7A /* Objects.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE2E3BE51A31261300C67092 /* Objects.swift */; };
+		F807D4B71ADCAB0C00A2DC7A /* OID.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE70B3E41A1ACB1A002C3F4E /* OID.swift */; };
+		F807D4B81ADCAB0F00A2DC7A /* Pointers.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE7A753E1A4A2BCC002DA7E3 /* Pointers.swift */; };
+		F807D4B91ADCAB1300A2DC7A /* Repository.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEB31F6C1A0D78F300F525B9 /* Repository.swift */; };
+		F807D4BA1ADCAB1500A2DC7A /* References.swift in Sources */ = {isa = PBXBuildFile; fileRef = BECB5F691A56F19900999413 /* References.swift */; };
+		F807D4BB1ADCAB1700A2DC7A /* Remotes.swift in Sources */ = {isa = PBXBuildFile; fileRef = BECB5F6D1A57284700999413 /* Remotes.swift */; };
+		F807D4BC1ADCAB1F00A2DC7A /* OIDSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE70B3E61A1ACB37002C3F4E /* OIDSpec.swift */; };
+		F807D4BD1ADCAB2100A2DC7A /* ObjectsSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE2E3BE71A31262800C67092 /* ObjectsSpec.swift */; };
+		F807D4BE1ADCAB2300A2DC7A /* RepositorySpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEB31F351A0D6F7A00F525B9 /* RepositorySpec.swift */; };
+		F807D4BF1ADCAB2500A2DC7A /* ReferencesSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = BECB5F6B1A56F1B400999413 /* ReferencesSpec.swift */; };
+		F807D4C01ADCAB2700A2DC7A /* RemotesSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = BECB5F6F1A57286200999413 /* RemotesSpec.swift */; };
+		F807D4C11ADCAB2900A2DC7A /* FixturesSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE14AA581A1996B70015B439 /* FixturesSpec.swift */; };
+		F807D4C21ADCAB2D00A2DC7A /* Nimble.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DA50239F1A969F1A004175D7 /* Nimble.framework */; };
+		F807D4C31ADCAB3200A2DC7A /* Quick.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DAC8143C1A99749D0063D88C /* Quick.framework */; };
+		F807D4C41ADCAB3700A2DC7A /* Guanaco.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DA59146C1A94549A00AED74C /* Guanaco.framework */; };
+		F807D4C81ADCAC4500A2DC7A /* annotated_commit.h in Copy libgit2 Headers */ = {isa = PBXBuildFile; fileRef = BE8DED9C1AA6A7E200AFE62D /* annotated_commit.h */; };
+		F807D4C91ADCAC4500A2DC7A /* attr.h in Copy libgit2 Headers */ = {isa = PBXBuildFile; fileRef = BE8DED9D1AA6A7E200AFE62D /* attr.h */; };
+		F807D4CA1ADCAC4500A2DC7A /* blame.h in Copy libgit2 Headers */ = {isa = PBXBuildFile; fileRef = BE8DED9E1AA6A7E200AFE62D /* blame.h */; };
+		F807D4CB1ADCAC4500A2DC7A /* blob.h in Copy libgit2 Headers */ = {isa = PBXBuildFile; fileRef = BE8DED9F1AA6A7E200AFE62D /* blob.h */; };
+		F807D4CC1ADCAC4500A2DC7A /* branch.h in Copy libgit2 Headers */ = {isa = PBXBuildFile; fileRef = BE8DEDA01AA6A7E200AFE62D /* branch.h */; };
+		F807D4CD1ADCAC4500A2DC7A /* buffer.h in Copy libgit2 Headers */ = {isa = PBXBuildFile; fileRef = BE8DEDA11AA6A7E200AFE62D /* buffer.h */; };
+		F807D4CE1ADCAC4500A2DC7A /* checkout.h in Copy libgit2 Headers */ = {isa = PBXBuildFile; fileRef = BE8DEDA21AA6A7E200AFE62D /* checkout.h */; };
+		F807D4CF1ADCAC4500A2DC7A /* cherrypick.h in Copy libgit2 Headers */ = {isa = PBXBuildFile; fileRef = BE8DEDA31AA6A7E200AFE62D /* cherrypick.h */; };
+		F807D4D01ADCAC4500A2DC7A /* clone.h in Copy libgit2 Headers */ = {isa = PBXBuildFile; fileRef = BE8DEDA41AA6A7E200AFE62D /* clone.h */; };
+		F807D4D11ADCAC4500A2DC7A /* commit.h in Copy libgit2 Headers */ = {isa = PBXBuildFile; fileRef = BE8DEDA51AA6A7E200AFE62D /* commit.h */; };
+		F807D4D21ADCAC4500A2DC7A /* common.h in Copy libgit2 Headers */ = {isa = PBXBuildFile; fileRef = BE8DEDA61AA6A7E200AFE62D /* common.h */; };
+		F807D4D31ADCAC4500A2DC7A /* config.h in Copy libgit2 Headers */ = {isa = PBXBuildFile; fileRef = BE8DEDA71AA6A7E200AFE62D /* config.h */; };
+		F807D4D41ADCAC4500A2DC7A /* cred_helpers.h in Copy libgit2 Headers */ = {isa = PBXBuildFile; fileRef = BE8DEDA81AA6A7E200AFE62D /* cred_helpers.h */; };
+		F807D4D51ADCAC4500A2DC7A /* describe.h in Copy libgit2 Headers */ = {isa = PBXBuildFile; fileRef = BE8DEDA91AA6A7E200AFE62D /* describe.h */; };
+		F807D4D61ADCAC4500A2DC7A /* diff.h in Copy libgit2 Headers */ = {isa = PBXBuildFile; fileRef = BE8DEDAA1AA6A7E200AFE62D /* diff.h */; };
+		F807D4D71ADCAC4500A2DC7A /* errors.h in Copy libgit2 Headers */ = {isa = PBXBuildFile; fileRef = BE8DEDAB1AA6A7E200AFE62D /* errors.h */; };
+		F807D4D81ADCAC4500A2DC7A /* filter.h in Copy libgit2 Headers */ = {isa = PBXBuildFile; fileRef = BE8DEDAC1AA6A7E200AFE62D /* filter.h */; };
+		F807D4D91ADCAC4500A2DC7A /* global.h in Copy libgit2 Headers */ = {isa = PBXBuildFile; fileRef = BE8DEDAD1AA6A7E200AFE62D /* global.h */; };
+		F807D4DA1ADCAC4500A2DC7A /* graph.h in Copy libgit2 Headers */ = {isa = PBXBuildFile; fileRef = BE8DEDAE1AA6A7E200AFE62D /* graph.h */; };
+		F807D4DB1ADCAC4500A2DC7A /* ignore.h in Copy libgit2 Headers */ = {isa = PBXBuildFile; fileRef = BE8DEDAF1AA6A7E200AFE62D /* ignore.h */; };
+		F807D4DC1ADCAC4500A2DC7A /* index.h in Copy libgit2 Headers */ = {isa = PBXBuildFile; fileRef = BE8DEDB01AA6A7E200AFE62D /* index.h */; };
+		F807D4DD1ADCAC4500A2DC7A /* indexer.h in Copy libgit2 Headers */ = {isa = PBXBuildFile; fileRef = BE8DEDB11AA6A7E200AFE62D /* indexer.h */; };
+		F807D4DE1ADCAC4500A2DC7A /* merge.h in Copy libgit2 Headers */ = {isa = PBXBuildFile; fileRef = BE8DEDB31AA6A7E200AFE62D /* merge.h */; };
+		F807D4DF1ADCAC4500A2DC7A /* message.h in Copy libgit2 Headers */ = {isa = PBXBuildFile; fileRef = BE8DEDB41AA6A7E200AFE62D /* message.h */; };
+		F807D4E01ADCAC4500A2DC7A /* net.h in Copy libgit2 Headers */ = {isa = PBXBuildFile; fileRef = BE8DEDB51AA6A7E200AFE62D /* net.h */; };
+		F807D4E11ADCAC4500A2DC7A /* notes.h in Copy libgit2 Headers */ = {isa = PBXBuildFile; fileRef = BE8DEDB61AA6A7E200AFE62D /* notes.h */; };
+		F807D4E21ADCAC4500A2DC7A /* object.h in Copy libgit2 Headers */ = {isa = PBXBuildFile; fileRef = BE8DEDB71AA6A7E200AFE62D /* object.h */; };
+		F807D4E31ADCAC4500A2DC7A /* odb_backend.h in Copy libgit2 Headers */ = {isa = PBXBuildFile; fileRef = BE8DEDB81AA6A7E200AFE62D /* odb_backend.h */; };
+		F807D4E41ADCAC4500A2DC7A /* odb.h in Copy libgit2 Headers */ = {isa = PBXBuildFile; fileRef = BE8DEDB91AA6A7E200AFE62D /* odb.h */; };
+		F807D4E51ADCAC4500A2DC7A /* oid.h in Copy libgit2 Headers */ = {isa = PBXBuildFile; fileRef = BE8DEDBA1AA6A7E200AFE62D /* oid.h */; };
+		F807D4E61ADCAC4500A2DC7A /* oidarray.h in Copy libgit2 Headers */ = {isa = PBXBuildFile; fileRef = BE8DEDBB1AA6A7E200AFE62D /* oidarray.h */; };
+		F807D4E71ADCAC4500A2DC7A /* pack.h in Copy libgit2 Headers */ = {isa = PBXBuildFile; fileRef = BE8DEDBC1AA6A7E200AFE62D /* pack.h */; };
+		F807D4E81ADCAC4500A2DC7A /* patch.h in Copy libgit2 Headers */ = {isa = PBXBuildFile; fileRef = BE8DEDBD1AA6A7E200AFE62D /* patch.h */; };
+		F807D4E91ADCAC4500A2DC7A /* pathspec.h in Copy libgit2 Headers */ = {isa = PBXBuildFile; fileRef = BE8DEDBE1AA6A7E200AFE62D /* pathspec.h */; };
+		F807D4EA1ADCAC4500A2DC7A /* push.h in Copy libgit2 Headers */ = {isa = PBXBuildFile; fileRef = BE8DEDBF1AA6A7E200AFE62D /* push.h */; };
+		F807D4EB1ADCAC4500A2DC7A /* rebase.h in Copy libgit2 Headers */ = {isa = PBXBuildFile; fileRef = BE8DEDC01AA6A7E200AFE62D /* rebase.h */; };
+		F807D4EC1ADCAC4500A2DC7A /* refdb.h in Copy libgit2 Headers */ = {isa = PBXBuildFile; fileRef = BE8DEDC11AA6A7E200AFE62D /* refdb.h */; };
+		F807D4ED1ADCAC4500A2DC7A /* reflog.h in Copy libgit2 Headers */ = {isa = PBXBuildFile; fileRef = BE8DEDC21AA6A7E200AFE62D /* reflog.h */; };
+		F807D4EE1ADCAC4500A2DC7A /* refs.h in Copy libgit2 Headers */ = {isa = PBXBuildFile; fileRef = BE8DEDC31AA6A7E200AFE62D /* refs.h */; };
+		F807D4EF1ADCAC4500A2DC7A /* refspec.h in Copy libgit2 Headers */ = {isa = PBXBuildFile; fileRef = BE8DEDC41AA6A7E200AFE62D /* refspec.h */; };
+		F807D4F01ADCAC4500A2DC7A /* remote.h in Copy libgit2 Headers */ = {isa = PBXBuildFile; fileRef = BE8DEDC51AA6A7E200AFE62D /* remote.h */; };
+		F807D4F11ADCAC4500A2DC7A /* repository.h in Copy libgit2 Headers */ = {isa = PBXBuildFile; fileRef = BE8DEDC61AA6A7E200AFE62D /* repository.h */; };
+		F807D4F21ADCAC4500A2DC7A /* reset.h in Copy libgit2 Headers */ = {isa = PBXBuildFile; fileRef = BE8DEDC71AA6A7E200AFE62D /* reset.h */; };
+		F807D4F31ADCAC4500A2DC7A /* revert.h in Copy libgit2 Headers */ = {isa = PBXBuildFile; fileRef = BE8DEDC81AA6A7E200AFE62D /* revert.h */; };
+		F807D4F41ADCAC4500A2DC7A /* revparse.h in Copy libgit2 Headers */ = {isa = PBXBuildFile; fileRef = BE8DEDC91AA6A7E200AFE62D /* revparse.h */; };
+		F807D4F51ADCAC4500A2DC7A /* revwalk.h in Copy libgit2 Headers */ = {isa = PBXBuildFile; fileRef = BE8DEDCA1AA6A7E200AFE62D /* revwalk.h */; };
+		F807D4F61ADCAC4500A2DC7A /* signature.h in Copy libgit2 Headers */ = {isa = PBXBuildFile; fileRef = BE8DEDCB1AA6A7E200AFE62D /* signature.h */; };
+		F807D4F71ADCAC4500A2DC7A /* stash.h in Copy libgit2 Headers */ = {isa = PBXBuildFile; fileRef = BE8DEDCC1AA6A7E200AFE62D /* stash.h */; };
+		F807D4F81ADCAC4500A2DC7A /* status.h in Copy libgit2 Headers */ = {isa = PBXBuildFile; fileRef = BE8DEDCD1AA6A7E200AFE62D /* status.h */; };
+		F807D4F91ADCAC4500A2DC7A /* strarray.h in Copy libgit2 Headers */ = {isa = PBXBuildFile; fileRef = BE8DEDCF1AA6A7E200AFE62D /* strarray.h */; };
+		F807D4FA1ADCAC4500A2DC7A /* submodule.h in Copy libgit2 Headers */ = {isa = PBXBuildFile; fileRef = BE8DEDD01AA6A7E200AFE62D /* submodule.h */; };
+		F807D4FB1ADCAC4500A2DC7A /* tag.h in Copy libgit2 Headers */ = {isa = PBXBuildFile; fileRef = BE8DEDD11AA6A7E200AFE62D /* tag.h */; };
+		F807D4FC1ADCAC4500A2DC7A /* trace.h in Copy libgit2 Headers */ = {isa = PBXBuildFile; fileRef = BE8DEDD21AA6A7E200AFE62D /* trace.h */; };
+		F807D4FD1ADCAC4500A2DC7A /* transaction.h in Copy libgit2 Headers */ = {isa = PBXBuildFile; fileRef = BE8DEDD31AA6A7E200AFE62D /* transaction.h */; };
+		F807D4FE1ADCAC4500A2DC7A /* transport.h in Copy libgit2 Headers */ = {isa = PBXBuildFile; fileRef = BE8DEDD41AA6A7E200AFE62D /* transport.h */; };
+		F807D4FF1ADCAC4500A2DC7A /* tree.h in Copy libgit2 Headers */ = {isa = PBXBuildFile; fileRef = BE8DEDD51AA6A7E200AFE62D /* tree.h */; };
+		F807D5001ADCAC4500A2DC7A /* types.h in Copy libgit2 Headers */ = {isa = PBXBuildFile; fileRef = BE8DEDD61AA6A7E200AFE62D /* types.h */; };
+		F807D5011ADCAC4500A2DC7A /* version.h in Copy libgit2 Headers */ = {isa = PBXBuildFile; fileRef = BE8DEDD71AA6A7E200AFE62D /* version.h */; };
+		F807D5031ADCAC7400A2DC7A /* LlamaKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F807D5021ADCAC7400A2DC7A /* LlamaKit.framework */; };
+		F807D5051ADCAC7C00A2DC7A /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F807D5041ADCAC7C00A2DC7A /* libz.dylib */; };
+		F807D5071ADCAC8300A2DC7A /* libiconv.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F807D5061ADCAC8300A2DC7A /* libiconv.dylib */; };
+		F807D50C1ADCAE7A00A2DC7A /* SwiftGit2.h in Headers */ = {isa = PBXBuildFile; fileRef = BEB31F281A0D6F7A00F525B9 /* SwiftGit2.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		F807D50D1ADCAE7A00A2DC7A /* git2.h in Headers */ = {isa = PBXBuildFile; fileRef = BEB31F9B1A0E581400F525B9 /* git2.h */; settings = {ATTRIBUTES = (Public, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -105,6 +187,20 @@
 			remoteInfo = "SwiftGit2-OSX";
 		};
 		BEB31F941A0E56E200F525B9 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = BEB31F1A1A0D6F7A00F525B9 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = BEB31F8E1A0E563900F525B9;
+			remoteInfo = libgit2;
+		};
+		F807D4A61ADCA66800A2DC7A /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = BEB31F1A1A0D6F7A00F525B9 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = F807D4991ADCA66800A2DC7A;
+			remoteInfo = SwiftGit2;
+		};
+		F807D4C51ADCABD800A2DC7A /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = BEB31F1A1A0D6F7A00F525B9 /* Project object */;
 			proxyType = 1;
@@ -178,6 +274,74 @@
 				BE8DEE4E1AA6A89D00AFE62D /* annotated_commit.h in Copy libgit2 Headers */,
 				BE8DEE4F1AA6A89F00AFE62D /* attr.h in Copy libgit2 Headers */,
 				BE8DEE501AA6A8A100AFE62D /* blame.h in Copy libgit2 Headers */,
+			);
+			name = "Copy libgit2 Headers";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F807D4C71ADCAC1B00A2DC7A /* Copy libgit2 Headers */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = Headers/git2;
+			dstSubfolderSpec = 1;
+			files = (
+				F807D4C81ADCAC4500A2DC7A /* annotated_commit.h in Copy libgit2 Headers */,
+				F807D4C91ADCAC4500A2DC7A /* attr.h in Copy libgit2 Headers */,
+				F807D4CA1ADCAC4500A2DC7A /* blame.h in Copy libgit2 Headers */,
+				F807D4CB1ADCAC4500A2DC7A /* blob.h in Copy libgit2 Headers */,
+				F807D4CC1ADCAC4500A2DC7A /* branch.h in Copy libgit2 Headers */,
+				F807D4CD1ADCAC4500A2DC7A /* buffer.h in Copy libgit2 Headers */,
+				F807D4CE1ADCAC4500A2DC7A /* checkout.h in Copy libgit2 Headers */,
+				F807D4CF1ADCAC4500A2DC7A /* cherrypick.h in Copy libgit2 Headers */,
+				F807D4D01ADCAC4500A2DC7A /* clone.h in Copy libgit2 Headers */,
+				F807D4D11ADCAC4500A2DC7A /* commit.h in Copy libgit2 Headers */,
+				F807D4D21ADCAC4500A2DC7A /* common.h in Copy libgit2 Headers */,
+				F807D4D31ADCAC4500A2DC7A /* config.h in Copy libgit2 Headers */,
+				F807D4D41ADCAC4500A2DC7A /* cred_helpers.h in Copy libgit2 Headers */,
+				F807D4D51ADCAC4500A2DC7A /* describe.h in Copy libgit2 Headers */,
+				F807D4D61ADCAC4500A2DC7A /* diff.h in Copy libgit2 Headers */,
+				F807D4D71ADCAC4500A2DC7A /* errors.h in Copy libgit2 Headers */,
+				F807D4D81ADCAC4500A2DC7A /* filter.h in Copy libgit2 Headers */,
+				F807D4D91ADCAC4500A2DC7A /* global.h in Copy libgit2 Headers */,
+				F807D4DA1ADCAC4500A2DC7A /* graph.h in Copy libgit2 Headers */,
+				F807D4DB1ADCAC4500A2DC7A /* ignore.h in Copy libgit2 Headers */,
+				F807D4DC1ADCAC4500A2DC7A /* index.h in Copy libgit2 Headers */,
+				F807D4DD1ADCAC4500A2DC7A /* indexer.h in Copy libgit2 Headers */,
+				F807D4DE1ADCAC4500A2DC7A /* merge.h in Copy libgit2 Headers */,
+				F807D4DF1ADCAC4500A2DC7A /* message.h in Copy libgit2 Headers */,
+				F807D4E01ADCAC4500A2DC7A /* net.h in Copy libgit2 Headers */,
+				F807D4E11ADCAC4500A2DC7A /* notes.h in Copy libgit2 Headers */,
+				F807D4E21ADCAC4500A2DC7A /* object.h in Copy libgit2 Headers */,
+				F807D4E31ADCAC4500A2DC7A /* odb_backend.h in Copy libgit2 Headers */,
+				F807D4E41ADCAC4500A2DC7A /* odb.h in Copy libgit2 Headers */,
+				F807D4E51ADCAC4500A2DC7A /* oid.h in Copy libgit2 Headers */,
+				F807D4E61ADCAC4500A2DC7A /* oidarray.h in Copy libgit2 Headers */,
+				F807D4E71ADCAC4500A2DC7A /* pack.h in Copy libgit2 Headers */,
+				F807D4E81ADCAC4500A2DC7A /* patch.h in Copy libgit2 Headers */,
+				F807D4E91ADCAC4500A2DC7A /* pathspec.h in Copy libgit2 Headers */,
+				F807D4EA1ADCAC4500A2DC7A /* push.h in Copy libgit2 Headers */,
+				F807D4EB1ADCAC4500A2DC7A /* rebase.h in Copy libgit2 Headers */,
+				F807D4EC1ADCAC4500A2DC7A /* refdb.h in Copy libgit2 Headers */,
+				F807D4ED1ADCAC4500A2DC7A /* reflog.h in Copy libgit2 Headers */,
+				F807D4EE1ADCAC4500A2DC7A /* refs.h in Copy libgit2 Headers */,
+				F807D4EF1ADCAC4500A2DC7A /* refspec.h in Copy libgit2 Headers */,
+				F807D4F01ADCAC4500A2DC7A /* remote.h in Copy libgit2 Headers */,
+				F807D4F11ADCAC4500A2DC7A /* repository.h in Copy libgit2 Headers */,
+				F807D4F21ADCAC4500A2DC7A /* reset.h in Copy libgit2 Headers */,
+				F807D4F31ADCAC4500A2DC7A /* revert.h in Copy libgit2 Headers */,
+				F807D4F41ADCAC4500A2DC7A /* revparse.h in Copy libgit2 Headers */,
+				F807D4F51ADCAC4500A2DC7A /* revwalk.h in Copy libgit2 Headers */,
+				F807D4F61ADCAC4500A2DC7A /* signature.h in Copy libgit2 Headers */,
+				F807D4F71ADCAC4500A2DC7A /* stash.h in Copy libgit2 Headers */,
+				F807D4F81ADCAC4500A2DC7A /* status.h in Copy libgit2 Headers */,
+				F807D4F91ADCAC4500A2DC7A /* strarray.h in Copy libgit2 Headers */,
+				F807D4FA1ADCAC4500A2DC7A /* submodule.h in Copy libgit2 Headers */,
+				F807D4FB1ADCAC4500A2DC7A /* tag.h in Copy libgit2 Headers */,
+				F807D4FC1ADCAC4500A2DC7A /* trace.h in Copy libgit2 Headers */,
+				F807D4FD1ADCAC4500A2DC7A /* transaction.h in Copy libgit2 Headers */,
+				F807D4FE1ADCAC4500A2DC7A /* transport.h in Copy libgit2 Headers */,
+				F807D4FF1ADCAC4500A2DC7A /* tree.h in Copy libgit2 Headers */,
+				F807D5001ADCAC4500A2DC7A /* types.h in Copy libgit2 Headers */,
+				F807D5011ADCAC4500A2DC7A /* version.h in Copy libgit2 Headers */,
 			);
 			name = "Copy libgit2 Headers";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -295,6 +459,11 @@
 		DA59146C1A94549A00AED74C /* Guanaco.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Guanaco.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		DA5914751A94579000AED74C /* Errors.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Errors.swift; sourceTree = "<group>"; };
 		DAC8143C1A99749D0063D88C /* Quick.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Quick.framework; path = "../../../../Library/Developer/Xcode/DerivedData/SwiftGit2-ezqqkevntxbroughwcioyxqriijk/Build/Products/Debug/Quick.framework"; sourceTree = "<group>"; };
+		F807D49A1ADCA66800A2DC7A /* SwiftGit2.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SwiftGit2.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		F807D4A41ADCA66800A2DC7A /* SwiftGit2-iOSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "SwiftGit2-iOSTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		F807D5021ADCAC7400A2DC7A /* LlamaKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = LlamaKit.framework; path = "Carthage/Checkouts/LlamaKit/build/Debug-iphoneos/LlamaKit.framework"; sourceTree = "<group>"; };
+		F807D5041ADCAC7C00A2DC7A /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS8.3.sdk/usr/lib/libz.dylib; sourceTree = DEVELOPER_DIR; };
+		F807D5061ADCAC8300A2DC7A /* libiconv.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libiconv.dylib; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS8.3.sdk/usr/lib/libiconv.dylib; sourceTree = DEVELOPER_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -316,6 +485,27 @@
 				DA5023A01A969F1A004175D7 /* Nimble.framework in Frameworks */,
 				DAC8143D1A99749D0063D88C /* Quick.framework in Frameworks */,
 				BEB31F2F1A0D6F7A00F525B9 /* SwiftGit2.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F807D4961ADCA66800A2DC7A /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F807D5031ADCAC7400A2DC7A /* LlamaKit.framework in Frameworks */,
+				F807D5051ADCAC7C00A2DC7A /* libz.dylib in Frameworks */,
+				F807D5071ADCAC8300A2DC7A /* libiconv.dylib in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F807D4A11ADCA66800A2DC7A /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F807D4A51ADCA66800A2DC7A /* SwiftGit2.framework in Frameworks */,
+				F807D4C21ADCAB2D00A2DC7A /* Nimble.framework in Frameworks */,
+				F807D4C31ADCAB3200A2DC7A /* Quick.framework in Frameworks */,
+				F807D4C41ADCAB3700A2DC7A /* Guanaco.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -417,6 +607,8 @@
 				BEB31F231A0D6F7A00F525B9 /* SwiftGit2.framework */,
 				BEB31F2E1A0D6F7A00F525B9 /* SwiftGit2-OSXTests.xctest */,
 				BEB31F8F1A0E563900F525B9 /* liblibgit2.a */,
+				F807D49A1ADCA66800A2DC7A /* SwiftGit2.framework */,
+				F807D4A41ADCA66800A2DC7A /* SwiftGit2-iOSTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -554,11 +746,32 @@
 		BEB31FA11A0E63C100F525B9 /* Libraries */ = {
 			isa = PBXGroup;
 			children = (
-				BEE591C61ADF470500534F14 /* Result.framework */,
-				BEB31F9D1A0E595100F525B9 /* libiconv.dylib */,
-				BEB31F9F1A0E595600F525B9 /* libz.dylib */,
+				F807D50A1ADCAD3600A2DC7A /* OS X */,
+				F807D5091ADCAD2000A2DC7A /* iOS */,
 			);
 			name = Libraries;
+			sourceTree = "<group>";
+		};
+		F807D5091ADCAD2000A2DC7A /* iOS */ = {
+			isa = PBXGroup;
+			children = (
+				F807D5061ADCAC8300A2DC7A /* Result.framework */,
+				F807D5061ADCAC8300A2DC7A /* libiconv.dylib */,
+				F807D5041ADCAC7C00A2DC7A /* libz.dylib */,
+				F807D5021ADCAC7400A2DC7A /* LlamaKit.framework */,
+			);
+			name = iOS;
+			sourceTree = "<group>";
+		};
+		F807D50A1ADCAD3600A2DC7A /* OS X */ = {
+			isa = PBXGroup;
+			children = (
+				BEB31F9D1A0E595100F525B9 /* Result.framework */,
+				BEB31F9D1A0E595100F525B9 /* libiconv.dylib */,
+				BEB31F9F1A0E595600F525B9 /* libz.dylib */,
+				BE14AA311A15AA510015B439 /* LlamaKit.framework */,
+			);
+			name = "OS X";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -570,6 +783,15 @@
 			files = (
 				BEB005EA1AA6AEC300320A23 /* git2.h in Headers */,
 				BEB31F291A0D6F7A00F525B9 /* SwiftGit2.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F807D50B1ADCAE6C00A2DC7A /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F807D50D1ADCAE7A00A2DC7A /* git2.h in Headers */,
+				F807D50C1ADCAE7A00A2DC7A /* SwiftGit2.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -628,6 +850,43 @@
 			productReference = BEB31F8F1A0E563900F525B9 /* liblibgit2.a */;
 			productType = "com.apple.product-type.library.static";
 		};
+		F807D4991ADCA66800A2DC7A /* SwiftGit2-iOS */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = F807D4B11ADCA66800A2DC7A /* Build configuration list for PBXNativeTarget "SwiftGit2-iOS" */;
+			buildPhases = (
+				F807D4C71ADCAC1B00A2DC7A /* Copy libgit2 Headers */,
+				F807D4951ADCA66800A2DC7A /* Sources */,
+				F807D4961ADCA66800A2DC7A /* Frameworks */,
+				F807D50B1ADCAE6C00A2DC7A /* Headers */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				F807D4C61ADCABD800A2DC7A /* PBXTargetDependency */,
+			);
+			name = "SwiftGit2-iOS";
+			productName = SwiftGit2;
+			productReference = F807D49A1ADCA66800A2DC7A /* SwiftGit2.framework */;
+			productType = "com.apple.product-type.framework";
+		};
+		F807D4A31ADCA66800A2DC7A /* SwiftGit2-iOSTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = F807D4B21ADCA66800A2DC7A /* Build configuration list for PBXNativeTarget "SwiftGit2-iOSTests" */;
+			buildPhases = (
+				F807D4A01ADCA66800A2DC7A /* Sources */,
+				F807D4A11ADCA66800A2DC7A /* Frameworks */,
+				F807D4A21ADCA66800A2DC7A /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				F807D4A71ADCA66800A2DC7A /* PBXTargetDependency */,
+			);
+			name = "SwiftGit2-iOSTests";
+			productName = SwiftGit2Tests;
+			productReference = F807D4A41ADCA66800A2DC7A /* SwiftGit2-iOSTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -647,6 +906,12 @@
 					BEB31F8E1A0E563900F525B9 = {
 						CreatedOnToolsVersion = 6.1;
 					};
+					F807D4991ADCA66800A2DC7A = {
+						CreatedOnToolsVersion = 6.3;
+					};
+					F807D4A31ADCA66800A2DC7A = {
+						CreatedOnToolsVersion = 6.3;
+					};
 				};
 			};
 			buildConfigurationList = BEB31F1D1A0D6F7A00F525B9 /* Build configuration list for PBXProject "SwiftGit2" */;
@@ -663,6 +928,8 @@
 			targets = (
 				BEB31F221A0D6F7A00F525B9 /* SwiftGit2-OSX */,
 				BEB31F2D1A0D6F7A00F525B9 /* SwiftGit2-OSXTests */,
+				F807D4991ADCA66800A2DC7A /* SwiftGit2-iOS */,
+				F807D4A31ADCA66800A2DC7A /* SwiftGit2-iOSTests */,
 				BEB31F8E1A0E563900F525B9 /* libgit2 */,
 			);
 		};
@@ -676,6 +943,13 @@
 				BE0B1C5D1A9978890004726D /* detached-head.zip in Resources */,
 				BE0991F71A578FB1007D4E6A /* Mantle.zip in Resources */,
 				BE14AA571A198C6E0015B439 /* simple-repository.zip in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F807D4A21ADCA66800A2DC7A /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -729,6 +1003,35 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		F807D4951ADCA66800A2DC7A /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F807D4B71ADCAB0C00A2DC7A /* OID.swift in Sources */,
+				F807D4BB1ADCAB1700A2DC7A /* Remotes.swift in Sources */,
+				F807D4B91ADCAB1300A2DC7A /* Repository.swift in Sources */,
+				F807D4B61ADCAB0200A2DC7A /* Objects.swift in Sources */,
+				F807D4BA1ADCAB1500A2DC7A /* References.swift in Sources */,
+				F807D4B41ADCAAF800A2DC7A /* Libgit2.swift in Sources */,
+				F807D4B81ADCAB0F00A2DC7A /* Pointers.swift in Sources */,
+				F807D4B31ADCAAF500A2DC7A /* Errors.swift in Sources */,
+				F807D4B51ADCAAFB00A2DC7A /* SwiftGit2.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F807D4A01ADCA66800A2DC7A /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F807D4BF1ADCAB2500A2DC7A /* ReferencesSpec.swift in Sources */,
+				F807D4C11ADCAB2900A2DC7A /* FixturesSpec.swift in Sources */,
+				F807D4C01ADCAB2700A2DC7A /* RemotesSpec.swift in Sources */,
+				F807D4BC1ADCAB1F00A2DC7A /* OIDSpec.swift in Sources */,
+				F807D4BE1ADCAB2300A2DC7A /* RepositorySpec.swift in Sources */,
+				F807D4BD1ADCAB2100A2DC7A /* ObjectsSpec.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -741,6 +1044,16 @@
 			isa = PBXTargetDependency;
 			target = BEB31F8E1A0E563900F525B9 /* libgit2 */;
 			targetProxy = BEB31F941A0E56E200F525B9 /* PBXContainerItemProxy */;
+		};
+		F807D4A71ADCA66800A2DC7A /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = F807D4991ADCA66800A2DC7A /* SwiftGit2-iOS */;
+			targetProxy = F807D4A61ADCA66800A2DC7A /* PBXContainerItemProxy */;
+		};
+		F807D4C61ADCABD800A2DC7A /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = BEB31F8E1A0E563900F525B9 /* libgit2 */;
+			targetProxy = F807D4C51ADCABD800A2DC7A /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -786,6 +1099,7 @@
 					External/libgit2/include,
 					/usr/local/include,
 				);
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LIBRARY_SEARCH_PATHS = (
 					.,
 					External,
@@ -835,6 +1149,7 @@
 					External/libgit2/include,
 					/usr/local/include,
 				);
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LIBRARY_SEARCH_PATHS = (
 					.,
 					External,
@@ -966,6 +1281,100 @@
 			};
 			name = Release;
 		};
+		F807D4AD1ADCA66800A2DC7A /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = BEB31F501A0D75EE00F525B9 /* iOS-Framework.xcconfig */;
+			buildSettings = {
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Carthage/Checkouts/LlamaKit/build/Debug-iphoneos",
+				);
+				INFOPLIST_FILE = SwiftGit2/Info.plist;
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 8.3;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				MODULEMAP_FILE = SwiftGit2/SwiftGit2.modulemap;
+				PRODUCT_NAME = SwiftGit2;
+				SKIP_INSTALL = YES;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		F807D4AE1ADCA66800A2DC7A /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = BEB31F501A0D75EE00F525B9 /* iOS-Framework.xcconfig */;
+			buildSettings = {
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Carthage/Checkouts/LlamaKit/build/Debug-iphoneos",
+				);
+				INFOPLIST_FILE = SwiftGit2/Info.plist;
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 8.3;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				MODULEMAP_FILE = SwiftGit2/SwiftGit2.modulemap;
+				PRODUCT_NAME = SwiftGit2;
+				SKIP_INSTALL = YES;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		F807D4AF1ADCA66800A2DC7A /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = BEB31F481A0D75EE00F525B9 /* Test.xcconfig */;
+			buildSettings = {
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(SDKROOT)/Developer/Library/Frameworks",
+					"$(inherited)",
+					"$(USER_LIBRARY_DIR)/Developer/Xcode/DerivedData/SwiftGit2-ezqqkevntxbroughwcioyxqriijk/Build/Products/Debug",
+				);
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				INFOPLIST_FILE = SwiftGit2Tests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.3;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+			};
+			name = Debug;
+		};
+		F807D4B01ADCA66800A2DC7A /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = BEB31F481A0D75EE00F525B9 /* Test.xcconfig */;
+			buildSettings = {
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(SDKROOT)/Developer/Library/Frameworks",
+					"$(inherited)",
+					"$(USER_LIBRARY_DIR)/Developer/Xcode/DerivedData/SwiftGit2-ezqqkevntxbroughwcioyxqriijk/Build/Products/Debug",
+				);
+				INFOPLIST_FILE = SwiftGit2Tests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.3;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -1001,6 +1410,24 @@
 			buildConfigurations = (
 				BEB31F911A0E563900F525B9 /* Debug */,
 				BEB31F921A0E563900F525B9 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		F807D4B11ADCA66800A2DC7A /* Build configuration list for PBXNativeTarget "SwiftGit2-iOS" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F807D4AD1ADCA66800A2DC7A /* Debug */,
+				F807D4AE1ADCA66800A2DC7A /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		F807D4B21ADCA66800A2DC7A /* Build configuration list for PBXNativeTarget "SwiftGit2-iOSTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F807D4AF1ADCA66800A2DC7A /* Debug */,
+				F807D4B01ADCA66800A2DC7A /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
