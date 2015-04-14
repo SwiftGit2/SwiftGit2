@@ -213,6 +213,13 @@
 			remoteGlobalIDString = F807D54B1ADCE68400A2DC7A;
 			remoteInfo = "OpenSSL-iOS";
 		};
+		F807D5831ADCF4E500A2DC7A /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = BEB31F1A1A0D6F7A00F525B9 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = F807D56B1ADCF4B600A2DC7A;
+			remoteInfo = "libssh2-iOS";
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -370,6 +377,15 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		F807D56A1ADCF4B600A2DC7A /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "include/$(PRODUCT_NAME)";
+			dstSubfolderSpec = 16;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
@@ -487,9 +503,10 @@
 		F807D5041ADCAC7C00A2DC7A /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS8.3.sdk/usr/lib/libz.dylib; sourceTree = DEVELOPER_DIR; };
 		F807D5061ADCAC8300A2DC7A /* libiconv.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libiconv.dylib; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS8.3.sdk/usr/lib/libiconv.dylib; sourceTree = DEVELOPER_DIR; };
 		F807D50E1ADCC0D300A2DC7A /* LlamaKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = LlamaKit.framework; path = "../../../../../Volumes/DerivedData/SwiftGit2-bgqrwlxrlrptmnbsrxlmvchxawjd/Build/Products/Debug-iphoneos/LlamaKit.framework"; sourceTree = "<group>"; };
-		F807D52F1ADCDC3B00A2DC7A /* liblibgit2.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = liblibgit2.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		F807D52F1ADCDC3B00A2DC7A /* liblibgit2-iOS.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "liblibgit2-iOS.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		F807D5471ADCDCF300A2DC7A /* script */ = {isa = PBXFileReference; lastKnownFileType = folder; path = script; sourceTree = "<group>"; };
 		F807D54C1ADCE68400A2DC7A /* libOpenSSL-iOS.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libOpenSSL-iOS.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		F807D56C1ADCF4B600A2DC7A /* liblibssh2-iOS.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "liblibssh2-iOS.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -636,8 +653,9 @@
 				BEB31F8F1A0E563900F525B9 /* liblibgit2.a */,
 				F807D49A1ADCA66800A2DC7A /* SwiftGit2.framework */,
 				F807D4A41ADCA66800A2DC7A /* SwiftGit2-iOSTests.xctest */,
-				F807D52F1ADCDC3B00A2DC7A /* liblibgit2.a */,
+				F807D52F1ADCDC3B00A2DC7A /* liblibgit2-iOS.a */,
 				F807D54C1ADCE68400A2DC7A /* libOpenSSL-iOS.a */,
+				F807D56C1ADCF4B600A2DC7A /* liblibssh2-iOS.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -924,10 +942,11 @@
 			);
 			dependencies = (
 				F807D5671ADCEC1300A2DC7A /* PBXTargetDependency */,
+				F807D5841ADCF4E500A2DC7A /* PBXTargetDependency */,
 			);
 			name = "libgit2-iOS";
 			productName = libgit2;
-			productReference = F807D52F1ADCDC3B00A2DC7A /* liblibgit2.a */;
+			productReference = F807D52F1ADCDC3B00A2DC7A /* liblibgit2-iOS.a */;
 			productType = "com.apple.product-type.library.static";
 		};
 		F807D54B1ADCE68400A2DC7A /* OpenSSL-iOS */ = {
@@ -944,6 +963,22 @@
 			name = "OpenSSL-iOS";
 			productName = "OpenSSL-iOS";
 			productReference = F807D54C1ADCE68400A2DC7A /* libOpenSSL-iOS.a */;
+			productType = "com.apple.product-type.library.static";
+		};
+		F807D56B1ADCF4B600A2DC7A /* libssh2-iOS */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = F807D57D1ADCF4B800A2DC7A /* Build configuration list for PBXNativeTarget "libssh2-iOS" */;
+			buildPhases = (
+				F807D5851ADCF4FE00A2DC7A /* ShellScript */,
+				F807D56A1ADCF4B600A2DC7A /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "libssh2-iOS";
+			productName = "libssh2-iOS";
+			productReference = F807D56C1ADCF4B600A2DC7A /* liblibssh2-iOS.a */;
 			productType = "com.apple.product-type.library.static";
 		};
 /* End PBXNativeTarget section */
@@ -976,6 +1011,9 @@
 					F807D54B1ADCE68400A2DC7A = {
 						CreatedOnToolsVersion = 6.3;
 					};
+					F807D56B1ADCF4B600A2DC7A = {
+						CreatedOnToolsVersion = 6.3;
+					};
 				};
 			};
 			buildConfigurationList = BEB31F1D1A0D6F7A00F525B9 /* Build configuration list for PBXProject "SwiftGit2" */;
@@ -997,6 +1035,7 @@
 				BEB31F8E1A0E563900F525B9 /* libgit2-OSX */,
 				F807D52E1ADCDC3B00A2DC7A /* libgit2-iOS */,
 				F807D54B1ADCE68400A2DC7A /* OpenSSL-iOS */,
+				F807D56B1ADCF4B600A2DC7A /* libssh2-iOS */,
 			);
 		};
 /* End PBXProject section */
@@ -1060,6 +1099,19 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = script/update_libssl_ios;
+		};
+		F807D5851ADCF4FE00A2DC7A /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = script/update_libssh2_ios;
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -1150,6 +1202,11 @@
 			isa = PBXTargetDependency;
 			target = F807D54B1ADCE68400A2DC7A /* OpenSSL-iOS */;
 			targetProxy = F807D5661ADCEC1300A2DC7A /* PBXContainerItemProxy */;
+		};
+		F807D5841ADCF4E500A2DC7A /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = F807D56B1ADCF4B600A2DC7A /* libssh2-iOS */;
+			targetProxy = F807D5831ADCF4E500A2DC7A /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -1385,17 +1442,28 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(BUILD_DIR)/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)",
-					"/Volumes/DerivedData/SwiftGit2-bgqrwlxrlrptmnbsrxlmvchxawjd/Build/Products/Debug-iphoneos",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					External/libgit2/include,
 					/usr/local/include,
+					"External/ios-openssl/include",
 				);
 				INFOPLIST_FILE = SwiftGit2/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"External/ios-openssl/lib",
+					"External/libgit2-ios",
+				);
 				MODULEMAP_FILE = SwiftGit2/SwiftGit2.modulemap;
+				OTHER_LDFLAGS = (
+					"-all_load",
+					"-lgit2-ios",
+					"-lssh",
+					"-lcrypto",
+				);
 				PRODUCT_NAME = SwiftGit2;
 				SKIP_INSTALL = YES;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -1415,17 +1483,28 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(BUILD_DIR)/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)",
-					"/Volumes/DerivedData/SwiftGit2-bgqrwlxrlrptmnbsrxlmvchxawjd/Build/Products/Debug-iphoneos",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					External/libgit2/include,
 					/usr/local/include,
+					"External/ios-openssl/include",
 				);
 				INFOPLIST_FILE = SwiftGit2/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"External/ios-openssl/lib",
+					"External/libgit2-ios",
+				);
 				MODULEMAP_FILE = SwiftGit2/SwiftGit2.modulemap;
+				OTHER_LDFLAGS = (
+					"-all_load",
+					"-lgit2-ios",
+					"-lssh",
+					"-lcrypto",
+				);
 				PRODUCT_NAME = SwiftGit2;
 				SKIP_INSTALL = YES;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -1449,7 +1528,6 @@
 					"$(inherited)",
 				);
 				INFOPLIST_FILE = SwiftGit2Tests/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.3;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
@@ -1468,7 +1546,6 @@
 					"$(USER_LIBRARY_DIR)/Developer/Xcode/DerivedData/SwiftGit2-ezqqkevntxbroughwcioyxqriijk/Build/Products/Debug",
 				);
 				INFOPLIST_FILE = SwiftGit2Tests/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.3;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
@@ -1480,11 +1557,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"DEBUG=1",
-					"$(inherited)",
-				);
-				IPHONEOS_DEPLOYMENT_TARGET = 8.3;
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
@@ -1496,7 +1568,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				COPY_PHASE_STRIP = NO;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.3;
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
@@ -1509,11 +1580,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"DEBUG=1",
-					"$(inherited)",
-				);
-				IPHONEOS_DEPLOYMENT_TARGET = 8.3;
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
@@ -1525,7 +1591,33 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				COPY_PHASE_STRIP = NO;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.3;
+				OTHER_LDFLAGS = "-ObjC";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		F807D57E1ADCF4B800A2DC7A /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				OTHER_LDFLAGS = "-ObjC";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+			};
+			name = Debug;
+		};
+		F807D57F1ADCF4B800A2DC7A /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
@@ -1604,6 +1696,14 @@
 			buildConfigurations = (
 				F807D55E1ADCE68500A2DC7A /* Debug */,
 				F807D55F1ADCE68500A2DC7A /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+		F807D57D1ADCF4B800A2DC7A /* Build configuration list for PBXNativeTarget "libssh2-iOS" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F807D57E1ADCF4B800A2DC7A /* Debug */,
+				F807D57F1ADCF4B800A2DC7A /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 		};
