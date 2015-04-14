@@ -199,12 +199,19 @@
 			remoteGlobalIDString = F807D4991ADCA66800A2DC7A;
 			remoteInfo = SwiftGit2;
 		};
-		F807D4C51ADCABD800A2DC7A /* PBXContainerItemProxy */ = {
+		F807D5641ADCEC0D00A2DC7A /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = BEB31F1A1A0D6F7A00F525B9 /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = BEB31F8E1A0E563900F525B9;
-			remoteInfo = libgit2;
+			remoteGlobalIDString = F807D52E1ADCDC3B00A2DC7A;
+			remoteInfo = "libgit2-iOS";
+		};
+		F807D5661ADCEC1300A2DC7A /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = BEB31F1A1A0D6F7A00F525B9 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = F807D54B1ADCE68400A2DC7A;
+			remoteInfo = "OpenSSL-iOS";
 		};
 /* End PBXContainerItemProxy section */
 
@@ -881,7 +888,7 @@
 			buildRules = (
 			);
 			dependencies = (
-				F807D4C61ADCABD800A2DC7A /* PBXTargetDependency */,
+				F807D5651ADCEC0D00A2DC7A /* PBXTargetDependency */,
 			);
 			name = "SwiftGit2-iOS";
 			productName = SwiftGit2;
@@ -916,6 +923,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				F807D5671ADCEC1300A2DC7A /* PBXTargetDependency */,
 			);
 			name = "libgit2-iOS";
 			productName = libgit2;
@@ -1133,10 +1141,15 @@
 			target = F807D4991ADCA66800A2DC7A /* SwiftGit2-iOS */;
 			targetProxy = F807D4A61ADCA66800A2DC7A /* PBXContainerItemProxy */;
 		};
-		F807D4C61ADCABD800A2DC7A /* PBXTargetDependency */ = {
+		F807D5651ADCEC0D00A2DC7A /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = BEB31F8E1A0E563900F525B9 /* libgit2-OSX */;
-			targetProxy = F807D4C51ADCABD800A2DC7A /* PBXContainerItemProxy */;
+			target = F807D52E1ADCDC3B00A2DC7A /* libgit2-iOS */;
+			targetProxy = F807D5641ADCEC0D00A2DC7A /* PBXContainerItemProxy */;
+		};
+		F807D5671ADCEC1300A2DC7A /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = F807D54B1ADCE68400A2DC7A /* OpenSSL-iOS */;
+			targetProxy = F807D5661ADCEC1300A2DC7A /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
