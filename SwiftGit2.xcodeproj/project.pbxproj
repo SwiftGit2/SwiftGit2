@@ -14,6 +14,7 @@
 		BE14AA551A1984550015B439 /* Fixtures.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE14AA541A1984550015B439 /* Fixtures.swift */; };
 		BE14AA571A198C6E0015B439 /* simple-repository.zip in Resources */ = {isa = PBXBuildFile; fileRef = BE14AA561A198C6E0015B439 /* simple-repository.zip */; };
 		BE14AA591A1996B70015B439 /* FixturesSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE14AA581A1996B70015B439 /* FixturesSpec.swift */; };
+		BE276B291ACCD3CF00D6DAD7 /* CheckoutStrategy.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE276B281ACCD3CF00D6DAD7 /* CheckoutStrategy.swift */; };
 		BE2E3BE61A31261300C67092 /* Objects.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE2E3BE51A31261300C67092 /* Objects.swift */; };
 		BE2E3BE81A31262800C67092 /* ObjectsSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE2E3BE71A31262800C67092 /* ObjectsSpec.swift */; };
 		BE36354C1A632C9700D37EC8 /* Libgit2.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE36354B1A632C9700D37EC8 /* Libgit2.swift */; };
@@ -192,6 +193,7 @@
 		BE14AA561A198C6E0015B439 /* simple-repository.zip */ = {isa = PBXFileReference; lastKnownFileType = archive.zip; path = "simple-repository.zip"; sourceTree = "<group>"; };
 		BE14AA581A1996B70015B439 /* FixturesSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FixturesSpec.swift; sourceTree = "<group>"; };
 		BE244A521A117DA100F8BE42 /* SwiftGit2.modulemap */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = "sourcecode.module-map"; path = SwiftGit2.modulemap; sourceTree = "<group>"; };
+		BE276B281ACCD3CF00D6DAD7 /* CheckoutStrategy.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CheckoutStrategy.swift; sourceTree = "<group>"; };
 		BE2E3BE51A31261300C67092 /* Objects.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Objects.swift; sourceTree = "<group>"; };
 		BE2E3BE71A31262800C67092 /* ObjectsSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ObjectsSpec.swift; sourceTree = "<group>"; };
 		BE36354B1A632C9700D37EC8 /* Libgit2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Libgit2.swift; sourceTree = "<group>"; };
@@ -424,6 +426,7 @@
 			children = (
 				BEB31F281A0D6F7A00F525B9 /* SwiftGit2.h */,
 				BE14AA4F1A1974010015B439 /* SwiftGit2.m */,
+				BE276B281ACCD3CF00D6DAD7 /* CheckoutStrategy.swift */,
 				DA5914751A94579000AED74C /* Errors.swift */,
 				BE36354B1A632C9700D37EC8 /* Libgit2.swift */,
 				BE2E3BE51A31261300C67092 /* Objects.swift */,
@@ -700,6 +703,7 @@
 			files = (
 				BE70B3E51A1ACB1A002C3F4E /* OID.swift in Sources */,
 				BECB5F6E1A57284700999413 /* Remotes.swift in Sources */,
+				BE276B291ACCD3CF00D6DAD7 /* CheckoutStrategy.swift in Sources */,
 				BEB31F6D1A0D78F300F525B9 /* Repository.swift in Sources */,
 				BE2E3BE61A31261300C67092 /* Objects.swift in Sources */,
 				BECB5F6A1A56F19900999413 /* References.swift in Sources */,
