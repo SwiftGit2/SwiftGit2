@@ -1462,7 +1462,7 @@
 				OTHER_LDFLAGS = (
 					"-lgit2-ios",
 					"-force_load",
-					External/libgit2.a,
+					"External/libgit2-ios/libgit2-ios.a",
 					"-lssl",
 					"-lcrypto",
 					"-lssh2-ios",
@@ -1506,7 +1506,7 @@
 				OTHER_LDFLAGS = (
 					"-lgit2-ios",
 					"-force_load",
-					External/libgit2.a,
+					"External/libgit2-ios/libgit2-ios.a",
 					"-lssl",
 					"-lcrypto",
 					"-lssh2-ios",
