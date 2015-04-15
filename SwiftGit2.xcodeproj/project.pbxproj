@@ -846,6 +846,23 @@
 		};
 /* End PBXHeadersBuildPhase section */
 
+/* Begin PBXLegacyTarget section */
+		F8C816DC1ADDECEA007AFD00 /* clean_externals */ = {
+			isa = PBXLegacyTarget;
+			buildArgumentsString = "$(ACTION)";
+			buildConfigurationList = F8C816DD1ADDECEA007AFD00 /* Build configuration list for PBXLegacyTarget "clean_externals" */;
+			buildPhases = (
+			);
+			buildToolPath = "$(SRCROOT)/script/clean_externals";
+			buildWorkingDirectory = "";
+			dependencies = (
+			);
+			name = clean_externals;
+			passBuildSettingsInEnvironment = 1;
+			productName = clean_externals;
+		};
+/* End PBXLegacyTarget section */
+
 /* Begin PBXNativeTarget section */
 		BEB31F221A0D6F7A00F525B9 /* SwiftGit2-OSX */ = {
 			isa = PBXNativeTarget;
@@ -1020,6 +1037,9 @@
 					F807D56B1ADCF4B600A2DC7A = {
 						CreatedOnToolsVersion = 6.3;
 					};
+					F8C816DC1ADDECEA007AFD00 = {
+						CreatedOnToolsVersion = 6.3;
+					};
 				};
 			};
 			buildConfigurationList = BEB31F1D1A0D6F7A00F525B9 /* Build configuration list for PBXProject "SwiftGit2" */;
@@ -1042,6 +1062,7 @@
 				F807D52E1ADCDC3B00A2DC7A /* libgit2-iOS */,
 				F807D54B1ADCE68400A2DC7A /* OpenSSL-iOS */,
 				F807D56B1ADCF4B600A2DC7A /* libssh2-iOS */,
+				F8C816DC1ADDECEA007AFD00 /* clean_externals */,
 			);
 		};
 /* End PBXProject section */
@@ -1646,6 +1667,33 @@
 			};
 			name = Release;
 		};
+		F8C816DE1ADDECEA007AFD00 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				DEBUGGING_SYMBOLS = YES;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = "";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		F8C816DF1ADDECEA007AFD00 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = "";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -1729,6 +1777,14 @@
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
+		};
+		F8C816DD1ADDECEA007AFD00 /* Build configuration list for PBXLegacyTarget "clean_externals" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F8C816DE1ADDECEA007AFD00 /* Debug */,
+				F8C816DF1ADDECEA007AFD00 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
 		};
 /* End XCConfigurationList section */
 	};
