@@ -221,6 +221,13 @@
 			remoteGlobalIDString = F807D56B1ADCF4B600A2DC7A;
 			remoteInfo = "libssh2-iOS";
 		};
+		F8C816E01ADDEE50007AFD00 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = BEB31F1A1A0D6F7A00F525B9 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = F807D54B1ADCE68400A2DC7A;
+			remoteInfo = "OpenSSL-iOS";
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -997,6 +1004,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				F8C816E11ADDEE50007AFD00 /* PBXTargetDependency */,
 			);
 			name = "libssh2-iOS";
 			productName = "libssh2-iOS";
@@ -1235,6 +1243,11 @@
 			isa = PBXTargetDependency;
 			target = F807D56B1ADCF4B600A2DC7A /* libssh2-iOS */;
 			targetProxy = F807D5831ADCF4E500A2DC7A /* PBXContainerItemProxy */;
+		};
+		F8C816E11ADDEE50007AFD00 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = F807D54B1ADCE68400A2DC7A /* OpenSSL-iOS */;
+			targetProxy = F8C816E01ADDEE50007AFD00 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
