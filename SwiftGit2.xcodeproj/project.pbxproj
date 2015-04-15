@@ -1294,7 +1294,7 @@
 					/usr/local/include,
 					"External/ios-openssl/include",
 				);
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.1;
 				LIBRARY_SEARCH_PATHS = (
 					.,
 					External,
@@ -1345,7 +1345,7 @@
 					/usr/local/include,
 					"External/ios-openssl/include",
 				);
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.1;
 				LIBRARY_SEARCH_PATHS = (
 					.,
 					External,
@@ -1798,6 +1798,7 @@
 				F8C816DF1ADDECEA007AFD00 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
