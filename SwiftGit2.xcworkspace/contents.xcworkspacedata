@@ -5,7 +5,16 @@
       location = "group:SwiftGit2.xcodeproj">
    </FileRef>
    <FileRef
-      location = "group:Carthage/Checkouts/LlamaKit/LlamaKit.xcodeproj">
+      location = "group:Carthage/Checkouts/Box/Box.xcodeproj">
+   </FileRef>
+   <FileRef
+      location = "group:Carthage/Checkouts/Prelude/Prelude.xcodeproj">
+   </FileRef>
+   <FileRef
+      location = "group:Carthage/Checkouts/Either/Either.xcodeproj">
+   </FileRef>
+   <FileRef
+      location = "group:Carthage/Checkouts/Result/Result.xcodeproj">
    </FileRef>
    <FileRef
       location = "group:Carthage/Checkouts/Quick/Quick.xcodeproj">

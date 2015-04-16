@@ -6,7 +6,7 @@
 //  Copyright (c) 2014 GitHub, Inc. All rights reserved.
 //
 
-import LlamaKit
+import Result
 import SwiftGit2
 import Nimble
 import Quick
