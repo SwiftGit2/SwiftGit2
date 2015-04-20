@@ -849,7 +849,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = BEB31F561A0D75EE00F525B9 /* Mac-Framework.xcconfig */;
 			buildSettings = {
-				APPLICATION_EXTENSION_API_ONLY = NO;
 				CLANG_ENABLE_MODULES = YES;
 				COMBINE_HIDPI_IMAGES = YES;
 				DEFINES_MODULE = YES;
@@ -879,7 +878,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = BEB31F561A0D75EE00F525B9 /* Mac-Framework.xcconfig */;
 			buildSettings = {
-				APPLICATION_EXTENSION_API_ONLY = NO;
 				CLANG_ENABLE_MODULES = YES;
 				COMBINE_HIDPI_IMAGES = YES;
 				DEFINES_MODULE = YES;
