@@ -177,6 +177,7 @@
 		F807D50D1ADCAE7A00A2DC7A /* git2.h in Headers */ = {isa = PBXBuildFile; fileRef = BEB31F9B1A0E581400F525B9 /* git2.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		F8EA75071AE8AA6E004FB73C /* Fixtures.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE14AA541A1984550015B439 /* Fixtures.swift */; };
 		F8EA75091AE8C4D2004FB73C /* Result.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F8EA75081AE8C4D2004FB73C /* Result.framework */; };
+		F8EA750A1AE8C856004FB73C /* CheckoutStrategy.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE276B281ACCD3CF00D6DAD7 /* CheckoutStrategy.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -1186,6 +1187,7 @@
 			files = (
 				F807D4B71ADCAB0C00A2DC7A /* OID.swift in Sources */,
 				F807D4BB1ADCAB1700A2DC7A /* Remotes.swift in Sources */,
+				F8EA750A1AE8C856004FB73C /* CheckoutStrategy.swift in Sources */,
 				F807D4B91ADCAB1300A2DC7A /* Repository.swift in Sources */,
 				F807D4B61ADCAB0200A2DC7A /* Objects.swift in Sources */,
 				F807D4BA1ADCAB1500A2DC7A /* References.swift in Sources */,
