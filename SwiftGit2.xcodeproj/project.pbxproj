@@ -175,8 +175,8 @@
 		F807D5071ADCAC8300A2DC7A /* libiconv.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F807D5061ADCAC8300A2DC7A /* libiconv.dylib */; };
 		F807D50C1ADCAE7A00A2DC7A /* SwiftGit2.h in Headers */ = {isa = PBXBuildFile; fileRef = BEB31F281A0D6F7A00F525B9 /* SwiftGit2.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		F807D50D1ADCAE7A00A2DC7A /* git2.h in Headers */ = {isa = PBXBuildFile; fileRef = BEB31F9B1A0E581400F525B9 /* git2.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		F807D50F1ADCC0D300A2DC7A /* LlamaKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F807D50E1ADCC0D300A2DC7A /* LlamaKit.framework */; };
 		F8EA75071AE8AA6E004FB73C /* Fixtures.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE14AA541A1984550015B439 /* Fixtures.swift */; };
+		F8EA75091AE8C4D2004FB73C /* Result.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F8EA75081AE8C4D2004FB73C /* Result.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -517,6 +517,7 @@
 		F807D5471ADCDCF300A2DC7A /* script */ = {isa = PBXFileReference; lastKnownFileType = folder; path = script; sourceTree = "<group>"; };
 		F807D54C1ADCE68400A2DC7A /* libOpenSSL-iOS.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libOpenSSL-iOS.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		F807D56C1ADCF4B600A2DC7A /* liblibssh2-iOS.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "liblibssh2-iOS.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		F8EA75081AE8C4D2004FB73C /* Result.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Result.framework; path = "../../../Library/Developer/Xcode/DerivedData/SwiftGit2-bgqrwlxrlrptmnbsrxlmvchxawjd/Build/Products/Debug/Result.framework"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -545,9 +546,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F8EA75091AE8C4D2004FB73C /* Result.framework in Frameworks */,
 				F807D5051ADCAC7C00A2DC7A /* libz.dylib in Frameworks */,
 				F807D5071ADCAC8300A2DC7A /* libiconv.dylib in Frameworks */,
-				F807D50F1ADCC0D300A2DC7A /* LlamaKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -644,6 +645,7 @@
 		BEB31F191A0D6F7A00F525B9 = {
 			isa = PBXGroup;
 			children = (
+				F8EA75081AE8C4D2004FB73C /* Result.framework */,
 				BEB31F251A0D6F7A00F525B9 /* SwiftGit2 */,
 				BEB31F321A0D6F7A00F525B9 /* SwiftGit2Tests */,
 				BEB31F9A1A0E57FC00F525B9 /* libgit2 */,
@@ -1482,6 +1484,7 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(BUILD_DIR)/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)",
+					"$(USER_LIBRARY_DIR)/Developer/Xcode/DerivedData/SwiftGit2-bgqrwlxrlrptmnbsrxlmvchxawjd/Build/Products/Debug",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1525,6 +1528,7 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(BUILD_DIR)/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)",
+					"$(USER_LIBRARY_DIR)/Developer/Xcode/DerivedData/SwiftGit2-bgqrwlxrlrptmnbsrxlmvchxawjd/Build/Products/Debug",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
