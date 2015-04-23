@@ -512,7 +512,6 @@
 		F807D4A41ADCA66800A2DC7A /* SwiftGit2-iOSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "SwiftGit2-iOSTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		F807D5041ADCAC7C00A2DC7A /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS8.3.sdk/usr/lib/libz.dylib; sourceTree = DEVELOPER_DIR; };
 		F807D5061ADCAC8300A2DC7A /* libiconv.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libiconv.dylib; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS8.3.sdk/usr/lib/libiconv.dylib; sourceTree = DEVELOPER_DIR; };
-		F807D50E1ADCC0D300A2DC7A /* LlamaKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = LlamaKit.framework; path = "../../../../../Volumes/DerivedData/SwiftGit2-bgqrwlxrlrptmnbsrxlmvchxawjd/Build/Products/Debug-iphoneos/LlamaKit.framework"; sourceTree = "<group>"; };
 		F807D52F1ADCDC3B00A2DC7A /* liblibgit2-iOS.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "liblibgit2-iOS.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		F807D5471ADCDCF300A2DC7A /* script */ = {isa = PBXFileReference; lastKnownFileType = folder; path = script; sourceTree = "<group>"; };
 		F807D54C1ADCE68400A2DC7A /* libOpenSSL-iOS.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libOpenSSL-iOS.a"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -645,7 +644,6 @@
 		BEB31F191A0D6F7A00F525B9 = {
 			isa = PBXGroup;
 			children = (
-				F8EA75081AE8C4D2004FB73C /* Result.framework */,
 				BEB31F251A0D6F7A00F525B9 /* SwiftGit2 */,
 				BEB31F321A0D6F7A00F525B9 /* SwiftGit2Tests */,
 				BEB31F9A1A0E57FC00F525B9 /* libgit2 */,
@@ -805,6 +803,7 @@
 		BEB31FA11A0E63C100F525B9 /* Libraries */ = {
 			isa = PBXGroup;
 			children = (
+				F8EA75081AE8C4D2004FB73C /* Result.framework */,
 				BEE591C61ADF470500534F14 /* Result.framework */,
 				F807D50A1ADCAD3600A2DC7A /* OS X */,
 				F807D5091ADCAD2000A2DC7A /* iOS */,
@@ -817,7 +816,6 @@
 			children = (
 				F807D5061ADCAC8300A2DC7A /* libiconv.dylib */,
 				F807D5041ADCAC7C00A2DC7A /* libz.dylib */,
-				F807D50E1ADCC0D300A2DC7A /* LlamaKit.framework */,
 			);
 			name = iOS;
 			sourceTree = "<group>";
