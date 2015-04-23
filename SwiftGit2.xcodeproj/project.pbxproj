@@ -176,6 +176,7 @@
 		F807D50C1ADCAE7A00A2DC7A /* SwiftGit2.h in Headers */ = {isa = PBXBuildFile; fileRef = BEB31F281A0D6F7A00F525B9 /* SwiftGit2.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		F807D50D1ADCAE7A00A2DC7A /* git2.h in Headers */ = {isa = PBXBuildFile; fileRef = BEB31F9B1A0E581400F525B9 /* git2.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		F807D50F1ADCC0D300A2DC7A /* LlamaKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F807D50E1ADCC0D300A2DC7A /* LlamaKit.framework */; };
+		F8EA75071AE8AA6E004FB73C /* Fixtures.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE14AA541A1984550015B439 /* Fixtures.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -1207,6 +1208,7 @@
 				F807D4C01ADCAB2700A2DC7A /* RemotesSpec.swift in Sources */,
 				F807D4BC1ADCAB1F00A2DC7A /* OIDSpec.swift in Sources */,
 				F807D4BE1ADCAB2300A2DC7A /* RepositorySpec.swift in Sources */,
+				F8EA75071AE8AA6E004FB73C /* Fixtures.swift in Sources */,
 				F807D4BD1ADCAB2100A2DC7A /* ObjectsSpec.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
