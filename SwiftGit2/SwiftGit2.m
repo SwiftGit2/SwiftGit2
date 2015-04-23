@@ -44,6 +44,8 @@ struct dirent *readdir(DIR *) __DARWIN_INODE64(readdir);
 
 //http://stackoverflow.com/questions/29390112/libcrypto-a-symbols-not-found-for-architecture-i386#answer-29439324
 
+#if TARGET_OS_IPHONE
+
 DIR * opendir$INODE64( char * dirName )
 {
 	return opendir( dirName );
@@ -53,3 +55,5 @@ struct dirent * readdir$INODE64( DIR * dir )
 {
 	return readdir( dir );
 }
+
+#endif
