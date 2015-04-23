@@ -6,7 +6,7 @@
 //  Copyright (c) 2014 GitHub, Inc. All rights reserved.
 //
 
-import LlamaKit
+import Result
 import SwiftGit2
 import Nimble
 import Quick
@@ -427,6 +427,72 @@ class RepositorySpec: QuickSpec {
 				expect(result.value?.shortName).to(beNil())
 				expect(result.value?.oid).to(equal(OID(string: "315b3f344221db91ddc54b269f3c9af422da0f2e")!))
 				expect(result.value as? Reference).notTo(beNil())
+			}
+		}
+		
+		describe("Repository.setHEAD(OID)") {
+			it("should set HEAD to the OID") {
+				let repo = Fixtures.simpleRepository
+				let oid = OID(string: "315b3f344221db91ddc54b269f3c9af422da0f2e")!
+				expect(repo.HEAD().value?.shortName).to(equal("master"))
+				
+				expect(repo.setHEAD(oid)).to(haveSucceeded())
+				let HEAD = repo.HEAD().value
+				expect(HEAD?.longName).to(equal("HEAD"))
+				expect(HEAD?.oid).to(equal(oid))
+				
+				expect(repo.setHEAD(repo.localBranchWithName("master").value!)).to(haveSucceeded())
+				expect(repo.HEAD().value?.shortName).to(equal("master"))
+			}
+		}
+		
+		describe("Repository.setHEAD(ReferenceType)") {
+			it("should set HEAD to a branch") {
+				let repo = Fixtures.detachedHeadRepository
+				let oid = repo.HEAD().value!.oid
+				expect(repo.HEAD().value?.longName).to(equal("HEAD"))
+				
+				let branch = repo.localBranchWithName("another-branch").value!
+				expect(repo.setHEAD(branch)).to(haveSucceeded())
+				expect(repo.HEAD().value?.shortName).to(equal(branch.name))
+				
+				expect(repo.setHEAD(oid)).to(haveSucceeded())
+				expect(repo.HEAD().value?.longName).to(equal("HEAD"))
+			}
+		}
+		
+		describe("Repository.checkout()") {
+			// We're not really equipped to test this yet. :(
+		}
+		
+		describe("Repository.checkout(OID)") {
+			it("should set HEAD") {
+				let repo = Fixtures.simpleRepository
+				let oid = OID(string: "315b3f344221db91ddc54b269f3c9af422da0f2e")!
+				expect(repo.HEAD().value?.shortName).to(equal("master"))
+				
+				expect(repo.checkout(oid, strategy: CheckoutStrategy.None)).to(haveSucceeded())
+				let HEAD = repo.HEAD().value
+				expect(HEAD?.longName).to(equal("HEAD"))
+				expect(HEAD?.oid).to(equal(oid))
+				
+				expect(repo.checkout(repo.localBranchWithName("master").value!, strategy: CheckoutStrategy.None)).to(haveSucceeded())
+				expect(repo.HEAD().value?.shortName).to(equal("master"))
+			}
+		}
+		
+		describe("Repository.checkout(ReferenceType)") {
+			it("should set HEAD") {
+				let repo = Fixtures.detachedHeadRepository
+				let oid = repo.HEAD().value!.oid
+				expect(repo.HEAD().value?.longName).to(equal("HEAD"))
+				
+				let branch = repo.localBranchWithName("another-branch").value!
+				expect(repo.checkout(branch, strategy: CheckoutStrategy.None)).to(haveSucceeded())
+				expect(repo.HEAD().value?.shortName).to(equal(branch.name))
+				
+				expect(repo.checkout(oid, strategy: CheckoutStrategy.None)).to(haveSucceeded())
+				expect(repo.HEAD().value?.longName).to(equal("HEAD"))
 			}
 		}
 	}

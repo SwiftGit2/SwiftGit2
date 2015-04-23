@@ -18,7 +18,7 @@ if let repo = repo.value {
 }
 ```
 
-SwiftGit2 requires Xcode 6.3ß2 or later.
+SwiftGit2 requires Xcode 6.3 or later.
 
 ## Design
 SwiftGit2 uses value objects wherever possible. That means using Swift’s `struct`s and `enum`s without holding references to libgit2 objects. This has a number of advantages:

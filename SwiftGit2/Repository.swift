@@ -7,7 +7,9 @@
 //
 
 import Foundation
-import LlamaKit
+import Result
+
+public typealias CheckoutProgressBlock = SG2CheckoutProgressBlock
 
 /// A git repository.
 final public class Repository {
@@ -24,11 +26,11 @@ final public class Repository {
 		let result = git_repository_open(&pointer, URL.fileSystemRepresentation)
 		
 		if result != GIT_OK.value {
-			return failure(libGit2Error(result, libGit2PointOfFailure: "git_repository_open"))
+			return Result.failure(libGit2Error(result, libGit2PointOfFailure: "git_repository_open"))
 		}
 		
 		let repository = Repository(pointer)
-		return success(repository)
+		return Result.success(repository)
 	}
 	
 	// MARK: - Initializers
@@ -73,7 +75,7 @@ final public class Repository {
 		let result = git_object_lookup(&pointer, self.pointer, &oid, type)
 		
 		if result != GIT_OK.value {
-			return failure(libGit2Error(result, libGit2PointOfFailure: "git_object_lookup"))
+			return Result.failure(libGit2Error(result, libGit2PointOfFailure: "git_object_lookup"))
 		}
 		
 		let value = transform(pointer)
@@ -82,7 +84,7 @@ final public class Repository {
 	}
 	
 	func withLibgit2Object<T>(oid: OID, type: git_otype, transform: COpaquePointer -> T) -> Result<T, NSError> {
-		return withLibgit2Object(oid, type: type) { success(transform($0)) }
+		return withLibgit2Object(oid, type: type) { Result.success(transform($0)) }
 	}
 	
 	/// Loads the object with the given OID.
@@ -94,13 +96,13 @@ final public class Repository {
 		return withLibgit2Object(oid, type: GIT_OBJ_ANY) { object in
 			let type = git_object_type(object)
 			if type == Blob.type {
-				return success(Blob(object))
+				return Result.success(Blob(object))
 			} else if type == Commit.type {
-				return success(Commit(object))
+				return Result.success(Commit(object))
 			} else if type == Tag.type {
-				return success(Tag(object))
+				return Result.success(Tag(object))
 			} else if type == Tree.type {
-				return success(Tree(object))
+				return Result.success(Tree(object))
 			}
 
 			let error = NSError(
@@ -110,7 +112,7 @@ final public class Repository {
 					NSLocalizedDescriptionKey: "Unrecognized git_otype '\(type)' for oid '\(oid)'."
 				]
 			)
-			return failure(error)
+			return Result.failure(error)
 		}
 	}
 	
@@ -188,7 +190,7 @@ final public class Repository {
 		
 		if result != GIT_OK.value {
 			pointer.dealloc(1)
-			return failure(libGit2Error(result, libGit2PointOfFailure: "git_remote_list"))
+			return Result.failure(libGit2Error(result, libGit2PointOfFailure: "git_remote_list"))
 		}
 		
 		let strarray = pointer.memory
@@ -200,9 +202,9 @@ final public class Repository {
 		
 		let error = remotes.reduce(nil) { $0 == nil ? $0 : $1.error }
 		if let error = error {
-			return failure(error)
+			return Result.failure(error)
 		}
-		return success(remotes.map { $0.value! })
+		return Result.success(remotes.map { $0.value! })
 	}
 	
 	/// Load a remote from the repository.
@@ -215,12 +217,12 @@ final public class Repository {
 		let result = git_remote_lookup(&pointer, self.pointer, name)
 		
 		if result != GIT_OK.value {
-			return failure(libGit2Error(result, libGit2PointOfFailure: "git_remote_lookup"))
+			return Result.failure(libGit2Error(result, libGit2PointOfFailure: "git_remote_lookup"))
 		}
 		
 		let value = Remote(pointer)
 		git_remote_free(pointer)
-		return success(value)
+		return Result.success(value)
 	}
 	
 	// MARK: - Reference Lookups
@@ -232,7 +234,7 @@ final public class Repository {
 		
 		if result != GIT_OK.value {
 			pointer.dealloc(1)
-			return failure(libGit2Error(result, libGit2PointOfFailure: "git_reference_list"))
+			return Result.failure(libGit2Error(result, libGit2PointOfFailure: "git_reference_list"))
 		}
 		
 		let strarray = pointer.memory
@@ -248,9 +250,9 @@ final public class Repository {
 		
 		let error = references.reduce(nil) { $0 == nil ? $0 : $1.error }
 		if let error = error {
-			return failure(error)
+			return Result.failure(error)
 		}
-		return success(references.map { $0.value! })
+		return Result.success(references.map { $0.value! })
 	}
 	
 	/// Load the reference with the given long name (e.g. "refs/heads/master")
@@ -263,12 +265,12 @@ final public class Repository {
 		let result = git_reference_lookup(&pointer, self.pointer, name)
 		
 		if result != GIT_OK.value {
-			return failure(libGit2Error(result, libGit2PointOfFailure: "git_reference_lookup"))
+			return Result.failure(libGit2Error(result, libGit2PointOfFailure: "git_reference_lookup"))
 		}
 		
 		let value = referenceWithLibGit2Reference(pointer)
 		git_reference_free(pointer)
-		return success(value)
+		return Result.success(value)
 	}
 	
 	/// Load and return a list of all local branches.
@@ -319,10 +321,72 @@ final public class Repository {
 		var pointer: COpaquePointer = nil
 		let result = git_repository_head(&pointer, self.pointer)
 		if result != GIT_OK.value {
-			return failure(libGit2Error(result, libGit2PointOfFailure: "git_repository_head"))
+			return Result.failure(libGit2Error(result, libGit2PointOfFailure: "git_repository_head"))
 		}
 		let value = referenceWithLibGit2Reference(pointer)
 		git_reference_free(pointer)
-		return success(value)
+		return Result.success(value)
+	}
+	
+	/// Set HEAD to the given oid (detached).
+	///
+	/// :param: oid The OID to set as HEAD.
+	/// :returns: Returns a result with void or the error that occurred.
+	public func setHEAD(oid: OID) -> Result<(), NSError> {
+		var oid = oid.oid
+		let result = git_repository_set_head_detached(self.pointer, &oid);
+		if result != GIT_OK.value {
+			return Result.failure(libGit2Error(result, libGit2PointOfFailure: "git_repository_set_head"))
+		}
+		return Result.success()
+	}
+	
+	/// Set HEAD to the given reference.
+	///
+	/// :param: reference The reference to set as HEAD.
+	/// :returns: Returns a result with void or the error that occurred.
+	public func setHEAD(reference: ReferenceType) -> Result<(), NSError> {
+		let result = git_repository_set_head(self.pointer, reference.longName);
+		if result != GIT_OK.value {
+			return Result.failure(libGit2Error(result, libGit2PointOfFailure: "git_repository_set_head"))
+		}
+		return Result.success()
+	}
+	
+	/// Check out HEAD.
+	///
+	/// :param: strategy The checkout strategy to use.
+	/// :param: progress A block that's called with the progress of the checkout.
+	/// :returns: Returns a result with void or the error that occurred.
+	public func checkout(#strategy: CheckoutStrategy, progress: CheckoutProgressBlock? = nil) -> Result<(), NSError> {
+		var options = SG2CheckoutOptions(progress)
+		options.checkout_strategy = strategy.git_checkout_strategy.value
+		
+		let result = git_checkout_head(self.pointer, &options)
+		if result != GIT_OK.value {
+			return Result.failure(libGit2Error(result, libGit2PointOfFailure: "git_checkout_head"))
+		}
+		
+		return Result.success()
+	}
+	
+	/// Check out the given OID.
+	///
+	/// :param: oid The OID of the commit to check out.
+	/// :param: strategy The checkout strategy to use.
+	/// :param: progress A block that's called with the progress of the checkout.
+	/// :returns: Returns a result with void or the error that occurred.
+	public func checkout(oid: OID, strategy: CheckoutStrategy, progress: CheckoutProgressBlock? = nil) -> Result<(), NSError> {
+		return setHEAD(oid).flatMap { self.checkout(strategy: strategy, progress: progress) }
+	}
+	
+	/// Check out the given reference.
+	///
+	/// :param: reference The reference to check out.
+	/// :param: strategy The checkout strategy to use.
+	/// :param: progress A block that's called with the progress of the checkout.
+	/// :returns: Returns a result with void or the error that occurred.
+	public func checkout(reference: ReferenceType, strategy: CheckoutStrategy, progress: CheckoutProgressBlock? = nil) -> Result<(), NSError> {
+		return setHEAD(reference).flatMap { self.checkout(strategy: strategy, progress: progress) }
 	}
 }

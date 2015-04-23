@@ -15,6 +15,27 @@ static void SwiftGit2Init(void) {
 	git_libgit2_init();
 }
 
+static void SG2CheckoutProgressCallback(const char *path, size_t completed_steps, size_t total_steps, void *payload) {
+	if (payload == NULL) return;
+	
+	SG2CheckoutProgressBlock block = (__bridge SG2CheckoutProgressBlock)payload;
+	block((path == nil ? nil : @(path)), completed_steps, total_steps);
+}
+
+git_checkout_options SG2CheckoutOptions(SG2CheckoutProgressBlock progress) {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wmissing-field-initializers"
+	git_checkout_options result = GIT_CHECKOUT_OPTIONS_INIT;
+#pragma clang diagnostic pop
+	
+	if (progress != nil) {
+		result.progress_cb = SG2CheckoutProgressCallback;
+		result.progress_payload = (__bridge void *)[progress copy];
+	}
+	
+	return result;
+}
+
 // Declarations in iOS 8.3 /usr/include/dirent.h
 /*
 DIR *opendir(const char *) __DARWIN_ALIAS_I(opendir);

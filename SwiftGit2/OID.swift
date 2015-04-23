@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import LlamaKit
+import Result
 
 /// An identifier for a Git object.
 public struct OID {
