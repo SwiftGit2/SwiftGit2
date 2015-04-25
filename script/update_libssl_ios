@@ -29,9 +29,6 @@ function build_ssl ()
     cp -r "${ROOT_PATH}/External/ios-openssl" "/tmp/openssl"
     pushd "/tmp/openssl" > /dev/null
 
-    LOG="/tmp/openssl-${ARCH}.log"
-    echo "$LOG"
-
     if [ "${ARCH}" == "arm64" ] || [ "${ARCH}" == "x86_64" ]
     then
         HOST="BSD-generic64"
@@ -42,12 +39,12 @@ function build_ssl ()
         perl -i -pe 's|static volatile sig_atomic_t intr_signal|static volatile int intr_signal|' crypto/ui/ui_openssl.c
     fi
 
-    ./Configure ${HOST} ${CONFIG} --openssldir="/tmp/openssl-${ARCH}" >> "${LOG}" 2>&1
-    perl -i -pe "s|^CC= gcc|CC= ${CLANG} -miphoneos-version-min=${IPHONEOS_DEPLOYMENT_TARGET} -arch ${ARCH} |g" Makefile >> "${LOG}" 2>&1
-    perl -i -pe "s|^CFLAG= (.*)|CFLAG= -isysroot ${SDKROOT} \$1|g" Makefile >> "${LOG}" 2>&1
-    make >> "${LOG}" 2>&1
+    ./Configure ${HOST} ${CONFIG} --openssldir="/tmp/openssl-${ARCH}"
+    perl -i -pe "s|^CC= gcc|CC= ${CLANG} -miphoneos-version-min=${IPHONEOS_DEPLOYMENT_TARGET} -arch ${ARCH} |g" Makefile
+    perl -i -pe "s|^CFLAG= (.*)|CFLAG= -isysroot ${SDKROOT} \$1|g" Makefile
+    make
 
-    make install_sw >> "${LOG}" 2>&1
+    make install_sw
     popd > /dev/null
     rm -rf "/tmp/openssl"
 
