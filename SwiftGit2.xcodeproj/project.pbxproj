@@ -175,6 +175,9 @@
 		F807D5071ADCAC8300A2DC7A /* libiconv.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F807D5061ADCAC8300A2DC7A /* libiconv.dylib */; };
 		F807D50C1ADCAE7A00A2DC7A /* SwiftGit2.h in Headers */ = {isa = PBXBuildFile; fileRef = BEB31F281A0D6F7A00F525B9 /* SwiftGit2.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		F807D50D1ADCAE7A00A2DC7A /* git2.h in Headers */ = {isa = PBXBuildFile; fileRef = BEB31F9B1A0E581400F525B9 /* git2.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		F89F50591AEB17DF0064A98C /* detached-head.zip in Resources */ = {isa = PBXBuildFile; fileRef = BE0B1C5C1A9978890004726D /* detached-head.zip */; };
+		F89F505A1AEB17E30064A98C /* Mantle.zip in Resources */ = {isa = PBXBuildFile; fileRef = BE0991F61A578FB1007D4E6A /* Mantle.zip */; };
+		F89F505B1AEB17E70064A98C /* simple-repository.zip in Resources */ = {isa = PBXBuildFile; fileRef = BE14AA561A198C6E0015B439 /* simple-repository.zip */; };
 		F8EA75071AE8AA6E004FB73C /* Fixtures.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE14AA541A1984550015B439 /* Fixtures.swift */; };
 		F8EA75091AE8C4D2004FB73C /* Result.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F8EA75081AE8C4D2004FB73C /* Result.framework */; };
 		F8EA750A1AE8C856004FB73C /* CheckoutStrategy.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE276B281ACCD3CF00D6DAD7 /* CheckoutStrategy.swift */; };
@@ -1089,6 +1092,9 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F89F505A1AEB17E30064A98C /* Mantle.zip in Resources */,
+				F89F505B1AEB17E70064A98C /* simple-repository.zip in Resources */,
+				F89F50591AEB17DF0064A98C /* detached-head.zip in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
