@@ -29,7 +29,7 @@ function build_ssh2 ()
 
     mkdir -p "${ROOT_PATH}/External/libssh2-ios/bin/${SDKNAME}-${ARCH}.sdk"
 
-    ./buildconf
+    ./buildconf > /dev/null 2>&1
     ./configure --host=${HOST} --prefix="${ROOT_PATH}/External/libssh2-ios/bin/${SDKNAME}-${ARCH}.sdk" \
         --with-openssl \
         --with-libssl-prefix="${ROOT_PATH}/External/ios-openssl" \
