@@ -1297,9 +1297,9 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = (
-					External/libgit2/include,
 					/usr/local/include,
-					"External/ios-openssl/include",
+					External/libgit2/include,
+					External/openssl/include,
 				);
 				IPHONEOS_DEPLOYMENT_TARGET = 8.1;
 				LIBRARY_SEARCH_PATHS = (
@@ -1348,9 +1348,9 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = (
-					External/libgit2/include,
 					/usr/local/include,
-					"External/ios-openssl/include",
+					External/libgit2/include,
+					External/openssl/include,
 				);
 				IPHONEOS_DEPLOYMENT_TARGET = 8.1;
 				LIBRARY_SEARCH_PATHS = (
@@ -1500,17 +1500,17 @@
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
-					External/libgit2/include,
 					/usr/local/include,
-					"External/ios-openssl/include",
+					External/libgit2/include,
+					External/openssl/include,
 				);
 				INFOPLIST_FILE = "SwiftGit2/Supporting Files/Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
-					"External/ios-openssl/lib",
 					"External/libgit2-ios",
 					"External/libssh2-ios/lib",
+					External/openssl/lib,
 				);
 				MODULEMAP_FILE = "SwiftGit2/Supporting Files/SwiftGit2.modulemap";
 				OTHER_LDFLAGS = (
@@ -1543,17 +1543,17 @@
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
-					External/libgit2/include,
 					/usr/local/include,
-					"External/ios-openssl/include",
+					External/libgit2/include,
+					External/openssl/include,
 				);
 				INFOPLIST_FILE = "SwiftGit2/Supporting Files/Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
-					"External/ios-openssl/lib",
 					"External/libgit2-ios",
 					"External/libssh2-ios/lib",
+					External/openssl/lib,
 				);
 				MODULEMAP_FILE = "SwiftGit2/Supporting Files/SwiftGit2.modulemap";
 				OTHER_LDFLAGS = (
