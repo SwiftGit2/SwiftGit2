@@ -32,7 +32,7 @@ function build_ssh2 ()
     ./buildconf > /dev/null 2>&1
     ./configure --host=${HOST} --prefix="${ROOT_PATH}/External/libssh2-ios/bin/${SDKNAME}-${ARCH}.sdk" \
         --with-openssl \
-        --with-libssl-prefix="${ROOT_PATH}/External/ios-openssl" \
+        --with-libssl-prefix="${ROOT_PATH}/External/openssl" \
         --disable-shared --enable-static
     make
     make install

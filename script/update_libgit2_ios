@@ -42,12 +42,12 @@ function build_libgit2 ()
     cmake -DCMAKE_C_COMPILER=clang \
         -DCMAKE_C_COMPILER_WORKS:BOOL=ON \
         -DBUILD_SHARED_LIBS:BOOL=OFF \
-        -DOPENSSL_INCLUDE_DIR:PATH=../../External/ios-openssl/include/ \
+        -DOPENSSL_INCLUDE_DIR:PATH=../../External/openssl/include/ \
         -DCMAKE_LIBRARY_PATH:PATH=../../External/libssh2-ios/lib/ \
         -DLIBSSH2_INCLUDE_DIR:PATH=../../External/libssh2-ios/include/libssh2/ \
-        -DOPENSSL_SSL_LIBRARY:FILEPATH=../../External/ios-openssl/lib/libssl.a \
+        -DOPENSSL_SSL_LIBRARY:FILEPATH=../../External/openssl/lib/libssl.a \
         -DCMAKE_LIBRARY_PATH:PATH="${SDKROOT}/usr/lib/" \
-        -DOPENSSL_CRYPTO_LIBRARY:FILEPATH=../../External/ios-openssl/lib/libcrypto.a \
+        -DOPENSSL_CRYPTO_LIBRARY:FILEPATH=../../External/openssl/lib/libcrypto.a \
         -DCMAKE_INSTALL_PREFIX:PATH="${INSTALL_PREFIX}/" \
         -DBUILD_CLAR:BOOL=OFF \
         -DTHREADSAFE:BOOL=ON \
