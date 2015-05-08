@@ -1,5 +1,5 @@
 github "modocache/Guanaco" "26b6ceff4b8912abd0dfc3a9eed0a46527e040e3"
 github "Quick/Nimble" "v0.4.2"
 github "Quick/Quick" "155f858bce082373fc60d0c0a63415bf336c676b"
-github "antitypical/Result" "0.3"
+github "antitypical/Result" "0.3.2"
 github "jspahrsummers/xcconfigs" "0.8"

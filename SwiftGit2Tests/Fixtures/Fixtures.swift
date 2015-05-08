@@ -33,8 +33,14 @@ final class Fixtures {
 	
 	func setUp() {
 		NSFileManager.defaultManager().createDirectoryAtURL(directoryURL, withIntermediateDirectories: true, attributes: nil, error: nil)
-		
-		let bundle = NSBundle(identifier: "org.libgit2.SwiftGit2-OSXTests")!
+
+#if os(OSX)
+		let platform = "OSX"
+#else
+		let platform = "iOS"
+#endif
+		let bundleIdentifier = String(format: "org.libgit2.SwiftGit2-%@Tests", arguments: [platform])
+		let bundle = NSBundle(identifier: bundleIdentifier)!
 		let zipURLs = bundle.URLsForResourcesWithExtension("zip", subdirectory: nil)! as! [NSURL]
 		
 		for URL in zipURLs {
@@ -47,12 +53,20 @@ final class Fixtures {
 	}
 	
 	func unzipFileAtURL(fileURL: NSURL, intoDirectoryAtURL directoryURL: NSURL) {
+#if os(OSX)
+
 		let task = NSTask()
 		task.launchPath = "/usr/bin/unzip"
 		task.arguments = [ "-qq", "-d", directoryURL.path!, fileURL.path! ]
-		
+            
 		task.launch()
 		task.waitUntilExit()
+
+#else
+
+		assertionFailure("Tests not supported on iOS yet")
+
+#endif
 	}
 	
 	// MARK: - Helpers

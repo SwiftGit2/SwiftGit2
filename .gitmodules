@@ -16,3 +16,9 @@
 [submodule "Carthage/Checkouts/Result"]
 	path = Carthage/Checkouts/Result
 	url = https://github.com/antitypical/Result.git
+[submodule "External/libssh2"]
+	path = External/libssh2
+	url = https://github.com/libssh2/libssh2.git
+[submodule "External/openssl"]
+	path = External/openssl
+	url = https://github.com/openssl/openssl.git

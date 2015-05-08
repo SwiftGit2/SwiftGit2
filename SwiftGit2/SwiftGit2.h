@@ -6,7 +6,7 @@
 //  Copyright (c) 2014 GitHub, Inc. All rights reserved.
 //
 
-#import <Cocoa/Cocoa.h>
+@import Foundation;
 
 //! Project version number for SwiftGit2.
 FOUNDATION_EXPORT double SwiftGit2VersionNumber;
