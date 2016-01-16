@@ -20,7 +20,7 @@ public protocol PointerType: Equatable, Hashable {
 }
 
 public func == <P: PointerType>(lhs: P, rhs: P) -> Bool {
-	return lhs.oid == rhs.oid && lhs.type.value == rhs.type.value
+	return lhs.oid == rhs.oid && lhs.type.rawValue == rhs.type.rawValue
 }
 
 /// A pointer to a git object.
@@ -45,27 +45,29 @@ public enum Pointer: PointerType {
 	
 	public var type: git_otype {
 		switch self {
-		case let Commit(oid):
+		case Commit(oid):
 			return GIT_OBJ_COMMIT
-		case let Tree(oid):
+		case Tree(oid):
 			return GIT_OBJ_TREE
-		case let Blob(oid):
+		case Blob(oid):
 			return GIT_OBJ_BLOB
-		case let Tag(oid):
+		case Tag(oid):
 			return GIT_OBJ_TAG
+		default:
+			return GIT_OBJ_ANY
 		}
 	}
 	
 	/// Create an instance with an OID and a libgit2 `git_otype`.
 	init?(oid: OID, type: git_otype) {
-		switch type.value {
-		case GIT_OBJ_COMMIT.value:
+		switch type {
+		case GIT_OBJ_COMMIT:
 			self = Commit(oid)
-		case GIT_OBJ_TREE.value:
+		case GIT_OBJ_TREE:
 			self = Tree(oid)
-		case GIT_OBJ_BLOB.value:
+		case GIT_OBJ_BLOB:
 			self = Blob(oid)
-		case GIT_OBJ_TAG.value:
+		case GIT_OBJ_TAG:
 			self = Tag(oid)
 		default:
 			return nil
@@ -79,7 +81,7 @@ extension Pointer: Hashable {
 	}
 }
 
-extension Pointer: Printable {
+extension Pointer: CustomStringConvertible {
 	public var description: String {
 		switch self {
 		case Commit:

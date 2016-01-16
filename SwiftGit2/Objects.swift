@@ -88,7 +88,7 @@ public struct Commit: ObjectType {
 		committer = Signature(git_commit_committer(pointer).memory)
 		tree = PointerTo(OID(git_commit_tree_id(pointer).memory))
 		
-		self.parents = map(0..<git_commit_parentcount(pointer)) {
+		self.parents = (0..<git_commit_parentcount(pointer)).map {
 			return PointerTo(OID(git_commit_parent_id(pointer, $0).memory))
 		}
 	}
@@ -118,7 +118,7 @@ public struct Tree: ObjectType {
 		/// Create an instance with a libgit2 `git_tree_entry`.
 		public init(_ pointer: COpaquePointer) {
 			let oid = OID(git_tree_entry_id(pointer).memory)
-			attributes = Int32(git_tree_entry_filemode(pointer).value)
+			attributes = Int32(git_tree_entry_filemode(pointer).rawValue)
 			object = Pointer(oid: oid, type: git_tree_entry_type(pointer))!
 			name = String.fromCString(git_tree_entry_name(pointer))!
 		}
@@ -156,7 +156,7 @@ extension Tree.Entry: Hashable {
 	}
 }
 
-extension Tree.Entry: Printable {
+extension Tree.Entry: CustomStringConvertible {
 	public var description: String {
 		return "\(attributes) \(object) \(name)"
 	}

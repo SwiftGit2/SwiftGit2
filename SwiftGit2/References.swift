@@ -96,7 +96,7 @@ public struct Branch: ReferenceType {
 	public init?(_ pointer: COpaquePointer) {
 		let namePointer = UnsafeMutablePointer<UnsafePointer<Int8>>.alloc(1)
 		let success = git_branch_name(namePointer, pointer)
-		if success != GIT_OK.value {
+		if success != GIT_OK.rawValue {
 			namePointer.dealloc(1)
 			return nil
 		}
@@ -106,10 +106,10 @@ public struct Branch: ReferenceType {
 		longName = String.fromCString(git_reference_name(pointer))!
 		
 		var oid: OID
-		if git_reference_type(pointer).value == GIT_REF_SYMBOLIC.value {
+		if git_reference_type(pointer).rawValue == GIT_REF_SYMBOLIC.rawValue {
 			var resolved: COpaquePointer = nil
 			let success = git_reference_resolve(&resolved, pointer)
-			if success != GIT_OK.value {
+			if success != GIT_OK.rawValue {
 				return nil
 			}
 			oid = OID(git_reference_target(resolved).memory)
@@ -184,7 +184,7 @@ public enum TagReference: ReferenceType {
 		
 		var pointer: COpaquePointer = nil
 		let result = git_object_lookup(&pointer, repo, &oid, GIT_OBJ_TAG)
-		if result == GIT_OK.value {
+		if result == GIT_OK.rawValue {
 			self = .Annotated(name, Tag(pointer))
 		} else {
 			self = .Lightweight(name, OID(oid))

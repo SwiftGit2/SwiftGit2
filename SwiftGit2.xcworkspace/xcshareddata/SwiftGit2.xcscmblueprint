@@ -1,0 +1,107 @@
+{
+  "DVTSourceControlWorkspaceBlueprintPrimaryRemoteRepositoryKey" : "0B2A3BCB00C86293DA74B6A9239BA502F6488D88+++937A20B",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyRepositoryLocationsKey" : {
+
+  },
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyStatesKey" : {
+    "95438028B10BBB846574013D29F154A00556A9D1+++D5553EB" : 0,
+    "D0725CAC6FF2D66F2C83C2C48DC12106D42DAA64+++8BD7695" : 0,
+    "57C931977B7D2307CC013C2BD93F90CF7C676790+++139D2B1" : 0,
+    "956D2B21DD155C49504BB67697A67F7C5351A353+++5CC92F5" : 0,
+    "E35CE1831829A79469F2167CADA9B1D9BA6B0BA6+++3D78C67" : 0,
+    "956D2B21DD155C49504BB67697A67F7C5351A353+++0FC0BCD" : 0,
+    "95438028B10BBB846574013D29F154A00556A9D1+++5AB1F94" : 0,
+    "956D2B21DD155C49504BB67697A67F7C5351A353+++3988B36" : 0,
+    "0B2A3BCB00C86293DA74B6A9239BA502F6488D88+++937A20B" : 0,
+    "E084C86B03F81D63323C9E7510697EA528A758C7+++9C11E0D" : 0,
+    "57C931977B7D2307CC013C2BD93F90CF7C676790+++27D14BF" : 0,
+    "57C931977B7D2307CC013C2BD93F90CF7C676790+++8DA764B" : 0,
+    "70783EE7218D87FCBAABD7787F6E3A25EFFAFB2F+++E1067AA" : 0
+  },
+  "DVTSourceControlWorkspaceBlueprintIdentifierKey" : "ABD5A4E5-DBDA-485E-A4B2-44A76138E5AA",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyPathsKey" : {
+    "95438028B10BBB846574013D29F154A00556A9D1+++D5553EB" : "SwiftGit2\/Carthage\/Checkouts\/Nimble\/",
+    "D0725CAC6FF2D66F2C83C2C48DC12106D42DAA64+++8BD7695" : "SwiftGit2\/Carthage\/Checkouts\/Quick\/",
+    "57C931977B7D2307CC013C2BD93F90CF7C676790+++139D2B1" : "SwiftGit2\/Carthage\/Checkouts\/Result\/Carthage\/Checkouts\/Box\/",
+    "956D2B21DD155C49504BB67697A67F7C5351A353+++5CC92F5" : "SwiftGit2\/Carthage\/Checkouts\/Result\/",
+    "E35CE1831829A79469F2167CADA9B1D9BA6B0BA6+++3D78C67" : "SwiftGit2\/Carthage\/Checkouts\/Guanaco\/",
+    "956D2B21DD155C49504BB67697A67F7C5351A353+++0FC0BCD" : "SwiftGit2\/Carthage\/Checkouts\/Guanaco\/External\/Result\/",
+    "95438028B10BBB846574013D29F154A00556A9D1+++5AB1F94" : "SwiftGit2\/Carthage\/Checkouts\/Nimble\/",
+    "956D2B21DD155C49504BB67697A67F7C5351A353+++3988B36" : "SwiftGit2\/Carthage\/Checkouts\/Result\/",
+    "0B2A3BCB00C86293DA74B6A9239BA502F6488D88+++937A20B" : "SwiftGit2\/",
+    "E084C86B03F81D63323C9E7510697EA528A758C7+++9C11E0D" : "SwiftGit2\/Carthage\/Checkouts\/xcconfigs\/",
+    "57C931977B7D2307CC013C2BD93F90CF7C676790+++27D14BF" : "SwiftGit2\/Carthage\/Checkouts\/Box\/",
+    "57C931977B7D2307CC013C2BD93F90CF7C676790+++8DA764B" : "SwiftGit2\/Carthage\/Checkouts\/Box\/",
+    "70783EE7218D87FCBAABD7787F6E3A25EFFAFB2F+++E1067AA" : "SwiftGit2\/External\/libgit2\/"
+  },
+  "DVTSourceControlWorkspaceBlueprintNameKey" : "SwiftGit2",
+  "DVTSourceControlWorkspaceBlueprintVersion" : 204,
+  "DVTSourceControlWorkspaceBlueprintRelativePathToProjectKey" : "SwiftGit2.xcworkspace",
+  "DVTSourceControlWorkspaceBlueprintRemoteRepositoriesKey" : [
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "github.com:windmill-io\/SwiftGit2.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "0B2A3BCB00C86293DA74B6A9239BA502F6488D88+++937A20B"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/robrix\/Box.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "57C931977B7D2307CC013C2BD93F90CF7C676790+++139D2B1"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/robrix\/Box.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "57C931977B7D2307CC013C2BD93F90CF7C676790+++27D14BF"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/robrix\/Box.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "57C931977B7D2307CC013C2BD93F90CF7C676790+++8DA764B"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/libgit2\/libgit2.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "70783EE7218D87FCBAABD7787F6E3A25EFFAFB2F+++E1067AA"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/Quick\/Nimble.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "95438028B10BBB846574013D29F154A00556A9D1+++5AB1F94"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/Quick\/Nimble.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "95438028B10BBB846574013D29F154A00556A9D1+++D5553EB"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/antitypical\/Result",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "956D2B21DD155C49504BB67697A67F7C5351A353+++0FC0BCD"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/antitypical\/Result.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "956D2B21DD155C49504BB67697A67F7C5351A353+++3988B36"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/antitypical\/Result",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "956D2B21DD155C49504BB67697A67F7C5351A353+++5CC92F5"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/Quick\/Quick.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "D0725CAC6FF2D66F2C83C2C48DC12106D42DAA64+++8BD7695"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/jspahrsummers\/xcconfigs.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "E084C86B03F81D63323C9E7510697EA528A758C7+++9C11E0D"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/modocache\/Guanaco.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "E35CE1831829A79469F2167CADA9B1D9BA6B0BA6+++3D78C67"
+    }
+  ]
+}

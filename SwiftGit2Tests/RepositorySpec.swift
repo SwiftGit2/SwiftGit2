@@ -21,7 +21,7 @@ class RepositorySpec: QuickSpec {
 			}
 			
 			it("should fail if the repo doesn't exist") {
-				let url = NSURL(fileURLWithPath: "blah")!
+				let url = NSURL(fileURLWithPath: "blah")
 				let result = Repository.atURL(url)
 				expect(result).to(haveFailed(beAnError(
 					domain: equal(libGit2ErrorDomain),
@@ -358,8 +358,8 @@ class RepositorySpec: QuickSpec {
 					"upstream/subclassing-notes",
 				]
 				let expected = expectedNames.map { repo.remoteBranchWithName($0).value! }
-				let actual = repo.remoteBranches().value!.sorted {
-					return lexicographicalCompare($0.longName, $1.longName)
+				let actual = repo.remoteBranches().value!.sort {
+					return $0.longName.characters.lexicographicalCompare($1.longName.characters)
 				}
 				expect(actual).to(equal(expected))
 				expect(actual.map { $0.name }).to(equal(expectedNames))
