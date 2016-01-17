@@ -21,10 +21,9 @@ final class Fixtures {
 	}
 	
 	init() {
-		let path = NSTemporaryDirectory()
-			.stringByAppendingPathComponent("org.libgit2.SwiftGit2")
-			.stringByAppendingPathComponent(NSProcessInfo.processInfo().globallyUniqueString)
-		directoryURL = NSURL.fileURLWithPath(path, isDirectory: true)!
+		directoryURL = NSURL(fileURLWithPath: NSTemporaryDirectory(), isDirectory: true)
+			.URLByAppendingPathComponent("org.libgit2.SwiftGit2")
+			.URLByAppendingPathComponent(NSProcessInfo.processInfo().globallyUniqueString)
 	}
 	
 	// MARK: - Setup and Teardown
@@ -32,10 +31,10 @@ final class Fixtures {
 	let directoryURL: NSURL
 	
 	func setUp() {
-		NSFileManager.defaultManager().createDirectoryAtURL(directoryURL, withIntermediateDirectories: true, attributes: nil, error: nil)
+		try! NSFileManager.defaultManager().createDirectoryAtURL(directoryURL, withIntermediateDirectories: true, attributes: nil)
 		
 		let bundle = NSBundle(identifier: "org.libgit2.SwiftGit2-OSXTests")!
-		let zipURLs = bundle.URLsForResourcesWithExtension("zip", subdirectory: nil)! as! [NSURL]
+		let zipURLs = bundle.URLsForResourcesWithExtension("zip", subdirectory: nil)! as [NSURL]
 		
 		for URL in zipURLs {
 			unzipFileAtURL(URL, intoDirectoryAtURL: directoryURL)
@@ -43,7 +42,7 @@ final class Fixtures {
 	}
 	
 	func tearDown() {
-		NSFileManager.defaultManager().removeItemAtURL(directoryURL, error: nil)
+		try! NSFileManager.defaultManager().removeItemAtURL(directoryURL)
 	}
 	
 	func unzipFileAtURL(fileURL: NSURL, intoDirectoryAtURL directoryURL: NSURL) {

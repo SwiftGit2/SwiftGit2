@@ -27,7 +27,7 @@ class ReferenceSpec: QuickSpec {
 		describe("Reference(pointer)") {
 			it("should initialize its properties") {
 				let repo = Fixtures.simpleRepository
-				let ref = from_git_reference(repo, "refs/heads/master") { Reference($0) }
+				let ref = from_git_reference(repo, name: "refs/heads/master") { Reference($0) }
 				expect(ref.longName).to(equal("refs/heads/master"))
 				expect(ref.shortName).to(equal("master"))
 				expect(ref.oid).to(equal(OID(string: "c4ed03a6b7d7ce837d31d83757febbe84dd465fd")!))
@@ -37,15 +37,15 @@ class ReferenceSpec: QuickSpec {
 		describe("==(Reference, Reference)") {
 			it("should be true with equal references") {
 				let repo = Fixtures.simpleRepository
-				let ref1 = from_git_reference(repo, "refs/heads/master") { Reference($0) }
-				let ref2 = from_git_reference(repo, "refs/heads/master") { Reference($0) }
+				let ref1 = from_git_reference(repo, name: "refs/heads/master") { Reference($0) }
+				let ref2 = from_git_reference(repo, name: "refs/heads/master") { Reference($0) }
 				expect(ref1).to(equal(ref2))
 			}
 			
 			it("should be false with unequal references") {
 				let repo = Fixtures.simpleRepository
-				let ref1 = from_git_reference(repo, "refs/heads/master") { Reference($0) }
-				let ref2 = from_git_reference(repo, "refs/heads/another-branch") { Reference($0) }
+				let ref1 = from_git_reference(repo, name: "refs/heads/master") { Reference($0) }
+				let ref2 = from_git_reference(repo, name: "refs/heads/another-branch") { Reference($0) }
 				expect(ref1).notTo(equal(ref2))
 			}
 		}
@@ -53,8 +53,8 @@ class ReferenceSpec: QuickSpec {
 		describe("Reference.hashValue") {
 			it("should be equal with equal references") {
 				let repo = Fixtures.simpleRepository
-				let ref1 = from_git_reference(repo, "refs/heads/master") { Reference($0) }
-				let ref2 = from_git_reference(repo, "refs/heads/master") { Reference($0) }
+				let ref1 = from_git_reference(repo, name: "refs/heads/master") { Reference($0) }
+				let ref2 = from_git_reference(repo, name: "refs/heads/master") { Reference($0) }
 				expect(ref1.hashValue).to(equal(ref2.hashValue))
 			}
 		}
@@ -66,7 +66,7 @@ class BranchSpec: QuickSpec {
 		describe("Branch(pointer)") {
 			it("should initialize its properties") {
 				let repo = Fixtures.mantleRepository
-				let branch = from_git_reference(repo, "refs/heads/master") { Branch($0)! }
+				let branch = from_git_reference(repo, name: "refs/heads/master") { Branch($0)! }
 				expect(branch.longName).to(equal("refs/heads/master"))
 				expect(branch.name).to(equal("master"))
 				expect(branch.shortName).to(equal(branch.name))
@@ -78,7 +78,7 @@ class BranchSpec: QuickSpec {
 			
 			it("should work with symoblic refs") {
 				let repo = Fixtures.mantleRepository
-				let branch = from_git_reference(repo, "refs/remotes/origin/HEAD") { Branch($0)! }
+				let branch = from_git_reference(repo, name: "refs/remotes/origin/HEAD") { Branch($0)! }
 				expect(branch.longName).to(equal("refs/remotes/origin/HEAD"))
 				expect(branch.name).to(equal("origin/HEAD"))
 				expect(branch.shortName).to(equal(branch.name))
@@ -92,15 +92,15 @@ class BranchSpec: QuickSpec {
 		describe("==(Branch, Branch)") {
 			it("should be true with equal branches") {
 				let repo = Fixtures.simpleRepository
-				let branch1 = from_git_reference(repo, "refs/heads/master") { Branch($0)! }
-				let branch2 = from_git_reference(repo, "refs/heads/master") { Branch($0)! }
+				let branch1 = from_git_reference(repo, name: "refs/heads/master") { Branch($0)! }
+				let branch2 = from_git_reference(repo, name: "refs/heads/master") { Branch($0)! }
 				expect(branch1).to(equal(branch2))
 			}
 			
 			it("should be false with unequal branches") {
 				let repo = Fixtures.simpleRepository
-				let branch1 = from_git_reference(repo, "refs/heads/master") { Branch($0)! }
-				let branch2 = from_git_reference(repo, "refs/heads/another-branch") { Branch($0)! }
+				let branch1 = from_git_reference(repo, name: "refs/heads/master") { Branch($0)! }
+				let branch2 = from_git_reference(repo, name: "refs/heads/another-branch") { Branch($0)! }
 				expect(branch1).notTo(equal(branch2))
 			}
 		}
@@ -108,8 +108,8 @@ class BranchSpec: QuickSpec {
 		describe("Branch.hashValue") {
 			it("should be equal with equal references") {
 				let repo = Fixtures.simpleRepository
-				let branch1 = from_git_reference(repo, "refs/heads/master") { Branch($0)! }
-				let branch2 = from_git_reference(repo, "refs/heads/master") { Branch($0)! }
+				let branch1 = from_git_reference(repo, name: "refs/heads/master") { Branch($0)! }
+				let branch2 = from_git_reference(repo, name: "refs/heads/master") { Branch($0)! }
 				expect(branch1.hashValue).to(equal(branch2.hashValue))
 			}
 		}
@@ -121,7 +121,7 @@ class TagReferenceSpec: QuickSpec {
 		describe("TagReference(pointer)") {
 			it("should work with an annotated tag") {
 				let repo = Fixtures.simpleRepository
-				let tag = from_git_reference(repo, "refs/tags/tag-2") { TagReference($0)! }
+				let tag = from_git_reference(repo, name: "refs/tags/tag-2") { TagReference($0)! }
 				expect(tag.longName).to(equal("refs/tags/tag-2"))
 				expect(tag.name).to(equal("tag-2"))
 				expect(tag.shortName).to(equal(tag.name))
@@ -130,7 +130,7 @@ class TagReferenceSpec: QuickSpec {
 			
 			it("should work with a lightweight tag") {
 				let repo = Fixtures.mantleRepository
-				let tag = from_git_reference(repo, "refs/tags/1.5.4") { TagReference($0)! }
+				let tag = from_git_reference(repo, name: "refs/tags/1.5.4") { TagReference($0)! }
 				expect(tag.longName).to(equal("refs/tags/1.5.4"))
 				expect(tag.name).to(equal("1.5.4"))
 				expect(tag.shortName).to(equal(tag.name))
@@ -139,7 +139,7 @@ class TagReferenceSpec: QuickSpec {
 			
 			it("should return nil if not a tag") {
 				let repo = Fixtures.simpleRepository
-				let tag = from_git_reference(repo, "refs/heads/master") { TagReference($0) }
+				let tag = from_git_reference(repo, name: "refs/heads/master") { TagReference($0) }
 				expect(tag).to(beNil())
 			}
 		}
@@ -147,24 +147,24 @@ class TagReferenceSpec: QuickSpec {
 		describe("==(TagReference, TagReference)") {
 			it("should be true with equal tag references") {
 				let repo = Fixtures.simpleRepository
-				let tag1 = from_git_reference(repo, "refs/tags/tag-2") { TagReference($0)! }
-				let tag2 = from_git_reference(repo, "refs/tags/tag-2") { TagReference($0)! }
+				let tag1 = from_git_reference(repo, name: "refs/tags/tag-2") { TagReference($0)! }
+				let tag2 = from_git_reference(repo, name: "refs/tags/tag-2") { TagReference($0)! }
 				expect(tag1).to(equal(tag2))
 			}
 			
 			it("should be false with unequal tag references") {
 				let repo = Fixtures.simpleRepository
-				let tag1 = from_git_reference(repo, "refs/tags/tag-1") { TagReference($0)! }
-				let tag2 = from_git_reference(repo, "refs/tags/tag-2") { TagReference($0)! }
+				let tag1 = from_git_reference(repo, name: "refs/tags/tag-1") { TagReference($0)! }
+				let tag2 = from_git_reference(repo, name: "refs/tags/tag-2") { TagReference($0)! }
 				expect(tag1).notTo(equal(tag2))
 			}
 		}
-
+		
 		describe("TagReference.hashValue") {
 			it("should be equal with equal references") {
 				let repo = Fixtures.simpleRepository
-				let tag1 = from_git_reference(repo, "refs/tags/tag-2") { TagReference($0)! }
-				let tag2 = from_git_reference(repo, "refs/tags/tag-2") { TagReference($0)! }
+				let tag1 = from_git_reference(repo, name: "refs/tags/tag-2") { TagReference($0)! }
+				let tag2 = from_git_reference(repo, name: "refs/tags/tag-2") { TagReference($0)! }
 				expect(tag1.hashValue).to(equal(tag2.hashValue))
 			}
 		}

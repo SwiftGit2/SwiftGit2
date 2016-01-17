@@ -8,7 +8,7 @@
 
 /// The flags defining how a checkout should be performed.
 /// More detail is available in the libgit2 documentation for `git_checkout_strategy_t`.
-public struct CheckoutStrategy : RawOptionSetType {
+public struct CheckoutStrategy : OptionSetType {
 	private let value: UInt
 	
 	// MARK: - Initialization
@@ -23,11 +23,11 @@ public struct CheckoutStrategy : RawOptionSetType {
 	}
 	
 	public init(_ strategy: git_checkout_strategy_t) {
-		self.value = UInt(strategy.value)
+		self.value = UInt(strategy.rawValue)
 	}
 	
 	public static var allZeros: CheckoutStrategy {
-		return self(rawValue: 0)
+		return self.init(rawValue: 0)
 	}
 	
 	// MARK: - Properties

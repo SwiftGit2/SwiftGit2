@@ -7,7 +7,7 @@
 //
 
 func == (lhs: git_otype, rhs: git_otype) -> Bool {
-	return lhs.value == rhs.value
+	return lhs.rawValue == rhs.rawValue
 }
 
 extension git_strarray {
@@ -16,7 +16,7 @@ extension git_strarray {
 	}
 	
 	func map<T>(f: (String) -> T) -> [T] {
-		return Swift.map(0..<self.count) {
+		return (0..<self.count).map {
 			let string = String.fromCString(self.strings[Int($0)])!
 			return f(string)
 		}

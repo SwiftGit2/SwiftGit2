@@ -26,7 +26,7 @@ public struct OID {
 		let pointer = UnsafeMutablePointer<git_oid>.alloc(1)
 		let result = git_oid_fromstr(pointer, string)
 		
-		if result < GIT_OK.value {
+		if result < GIT_OK.rawValue {
 			pointer.dealloc(1)
 			return nil;
 		}
@@ -45,7 +45,7 @@ public struct OID {
 	public let oid: git_oid
 }
 
-extension OID: Printable {
+extension OID: CustomStringConvertible {
 	public var description: String {
 		let length = Int(GIT_OID_RAWSZ) * 2
 		let string = UnsafeMutablePointer<Int8>.alloc(length)
@@ -68,9 +68,9 @@ extension OID: Hashable {
 			self.oid.id.6,
 			self.oid.id.7
 		]
-		return reduce(bytes, 0, { (hash, byte) in
+		return bytes.reduce(0) { (hash, byte) in
 			return Int(hash << 8) | Int(byte)
-		})
+		}
 	}
 }
 
