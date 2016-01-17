@@ -244,7 +244,7 @@ final public class Repository {
 			}
 			.map {
 				self.referenceWithName($0)
-		}
+			}
 		git_strarray_free(pointer)
 		pointer.dealloc(1)
 		
@@ -278,7 +278,7 @@ final public class Repository {
 		return referencesWithPrefix("refs/heads/")
 			.map { (refs: [ReferenceType]) in
 				return refs.map { $0 as! Branch }
-		}
+			}
 	}
 	
 	/// Load and return a list of all remote branches.
@@ -286,7 +286,7 @@ final public class Repository {
 		return referencesWithPrefix("refs/remotes/")
 			.map { (refs: [ReferenceType]) in
 				return refs.map { $0 as! Branch }
-		}
+			}
 	}
 	
 	/// Load the local branch with the given name (e.g., "master").
@@ -304,7 +304,7 @@ final public class Repository {
 		return referencesWithPrefix("refs/tags/")
 			.map { (refs: [ReferenceType]) in
 				return refs.map { $0 as! TagReference }
-		}
+			}
 	}
 	
 	/// Load the tag with the given name (e.g., "tag-2").

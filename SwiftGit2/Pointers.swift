@@ -45,16 +45,14 @@ public enum Pointer: PointerType {
 	
 	public var type: git_otype {
 		switch self {
-		case Commit(oid):
+		case Commit:
 			return GIT_OBJ_COMMIT
-		case Tree(oid):
+		case Tree:
 			return GIT_OBJ_TREE
-		case Blob(oid):
+		case Blob:
 			return GIT_OBJ_BLOB
-		case Tag(oid):
+		case Tag:
 			return GIT_OBJ_TAG
-		default:
-			return GIT_OBJ_ANY
 		}
 	}
 	
