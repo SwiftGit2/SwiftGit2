@@ -1,0 +1,12 @@
+language: objective-c
+
+sudo: false # Enable container-based builds
+
+script: scan -w SwiftGit2.xcworkspace -s "SwiftGit2-OSX"
+
+branches:
+  only: # whitelist
+    - master
+
+notifications:
+  email: false
