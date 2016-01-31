@@ -1,4 +1,4 @@
-# SwiftGit2
+# SwiftGit2 [![Build Status](https://travis-ci.org/SwiftGit2/SwiftGit2.svg)](https://travis-ci.org/SwiftGit2/SwiftGit2)
 Swift bindings to [libgit2](https://github.com/libgit2/libgit2).
 
 ```swift
