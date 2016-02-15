@@ -16,3 +16,6 @@
 [submodule "Carthage/Checkouts/Result"]
 	path = Carthage/Checkouts/Result
 	url = https://github.com/antitypical/Result.git
+[submodule "Carthage/Checkouts/ZipArchive"]
+	path = Carthage/Checkouts/ZipArchive
+	url = https://github.com/ZipArchive/ZipArchive.git

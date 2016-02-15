@@ -8,6 +8,7 @@
 
 import Foundation
 import SwiftGit2
+import ZipArchive
 
 final class Fixtures {
 	
@@ -37,21 +38,12 @@ final class Fixtures {
 		let zipURLs = bundle.URLsForResourcesWithExtension("zip", subdirectory: nil)! as [NSURL]
 		
 		for URL in zipURLs {
-			unzipFileAtURL(URL, intoDirectoryAtURL: directoryURL)
+			SSZipArchive.unzipFileAtPath(URL.path!, toDestination: directoryURL.path!)
 		}
 	}
 	
 	func tearDown() {
 		try! NSFileManager.defaultManager().removeItemAtURL(directoryURL)
-	}
-	
-	func unzipFileAtURL(fileURL: NSURL, intoDirectoryAtURL directoryURL: NSURL) {
-		let task = NSTask()
-		task.launchPath = "/usr/bin/unzip"
-		task.arguments = [ "-qq", "-d", directoryURL.path!, fileURL.path! ]
-		
-		task.launch()
-		task.waitUntilExit()
 	}
 	
 	// MARK: - Helpers

@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		62E6FD8F1C727E9C00A312B0 /* ZipArchive.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 62E6FD8E1C727E9C00A312B0 /* ZipArchive.framework */; };
 		BE0991F71A578FB1007D4E6A /* Mantle.zip in Resources */ = {isa = PBXBuildFile; fileRef = BE0991F61A578FB1007D4E6A /* Mantle.zip */; };
 		BE0B1C5D1A9978890004726D /* detached-head.zip in Resources */ = {isa = PBXBuildFile; fileRef = BE0B1C5C1A9978890004726D /* detached-head.zip */; };
 		BE14AA501A1974010015B439 /* SwiftGit2.m in Sources */ = {isa = PBXBuildFile; fileRef = BE14AA4F1A1974010015B439 /* SwiftGit2.m */; };
@@ -185,6 +186,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		62E6FD8E1C727E9C00A312B0 /* ZipArchive.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ZipArchive.framework; path = ../Carthage/Checkouts/ZipArchive/build/Debug/ZipArchive.framework; sourceTree = "<group>"; };
 		BE0991F61A578FB1007D4E6A /* Mantle.zip */ = {isa = PBXFileReference; lastKnownFileType = archive.zip; path = Mantle.zip; sourceTree = "<group>"; };
 		BE0B1C5C1A9978890004726D /* detached-head.zip */ = {isa = PBXFileReference; lastKnownFileType = archive.zip; path = "detached-head.zip"; sourceTree = "<group>"; };
 		BE14AA4F1A1974010015B439 /* SwiftGit2.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SwiftGit2.m; sourceTree = "<group>"; };
@@ -312,6 +314,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				62E6FD8F1C727E9C00A312B0 /* ZipArchive.framework in Frameworks */,
 				DA59146D1A94549A00AED74C /* Guanaco.framework in Frameworks */,
 				DA5023A01A969F1A004175D7 /* Nimble.framework in Frameworks */,
 				DAC8143D1A99749D0063D88C /* Quick.framework in Frameworks */,
@@ -467,6 +470,7 @@
 		BEB31F331A0D6F7A00F525B9 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				62E6FD8E1C727E9C00A312B0 /* ZipArchive.framework */,
 				DA50239F1A969F1A004175D7 /* Nimble.framework */,
 				DAC8143C1A99749D0063D88C /* Quick.framework */,
 				DA59146C1A94549A00AED74C /* Guanaco.framework */,
@@ -914,6 +918,7 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(DEVELOPER_FRAMEWORKS_DIR)",
 					"$(inherited)",
+					"$(PROJECT_DIR)/Carthage/Checkouts/ZipArchive/build/Debug",
 				);
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
@@ -935,6 +940,7 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(DEVELOPER_FRAMEWORKS_DIR)",
 					"$(inherited)",
+					"$(PROJECT_DIR)/Carthage/Checkouts/ZipArchive/build/Debug",
 				);
 				INFOPLIST_FILE = SwiftGit2Tests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
