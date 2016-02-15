@@ -1,3 +1,7 @@
+# OS X
+#
+.DS_Store
+
 # Xcode
 #
 build/
@@ -18,7 +22,13 @@ DerivedData
 *.xcuserstate
 *.xcscmblueprint
 
+# External dependency build output
+#
 External/libgit2*.a
+External/libgit2-ios
+External/ios-openssl/include
+External/ios-openssl/lib
+External/libssh2-ios
 
 ### fastlane ###
 # fastlane - A streamlined workflow tool for Cocoa deployment
