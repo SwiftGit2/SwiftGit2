@@ -63,7 +63,7 @@ main ()
     fi
 
     echo "*** Prebuilding OpenSSL"
-    $SCRIPT_DIR/update_libssl_ios
+    #$SCRIPT_DIR/update_libssl_ios
 
     echo "*** The following schemes will be built:"
     echo "$SCHEMES" | xargs -n 1 echo "  "
