@@ -7,6 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		62E716A51C722AA700BB4D6C /* Result.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 62E716A41C722AA700BB4D6C /* Result.framework */; };
+		62E716A71C722B9600BB4D6C /* Result.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 62E716A61C722B9600BB4D6C /* Result.framework */; };
+		62E716B21C72321200BB4D6C /* ZipArchive.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 62E716B11C72321200BB4D6C /* ZipArchive.framework */; };
+		62E716B41C72321A00BB4D6C /* ZipArchive.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 62E716B31C72321A00BB4D6C /* ZipArchive.framework */; };
 		BE0991F71A578FB1007D4E6A /* Mantle.zip in Resources */ = {isa = PBXBuildFile; fileRef = BE0991F61A578FB1007D4E6A /* Mantle.zip */; };
 		BE0B1C5D1A9978890004726D /* detached-head.zip in Resources */ = {isa = PBXBuildFile; fileRef = BE0B1C5C1A9978890004726D /* detached-head.zip */; };
 		BE14AA501A1974010015B439 /* SwiftGit2.m in Sources */ = {isa = PBXBuildFile; fileRef = BE14AA4F1A1974010015B439 /* SwiftGit2.m */; };
@@ -89,7 +93,6 @@
 		BECB5F6C1A56F1B400999413 /* ReferencesSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = BECB5F6B1A56F1B400999413 /* ReferencesSpec.swift */; };
 		BECB5F6E1A57284700999413 /* Remotes.swift in Sources */ = {isa = PBXBuildFile; fileRef = BECB5F6D1A57284700999413 /* Remotes.swift */; };
 		BECB5F701A57286200999413 /* RemotesSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = BECB5F6F1A57286200999413 /* RemotesSpec.swift */; };
-		BEE591C71ADF470500534F14 /* Result.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BEE591C61ADF470500534F14 /* Result.framework */; };
 		DA5023A01A969F1A004175D7 /* Nimble.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DA50239F1A969F1A004175D7 /* Nimble.framework */; };
 		DA59146D1A94549A00AED74C /* Guanaco.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DA59146C1A94549A00AED74C /* Guanaco.framework */; };
 		DA5914761A94579000AED74C /* Errors.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA5914751A94579000AED74C /* Errors.swift */; };
@@ -175,12 +178,10 @@
 		F807D5071ADCAC8300A2DC7A /* libiconv.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F807D5061ADCAC8300A2DC7A /* libiconv.dylib */; };
 		F807D50C1ADCAE7A00A2DC7A /* SwiftGit2.h in Headers */ = {isa = PBXBuildFile; fileRef = BEB31F281A0D6F7A00F525B9 /* SwiftGit2.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		F807D50D1ADCAE7A00A2DC7A /* git2.h in Headers */ = {isa = PBXBuildFile; fileRef = BEB31F9B1A0E581400F525B9 /* git2.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		F807D50F1ADCC0D300A2DC7A /* LlamaKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F807D50E1ADCC0D300A2DC7A /* LlamaKit.framework */; };
 		F89F50591AEB17DF0064A98C /* detached-head.zip in Resources */ = {isa = PBXBuildFile; fileRef = BE0B1C5C1A9978890004726D /* detached-head.zip */; };
 		F89F505A1AEB17E30064A98C /* Mantle.zip in Resources */ = {isa = PBXBuildFile; fileRef = BE0991F61A578FB1007D4E6A /* Mantle.zip */; };
 		F89F505B1AEB17E70064A98C /* simple-repository.zip in Resources */ = {isa = PBXBuildFile; fileRef = BE14AA561A198C6E0015B439 /* simple-repository.zip */; };
 		F8EA75071AE8AA6E004FB73C /* Fixtures.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE14AA541A1984550015B439 /* Fixtures.swift */; };
-		F8EA75091AE8C4D2004FB73C /* Result.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F8EA75081AE8C4D2004FB73C /* Result.framework */; };
 		F8EA750A1AE8C856004FB73C /* CheckoutStrategy.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE276B281ACCD3CF00D6DAD7 /* CheckoutStrategy.swift */; };
 /* End PBXBuildFile section */
 
@@ -403,6 +404,10 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		62E716A41C722AA700BB4D6C /* Result.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Result.framework; path = "Carthage/Checkouts/Result/build/Debug-iphoneos/Result.framework"; sourceTree = "<group>"; };
+		62E716A61C722B9600BB4D6C /* Result.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Result.framework; path = "../../../Library/Developer/Xcode/DerivedData/SwiftGit2-ftdbjbsfmanyygdbdrnadfbrpciw/Build/Products/Debug/Result.framework"; sourceTree = "<group>"; };
+		62E716B11C72321200BB4D6C /* ZipArchive.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ZipArchive.framework; path = "Carthage/Checkouts/ZipArchive/build/Debug-iphoneos/ZipArchive.framework"; sourceTree = "<group>"; };
+		62E716B31C72321A00BB4D6C /* ZipArchive.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ZipArchive.framework; path = Carthage/Checkouts/ZipArchive/build/Debug/ZipArchive.framework; sourceTree = "<group>"; };
 		BE0991F61A578FB1007D4E6A /* Mantle.zip */ = {isa = PBXFileReference; lastKnownFileType = archive.zip; path = Mantle.zip; sourceTree = "<group>"; };
 		BE0B1C5C1A9978890004726D /* detached-head.zip */ = {isa = PBXFileReference; lastKnownFileType = archive.zip; path = "detached-head.zip"; sourceTree = "<group>"; };
 		BE14AA4F1A1974010015B439 /* SwiftGit2.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SwiftGit2.m; sourceTree = "<group>"; };
@@ -508,7 +513,6 @@
 		BECB5F6B1A56F1B400999413 /* ReferencesSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReferencesSpec.swift; sourceTree = "<group>"; };
 		BECB5F6D1A57284700999413 /* Remotes.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Remotes.swift; sourceTree = "<group>"; };
 		BECB5F6F1A57286200999413 /* RemotesSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RemotesSpec.swift; sourceTree = "<group>"; };
-		BEE591C61ADF470500534F14 /* Result.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Result.framework; path = "../../Library/Developer/Xcode/DerivedData/SwiftGit2-cdzquzvlxdewyddxgdgxjagqvjba/Build/Products/Debug/Result.framework"; sourceTree = "<group>"; };
 		DA50239F1A969F1A004175D7 /* Nimble.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Nimble.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		DA59146C1A94549A00AED74C /* Guanaco.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Guanaco.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		DA5914751A94579000AED74C /* Errors.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Errors.swift; sourceTree = "<group>"; };
@@ -527,7 +531,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				BEE591C71ADF470500534F14 /* Result.framework in Frameworks */,
+				62E716A71C722B9600BB4D6C /* Result.framework in Frameworks */,
 				BEB31FA01A0E595600F525B9 /* libz.dylib in Frameworks */,
 				BEB31F9E1A0E595100F525B9 /* libiconv.dylib in Frameworks */,
 			);
@@ -537,6 +541,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				62E716B41C72321A00BB4D6C /* ZipArchive.framework in Frameworks */,
 				DA59146D1A94549A00AED74C /* Guanaco.framework in Frameworks */,
 				DA5023A01A969F1A004175D7 /* Nimble.framework in Frameworks */,
 				DAC8143D1A99749D0063D88C /* Quick.framework in Frameworks */,
@@ -548,9 +553,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				62E716A51C722AA700BB4D6C /* Result.framework in Frameworks */,
 				F807D5051ADCAC7C00A2DC7A /* libz.dylib in Frameworks */,
 				F807D5071ADCAC8300A2DC7A /* libiconv.dylib in Frameworks */,
-				F807D50F1ADCC0D300A2DC7A /* LlamaKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -558,6 +563,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				62E716B21C72321200BB4D6C /* ZipArchive.framework in Frameworks */,
 				F807D4A51ADCA66800A2DC7A /* SwiftGit2.framework in Frameworks */,
 				F807D4C21ADCAB2D00A2DC7A /* Nimble.framework in Frameworks */,
 				F807D4C31ADCAB3200A2DC7A /* Quick.framework in Frameworks */,
@@ -814,7 +820,8 @@
 		F807D5091ADCAD2000A2DC7A /* iOS */ = {
 			isa = PBXGroup;
 			children = (
-				F807D5061ADCAC8300A2DC7A /* Result.framework */,
+				62E716B11C72321200BB4D6C /* ZipArchive.framework */,
+				62E716A41C722AA700BB4D6C /* Result.framework */,
 				F807D5061ADCAC8300A2DC7A /* libiconv.dylib */,
 				F807D5041ADCAC7C00A2DC7A /* libz.dylib */,
 			);
@@ -824,10 +831,10 @@
 		F807D50A1ADCAD3600A2DC7A /* OS X */ = {
 			isa = PBXGroup;
 			children = (
-				BEB31F9D1A0E595100F525B9 /* Result.framework */,
+				62E716B31C72321A00BB4D6C /* ZipArchive.framework */,
+				62E716A61C722B9600BB4D6C /* Result.framework */,
 				BEB31F9D1A0E595100F525B9 /* libiconv.dylib */,
 				BEB31F9F1A0E595600F525B9 /* libz.dylib */,
-				BE14AA311A15AA510015B439 /* LlamaKit.framework */,
 			);
 			name = "OS X";
 			sourceTree = "<group>";
@@ -1432,6 +1439,7 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(DEVELOPER_FRAMEWORKS_DIR)",
 					"$(inherited)",
+					"$(PROJECT_DIR)/Carthage/Checkouts/ZipArchive/build/Debug",
 				);
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
@@ -1453,6 +1461,7 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(DEVELOPER_FRAMEWORKS_DIR)",
 					"$(inherited)",
+					"$(PROJECT_DIR)/Carthage/Checkouts/ZipArchive/build/Debug",
 				);
 				INFOPLIST_FILE = SwiftGit2Tests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
@@ -1497,6 +1506,7 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(BUILD_DIR)/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)",
+					"$(PROJECT_DIR)/Carthage/Checkouts/Result/build/Debug-iphoneos",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1540,6 +1550,7 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(BUILD_DIR)/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)",
+					"$(PROJECT_DIR)/Carthage/Checkouts/Result/build/Debug-iphoneos",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1581,6 +1592,7 @@
 					"$(SDKROOT)/Developer/Library/Frameworks",
 					"$(inherited)",
 					"$(USER_LIBRARY_DIR)/Developer/Xcode/DerivedData/SwiftGit2-ezqqkevntxbroughwcioyxqriijk/Build/Products/Debug",
+					"$(PROJECT_DIR)/Carthage/Checkouts/ZipArchive/build/Debug-iphoneos",
 				);
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
@@ -1588,6 +1600,7 @@
 				);
 				INFOPLIST_FILE = SwiftGit2Tests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "org.libgit2.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
 			};
@@ -1603,9 +1616,11 @@
 					"$(SDKROOT)/Developer/Library/Frameworks",
 					"$(inherited)",
 					"$(USER_LIBRARY_DIR)/Developer/Xcode/DerivedData/SwiftGit2-ezqqkevntxbroughwcioyxqriijk/Build/Products/Debug",
+					"$(PROJECT_DIR)/Carthage/Checkouts/ZipArchive/build/Debug-iphoneos",
 				);
 				INFOPLIST_FILE = SwiftGit2Tests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "org.libgit2.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
 				VALIDATE_PRODUCT = YES;

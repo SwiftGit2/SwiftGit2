@@ -8,6 +8,7 @@
 
 import Foundation
 import SwiftGit2
+import ZipArchive
 
 final class Fixtures {
 	
@@ -52,20 +53,7 @@ final class Fixtures {
 	}
 	
 	func unzipFileAtURL(fileURL: NSURL, intoDirectoryAtURL directoryURL: NSURL) {
-#if os(OSX)
-
-		let task = NSTask()
-		task.launchPath = "/usr/bin/unzip"
-		task.arguments = [ "-qq", "-d", directoryURL.path!, fileURL.path! ]
-            
-		task.launch()
-		task.waitUntilExit()
-
-#else
-
-		assertionFailure("Tests not supported on iOS yet")
-
-#endif
+		SSZipArchive.unzipFileAtPath(fileURL.path!, toDestination: directoryURL.path!)
 	}
 	
 	// MARK: - Helpers
