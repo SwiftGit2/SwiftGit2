@@ -193,26 +193,26 @@
 			remoteGlobalIDString = 621E66611C72958800A0F352;
 			remoteInfo = "SwiftGit2-iOS";
 		};
-		621E66F71C729F0200A0F352 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = BEB31F1A1A0D6F7A00F525B9 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 621E66E71C729EB800A0F352;
-			remoteInfo = "OpenSSL-iOS";
-		};
-		621E66F91C729F0200A0F352 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = BEB31F1A1A0D6F7A00F525B9 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 621E66ED1C729EBB00A0F352;
-			remoteInfo = "libssh2-iOS";
-		};
 		621E66FB1C72A25D00A0F352 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = BEB31F1A1A0D6F7A00F525B9 /* Project object */;
 			proxyType = 1;
 			remoteGlobalIDString = 621E66DC1C729CE500A0F352;
 			remoteInfo = "libgit2-iOS";
+		};
+		624349871C7CADCD0087C234 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = BEB31F1A1A0D6F7A00F525B9 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 621E66ED1C729EBB00A0F352;
+			remoteInfo = "libssh2-iOS";
+		};
+		624349891C7CADD90087C234 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = BEB31F1A1A0D6F7A00F525B9 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 621E66E71C729EB800A0F352;
+			remoteInfo = "OpenSSL-iOS";
 		};
 		BEB31F301A0D6F7A00F525B9 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -873,8 +873,7 @@
 			buildRules = (
 			);
 			dependencies = (
-				621E66F81C729F0200A0F352 /* PBXTargetDependency */,
-				621E66FA1C729F0200A0F352 /* PBXTargetDependency */,
+				624349881C7CADCD0087C234 /* PBXTargetDependency */,
 			);
 			name = "libgit2-iOS";
 			productName = libgit2;
@@ -905,6 +904,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				6243498A1C7CADD90087C234 /* PBXTargetDependency */,
 			);
 			name = "libssh2-iOS";
 			productName = libgit2;
@@ -1157,20 +1157,20 @@
 			target = 621E66611C72958800A0F352 /* SwiftGit2-iOS */;
 			targetProxy = 621E66E41C729D8A00A0F352 /* PBXContainerItemProxy */;
 		};
-		621E66F81C729F0200A0F352 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 621E66E71C729EB800A0F352 /* OpenSSL-iOS */;
-			targetProxy = 621E66F71C729F0200A0F352 /* PBXContainerItemProxy */;
-		};
-		621E66FA1C729F0200A0F352 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 621E66ED1C729EBB00A0F352 /* libssh2-iOS */;
-			targetProxy = 621E66F91C729F0200A0F352 /* PBXContainerItemProxy */;
-		};
 		621E66FC1C72A25D00A0F352 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 621E66DC1C729CE500A0F352 /* libgit2-iOS */;
 			targetProxy = 621E66FB1C72A25D00A0F352 /* PBXContainerItemProxy */;
+		};
+		624349881C7CADCD0087C234 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 621E66ED1C729EBB00A0F352 /* libssh2-iOS */;
+			targetProxy = 624349871C7CADCD0087C234 /* PBXContainerItemProxy */;
+		};
+		6243498A1C7CADD90087C234 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 621E66E71C729EB800A0F352 /* OpenSSL-iOS */;
+			targetProxy = 624349891C7CADD90087C234 /* PBXContainerItemProxy */;
 		};
 		BEB31F311A0D6F7A00F525B9 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
