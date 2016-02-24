@@ -34,3 +34,12 @@ git_checkout_options SG2CheckoutOptions(SG2CheckoutProgressBlock progress) {
 	
 	return result;
 }
+
+git_clone_options SG2CloneOptions() {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wmissing-field-initializers"
+	git_clone_options result = GIT_CLONE_OPTIONS_INIT;
+#pragma clang diagnostic pop
+
+	return result;
+}

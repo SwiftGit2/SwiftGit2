@@ -23,3 +23,4 @@ typedef void (^SG2CheckoutProgressBlock)(NSString * __nullable, NSUInteger, NSUI
 /// A C function for working with Libgit2. This shouldn't be called directly. It's an
 /// implementation detail that, unfortunately, leaks through to the public headers.
 extern git_checkout_options SG2CheckoutOptions(SG2CheckoutProgressBlock __nullable progress);
+extern git_clone_options SG2CloneOptions();

@@ -32,6 +32,38 @@ final public class Repository {
 		let repository = Repository(pointer)
 		return Result.Success(repository)
 	}
+
+	/// Clone the repository from a given URL.
+	///
+	/// remoteURL - The URL of the remote repository
+	/// localURL - The URL to clone the remote repository into
+	///
+	/// Returns a `Result` with a `Repository` or an error.
+	class public func cloneFromURL(remoteURL: NSURL, toWorkingDirectory: NSURL, localClone: Bool = false, bare: Bool = false, checkout: Bool = true,
+		checkoutStrategy: CheckoutStrategy = CheckoutStrategy.Safe, checkoutProgress: CheckoutProgressBlock? = nil) -> Result<Repository, NSError> {
+			var cloneOptions = SG2CloneOptions()
+			var checkoutOptions = SG2CheckoutOptions(checkoutProgress)
+
+			cloneOptions.bare = bare ? 1 : 0
+
+			if localClone {
+				cloneOptions.local = GIT_CLONE_NO_LOCAL
+			}
+
+			let strategy = checkout ? checkoutStrategy : CheckoutStrategy.None
+			checkoutOptions.checkout_strategy = strategy.git_checkout_strategy.rawValue
+			cloneOptions.checkout_opts = checkoutOptions
+
+			var pointer: COpaquePointer = nil
+			let result = git_clone(&pointer, remoteURL.isFileReferenceURL() ? remoteURL.path! : remoteURL.absoluteString, toWorkingDirectory.fileSystemRepresentation, &cloneOptions)
+
+			if result != GIT_OK.rawValue {
+				return Result.Failure(libGit2Error(result, libGit2PointOfFailure: "git_clone"))
+			}
+
+			let repository = Repository(pointer)
+			return Result.Success(repository)
+	}
 	
 	// MARK: - Initializers
 	
