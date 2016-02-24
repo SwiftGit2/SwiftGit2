@@ -27,16 +27,19 @@ private func checkoutProgressCallback(path: UnsafePointer<Int8>, completed_steps
 	}
 }
 
-/// Helper function for initializing libgit2 got_checkout_options.
+/// Helper function for initializing libgit2 git_checkout_options.
 ///
+/// :param: strategy The strategy to be used when checking out the repo, see CheckoutStrategy
 /// :param: progress A block that's called with the progress of the checkout.
 /// :returns: Returns a git_checkout_options struct with the progress members set.
-private func checkoutOptions(progress: CheckoutProgressBlock? = nil) -> git_checkout_options {
+private func checkoutOptions(strategy: CheckoutStrategy, progress: CheckoutProgressBlock? = nil) -> git_checkout_options {
 	// Do this because GIT_CHECKOUT_OPTIONS_INIT is unavailable in swift
 	let pointer = UnsafeMutablePointer<git_checkout_options>.alloc(1)
 	git_checkout_init_options(pointer, UInt32(GIT_CHECKOUT_OPTIONS_VERSION))
 	var options = pointer.move()
 	pointer.dealloc(1)
+
+	options.checkout_strategy = strategy.git_checkout_strategy.rawValue
 
 	if progress != nil {
 		options.progress_cb = checkoutProgressCallback
@@ -48,9 +51,50 @@ private func checkoutOptions(progress: CheckoutProgressBlock? = nil) -> git_chec
 	return options
 }
 
+private func fetchOptions(credentials: Credentials) -> git_fetch_options {
+	let pointer = UnsafeMutablePointer<git_fetch_options>.alloc(1)
+	git_fetch_init_options(pointer, UInt32(GIT_FETCH_OPTIONS_VERSION))
+
+	var options = pointer.move()
+
+	pointer.dealloc(1)
+
+	options.callbacks.payload = credentials.toPointer()
+	options.callbacks.credentials = credentialsCallback
+
+	return options
+}
+
+private func cloneOptions(bare: Bool = false, localClone: Bool = false, fetchOptions: git_fetch_options? = nil,
+	checkoutOptions: git_checkout_options? = nil) -> git_clone_options {
+
+	let pointer = UnsafeMutablePointer<git_clone_options>.alloc(1)
+	git_clone_init_options(pointer, UInt32(GIT_CLONE_OPTIONS_VERSION))
+
+	var options = pointer.move()
+
+	pointer.dealloc(1)
+
+	options.bare = bare ? 1 : 0
+
+	if localClone {
+		options.local = GIT_CLONE_NO_LOCAL
+	}
+
+	if let checkoutOptions = checkoutOptions {
+		options.checkout_opts = checkoutOptions
+	}
+
+	if let fetchOptions = fetchOptions {
+		options.fetch_opts = fetchOptions
+	}
+
+	return options
+}
+
 /// A git repository.
 final public class Repository {
-	
+
 	// MARK: - Creating Repositories
 	
 	/// Load the repository at the given URL.
@@ -68,6 +112,36 @@ final public class Repository {
 		
 		let repository = Repository(pointer)
 		return Result.Success(repository)
+	}
+
+	/// Clone the repository from a given URL.
+	///
+	/// remoteURL        - The URL of the remote repository
+	/// localURL         - The URL to clone the remote repository into
+	/// localClone       - Will not bypass the git-aware transport, even if remote is local.
+	/// bare             - Clone remote as a bare repository.
+	/// credentials      - Credentials to be used when connecting to the remote.
+	/// checkoutStrategy - The checkout strategy to use, if being checked out.
+	/// checkoutProgress - A block that's called with the progress of the checkout.
+	///
+	/// Returns a `Result` with a `Repository` or an error.
+	class public func cloneFromURL(remoteURL: NSURL, toURL: NSURL, localClone: Bool = false, bare: Bool = false,
+		credentials: Credentials = .Default(), checkoutStrategy: CheckoutStrategy = .Safe, checkoutProgress: CheckoutProgressBlock? = nil) -> Result<Repository, NSError> {
+			var options = cloneOptions(
+				bare, localClone: localClone,
+				fetchOptions: fetchOptions(credentials),
+				checkoutOptions: checkoutOptions(checkoutStrategy, progress: checkoutProgress))
+
+			var pointer: COpaquePointer = nil
+			let remoteURLString = remoteURL.isFileReferenceURL() ? remoteURL.path! : remoteURL.absoluteString
+			let result = git_clone(&pointer, remoteURLString, toURL.fileSystemRepresentation, &options)
+
+			if result != GIT_OK.rawValue {
+				return Result.Failure(libGit2Error(result, libGit2PointOfFailure: "git_clone"))
+			}
+
+			let repository = Repository(pointer)
+			return Result.Success(repository)
 	}
 	
 	// MARK: - Initializers
@@ -396,8 +470,7 @@ final public class Repository {
 	/// :param: progress A block that's called with the progress of the checkout.
 	/// :returns: Returns a result with void or the error that occurred.
 	public func checkout(strategy strategy: CheckoutStrategy, progress: CheckoutProgressBlock? = nil) -> Result<(), NSError> {
-		var options = checkoutOptions(progress)
-		options.checkout_strategy = strategy.git_checkout_strategy.rawValue
+		var options = checkoutOptions(strategy, progress: progress)
 		
 		let result = git_checkout_head(self.pointer, &options)
 		if result != GIT_OK.rawValue {
