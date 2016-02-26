@@ -36,7 +36,6 @@ framework module SwiftGit2 {
 	header "git2/pack.h"
 	header "git2/patch.h"
 	header "git2/pathspec.h"
-	header "git2/push.h"
 	header "git2/rebase.h"
 	header "git2/refdb.h"
 	header "git2/reflog.h"

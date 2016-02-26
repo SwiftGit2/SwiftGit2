@@ -38,7 +38,6 @@
 		621E66811C72958800A0F352 /* pack.h in Copy libgit2 Headers */ = {isa = PBXBuildFile; fileRef = BE8DEDBC1AA6A7E200AFE62D /* pack.h */; };
 		621E66821C72958800A0F352 /* patch.h in Copy libgit2 Headers */ = {isa = PBXBuildFile; fileRef = BE8DEDBD1AA6A7E200AFE62D /* patch.h */; };
 		621E66831C72958800A0F352 /* pathspec.h in Copy libgit2 Headers */ = {isa = PBXBuildFile; fileRef = BE8DEDBE1AA6A7E200AFE62D /* pathspec.h */; };
-		621E66841C72958800A0F352 /* push.h in Copy libgit2 Headers */ = {isa = PBXBuildFile; fileRef = BE8DEDBF1AA6A7E200AFE62D /* push.h */; };
 		621E66851C72958800A0F352 /* rebase.h in Copy libgit2 Headers */ = {isa = PBXBuildFile; fileRef = BE8DEDC01AA6A7E200AFE62D /* rebase.h */; };
 		621E66861C72958800A0F352 /* refdb.h in Copy libgit2 Headers */ = {isa = PBXBuildFile; fileRef = BE8DEDC11AA6A7E200AFE62D /* refdb.h */; };
 		621E66871C72958800A0F352 /* reflog.h in Copy libgit2 Headers */ = {isa = PBXBuildFile; fileRef = BE8DEDC21AA6A7E200AFE62D /* reflog.h */; };
@@ -143,7 +142,6 @@
 		BE8DEE6D1AA6A8AD00AFE62D /* pack.h in Copy libgit2 Headers */ = {isa = PBXBuildFile; fileRef = BE8DEDBC1AA6A7E200AFE62D /* pack.h */; };
 		BE8DEE6E1AA6A8AD00AFE62D /* patch.h in Copy libgit2 Headers */ = {isa = PBXBuildFile; fileRef = BE8DEDBD1AA6A7E200AFE62D /* patch.h */; };
 		BE8DEE6F1AA6A8AD00AFE62D /* pathspec.h in Copy libgit2 Headers */ = {isa = PBXBuildFile; fileRef = BE8DEDBE1AA6A7E200AFE62D /* pathspec.h */; };
-		BE8DEE701AA6A8AD00AFE62D /* push.h in Copy libgit2 Headers */ = {isa = PBXBuildFile; fileRef = BE8DEDBF1AA6A7E200AFE62D /* push.h */; };
 		BE8DEE711AA6A8AD00AFE62D /* rebase.h in Copy libgit2 Headers */ = {isa = PBXBuildFile; fileRef = BE8DEDC01AA6A7E200AFE62D /* rebase.h */; };
 		BE8DEE721AA6A8AD00AFE62D /* refdb.h in Copy libgit2 Headers */ = {isa = PBXBuildFile; fileRef = BE8DEDC11AA6A7E200AFE62D /* refdb.h */; };
 		BE8DEE731AA6A8AD00AFE62D /* reflog.h in Copy libgit2 Headers */ = {isa = PBXBuildFile; fileRef = BE8DEDC21AA6A7E200AFE62D /* reflog.h */; };
@@ -268,7 +266,6 @@
 				621E66811C72958800A0F352 /* pack.h in Copy libgit2 Headers */,
 				621E66821C72958800A0F352 /* patch.h in Copy libgit2 Headers */,
 				621E66831C72958800A0F352 /* pathspec.h in Copy libgit2 Headers */,
-				621E66841C72958800A0F352 /* push.h in Copy libgit2 Headers */,
 				621E66851C72958800A0F352 /* rebase.h in Copy libgit2 Headers */,
 				621E66861C72958800A0F352 /* refdb.h in Copy libgit2 Headers */,
 				621E66871C72958800A0F352 /* reflog.h in Copy libgit2 Headers */,
@@ -336,7 +333,6 @@
 				BE8DEE6D1AA6A8AD00AFE62D /* pack.h in Copy libgit2 Headers */,
 				BE8DEE6E1AA6A8AD00AFE62D /* patch.h in Copy libgit2 Headers */,
 				BE8DEE6F1AA6A8AD00AFE62D /* pathspec.h in Copy libgit2 Headers */,
-				BE8DEE701AA6A8AD00AFE62D /* push.h in Copy libgit2 Headers */,
 				BE8DEE711AA6A8AD00AFE62D /* rebase.h in Copy libgit2 Headers */,
 				BE8DEE721AA6A8AD00AFE62D /* refdb.h in Copy libgit2 Headers */,
 				BE8DEE731AA6A8AD00AFE62D /* reflog.h in Copy libgit2 Headers */,
@@ -427,7 +423,6 @@
 		BE8DEDBC1AA6A7E200AFE62D /* pack.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = pack.h; path = git2/pack.h; sourceTree = "<group>"; };
 		BE8DEDBD1AA6A7E200AFE62D /* patch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = patch.h; path = git2/patch.h; sourceTree = "<group>"; };
 		BE8DEDBE1AA6A7E200AFE62D /* pathspec.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = pathspec.h; path = git2/pathspec.h; sourceTree = "<group>"; };
-		BE8DEDBF1AA6A7E200AFE62D /* push.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = push.h; path = git2/push.h; sourceTree = "<group>"; };
 		BE8DEDC01AA6A7E200AFE62D /* rebase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = rebase.h; path = git2/rebase.h; sourceTree = "<group>"; };
 		BE8DEDC11AA6A7E200AFE62D /* refdb.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = refdb.h; path = git2/refdb.h; sourceTree = "<group>"; };
 		BE8DEDC21AA6A7E200AFE62D /* reflog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = reflog.h; path = git2/reflog.h; sourceTree = "<group>"; };
@@ -607,7 +602,6 @@
 				BE8DEDBC1AA6A7E200AFE62D /* pack.h */,
 				BE8DEDBD1AA6A7E200AFE62D /* patch.h */,
 				BE8DEDBE1AA6A7E200AFE62D /* pathspec.h */,
-				BE8DEDBF1AA6A7E200AFE62D /* push.h */,
 				BE8DEDC01AA6A7E200AFE62D /* rebase.h */,
 				BE8DEDC11AA6A7E200AFE62D /* refdb.h */,
 				BE8DEDC21AA6A7E200AFE62D /* reflog.h */,
@@ -1524,6 +1518,7 @@
 					/usr/local/lib/libssh2.a,
 					"-lcrypto",
 					"-lssl",
+					"-lcurl",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "org.libgit2.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = SwiftGit2;
@@ -1555,6 +1550,7 @@
 					/usr/local/lib/libssh2.a,
 					"-lcrypto",
 					"-lssl",
+					"-lcurl",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "org.libgit2.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = SwiftGit2;
