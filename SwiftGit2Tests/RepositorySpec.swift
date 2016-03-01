@@ -475,9 +475,23 @@ class RepositorySpec: QuickSpec {
 				let HEAD = repo.HEAD().value
 				expect(HEAD?.longName).to(equal("HEAD"))
 				expect(HEAD?.oid).to(equal(oid))
-				
+
 				expect(repo.checkout(repo.localBranchWithName("master").value!, strategy: CheckoutStrategy.None)).to(haveSucceeded())
 				expect(repo.HEAD().value?.shortName).to(equal("master"))
+			}
+
+			it("should call block on progress") {
+				let repo = Fixtures.simpleRepository
+				let oid = OID(string: "315b3f344221db91ddc54b269f3c9af422da0f2e")!
+				expect(repo.HEAD().value?.shortName).to(equal("master"))
+
+				expect(repo.checkout(oid, strategy: .None, progress: { (path, completedSteps, totalSteps) -> Void in
+					expect(completedSteps).to(beLessThanOrEqualTo(totalSteps))
+				})).to(haveSucceeded())
+
+				let HEAD = repo.HEAD().value
+				expect(HEAD?.longName).to(equal("HEAD"))
+				expect(HEAD?.oid).to(equal(oid))
 			}
 		}
 		

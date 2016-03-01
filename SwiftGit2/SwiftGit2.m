@@ -29,7 +29,7 @@ git_checkout_options SG2CheckoutOptions(SG2CheckoutProgressBlock progress) {
 	
 	if (progress != nil) {
 		result.progress_cb = SG2CheckoutProgressCallback;
-		result.progress_payload = (__bridge void *)[progress copy];
+		result.progress_payload = (__bridge_retained void *)[progress copy];
 	}
 	
 	return result;
