@@ -9,9 +9,9 @@ if let repo = repo.value {
         .HEAD()
         .flatMap { repo.commitWithOID($0.oid) }
     if let commit = latestCommit.value {
-        println("Latest Commit: \(commit.message) by \(commit.author.name)")
+        print("Latest Commit: \(commit.message) by \(commit.author.name)")
     } else {
-        println("Could not get commit: \(latestCommit.error)")
+        print("Could not get commit: \(latestCommit.error)")
     }
 } else {
     println("Could not open repository: \(repo.error)")
