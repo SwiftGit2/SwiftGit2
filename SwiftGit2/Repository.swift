@@ -23,7 +23,7 @@ private func checkoutProgressCallback(path: UnsafePointer<Int8>, completed_steps
 			block = buffer.move()
 			buffer.dealloc(1)
 		}
-		block((path == nil ? nil : String(path)), completed_steps, total_steps);
+		block(String.fromCString(path), completed_steps, total_steps);
 	}
 }
 
