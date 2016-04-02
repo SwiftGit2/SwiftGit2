@@ -9,7 +9,44 @@
 import Foundation
 import Result
 
-public typealias CheckoutProgressBlock = SG2CheckoutProgressBlock
+public typealias CheckoutProgressBlock = (String?, Int, Int) -> Void
+
+/// Helper function used as the libgit2 progress callback in git_checkout_options.
+/// This is a function with a type signature of git_checkout_progress_cb.
+private func checkoutProgressCallback(path: UnsafePointer<Int8>, completed_steps: Int, total_steps: Int, payload: UnsafeMutablePointer<Void>) -> Void {
+	if (payload != nil) {
+		let buffer = UnsafeMutablePointer<CheckoutProgressBlock>(payload)
+		let block: CheckoutProgressBlock
+		if completed_steps < total_steps {
+			block = buffer.memory
+		} else {
+			block = buffer.move()
+			buffer.dealloc(1)
+		}
+		block(String.fromCString(path), completed_steps, total_steps);
+	}
+}
+
+/// Helper function for initializing libgit2 got_checkout_options.
+///
+/// :param: progress A block that's called with the progress of the checkout.
+/// :returns: Returns a git_checkout_options struct with the progress members set.
+private func checkoutOptions(progress: CheckoutProgressBlock? = nil) -> git_checkout_options {
+	// Do this because GIT_CHECKOUT_OPTIONS_INIT is unavailable in swift
+	let pointer = UnsafeMutablePointer<git_checkout_options>.alloc(1)
+	git_checkout_init_options(pointer, UInt32(GIT_CHECKOUT_OPTIONS_VERSION))
+	var options = pointer.move()
+	pointer.dealloc(1)
+
+	if progress != nil {
+		options.progress_cb = checkoutProgressCallback
+		let blockPointer = UnsafeMutablePointer<CheckoutProgressBlock>.alloc(1)
+		blockPointer.initialize(progress!)
+		options.progress_payload = UnsafeMutablePointer<Void>(blockPointer)
+	}
+
+	return options
+}
 
 /// A git repository.
 final public class Repository {
@@ -359,7 +396,7 @@ final public class Repository {
 	/// :param: progress A block that's called with the progress of the checkout.
 	/// :returns: Returns a result with void or the error that occurred.
 	public func checkout(strategy strategy: CheckoutStrategy, progress: CheckoutProgressBlock? = nil) -> Result<(), NSError> {
-		var options = SG2CheckoutOptions(progress)
+		var options = checkoutOptions(progress)
 		options.checkout_strategy = strategy.git_checkout_strategy.rawValue
 		
 		let result = git_checkout_head(self.pointer, &options)
