@@ -13,23 +13,11 @@ BEGIN {
     fflush(stdout);
 }
 
-/is not valid for Testing/ {
-    exit 2;
-}
-
-/[0-9]+: (error|warning):/ {
-    errors = errors $0 "\n";
-}
-
-/(TEST|BUILD) FAILED/ {
-    status = 1;
+/A build only device cannot be used to run this target/ {
+    status = 1
 }
 
 END {
-    if (length(errors) > 0) {
-        print "\n*** All errors:\n" errors;
-    }
-
     fflush(stdout);
     exit status;
 }
