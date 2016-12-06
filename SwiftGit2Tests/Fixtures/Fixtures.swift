@@ -23,8 +23,8 @@ final class Fixtures {
 	
 	init() {
 		directoryURL = NSURL(fileURLWithPath: NSTemporaryDirectory(), isDirectory: true)
-			.URLByAppendingPathComponent("org.libgit2.SwiftGit2")
-			.URLByAppendingPathComponent(NSProcessInfo.processInfo().globallyUniqueString)
+			.URLByAppendingPathComponent("org.libgit2.SwiftGit2")!
+			.URLByAppendingPathComponent(NSProcessInfo.processInfo().globallyUniqueString)!
 	}
 	
 	// MARK: - Setup and Teardown
@@ -55,7 +55,7 @@ final class Fixtures {
 	// MARK: - Helpers
 	
 	func repositoryWithName(name: String) -> Repository {
-		let url = directoryURL.URLByAppendingPathComponent(name, isDirectory: true)
+		let url = directoryURL.URLByAppendingPathComponent(name, isDirectory: true)!
 		return Repository.atURL(url).value!
 	}
 	

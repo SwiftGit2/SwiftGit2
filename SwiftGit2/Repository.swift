@@ -133,7 +133,7 @@ final public class Repository {
 				checkoutOptions: checkoutOptions(checkoutStrategy, progress: checkoutProgress))
 
 			var pointer: COpaquePointer = nil
-			let remoteURLString = remoteURL.isFileReferenceURL() ? remoteURL.path! : remoteURL.absoluteString
+			let remoteURLString = remoteURL.isFileReferenceURL() ? remoteURL.path! : remoteURL.absoluteString!
 			let result = git_clone(&pointer, remoteURLString, toURL.fileSystemRepresentation, &options)
 
 			if result != GIT_OK.rawValue {

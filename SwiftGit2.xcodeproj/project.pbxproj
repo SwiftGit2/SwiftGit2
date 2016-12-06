@@ -971,11 +971,19 @@
 				LastUpgradeCheck = 0720;
 				ORGANIZATIONNAME = "GitHub, Inc";
 				TargetAttributes = {
+					621E66611C72958800A0F352 = {
+						LastSwiftMigration = 0810;
+					};
+					621E66B61C72958D00A0F352 = {
+						LastSwiftMigration = 0810;
+					};
 					BEB31F221A0D6F7A00F525B9 = {
 						CreatedOnToolsVersion = 6.1;
+						LastSwiftMigration = 0810;
 					};
 					BEB31F2D1A0D6F7A00F525B9 = {
 						CreatedOnToolsVersion = 6.1;
+						LastSwiftMigration = 0810;
 					};
 					BEB31F8E1A0E563900F525B9 = {
 						CreatedOnToolsVersion = 6.1;
@@ -1450,6 +1458,7 @@
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = macosx;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 2.3;
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
 			};
@@ -1497,6 +1506,7 @@
 				MACOSX_DEPLOYMENT_TARGET = 10.10;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = macosx;
+				SWIFT_VERSION = 2.3;
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
 			};
