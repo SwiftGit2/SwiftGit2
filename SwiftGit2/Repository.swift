@@ -126,7 +126,7 @@ final public class Repository {
 	/// checkoutProgress - A block that's called with the progress of the checkout.
 	///
 	/// Returns a `Result` with a `Repository` or an error.
-	class public func cloneFromURL(_ remoteURL: NSURL, toURL: NSURL, localClone: Bool = false, bare: Bool = false,
+	class public func cloneFromURL(_ remoteURL: URL, toURL: URL, localClone: Bool = false, bare: Bool = false,
 		credentials: Credentials = .Default(), checkoutStrategy: CheckoutStrategy = .Safe, checkoutProgress: CheckoutProgressBlock? = nil) -> Result<Repository, NSError> {
 			var options = cloneOptions(
 				bare: bare, localClone: localClone,
@@ -134,8 +134,8 @@ final public class Repository {
 				checkoutOptions: checkoutOptions(strategy: checkoutStrategy, progress: checkoutProgress))
 
 			var pointer: OpaquePointer? = nil
-			let remoteURLString = remoteURL.isFileReferenceURL() ? remoteURL.path! : remoteURL.absoluteString!
-			let result = git_clone(&pointer, remoteURLString, toURL.fileSystemRepresentation, &options)
+			let remoteURLString = (remoteURL as NSURL).isFileReferenceURL() ? remoteURL.path : remoteURL.absoluteString
+			let result = git_clone(&pointer, remoteURLString, (toURL as NSURL).fileSystemRepresentation, &options)
 
 			if result != GIT_OK.rawValue {
 				return Result.failure(libGit2Error(result, libGit2PointOfFailure: "git_clone"))
@@ -154,7 +154,7 @@ final public class Repository {
 		self.pointer = pointer
 
 		let path = git_repository_workdir(pointer)
-		self.directoryURL = path.map({ path in NSURL(fileURLWithPath: String(validatingUTF8: path)!, isDirectory: true) })
+		self.directoryURL = path.map({ path in URL(fileURLWithPath: String(validatingUTF8: path)!, isDirectory: true) })
 	}
 	
 	deinit {
@@ -168,7 +168,7 @@ final public class Repository {
 	
 	/// The URL of the repository's working directory, or `nil` if the
 	/// repository is bare.
-	public let directoryURL: NSURL?
+	public let directoryURL: URL?
 	
 	// MARK: - Object Lookups
 	

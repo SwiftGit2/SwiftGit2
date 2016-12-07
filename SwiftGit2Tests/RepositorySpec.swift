@@ -73,7 +73,7 @@ class RepositorySpec: QuickSpec {
 			}
 
 			it("should be able to clone a remote repository") {
-				let remoteRepoURL = NSURL(string: "https://github.com/libgit2/libgit2.github.com.git")
+				let remoteRepoURL = URL(string: "https://github.com/libgit2/libgit2.github.com.git")
 				let localURL =  self.temporaryURLForPurpose("public-remote-clone")
 				let cloneResult = Repository.cloneFromURL(remoteRepoURL!, toURL: localURL)
 
@@ -95,7 +95,7 @@ class RepositorySpec: QuickSpec {
 				let privateKey = env["SG2TestPrivateKey"], let passphrase = env["SG2TestPassphrase"] {
 
 				it("should be able to clone a remote repository requiring credentials") {
-					let remoteRepoURL = NSURL(string: privateRepo)
+					let remoteRepoURL = URL(string: privateRepo)
 					let localURL =  self.temporaryURLForPurpose("private-remote-clone")
 
 					let cloneResult = Repository.cloneFromURL(remoteRepoURL!, toURL: localURL,
@@ -596,9 +596,9 @@ class RepositorySpec: QuickSpec {
 		}
 	}
 
-	func temporaryURLForPurpose(_ purpose: String) -> NSURL {
+	func temporaryURLForPurpose(_ purpose: String) -> URL {
 		let globallyUniqueString = ProcessInfo.processInfo.globallyUniqueString
 		let path = "\(NSTemporaryDirectory())\(globallyUniqueString)_\(purpose)"
-		return NSURL(fileURLWithPath: path)
+		return URL(fileURLWithPath: path)
 	}
 }
