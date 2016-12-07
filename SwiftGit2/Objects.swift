@@ -32,7 +32,7 @@ public struct Signature {
 	public let email: String
 	
 	/// The time when the action happened.
-	public let time: NSDate
+	public let time: Date
 	
 	/// The time zone that `time` should be interpreted relative to.
 	public let timeZone: NSTimeZone
@@ -41,7 +41,7 @@ public struct Signature {
 	public init(_ signature: git_signature) {
 		name = String(validatingUTF8: signature.name)!
 		email = String(validatingUTF8: signature.email)!
-		time = NSDate(timeIntervalSince1970: TimeInterval(signature.when.time))
+		time = Date(timeIntervalSince1970: TimeInterval(signature.when.time))
 		timeZone = NSTimeZone(forSecondsFromGMT: NSInteger(60 * signature.when.offset))
 	}
 }

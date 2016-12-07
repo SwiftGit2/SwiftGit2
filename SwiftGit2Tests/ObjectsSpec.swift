@@ -36,7 +36,7 @@ class SignatureSpec: QuickSpec {
 				
 				expect(signature.name).to(equal("Matt Diephouse"))
 				expect(signature.email).to(equal("matt@diephouse.com"))
-				expect(signature.time).to(equal(NSDate(timeIntervalSince1970: 1416186947)))
+				expect(signature.time).to(equal(Date(timeIntervalSince1970: 1416186947)))
 				expect(signature.timeZone.abbreviation).to(equal("GMT-5"))
 			}
 		}
