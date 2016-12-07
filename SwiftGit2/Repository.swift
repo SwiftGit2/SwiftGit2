@@ -111,7 +111,7 @@ final public class Repository {
 			return Result.failure(libGit2Error(result, libGit2PointOfFailure: "git_repository_open"))
 		}
 		
-		let repository = Repository(pointer)
+		let repository = Repository(pointer!)
 		return Result.success(repository)
 	}
 
@@ -141,7 +141,7 @@ final public class Repository {
 				return Result.failure(libGit2Error(result, libGit2PointOfFailure: "git_clone"))
 			}
 
-			let repository = Repository(pointer)
+			let repository = Repository(pointer!)
 			return Result.success(repository)
 	}
 	
@@ -150,7 +150,7 @@ final public class Repository {
 	/// Create an instance with a libgit2 `git_repository` object.
 	///
 	/// The Repository assumes ownership of the `git_repository` object.
-	public init(_ pointer: OpaquePointer?) {
+	public init(_ pointer: OpaquePointer) {
 		self.pointer = pointer
 
 		let path = git_repository_workdir(pointer)
@@ -164,7 +164,7 @@ final public class Repository {
 	// MARK: - Properties
 	
 	/// The underlying libgit2 `git_repository` object.
-	public let pointer: OpaquePointer?
+	public let pointer: OpaquePointer
 	
 	/// The URL of the repository's working directory, or `nil` if the
 	/// repository is bare.
@@ -181,7 +181,7 @@ final public class Repository {
 	///
 	/// Returns the result of calling `transform` or an error if the object
 	/// cannot be loaded.
-	func withLibgit2Object<T>(_ oid: OID, type: git_otype, transform: (OpaquePointer?) -> Result<T, NSError>) -> Result<T, NSError> {
+	func withLibgit2Object<T>(_ oid: OID, type: git_otype, transform: (OpaquePointer) -> Result<T, NSError>) -> Result<T, NSError> {
 		var pointer: OpaquePointer? = nil
 		var oid = oid.oid
 		let result = git_object_lookup(&pointer, self.pointer, &oid, type)
@@ -190,12 +190,12 @@ final public class Repository {
 			return Result.failure(libGit2Error(result, libGit2PointOfFailure: "git_object_lookup"))
 		}
 		
-		let value = transform(pointer)
+		let value = transform(pointer!)
 		git_object_free(pointer)
 		return value
 	}
 	
-	func withLibgit2Object<T>(_ oid: OID, type: git_otype, transform: (OpaquePointer?) -> T) -> Result<T, NSError> {
+	func withLibgit2Object<T>(_ oid: OID, type: git_otype, transform: (OpaquePointer) -> T) -> Result<T, NSError> {
 		return withLibgit2Object(oid, type: type) { Result.success(transform($0)) }
 	}
 	
@@ -332,7 +332,7 @@ final public class Repository {
 			return Result.failure(libGit2Error(result, libGit2PointOfFailure: "git_remote_lookup"))
 		}
 		
-		let value = Remote(pointer)
+		let value = Remote(pointer!)
 		git_remote_free(pointer)
 		return Result.success(value)
 	}
@@ -380,7 +380,7 @@ final public class Repository {
 			return Result.failure(libGit2Error(result, libGit2PointOfFailure: "git_reference_lookup"))
 		}
 		
-		let value = referenceWithLibGit2Reference(pointer)
+		let value = referenceWithLibGit2Reference(pointer!)
 		git_reference_free(pointer)
 		return Result.success(value)
 	}
@@ -435,7 +435,7 @@ final public class Repository {
 		if result != GIT_OK.rawValue {
 			return Result.failure(libGit2Error(result, libGit2PointOfFailure: "git_repository_head"))
 		}
-		let value = referenceWithLibGit2Reference(pointer)
+		let value = referenceWithLibGit2Reference(pointer!)
 		git_reference_free(pointer)
 		return Result.success(value)
 	}

@@ -17,7 +17,7 @@ public protocol ObjectType {
 	var oid: OID { get }
 	
 	/// Create an instance with the underlying libgit2 type.
-	init(_ pointer: OpaquePointer?)
+	init(_ pointer: OpaquePointer)
 }
 
 public func == <O: ObjectType>(lhs: O, rhs: O) -> Bool {
@@ -82,7 +82,7 @@ public struct Commit: ObjectType {
 	public let message: String
 	
 	/// Create an instance with a libgit2 `git_commit` object.
-	public init(_ pointer: OpaquePointer?) {
+	public init(_ pointer: OpaquePointer) {
 		oid = OID(git_object_id(pointer).pointee)
 		message = String(validatingUTF8: git_commit_message(pointer))!
 		author = Signature(git_commit_author(pointer).pointee)
@@ -117,7 +117,7 @@ public struct Tree: ObjectType {
 		public let name: String
 		
 		/// Create an instance with a libgit2 `git_tree_entry`.
-		public init(_ pointer: OpaquePointer?) {
+		public init(_ pointer: OpaquePointer) {
 			let oid = OID(git_tree_entry_id(pointer).pointee)
 			attributes = Int32(git_tree_entry_filemode(pointer).rawValue)
 			object = Pointer(oid: oid, type: git_tree_entry_type(pointer))!
@@ -139,12 +139,12 @@ public struct Tree: ObjectType {
 	public let entries: [String: Entry]
 	
 	/// Create an instance with a libgit2 `git_tree`.
-	public init(_ pointer: OpaquePointer?) {
+	public init(_ pointer: OpaquePointer) {
 		oid = OID(git_object_id(pointer).pointee)
 		
 		var entries: [String: Entry] = [:]
 		for idx in 0..<git_tree_entrycount(pointer) {
-			let entry = Entry(git_tree_entry_byindex(pointer, idx))
+			let entry = Entry(git_tree_entry_byindex(pointer, idx)!)
 			entries[entry.name] = entry
 		}
 		self.entries = entries
@@ -186,7 +186,7 @@ public struct Blob: ObjectType {
 	public let data: Data
 	
 	/// Create an instance with a libgit2 `git_blob`.
-	public init(_ pointer: OpaquePointer?) {
+	public init(_ pointer: OpaquePointer) {
 		oid = OID(git_object_id(pointer).pointee)
 		
 		let length = Int(git_blob_rawsize(pointer))
@@ -220,7 +220,7 @@ public struct Tag: ObjectType {
 	public let message: String
 	
 	/// Create an instance with a libgit2 `git_tag`.
-	public init(_ pointer: OpaquePointer?) {
+	public init(_ pointer: OpaquePointer) {
 		oid = OID(git_object_id(pointer).pointee)
 		let targetOID = OID(git_tag_target_id(pointer).pointee)
 		target = Pointer(oid: targetOID, type: git_tag_target_type(pointer))!

@@ -12,13 +12,13 @@ import Nimble
 import Quick
 import libgit2
 
-func from_git_object<T>(_ repository: Repository, oid: OID, f: (OpaquePointer?) -> T) -> T {
+func from_git_object<T>(_ repository: Repository, oid: OID, f: (OpaquePointer) -> T) -> T {
 	let repository = repository.pointer
 	var oid = oid.oid
 	
 	var pointer: OpaquePointer? = nil
 	git_object_lookup(&pointer, repository, &oid, GIT_OBJ_ANY)
-	let result = f(pointer)
+	let result = f(pointer!)
 	git_object_free(pointer)
 	
 	return result

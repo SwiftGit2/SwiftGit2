@@ -12,12 +12,12 @@ import Nimble
 import Quick
 import libgit2
 
-func with_git_remote<T>(_ repository: Repository, name: String, f: (OpaquePointer?) -> T) -> T {
+func with_git_remote<T>(_ repository: Repository, name: String, f: (OpaquePointer) -> T) -> T {
 	let repository = repository.pointer
 	
 	var pointer: OpaquePointer? = nil
 	git_remote_lookup(&pointer, repository, name)
-	let result = f(pointer)
+	let result = f(pointer!)
 	git_object_free(pointer)
 	
 	return result

@@ -19,7 +19,7 @@ public struct Remote {
 	public let URL: String
 	
 	/// Create an instance with a libgit2 `git_remote`.
-	public init(_ pointer: OpaquePointer?) {
+	public init(_ pointer: OpaquePointer) {
 		name = String(validatingUTF8: git_remote_name(pointer))!
 		URL = String(validatingUTF8: git_remote_url(pointer))!
 	}

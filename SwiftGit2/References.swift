@@ -26,7 +26,7 @@ public func ==<T: ReferenceType>(lhs: T, rhs: T) -> Bool {
 }
 
 /// Create a Reference, Branch, or TagReference from a libgit2 `git_reference`.
-internal func referenceWithLibGit2Reference(_ pointer: OpaquePointer?) -> ReferenceType {
+internal func referenceWithLibGit2Reference(_ pointer: OpaquePointer) -> ReferenceType {
 	if git_reference_is_branch(pointer) != 0 || git_reference_is_remote(pointer) != 0 {
 		return Branch(pointer)!
 	} else if git_reference_is_tag(pointer) != 0 {
@@ -48,7 +48,7 @@ public struct Reference: ReferenceType {
 	public let oid: OID
 	
 	/// Create an instance with a libgit2 `git_reference` object.
-	public init(_ pointer: OpaquePointer?) {
+	public init(_ pointer: OpaquePointer) {
 		let shorthand = String(validatingUTF8: git_reference_shorthand(pointer))!
 		longName = String(validatingUTF8: git_reference_name(pointer))!
 		shortName = (shorthand == longName ? nil : shorthand)
@@ -95,7 +95,7 @@ public struct Branch: ReferenceType {
 	/// Create an instance with a libgit2 `git_reference` object.
 	///
 	/// Returns `nil` if the pointer isn't a branch.
-	public init?(_ pointer: OpaquePointer?) {
+	public init?(_ pointer: OpaquePointer) {
 		let namePointer = UnsafeMutablePointer<UnsafePointer<Int8>?>.allocate(capacity: 1)
 		let success = git_branch_name(namePointer, pointer)
 		if success != GIT_OK.rawValue {
@@ -175,7 +175,7 @@ public enum TagReference: ReferenceType {
 	/// Create an instance with a libgit2 `git_reference` object.
 	///
 	/// Returns `nil` if the pointer isn't a branch.
-	public init?(_ pointer: OpaquePointer?) {
+	public init?(_ pointer: OpaquePointer) {
 		if git_reference_is_tag(pointer) == 0 {
 			return nil;
 		}
@@ -187,7 +187,7 @@ public enum TagReference: ReferenceType {
 		var pointer: OpaquePointer? = nil
 		let result = git_object_lookup(&pointer, repo, &oid, GIT_OBJ_TAG)
 		if result == GIT_OK.rawValue {
-			self = .Annotated(name, Tag(pointer))
+			self = .Annotated(name, Tag(pointer!))
 		} else {
 			self = .Lightweight(name, OID(oid))
 		}

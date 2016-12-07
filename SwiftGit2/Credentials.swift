@@ -21,8 +21,8 @@ public enum Credentials {
 	case Plaintext(username: String, password: String)
 	case SSHMemory(username: String, publicKey: String, privateKey: String, passphrase: String)
 
-	internal static func fromPointer(_ pointer: UnsafeMutableRawPointer?) -> Credentials {
-		return Unmanaged<Wrapper<Credentials>>.fromOpaque(UnsafeRawPointer(pointer)!).takeRetainedValue().value
+	internal static func fromPointer(_ pointer: UnsafeMutableRawPointer) -> Credentials {
+		return Unmanaged<Wrapper<Credentials>>.fromOpaque(UnsafeRawPointer(pointer)).takeRetainedValue().value
 	}
 
 	internal func toPointer() -> UnsafeMutableRawPointer {
@@ -36,7 +36,7 @@ internal func credentialsCallback(cred: UnsafeMutablePointer<UnsafeMutablePointe
 	payload: UnsafeMutableRawPointer?) -> Int32 {
 	let result: Int32
 
-	switch Credentials.fromPointer(payload) {
+	switch Credentials.fromPointer(payload!) {
 	case .Default():
 		result = git_cred_default_new(cred)
 	case .Plaintext(let username, let password):
