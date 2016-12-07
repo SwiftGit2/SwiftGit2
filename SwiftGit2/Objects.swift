@@ -35,14 +35,14 @@ public struct Signature {
 	public let time: Date
 	
 	/// The time zone that `time` should be interpreted relative to.
-	public let timeZone: NSTimeZone
+	public let timeZone: TimeZone
 	
 	/// Create an instance with a libgit2 `git_signature`.
 	public init(_ signature: git_signature) {
 		name = String(validatingUTF8: signature.name)!
 		email = String(validatingUTF8: signature.email)!
 		time = Date(timeIntervalSince1970: TimeInterval(signature.when.time))
-		timeZone = NSTimeZone(forSecondsFromGMT: NSInteger(60 * signature.when.offset))
+		timeZone = TimeZone(secondsFromGMT: 60 * Int(signature.when.offset))!
 	}
 }
 
@@ -56,7 +56,7 @@ public func == (lhs: Signature, rhs: Signature) -> Bool {
 	return lhs.name == rhs.name
 		&& lhs.email == rhs.email
 		&& lhs.time == rhs.time
-		&& lhs.timeZone.secondsFromGMT == rhs.timeZone.secondsFromGMT
+		&& lhs.timeZone == rhs.timeZone
 }
 
 /// A git commit.
