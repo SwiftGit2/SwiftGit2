@@ -15,7 +15,6 @@ config ()
 
     export REQUIRED_TOOLS
     export REQUIRED_GEMS
-
 }
 
 ##
@@ -108,7 +107,7 @@ check_deps ()
 
     for gem in $REQUIRED_GEMS
     do
-	    gem install "$gem"
+        gem install "$gem"
     done
 }
 
