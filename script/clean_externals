@@ -2,7 +2,7 @@
 
 #
 # clean_externals
-# ObjectiveGit
+# SwiftGit2
 #
 # Removes the outputs from the various static library targets.
 # Necessary when switching platforms/architectures as Xcode does not clean
