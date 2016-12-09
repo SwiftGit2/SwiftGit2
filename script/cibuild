@@ -129,7 +129,7 @@ build_scheme ()
     if [ "$awkstatus" -eq "1" ]
     then
         # SDK not found, try for iphonesimulator.
-	sdkflags=(-sdk iphonesimulator -destination "platform=iOS Simulator,name=iPhone 5")
+        sdkflags=(-sdk iphonesimulator -destination "platform=iOS Simulator,name=iPhone 5")
 
         # Determine whether the unit tests will run with iphonesimulator
         run_xctool "${sdkflags[@]}" -scheme "$scheme" run-tests | parse_build
@@ -139,7 +139,7 @@ build_scheme ()
         if [ "$awkstatus" -ne "0" ]
         then
             # Unit tests will not run on iphonesimulator.
-	    sdkflags=()
+            sdkflags=()
         fi
     fi
 
