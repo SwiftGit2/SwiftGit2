@@ -38,7 +38,6 @@
 		621E66811C72958800A0F352 /* pack.h in Copy libgit2 Headers */ = {isa = PBXBuildFile; fileRef = BE8DEDBC1AA6A7E200AFE62D /* pack.h */; };
 		621E66821C72958800A0F352 /* patch.h in Copy libgit2 Headers */ = {isa = PBXBuildFile; fileRef = BE8DEDBD1AA6A7E200AFE62D /* patch.h */; };
 		621E66831C72958800A0F352 /* pathspec.h in Copy libgit2 Headers */ = {isa = PBXBuildFile; fileRef = BE8DEDBE1AA6A7E200AFE62D /* pathspec.h */; };
-		621E66841C72958800A0F352 /* push.h in Copy libgit2 Headers */ = {isa = PBXBuildFile; fileRef = BE8DEDBF1AA6A7E200AFE62D /* push.h */; };
 		621E66851C72958800A0F352 /* rebase.h in Copy libgit2 Headers */ = {isa = PBXBuildFile; fileRef = BE8DEDC01AA6A7E200AFE62D /* rebase.h */; };
 		621E66861C72958800A0F352 /* refdb.h in Copy libgit2 Headers */ = {isa = PBXBuildFile; fileRef = BE8DEDC11AA6A7E200AFE62D /* refdb.h */; };
 		621E66871C72958800A0F352 /* reflog.h in Copy libgit2 Headers */ = {isa = PBXBuildFile; fileRef = BE8DEDC21AA6A7E200AFE62D /* reflog.h */; };
@@ -95,6 +94,8 @@
 		621E66E61C729D9600A0F352 /* SwiftGit2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 621E66B41C72958800A0F352 /* SwiftGit2.framework */; };
 		621E66FE1C72A5FF00A0F352 /* libiconv.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 621E66FD1C72A5FF00A0F352 /* libiconv.tbd */; };
 		621E67001C72A60B00A0F352 /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 621E66FF1C72A60B00A0F352 /* libz.tbd */; };
+		622726341C84E52500C53D17 /* Credentials.swift in Sources */ = {isa = PBXBuildFile; fileRef = 622726331C84E52500C53D17 /* Credentials.swift */; };
+		622726351C84E52500C53D17 /* Credentials.swift in Sources */ = {isa = PBXBuildFile; fileRef = 622726331C84E52500C53D17 /* Credentials.swift */; };
 		62E6FD8F1C727E9C00A312B0 /* ZipArchive.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 62E6FD8E1C727E9C00A312B0 /* ZipArchive.framework */; };
 		BE0991F71A578FB1007D4E6A /* Mantle.zip in Resources */ = {isa = PBXBuildFile; fileRef = BE0991F61A578FB1007D4E6A /* Mantle.zip */; };
 		BE0B1C5D1A9978890004726D /* detached-head.zip in Resources */ = {isa = PBXBuildFile; fileRef = BE0B1C5C1A9978890004726D /* detached-head.zip */; };
@@ -143,7 +144,6 @@
 		BE8DEE6D1AA6A8AD00AFE62D /* pack.h in Copy libgit2 Headers */ = {isa = PBXBuildFile; fileRef = BE8DEDBC1AA6A7E200AFE62D /* pack.h */; };
 		BE8DEE6E1AA6A8AD00AFE62D /* patch.h in Copy libgit2 Headers */ = {isa = PBXBuildFile; fileRef = BE8DEDBD1AA6A7E200AFE62D /* patch.h */; };
 		BE8DEE6F1AA6A8AD00AFE62D /* pathspec.h in Copy libgit2 Headers */ = {isa = PBXBuildFile; fileRef = BE8DEDBE1AA6A7E200AFE62D /* pathspec.h */; };
-		BE8DEE701AA6A8AD00AFE62D /* push.h in Copy libgit2 Headers */ = {isa = PBXBuildFile; fileRef = BE8DEDBF1AA6A7E200AFE62D /* push.h */; };
 		BE8DEE711AA6A8AD00AFE62D /* rebase.h in Copy libgit2 Headers */ = {isa = PBXBuildFile; fileRef = BE8DEDC01AA6A7E200AFE62D /* rebase.h */; };
 		BE8DEE721AA6A8AD00AFE62D /* refdb.h in Copy libgit2 Headers */ = {isa = PBXBuildFile; fileRef = BE8DEDC11AA6A7E200AFE62D /* refdb.h */; };
 		BE8DEE731AA6A8AD00AFE62D /* reflog.h in Copy libgit2 Headers */ = {isa = PBXBuildFile; fileRef = BE8DEDC21AA6A7E200AFE62D /* reflog.h */; };
@@ -193,26 +193,26 @@
 			remoteGlobalIDString = 621E66611C72958800A0F352;
 			remoteInfo = "SwiftGit2-iOS";
 		};
-		621E66F71C729F0200A0F352 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = BEB31F1A1A0D6F7A00F525B9 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 621E66E71C729EB800A0F352;
-			remoteInfo = "OpenSSL-iOS";
-		};
-		621E66F91C729F0200A0F352 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = BEB31F1A1A0D6F7A00F525B9 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 621E66ED1C729EBB00A0F352;
-			remoteInfo = "libssh2-iOS";
-		};
 		621E66FB1C72A25D00A0F352 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = BEB31F1A1A0D6F7A00F525B9 /* Project object */;
 			proxyType = 1;
 			remoteGlobalIDString = 621E66DC1C729CE500A0F352;
 			remoteInfo = "libgit2-iOS";
+		};
+		624349871C7CADCD0087C234 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = BEB31F1A1A0D6F7A00F525B9 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 621E66ED1C729EBB00A0F352;
+			remoteInfo = "libssh2-iOS";
+		};
+		624349891C7CADD90087C234 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = BEB31F1A1A0D6F7A00F525B9 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 621E66E71C729EB800A0F352;
+			remoteInfo = "OpenSSL-iOS";
 		};
 		BEB31F301A0D6F7A00F525B9 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -268,7 +268,6 @@
 				621E66811C72958800A0F352 /* pack.h in Copy libgit2 Headers */,
 				621E66821C72958800A0F352 /* patch.h in Copy libgit2 Headers */,
 				621E66831C72958800A0F352 /* pathspec.h in Copy libgit2 Headers */,
-				621E66841C72958800A0F352 /* push.h in Copy libgit2 Headers */,
 				621E66851C72958800A0F352 /* rebase.h in Copy libgit2 Headers */,
 				621E66861C72958800A0F352 /* refdb.h in Copy libgit2 Headers */,
 				621E66871C72958800A0F352 /* reflog.h in Copy libgit2 Headers */,
@@ -336,7 +335,6 @@
 				BE8DEE6D1AA6A8AD00AFE62D /* pack.h in Copy libgit2 Headers */,
 				BE8DEE6E1AA6A8AD00AFE62D /* patch.h in Copy libgit2 Headers */,
 				BE8DEE6F1AA6A8AD00AFE62D /* pathspec.h in Copy libgit2 Headers */,
-				BE8DEE701AA6A8AD00AFE62D /* push.h in Copy libgit2 Headers */,
 				BE8DEE711AA6A8AD00AFE62D /* rebase.h in Copy libgit2 Headers */,
 				BE8DEE721AA6A8AD00AFE62D /* refdb.h in Copy libgit2 Headers */,
 				BE8DEE731AA6A8AD00AFE62D /* reflog.h in Copy libgit2 Headers */,
@@ -378,6 +376,7 @@
 		621E66F21C729EBB00A0F352 /* liblibssh2-iOS.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "liblibssh2-iOS.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		621E66FD1C72A5FF00A0F352 /* libiconv.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libiconv.tbd; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS9.2.sdk/usr/lib/libiconv.tbd; sourceTree = DEVELOPER_DIR; };
 		621E66FF1C72A60B00A0F352 /* libz.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS9.2.sdk/usr/lib/libz.tbd; sourceTree = DEVELOPER_DIR; };
+		622726331C84E52500C53D17 /* Credentials.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Credentials.swift; sourceTree = "<group>"; };
 		62E6FD8E1C727E9C00A312B0 /* ZipArchive.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ZipArchive.framework; path = ../Carthage/Checkouts/ZipArchive/build/Debug/ZipArchive.framework; sourceTree = "<group>"; };
 		BE0991F61A578FB1007D4E6A /* Mantle.zip */ = {isa = PBXFileReference; lastKnownFileType = archive.zip; path = Mantle.zip; sourceTree = "<group>"; };
 		BE0B1C5C1A9978890004726D /* detached-head.zip */ = {isa = PBXFileReference; lastKnownFileType = archive.zip; path = "detached-head.zip"; sourceTree = "<group>"; };
@@ -427,7 +426,6 @@
 		BE8DEDBC1AA6A7E200AFE62D /* pack.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = pack.h; path = git2/pack.h; sourceTree = "<group>"; };
 		BE8DEDBD1AA6A7E200AFE62D /* patch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = patch.h; path = git2/patch.h; sourceTree = "<group>"; };
 		BE8DEDBE1AA6A7E200AFE62D /* pathspec.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = pathspec.h; path = git2/pathspec.h; sourceTree = "<group>"; };
-		BE8DEDBF1AA6A7E200AFE62D /* push.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = push.h; path = git2/push.h; sourceTree = "<group>"; };
 		BE8DEDC01AA6A7E200AFE62D /* rebase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = rebase.h; path = git2/rebase.h; sourceTree = "<group>"; };
 		BE8DEDC11AA6A7E200AFE62D /* refdb.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = refdb.h; path = git2/refdb.h; sourceTree = "<group>"; };
 		BE8DEDC21AA6A7E200AFE62D /* reflog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = reflog.h; path = git2/reflog.h; sourceTree = "<group>"; };
@@ -607,7 +605,6 @@
 				BE8DEDBC1AA6A7E200AFE62D /* pack.h */,
 				BE8DEDBD1AA6A7E200AFE62D /* patch.h */,
 				BE8DEDBE1AA6A7E200AFE62D /* pathspec.h */,
-				BE8DEDBF1AA6A7E200AFE62D /* push.h */,
 				BE8DEDC01AA6A7E200AFE62D /* rebase.h */,
 				BE8DEDC11AA6A7E200AFE62D /* refdb.h */,
 				BE8DEDC21AA6A7E200AFE62D /* reflog.h */,
@@ -669,6 +666,7 @@
 				BEB31F281A0D6F7A00F525B9 /* SwiftGit2.h */,
 				BE14AA4F1A1974010015B439 /* SwiftGit2.m */,
 				BE276B281ACCD3CF00D6DAD7 /* CheckoutStrategy.swift */,
+				622726331C84E52500C53D17 /* Credentials.swift */,
 				DA5914751A94579000AED74C /* Errors.swift */,
 				BE36354B1A632C9700D37EC8 /* Libgit2.swift */,
 				BE2E3BE51A31261300C67092 /* Objects.swift */,
@@ -873,8 +871,7 @@
 			buildRules = (
 			);
 			dependencies = (
-				621E66F81C729F0200A0F352 /* PBXTargetDependency */,
-				621E66FA1C729F0200A0F352 /* PBXTargetDependency */,
+				624349881C7CADCD0087C234 /* PBXTargetDependency */,
 			);
 			name = "libgit2-iOS";
 			productName = libgit2;
@@ -905,6 +902,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				6243498A1C7CADD90087C234 /* PBXTargetDependency */,
 			);
 			name = "libssh2-iOS";
 			productName = libgit2;
@@ -1094,6 +1092,7 @@
 				621E66A01C72958800A0F352 /* OID.swift in Sources */,
 				621E66A11C72958800A0F352 /* Remotes.swift in Sources */,
 				621E66A21C72958800A0F352 /* CheckoutStrategy.swift in Sources */,
+				622726351C84E52500C53D17 /* Credentials.swift in Sources */,
 				621E66A31C72958800A0F352 /* Repository.swift in Sources */,
 				621E66A41C72958800A0F352 /* Objects.swift in Sources */,
 				621E66A51C72958800A0F352 /* References.swift in Sources */,
@@ -1125,6 +1124,7 @@
 				BE70B3E51A1ACB1A002C3F4E /* OID.swift in Sources */,
 				BECB5F6E1A57284700999413 /* Remotes.swift in Sources */,
 				BE276B291ACCD3CF00D6DAD7 /* CheckoutStrategy.swift in Sources */,
+				622726341C84E52500C53D17 /* Credentials.swift in Sources */,
 				BEB31F6D1A0D78F300F525B9 /* Repository.swift in Sources */,
 				BE2E3BE61A31261300C67092 /* Objects.swift in Sources */,
 				BECB5F6A1A56F19900999413 /* References.swift in Sources */,
@@ -1157,20 +1157,20 @@
 			target = 621E66611C72958800A0F352 /* SwiftGit2-iOS */;
 			targetProxy = 621E66E41C729D8A00A0F352 /* PBXContainerItemProxy */;
 		};
-		621E66F81C729F0200A0F352 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 621E66E71C729EB800A0F352 /* OpenSSL-iOS */;
-			targetProxy = 621E66F71C729F0200A0F352 /* PBXContainerItemProxy */;
-		};
-		621E66FA1C729F0200A0F352 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 621E66ED1C729EBB00A0F352 /* libssh2-iOS */;
-			targetProxy = 621E66F91C729F0200A0F352 /* PBXContainerItemProxy */;
-		};
 		621E66FC1C72A25D00A0F352 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 621E66DC1C729CE500A0F352 /* libgit2-iOS */;
 			targetProxy = 621E66FB1C72A25D00A0F352 /* PBXContainerItemProxy */;
+		};
+		624349881C7CADCD0087C234 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 621E66ED1C729EBB00A0F352 /* libssh2-iOS */;
+			targetProxy = 624349871C7CADCD0087C234 /* PBXContainerItemProxy */;
+		};
+		6243498A1C7CADD90087C234 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 621E66E71C729EB800A0F352 /* OpenSSL-iOS */;
+			targetProxy = 624349891C7CADD90087C234 /* PBXContainerItemProxy */;
 		};
 		BEB31F311A0D6F7A00F525B9 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -1524,6 +1524,7 @@
 					/usr/local/lib/libssh2.a,
 					"-lcrypto",
 					"-lssl",
+					"-lcurl",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "org.libgit2.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = SwiftGit2;
@@ -1555,6 +1556,7 @@
 					/usr/local/lib/libssh2.a,
 					"-lcrypto",
 					"-lssl",
+					"-lcurl",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "org.libgit2.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = SwiftGit2;

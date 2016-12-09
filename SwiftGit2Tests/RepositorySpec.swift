@@ -29,6 +29,91 @@ class RepositorySpec: QuickSpec {
 				)))
 			}
 		}
+
+		describe("Repository.Type.clone()") {
+			it("should handle local clones") {
+				let remoteRepo = Fixtures.simpleRepository
+				let localURL = self.temporaryURLForPurpose("local-clone")
+				let result = Repository.cloneFromURL(remoteRepo.directoryURL!, toURL: localURL, localClone: true)
+
+				expect(result).to(haveSucceeded())
+
+				if case .Success(let clonedRepo) = result {
+					expect(clonedRepo.directoryURL).notTo(beNil())
+				}
+			}
+
+			it("should handle bare clones") {
+				let remoteRepo = Fixtures.simpleRepository
+				let localURL = self.temporaryURLForPurpose("bare-clone")
+				let result = Repository.cloneFromURL(remoteRepo.directoryURL!, toURL: localURL, localClone: true, bare: true)
+
+				expect(result).to(haveSucceeded())
+
+				if case .Success(let clonedRepo) = result {
+					expect(clonedRepo.directoryURL).to(beNil())
+				}
+			}
+
+			it("should have set a valid remote url") {
+				let remoteRepo = Fixtures.simpleRepository
+				let localURL = self.temporaryURLForPurpose("valid-remote-clone")
+				let cloneResult = Repository.cloneFromURL(remoteRepo.directoryURL!, toURL: localURL, localClone: true)
+
+				expect(cloneResult).to(haveSucceeded())
+
+				if case .Success(let clonedRepo) = cloneResult {
+					let remoteResult = clonedRepo.remoteWithName("origin")
+					expect(remoteResult).to(haveSucceeded())
+
+					if case .Success(let remote) = remoteResult {
+						expect(remote.URL).to(equal(remoteRepo.directoryURL?.absoluteString))
+					}
+				}
+			}
+
+			it("should be able to clone a remote repository") {
+				let remoteRepoURL = NSURL(string: "https://github.com/libgit2/libgit2.github.com.git")
+				let localURL =  self.temporaryURLForPurpose("public-remote-clone")
+				let cloneResult = Repository.cloneFromURL(remoteRepoURL!, toURL: localURL)
+
+				expect(cloneResult).to(haveSucceeded())
+
+				if case .Success(let clonedRepo) = cloneResult {
+					let remoteResult = clonedRepo.remoteWithName("origin")
+					expect(remoteResult).to(haveSucceeded())
+
+					if case .Success(let remote) = remoteResult {
+						expect(remote.URL).to(equal(remoteRepoURL?.absoluteString))
+					}
+				}
+			}
+
+			let env = NSProcessInfo.processInfo().environment
+
+			if let privateRepo = env["SG2TestPrivateRepo"], gitUsername = env["SG2TestUsername"], publicKey = env["SG2TestPublicKey"],
+				privateKey = env["SG2TestPrivateKey"], passphrase = env["SG2TestPassphrase"] {
+
+				it("should be able to clone a remote repository requiring credentials") {
+					let remoteRepoURL = NSURL(string: privateRepo)
+					let localURL =  self.temporaryURLForPurpose("private-remote-clone")
+
+					let cloneResult = Repository.cloneFromURL(remoteRepoURL!, toURL: localURL,
+						credentials: .SSHMemory(username: gitUsername, publicKey: publicKey, privateKey: privateKey, passphrase: passphrase))
+
+					expect(cloneResult).to(haveSucceeded())
+
+					if case .Success(let clonedRepo) = cloneResult {
+						let remoteResult = clonedRepo.remoteWithName("origin")
+						expect(remoteResult).to(haveSucceeded())
+
+						if case .Success(let remote) = remoteResult {
+							expect(remote.URL).to(equal(remoteRepoURL?.absoluteString))
+						}
+					}
+				}
+			}
+		}
 		
 		describe("Repository.blobWithOID()") {
 			it("should return the commit if it exists") {
@@ -475,9 +560,23 @@ class RepositorySpec: QuickSpec {
 				let HEAD = repo.HEAD().value
 				expect(HEAD?.longName).to(equal("HEAD"))
 				expect(HEAD?.oid).to(equal(oid))
-				
+
 				expect(repo.checkout(repo.localBranchWithName("master").value!, strategy: CheckoutStrategy.None)).to(haveSucceeded())
 				expect(repo.HEAD().value?.shortName).to(equal("master"))
+			}
+
+			it("should call block on progress") {
+				let repo = Fixtures.simpleRepository
+				let oid = OID(string: "315b3f344221db91ddc54b269f3c9af422da0f2e")!
+				expect(repo.HEAD().value?.shortName).to(equal("master"))
+
+				expect(repo.checkout(oid, strategy: .None, progress: { (path, completedSteps, totalSteps) -> Void in
+					expect(completedSteps).to(beLessThanOrEqualTo(totalSteps))
+				})).to(haveSucceeded())
+
+				let HEAD = repo.HEAD().value
+				expect(HEAD?.longName).to(equal("HEAD"))
+				expect(HEAD?.oid).to(equal(oid))
 			}
 		}
 		
@@ -495,5 +594,11 @@ class RepositorySpec: QuickSpec {
 				expect(repo.HEAD().value?.longName).to(equal("HEAD"))
 			}
 		}
+	}
+
+	func temporaryURLForPurpose(purpose: String) -> NSURL {
+		let globallyUniqueString = NSProcessInfo.processInfo().globallyUniqueString
+		let path = "\(NSTemporaryDirectory())\(globallyUniqueString)_\(purpose)"
+		return NSURL(fileURLWithPath: path)
 	}
 }

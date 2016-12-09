@@ -1,5 +1,5 @@
 github "jspahrsummers/xcconfigs" >= 0.7.2
-github "Quick/Quick" "v0.8.0"
+github "Quick/Quick" "v0.9.1"
 github "Quick/Nimble" ~> 3.0.0
 github "modocache/Guanaco" "5031bf67297afbe61ac0f2fbf3e3e8400b3f8888"
 github "ZipArchive/ZipArchive" ~> 1.1
