@@ -13,6 +13,7 @@ matrix:
   fast_finish: true
 
 before_install:
+  - gem update bundler # https://github.com/bundler/bundler/pull/4981
   - gem install xcpretty
   - gem install xcpretty-travis-formatter
 
