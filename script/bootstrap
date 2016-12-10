@@ -11,10 +11,8 @@ config ()
     # A whitespace-separated list of executables that must be present and locatable.
     # These will each be installed through Homebrew if not found.
     : ${REQUIRED_TOOLS="cmake libssh2 libtool autoconf automake pkg-config"}
-    : ${REQUIRED_GEMS="xcpretty"}
 
     export REQUIRED_TOOLS
-    export REQUIRED_GEMS
 }
 
 ##
@@ -104,11 +102,6 @@ check_deps ()
             sudo ln -s "$brew_prefix/$product" "$destination"
         done
     fi
-
-    for gem in $REQUIRED_GEMS
-    do
-        gem install "$gem"
-    done
 }
 
 bootstrap_submodule ()
