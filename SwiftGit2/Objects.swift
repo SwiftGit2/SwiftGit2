@@ -188,8 +188,7 @@ public struct Blob: ObjectType {
 	public init(_ pointer: COpaquePointer) {
 		oid = OID(git_object_id(pointer).memory)
 		
-		// Swift doesn't get the types right without `Int(Int64(...))` :(
-		let length = Int(Int64(git_blob_rawsize(pointer).value))
+		let length = Int(git_blob_rawsize(pointer))
 		data = NSData(bytes: git_blob_rawcontent(pointer), length: length)
 	}
 }

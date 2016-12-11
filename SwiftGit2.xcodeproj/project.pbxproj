@@ -74,7 +74,6 @@
 		621E66A71C72958800A0F352 /* Pointers.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE7A753E1A4A2BCC002DA7E3 /* Pointers.swift */; };
 		621E66A81C72958800A0F352 /* Errors.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA5914751A94579000AED74C /* Errors.swift */; };
 		621E66A91C72958800A0F352 /* SwiftGit2.m in Sources */ = {isa = PBXBuildFile; fileRef = BE14AA4F1A1974010015B439 /* SwiftGit2.m */; };
-		621E66AF1C72958800A0F352 /* git2.h in Headers */ = {isa = PBXBuildFile; fileRef = BEB31F9B1A0E581400F525B9 /* git2.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		621E66B01C72958800A0F352 /* SwiftGit2.h in Headers */ = {isa = PBXBuildFile; fileRef = BEB31F281A0D6F7A00F525B9 /* SwiftGit2.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		621E66BA1C72958D00A0F352 /* RepositorySpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEB31F351A0D6F7A00F525B9 /* RepositorySpec.swift */; };
 		621E66BB1C72958D00A0F352 /* ObjectsSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE2E3BE71A31262800C67092 /* ObjectsSpec.swift */; };
@@ -167,7 +166,6 @@
 		BE8DEE851AA6A8AD00AFE62D /* tree.h in Copy libgit2 Headers */ = {isa = PBXBuildFile; fileRef = BE8DEDD51AA6A7E200AFE62D /* tree.h */; };
 		BE8DEE861AA6A8AD00AFE62D /* types.h in Copy libgit2 Headers */ = {isa = PBXBuildFile; fileRef = BE8DEDD61AA6A7E200AFE62D /* types.h */; };
 		BE8DEE871AA6A8AD00AFE62D /* version.h in Copy libgit2 Headers */ = {isa = PBXBuildFile; fileRef = BE8DEDD71AA6A7E200AFE62D /* version.h */; };
-		BEB005EA1AA6AEC300320A23 /* git2.h in Headers */ = {isa = PBXBuildFile; fileRef = BEB31F9B1A0E581400F525B9 /* git2.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		BEB31F291A0D6F7A00F525B9 /* SwiftGit2.h in Headers */ = {isa = PBXBuildFile; fileRef = BEB31F281A0D6F7A00F525B9 /* SwiftGit2.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		BEB31F2F1A0D6F7A00F525B9 /* SwiftGit2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BEB31F231A0D6F7A00F525B9 /* SwiftGit2.framework */; };
 		BEB31F361A0D6F7A00F525B9 /* RepositorySpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEB31F351A0D6F7A00F525B9 /* RepositorySpec.swift */; };
@@ -808,7 +806,6 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				621E66AF1C72958800A0F352 /* git2.h in Headers */,
 				621E66B01C72958800A0F352 /* SwiftGit2.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -817,7 +814,6 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				BEB005EA1AA6AEC300320A23 /* git2.h in Headers */,
 				BEB31F291A0D6F7A00F525B9 /* SwiftGit2.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -968,14 +964,22 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 0720;
-				LastUpgradeCheck = 0720;
+				LastUpgradeCheck = 0810;
 				ORGANIZATIONNAME = "GitHub, Inc";
 				TargetAttributes = {
+					621E66611C72958800A0F352 = {
+						LastSwiftMigration = 0810;
+					};
+					621E66B61C72958D00A0F352 = {
+						LastSwiftMigration = 0810;
+					};
 					BEB31F221A0D6F7A00F525B9 = {
 						CreatedOnToolsVersion = 6.1;
+						LastSwiftMigration = 0810;
 					};
 					BEB31F2D1A0D6F7A00F525B9 = {
 						CreatedOnToolsVersion = 6.1;
+						LastSwiftMigration = 0810;
 					};
 					BEB31F8E1A0E563900F525B9 = {
 						CreatedOnToolsVersion = 6.1;
@@ -1195,7 +1199,6 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1210,7 +1213,6 @@
 				);
 				INFOPLIST_FILE = SwiftGit2/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 9.2;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"External/libgit2-ios",
@@ -1245,7 +1247,6 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1260,7 +1261,6 @@
 				);
 				INFOPLIST_FILE = SwiftGit2/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 9.2;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"External/libgit2-ios",
@@ -1289,7 +1289,6 @@
 			baseConfigurationReference = BEB31F4E1A0D75EE00F525B9 /* iOS-Application.xcconfig */;
 			buildSettings = {
 				COMBINE_HIDPI_IMAGES = YES;
-				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(DEVELOPER_FRAMEWORKS_DIR)",
 					"$(inherited)",
@@ -1313,7 +1312,6 @@
 			baseConfigurationReference = BEB31F4E1A0D75EE00F525B9 /* iOS-Application.xcconfig */;
 			buildSettings = {
 				COMBINE_HIDPI_IMAGES = YES;
-				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(DEVELOPER_FRAMEWORKS_DIR)",
 					"$(inherited)",
@@ -1441,15 +1439,17 @@
 					External/libgit2/include,
 					/usr/local/include,
 				);
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LIBRARY_SEARCH_PATHS = (
 					.,
 					External,
 				);
-				MACOSX_DEPLOYMENT_TARGET = 10.10;
+				MACOSX_DEPLOYMENT_TARGET = 10.9;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = macosx;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 2.3;
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
 			};
@@ -1490,13 +1490,15 @@
 					External/libgit2/include,
 					/usr/local/include,
 				);
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LIBRARY_SEARCH_PATHS = (
 					.,
 					External,
 				);
-				MACOSX_DEPLOYMENT_TARGET = 10.10;
+				MACOSX_DEPLOYMENT_TARGET = 10.9;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = macosx;
+				SWIFT_VERSION = 2.3;
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
 			};
@@ -1581,7 +1583,6 @@
 				);
 				INFOPLIST_FILE = SwiftGit2Tests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
-				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				PRODUCT_BUNDLE_IDENTIFIER = "org.libgit2.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
@@ -1599,7 +1600,6 @@
 				);
 				INFOPLIST_FILE = SwiftGit2Tests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
-				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				PRODUCT_BUNDLE_IDENTIFIER = "org.libgit2.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
