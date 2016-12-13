@@ -7,63 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		621E66651C72958800A0F352 /* blob.h in Copy libgit2 Headers */ = {isa = PBXBuildFile; fileRef = BE8DED9F1AA6A7E200AFE62D /* blob.h */; };
-		621E66661C72958800A0F352 /* branch.h in Copy libgit2 Headers */ = {isa = PBXBuildFile; fileRef = BE8DEDA01AA6A7E200AFE62D /* branch.h */; };
-		621E66671C72958800A0F352 /* buffer.h in Copy libgit2 Headers */ = {isa = PBXBuildFile; fileRef = BE8DEDA11AA6A7E200AFE62D /* buffer.h */; };
-		621E66681C72958800A0F352 /* checkout.h in Copy libgit2 Headers */ = {isa = PBXBuildFile; fileRef = BE8DEDA21AA6A7E200AFE62D /* checkout.h */; };
-		621E66691C72958800A0F352 /* cherrypick.h in Copy libgit2 Headers */ = {isa = PBXBuildFile; fileRef = BE8DEDA31AA6A7E200AFE62D /* cherrypick.h */; };
-		621E666A1C72958800A0F352 /* clone.h in Copy libgit2 Headers */ = {isa = PBXBuildFile; fileRef = BE8DEDA41AA6A7E200AFE62D /* clone.h */; };
-		621E666B1C72958800A0F352 /* commit.h in Copy libgit2 Headers */ = {isa = PBXBuildFile; fileRef = BE8DEDA51AA6A7E200AFE62D /* commit.h */; };
-		621E666C1C72958800A0F352 /* common.h in Copy libgit2 Headers */ = {isa = PBXBuildFile; fileRef = BE8DEDA61AA6A7E200AFE62D /* common.h */; };
-		621E666D1C72958800A0F352 /* config.h in Copy libgit2 Headers */ = {isa = PBXBuildFile; fileRef = BE8DEDA71AA6A7E200AFE62D /* config.h */; };
-		621E666E1C72958800A0F352 /* cred_helpers.h in Copy libgit2 Headers */ = {isa = PBXBuildFile; fileRef = BE8DEDA81AA6A7E200AFE62D /* cred_helpers.h */; };
-		621E666F1C72958800A0F352 /* describe.h in Copy libgit2 Headers */ = {isa = PBXBuildFile; fileRef = BE8DEDA91AA6A7E200AFE62D /* describe.h */; };
-		621E66701C72958800A0F352 /* diff.h in Copy libgit2 Headers */ = {isa = PBXBuildFile; fileRef = BE8DEDAA1AA6A7E200AFE62D /* diff.h */; };
-		621E66711C72958800A0F352 /* errors.h in Copy libgit2 Headers */ = {isa = PBXBuildFile; fileRef = BE8DEDAB1AA6A7E200AFE62D /* errors.h */; };
-		621E66721C72958800A0F352 /* filter.h in Copy libgit2 Headers */ = {isa = PBXBuildFile; fileRef = BE8DEDAC1AA6A7E200AFE62D /* filter.h */; };
-		621E66731C72958800A0F352 /* global.h in Copy libgit2 Headers */ = {isa = PBXBuildFile; fileRef = BE8DEDAD1AA6A7E200AFE62D /* global.h */; };
-		621E66741C72958800A0F352 /* graph.h in Copy libgit2 Headers */ = {isa = PBXBuildFile; fileRef = BE8DEDAE1AA6A7E200AFE62D /* graph.h */; };
-		621E66751C72958800A0F352 /* ignore.h in Copy libgit2 Headers */ = {isa = PBXBuildFile; fileRef = BE8DEDAF1AA6A7E200AFE62D /* ignore.h */; };
-		621E66761C72958800A0F352 /* index.h in Copy libgit2 Headers */ = {isa = PBXBuildFile; fileRef = BE8DEDB01AA6A7E200AFE62D /* index.h */; };
-		621E66771C72958800A0F352 /* indexer.h in Copy libgit2 Headers */ = {isa = PBXBuildFile; fileRef = BE8DEDB11AA6A7E200AFE62D /* indexer.h */; };
-		621E66781C72958800A0F352 /* merge.h in Copy libgit2 Headers */ = {isa = PBXBuildFile; fileRef = BE8DEDB31AA6A7E200AFE62D /* merge.h */; };
-		621E66791C72958800A0F352 /* message.h in Copy libgit2 Headers */ = {isa = PBXBuildFile; fileRef = BE8DEDB41AA6A7E200AFE62D /* message.h */; };
-		621E667A1C72958800A0F352 /* net.h in Copy libgit2 Headers */ = {isa = PBXBuildFile; fileRef = BE8DEDB51AA6A7E200AFE62D /* net.h */; };
-		621E667B1C72958800A0F352 /* notes.h in Copy libgit2 Headers */ = {isa = PBXBuildFile; fileRef = BE8DEDB61AA6A7E200AFE62D /* notes.h */; };
-		621E667C1C72958800A0F352 /* object.h in Copy libgit2 Headers */ = {isa = PBXBuildFile; fileRef = BE8DEDB71AA6A7E200AFE62D /* object.h */; };
-		621E667D1C72958800A0F352 /* odb_backend.h in Copy libgit2 Headers */ = {isa = PBXBuildFile; fileRef = BE8DEDB81AA6A7E200AFE62D /* odb_backend.h */; };
-		621E667E1C72958800A0F352 /* odb.h in Copy libgit2 Headers */ = {isa = PBXBuildFile; fileRef = BE8DEDB91AA6A7E200AFE62D /* odb.h */; };
-		621E667F1C72958800A0F352 /* oid.h in Copy libgit2 Headers */ = {isa = PBXBuildFile; fileRef = BE8DEDBA1AA6A7E200AFE62D /* oid.h */; };
-		621E66801C72958800A0F352 /* oidarray.h in Copy libgit2 Headers */ = {isa = PBXBuildFile; fileRef = BE8DEDBB1AA6A7E200AFE62D /* oidarray.h */; };
-		621E66811C72958800A0F352 /* pack.h in Copy libgit2 Headers */ = {isa = PBXBuildFile; fileRef = BE8DEDBC1AA6A7E200AFE62D /* pack.h */; };
-		621E66821C72958800A0F352 /* patch.h in Copy libgit2 Headers */ = {isa = PBXBuildFile; fileRef = BE8DEDBD1AA6A7E200AFE62D /* patch.h */; };
-		621E66831C72958800A0F352 /* pathspec.h in Copy libgit2 Headers */ = {isa = PBXBuildFile; fileRef = BE8DEDBE1AA6A7E200AFE62D /* pathspec.h */; };
-		621E66851C72958800A0F352 /* rebase.h in Copy libgit2 Headers */ = {isa = PBXBuildFile; fileRef = BE8DEDC01AA6A7E200AFE62D /* rebase.h */; };
-		621E66861C72958800A0F352 /* refdb.h in Copy libgit2 Headers */ = {isa = PBXBuildFile; fileRef = BE8DEDC11AA6A7E200AFE62D /* refdb.h */; };
-		621E66871C72958800A0F352 /* reflog.h in Copy libgit2 Headers */ = {isa = PBXBuildFile; fileRef = BE8DEDC21AA6A7E200AFE62D /* reflog.h */; };
-		621E66881C72958800A0F352 /* refs.h in Copy libgit2 Headers */ = {isa = PBXBuildFile; fileRef = BE8DEDC31AA6A7E200AFE62D /* refs.h */; };
-		621E66891C72958800A0F352 /* refspec.h in Copy libgit2 Headers */ = {isa = PBXBuildFile; fileRef = BE8DEDC41AA6A7E200AFE62D /* refspec.h */; };
-		621E668A1C72958800A0F352 /* remote.h in Copy libgit2 Headers */ = {isa = PBXBuildFile; fileRef = BE8DEDC51AA6A7E200AFE62D /* remote.h */; };
-		621E668B1C72958800A0F352 /* repository.h in Copy libgit2 Headers */ = {isa = PBXBuildFile; fileRef = BE8DEDC61AA6A7E200AFE62D /* repository.h */; };
-		621E668C1C72958800A0F352 /* reset.h in Copy libgit2 Headers */ = {isa = PBXBuildFile; fileRef = BE8DEDC71AA6A7E200AFE62D /* reset.h */; };
-		621E668D1C72958800A0F352 /* revert.h in Copy libgit2 Headers */ = {isa = PBXBuildFile; fileRef = BE8DEDC81AA6A7E200AFE62D /* revert.h */; };
-		621E668E1C72958800A0F352 /* revparse.h in Copy libgit2 Headers */ = {isa = PBXBuildFile; fileRef = BE8DEDC91AA6A7E200AFE62D /* revparse.h */; };
-		621E668F1C72958800A0F352 /* revwalk.h in Copy libgit2 Headers */ = {isa = PBXBuildFile; fileRef = BE8DEDCA1AA6A7E200AFE62D /* revwalk.h */; };
-		621E66901C72958800A0F352 /* signature.h in Copy libgit2 Headers */ = {isa = PBXBuildFile; fileRef = BE8DEDCB1AA6A7E200AFE62D /* signature.h */; };
-		621E66911C72958800A0F352 /* stash.h in Copy libgit2 Headers */ = {isa = PBXBuildFile; fileRef = BE8DEDCC1AA6A7E200AFE62D /* stash.h */; };
-		621E66921C72958800A0F352 /* status.h in Copy libgit2 Headers */ = {isa = PBXBuildFile; fileRef = BE8DEDCD1AA6A7E200AFE62D /* status.h */; };
-		621E66931C72958800A0F352 /* strarray.h in Copy libgit2 Headers */ = {isa = PBXBuildFile; fileRef = BE8DEDCF1AA6A7E200AFE62D /* strarray.h */; };
-		621E66941C72958800A0F352 /* submodule.h in Copy libgit2 Headers */ = {isa = PBXBuildFile; fileRef = BE8DEDD01AA6A7E200AFE62D /* submodule.h */; };
-		621E66951C72958800A0F352 /* tag.h in Copy libgit2 Headers */ = {isa = PBXBuildFile; fileRef = BE8DEDD11AA6A7E200AFE62D /* tag.h */; };
-		621E66961C72958800A0F352 /* trace.h in Copy libgit2 Headers */ = {isa = PBXBuildFile; fileRef = BE8DEDD21AA6A7E200AFE62D /* trace.h */; };
-		621E66971C72958800A0F352 /* transaction.h in Copy libgit2 Headers */ = {isa = PBXBuildFile; fileRef = BE8DEDD31AA6A7E200AFE62D /* transaction.h */; };
-		621E66981C72958800A0F352 /* transport.h in Copy libgit2 Headers */ = {isa = PBXBuildFile; fileRef = BE8DEDD41AA6A7E200AFE62D /* transport.h */; };
-		621E66991C72958800A0F352 /* tree.h in Copy libgit2 Headers */ = {isa = PBXBuildFile; fileRef = BE8DEDD51AA6A7E200AFE62D /* tree.h */; };
-		621E669A1C72958800A0F352 /* types.h in Copy libgit2 Headers */ = {isa = PBXBuildFile; fileRef = BE8DEDD61AA6A7E200AFE62D /* types.h */; };
-		621E669B1C72958800A0F352 /* version.h in Copy libgit2 Headers */ = {isa = PBXBuildFile; fileRef = BE8DEDD71AA6A7E200AFE62D /* version.h */; };
-		621E669C1C72958800A0F352 /* annotated_commit.h in Copy libgit2 Headers */ = {isa = PBXBuildFile; fileRef = BE8DED9C1AA6A7E200AFE62D /* annotated_commit.h */; };
-		621E669D1C72958800A0F352 /* attr.h in Copy libgit2 Headers */ = {isa = PBXBuildFile; fileRef = BE8DED9D1AA6A7E200AFE62D /* attr.h */; };
-		621E669E1C72958800A0F352 /* blame.h in Copy libgit2 Headers */ = {isa = PBXBuildFile; fileRef = BE8DED9E1AA6A7E200AFE62D /* blame.h */; };
 		621E66A01C72958800A0F352 /* OID.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE70B3E41A1ACB1A002C3F4E /* OID.swift */; };
 		621E66A11C72958800A0F352 /* Remotes.swift in Sources */ = {isa = PBXBuildFile; fileRef = BECB5F6D1A57284700999413 /* Remotes.swift */; };
 		621E66A21C72958800A0F352 /* CheckoutStrategy.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE276B281ACCD3CF00D6DAD7 /* CheckoutStrategy.swift */; };
@@ -109,63 +52,6 @@
 		BE70B3E51A1ACB1A002C3F4E /* OID.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE70B3E41A1ACB1A002C3F4E /* OID.swift */; };
 		BE70B3E71A1ACB37002C3F4E /* OIDSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE70B3E61A1ACB37002C3F4E /* OIDSpec.swift */; };
 		BE7A753F1A4A2BCC002DA7E3 /* Pointers.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE7A753E1A4A2BCC002DA7E3 /* Pointers.swift */; };
-		BE8DEE4E1AA6A89D00AFE62D /* annotated_commit.h in Copy libgit2 Headers */ = {isa = PBXBuildFile; fileRef = BE8DED9C1AA6A7E200AFE62D /* annotated_commit.h */; };
-		BE8DEE4F1AA6A89F00AFE62D /* attr.h in Copy libgit2 Headers */ = {isa = PBXBuildFile; fileRef = BE8DED9D1AA6A7E200AFE62D /* attr.h */; };
-		BE8DEE501AA6A8A100AFE62D /* blame.h in Copy libgit2 Headers */ = {isa = PBXBuildFile; fileRef = BE8DED9E1AA6A7E200AFE62D /* blame.h */; };
-		BE8DEE511AA6A8AD00AFE62D /* blob.h in Copy libgit2 Headers */ = {isa = PBXBuildFile; fileRef = BE8DED9F1AA6A7E200AFE62D /* blob.h */; };
-		BE8DEE521AA6A8AD00AFE62D /* branch.h in Copy libgit2 Headers */ = {isa = PBXBuildFile; fileRef = BE8DEDA01AA6A7E200AFE62D /* branch.h */; };
-		BE8DEE531AA6A8AD00AFE62D /* buffer.h in Copy libgit2 Headers */ = {isa = PBXBuildFile; fileRef = BE8DEDA11AA6A7E200AFE62D /* buffer.h */; };
-		BE8DEE541AA6A8AD00AFE62D /* checkout.h in Copy libgit2 Headers */ = {isa = PBXBuildFile; fileRef = BE8DEDA21AA6A7E200AFE62D /* checkout.h */; };
-		BE8DEE551AA6A8AD00AFE62D /* cherrypick.h in Copy libgit2 Headers */ = {isa = PBXBuildFile; fileRef = BE8DEDA31AA6A7E200AFE62D /* cherrypick.h */; };
-		BE8DEE561AA6A8AD00AFE62D /* clone.h in Copy libgit2 Headers */ = {isa = PBXBuildFile; fileRef = BE8DEDA41AA6A7E200AFE62D /* clone.h */; };
-		BE8DEE571AA6A8AD00AFE62D /* commit.h in Copy libgit2 Headers */ = {isa = PBXBuildFile; fileRef = BE8DEDA51AA6A7E200AFE62D /* commit.h */; };
-		BE8DEE581AA6A8AD00AFE62D /* common.h in Copy libgit2 Headers */ = {isa = PBXBuildFile; fileRef = BE8DEDA61AA6A7E200AFE62D /* common.h */; };
-		BE8DEE591AA6A8AD00AFE62D /* config.h in Copy libgit2 Headers */ = {isa = PBXBuildFile; fileRef = BE8DEDA71AA6A7E200AFE62D /* config.h */; };
-		BE8DEE5A1AA6A8AD00AFE62D /* cred_helpers.h in Copy libgit2 Headers */ = {isa = PBXBuildFile; fileRef = BE8DEDA81AA6A7E200AFE62D /* cred_helpers.h */; };
-		BE8DEE5B1AA6A8AD00AFE62D /* describe.h in Copy libgit2 Headers */ = {isa = PBXBuildFile; fileRef = BE8DEDA91AA6A7E200AFE62D /* describe.h */; };
-		BE8DEE5C1AA6A8AD00AFE62D /* diff.h in Copy libgit2 Headers */ = {isa = PBXBuildFile; fileRef = BE8DEDAA1AA6A7E200AFE62D /* diff.h */; };
-		BE8DEE5D1AA6A8AD00AFE62D /* errors.h in Copy libgit2 Headers */ = {isa = PBXBuildFile; fileRef = BE8DEDAB1AA6A7E200AFE62D /* errors.h */; };
-		BE8DEE5E1AA6A8AD00AFE62D /* filter.h in Copy libgit2 Headers */ = {isa = PBXBuildFile; fileRef = BE8DEDAC1AA6A7E200AFE62D /* filter.h */; };
-		BE8DEE5F1AA6A8AD00AFE62D /* global.h in Copy libgit2 Headers */ = {isa = PBXBuildFile; fileRef = BE8DEDAD1AA6A7E200AFE62D /* global.h */; };
-		BE8DEE601AA6A8AD00AFE62D /* graph.h in Copy libgit2 Headers */ = {isa = PBXBuildFile; fileRef = BE8DEDAE1AA6A7E200AFE62D /* graph.h */; };
-		BE8DEE611AA6A8AD00AFE62D /* ignore.h in Copy libgit2 Headers */ = {isa = PBXBuildFile; fileRef = BE8DEDAF1AA6A7E200AFE62D /* ignore.h */; };
-		BE8DEE621AA6A8AD00AFE62D /* index.h in Copy libgit2 Headers */ = {isa = PBXBuildFile; fileRef = BE8DEDB01AA6A7E200AFE62D /* index.h */; };
-		BE8DEE631AA6A8AD00AFE62D /* indexer.h in Copy libgit2 Headers */ = {isa = PBXBuildFile; fileRef = BE8DEDB11AA6A7E200AFE62D /* indexer.h */; };
-		BE8DEE641AA6A8AD00AFE62D /* merge.h in Copy libgit2 Headers */ = {isa = PBXBuildFile; fileRef = BE8DEDB31AA6A7E200AFE62D /* merge.h */; };
-		BE8DEE651AA6A8AD00AFE62D /* message.h in Copy libgit2 Headers */ = {isa = PBXBuildFile; fileRef = BE8DEDB41AA6A7E200AFE62D /* message.h */; };
-		BE8DEE661AA6A8AD00AFE62D /* net.h in Copy libgit2 Headers */ = {isa = PBXBuildFile; fileRef = BE8DEDB51AA6A7E200AFE62D /* net.h */; };
-		BE8DEE671AA6A8AD00AFE62D /* notes.h in Copy libgit2 Headers */ = {isa = PBXBuildFile; fileRef = BE8DEDB61AA6A7E200AFE62D /* notes.h */; };
-		BE8DEE681AA6A8AD00AFE62D /* object.h in Copy libgit2 Headers */ = {isa = PBXBuildFile; fileRef = BE8DEDB71AA6A7E200AFE62D /* object.h */; };
-		BE8DEE691AA6A8AD00AFE62D /* odb_backend.h in Copy libgit2 Headers */ = {isa = PBXBuildFile; fileRef = BE8DEDB81AA6A7E200AFE62D /* odb_backend.h */; };
-		BE8DEE6A1AA6A8AD00AFE62D /* odb.h in Copy libgit2 Headers */ = {isa = PBXBuildFile; fileRef = BE8DEDB91AA6A7E200AFE62D /* odb.h */; };
-		BE8DEE6B1AA6A8AD00AFE62D /* oid.h in Copy libgit2 Headers */ = {isa = PBXBuildFile; fileRef = BE8DEDBA1AA6A7E200AFE62D /* oid.h */; };
-		BE8DEE6C1AA6A8AD00AFE62D /* oidarray.h in Copy libgit2 Headers */ = {isa = PBXBuildFile; fileRef = BE8DEDBB1AA6A7E200AFE62D /* oidarray.h */; };
-		BE8DEE6D1AA6A8AD00AFE62D /* pack.h in Copy libgit2 Headers */ = {isa = PBXBuildFile; fileRef = BE8DEDBC1AA6A7E200AFE62D /* pack.h */; };
-		BE8DEE6E1AA6A8AD00AFE62D /* patch.h in Copy libgit2 Headers */ = {isa = PBXBuildFile; fileRef = BE8DEDBD1AA6A7E200AFE62D /* patch.h */; };
-		BE8DEE6F1AA6A8AD00AFE62D /* pathspec.h in Copy libgit2 Headers */ = {isa = PBXBuildFile; fileRef = BE8DEDBE1AA6A7E200AFE62D /* pathspec.h */; };
-		BE8DEE711AA6A8AD00AFE62D /* rebase.h in Copy libgit2 Headers */ = {isa = PBXBuildFile; fileRef = BE8DEDC01AA6A7E200AFE62D /* rebase.h */; };
-		BE8DEE721AA6A8AD00AFE62D /* refdb.h in Copy libgit2 Headers */ = {isa = PBXBuildFile; fileRef = BE8DEDC11AA6A7E200AFE62D /* refdb.h */; };
-		BE8DEE731AA6A8AD00AFE62D /* reflog.h in Copy libgit2 Headers */ = {isa = PBXBuildFile; fileRef = BE8DEDC21AA6A7E200AFE62D /* reflog.h */; };
-		BE8DEE741AA6A8AD00AFE62D /* refs.h in Copy libgit2 Headers */ = {isa = PBXBuildFile; fileRef = BE8DEDC31AA6A7E200AFE62D /* refs.h */; };
-		BE8DEE751AA6A8AD00AFE62D /* refspec.h in Copy libgit2 Headers */ = {isa = PBXBuildFile; fileRef = BE8DEDC41AA6A7E200AFE62D /* refspec.h */; };
-		BE8DEE761AA6A8AD00AFE62D /* remote.h in Copy libgit2 Headers */ = {isa = PBXBuildFile; fileRef = BE8DEDC51AA6A7E200AFE62D /* remote.h */; };
-		BE8DEE771AA6A8AD00AFE62D /* repository.h in Copy libgit2 Headers */ = {isa = PBXBuildFile; fileRef = BE8DEDC61AA6A7E200AFE62D /* repository.h */; };
-		BE8DEE781AA6A8AD00AFE62D /* reset.h in Copy libgit2 Headers */ = {isa = PBXBuildFile; fileRef = BE8DEDC71AA6A7E200AFE62D /* reset.h */; };
-		BE8DEE791AA6A8AD00AFE62D /* revert.h in Copy libgit2 Headers */ = {isa = PBXBuildFile; fileRef = BE8DEDC81AA6A7E200AFE62D /* revert.h */; };
-		BE8DEE7A1AA6A8AD00AFE62D /* revparse.h in Copy libgit2 Headers */ = {isa = PBXBuildFile; fileRef = BE8DEDC91AA6A7E200AFE62D /* revparse.h */; };
-		BE8DEE7B1AA6A8AD00AFE62D /* revwalk.h in Copy libgit2 Headers */ = {isa = PBXBuildFile; fileRef = BE8DEDCA1AA6A7E200AFE62D /* revwalk.h */; };
-		BE8DEE7C1AA6A8AD00AFE62D /* signature.h in Copy libgit2 Headers */ = {isa = PBXBuildFile; fileRef = BE8DEDCB1AA6A7E200AFE62D /* signature.h */; };
-		BE8DEE7D1AA6A8AD00AFE62D /* stash.h in Copy libgit2 Headers */ = {isa = PBXBuildFile; fileRef = BE8DEDCC1AA6A7E200AFE62D /* stash.h */; };
-		BE8DEE7E1AA6A8AD00AFE62D /* status.h in Copy libgit2 Headers */ = {isa = PBXBuildFile; fileRef = BE8DEDCD1AA6A7E200AFE62D /* status.h */; };
-		BE8DEE7F1AA6A8AD00AFE62D /* strarray.h in Copy libgit2 Headers */ = {isa = PBXBuildFile; fileRef = BE8DEDCF1AA6A7E200AFE62D /* strarray.h */; };
-		BE8DEE801AA6A8AD00AFE62D /* submodule.h in Copy libgit2 Headers */ = {isa = PBXBuildFile; fileRef = BE8DEDD01AA6A7E200AFE62D /* submodule.h */; };
-		BE8DEE811AA6A8AD00AFE62D /* tag.h in Copy libgit2 Headers */ = {isa = PBXBuildFile; fileRef = BE8DEDD11AA6A7E200AFE62D /* tag.h */; };
-		BE8DEE821AA6A8AD00AFE62D /* trace.h in Copy libgit2 Headers */ = {isa = PBXBuildFile; fileRef = BE8DEDD21AA6A7E200AFE62D /* trace.h */; };
-		BE8DEE831AA6A8AD00AFE62D /* transaction.h in Copy libgit2 Headers */ = {isa = PBXBuildFile; fileRef = BE8DEDD31AA6A7E200AFE62D /* transaction.h */; };
-		BE8DEE841AA6A8AD00AFE62D /* transport.h in Copy libgit2 Headers */ = {isa = PBXBuildFile; fileRef = BE8DEDD41AA6A7E200AFE62D /* transport.h */; };
-		BE8DEE851AA6A8AD00AFE62D /* tree.h in Copy libgit2 Headers */ = {isa = PBXBuildFile; fileRef = BE8DEDD51AA6A7E200AFE62D /* tree.h */; };
-		BE8DEE861AA6A8AD00AFE62D /* types.h in Copy libgit2 Headers */ = {isa = PBXBuildFile; fileRef = BE8DEDD61AA6A7E200AFE62D /* types.h */; };
-		BE8DEE871AA6A8AD00AFE62D /* version.h in Copy libgit2 Headers */ = {isa = PBXBuildFile; fileRef = BE8DEDD71AA6A7E200AFE62D /* version.h */; };
 		BEB31F291A0D6F7A00F525B9 /* SwiftGit2.h in Headers */ = {isa = PBXBuildFile; fileRef = BEB31F281A0D6F7A00F525B9 /* SwiftGit2.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		BEB31F2F1A0D6F7A00F525B9 /* SwiftGit2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BEB31F231A0D6F7A00F525B9 /* SwiftGit2.framework */; };
 		BEB31F361A0D6F7A00F525B9 /* RepositorySpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEB31F351A0D6F7A00F525B9 /* RepositorySpec.swift */; };
@@ -228,143 +114,6 @@
 		};
 /* End PBXContainerItemProxy section */
 
-/* Begin PBXCopyFilesBuildPhase section */
-		621E66641C72958800A0F352 /* Copy libgit2 Headers */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = Headers/git2;
-			dstSubfolderSpec = 1;
-			files = (
-				621E66651C72958800A0F352 /* blob.h in Copy libgit2 Headers */,
-				621E66661C72958800A0F352 /* branch.h in Copy libgit2 Headers */,
-				621E66671C72958800A0F352 /* buffer.h in Copy libgit2 Headers */,
-				621E66681C72958800A0F352 /* checkout.h in Copy libgit2 Headers */,
-				621E66691C72958800A0F352 /* cherrypick.h in Copy libgit2 Headers */,
-				621E666A1C72958800A0F352 /* clone.h in Copy libgit2 Headers */,
-				621E666B1C72958800A0F352 /* commit.h in Copy libgit2 Headers */,
-				621E666C1C72958800A0F352 /* common.h in Copy libgit2 Headers */,
-				621E666D1C72958800A0F352 /* config.h in Copy libgit2 Headers */,
-				621E666E1C72958800A0F352 /* cred_helpers.h in Copy libgit2 Headers */,
-				621E666F1C72958800A0F352 /* describe.h in Copy libgit2 Headers */,
-				621E66701C72958800A0F352 /* diff.h in Copy libgit2 Headers */,
-				621E66711C72958800A0F352 /* errors.h in Copy libgit2 Headers */,
-				621E66721C72958800A0F352 /* filter.h in Copy libgit2 Headers */,
-				621E66731C72958800A0F352 /* global.h in Copy libgit2 Headers */,
-				621E66741C72958800A0F352 /* graph.h in Copy libgit2 Headers */,
-				621E66751C72958800A0F352 /* ignore.h in Copy libgit2 Headers */,
-				621E66761C72958800A0F352 /* index.h in Copy libgit2 Headers */,
-				621E66771C72958800A0F352 /* indexer.h in Copy libgit2 Headers */,
-				621E66781C72958800A0F352 /* merge.h in Copy libgit2 Headers */,
-				621E66791C72958800A0F352 /* message.h in Copy libgit2 Headers */,
-				621E667A1C72958800A0F352 /* net.h in Copy libgit2 Headers */,
-				621E667B1C72958800A0F352 /* notes.h in Copy libgit2 Headers */,
-				621E667C1C72958800A0F352 /* object.h in Copy libgit2 Headers */,
-				621E667D1C72958800A0F352 /* odb_backend.h in Copy libgit2 Headers */,
-				621E667E1C72958800A0F352 /* odb.h in Copy libgit2 Headers */,
-				621E667F1C72958800A0F352 /* oid.h in Copy libgit2 Headers */,
-				621E66801C72958800A0F352 /* oidarray.h in Copy libgit2 Headers */,
-				621E66811C72958800A0F352 /* pack.h in Copy libgit2 Headers */,
-				621E66821C72958800A0F352 /* patch.h in Copy libgit2 Headers */,
-				621E66831C72958800A0F352 /* pathspec.h in Copy libgit2 Headers */,
-				621E66851C72958800A0F352 /* rebase.h in Copy libgit2 Headers */,
-				621E66861C72958800A0F352 /* refdb.h in Copy libgit2 Headers */,
-				621E66871C72958800A0F352 /* reflog.h in Copy libgit2 Headers */,
-				621E66881C72958800A0F352 /* refs.h in Copy libgit2 Headers */,
-				621E66891C72958800A0F352 /* refspec.h in Copy libgit2 Headers */,
-				621E668A1C72958800A0F352 /* remote.h in Copy libgit2 Headers */,
-				621E668B1C72958800A0F352 /* repository.h in Copy libgit2 Headers */,
-				621E668C1C72958800A0F352 /* reset.h in Copy libgit2 Headers */,
-				621E668D1C72958800A0F352 /* revert.h in Copy libgit2 Headers */,
-				621E668E1C72958800A0F352 /* revparse.h in Copy libgit2 Headers */,
-				621E668F1C72958800A0F352 /* revwalk.h in Copy libgit2 Headers */,
-				621E66901C72958800A0F352 /* signature.h in Copy libgit2 Headers */,
-				621E66911C72958800A0F352 /* stash.h in Copy libgit2 Headers */,
-				621E66921C72958800A0F352 /* status.h in Copy libgit2 Headers */,
-				621E66931C72958800A0F352 /* strarray.h in Copy libgit2 Headers */,
-				621E66941C72958800A0F352 /* submodule.h in Copy libgit2 Headers */,
-				621E66951C72958800A0F352 /* tag.h in Copy libgit2 Headers */,
-				621E66961C72958800A0F352 /* trace.h in Copy libgit2 Headers */,
-				621E66971C72958800A0F352 /* transaction.h in Copy libgit2 Headers */,
-				621E66981C72958800A0F352 /* transport.h in Copy libgit2 Headers */,
-				621E66991C72958800A0F352 /* tree.h in Copy libgit2 Headers */,
-				621E669A1C72958800A0F352 /* types.h in Copy libgit2 Headers */,
-				621E669B1C72958800A0F352 /* version.h in Copy libgit2 Headers */,
-				621E669C1C72958800A0F352 /* annotated_commit.h in Copy libgit2 Headers */,
-				621E669D1C72958800A0F352 /* attr.h in Copy libgit2 Headers */,
-				621E669E1C72958800A0F352 /* blame.h in Copy libgit2 Headers */,
-			);
-			name = "Copy libgit2 Headers";
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		BEB31F961A0E579700F525B9 /* Copy libgit2 Headers */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = Headers/git2;
-			dstSubfolderSpec = 1;
-			files = (
-				BE8DEE511AA6A8AD00AFE62D /* blob.h in Copy libgit2 Headers */,
-				BE8DEE521AA6A8AD00AFE62D /* branch.h in Copy libgit2 Headers */,
-				BE8DEE531AA6A8AD00AFE62D /* buffer.h in Copy libgit2 Headers */,
-				BE8DEE541AA6A8AD00AFE62D /* checkout.h in Copy libgit2 Headers */,
-				BE8DEE551AA6A8AD00AFE62D /* cherrypick.h in Copy libgit2 Headers */,
-				BE8DEE561AA6A8AD00AFE62D /* clone.h in Copy libgit2 Headers */,
-				BE8DEE571AA6A8AD00AFE62D /* commit.h in Copy libgit2 Headers */,
-				BE8DEE581AA6A8AD00AFE62D /* common.h in Copy libgit2 Headers */,
-				BE8DEE591AA6A8AD00AFE62D /* config.h in Copy libgit2 Headers */,
-				BE8DEE5A1AA6A8AD00AFE62D /* cred_helpers.h in Copy libgit2 Headers */,
-				BE8DEE5B1AA6A8AD00AFE62D /* describe.h in Copy libgit2 Headers */,
-				BE8DEE5C1AA6A8AD00AFE62D /* diff.h in Copy libgit2 Headers */,
-				BE8DEE5D1AA6A8AD00AFE62D /* errors.h in Copy libgit2 Headers */,
-				BE8DEE5E1AA6A8AD00AFE62D /* filter.h in Copy libgit2 Headers */,
-				BE8DEE5F1AA6A8AD00AFE62D /* global.h in Copy libgit2 Headers */,
-				BE8DEE601AA6A8AD00AFE62D /* graph.h in Copy libgit2 Headers */,
-				BE8DEE611AA6A8AD00AFE62D /* ignore.h in Copy libgit2 Headers */,
-				BE8DEE621AA6A8AD00AFE62D /* index.h in Copy libgit2 Headers */,
-				BE8DEE631AA6A8AD00AFE62D /* indexer.h in Copy libgit2 Headers */,
-				BE8DEE641AA6A8AD00AFE62D /* merge.h in Copy libgit2 Headers */,
-				BE8DEE651AA6A8AD00AFE62D /* message.h in Copy libgit2 Headers */,
-				BE8DEE661AA6A8AD00AFE62D /* net.h in Copy libgit2 Headers */,
-				BE8DEE671AA6A8AD00AFE62D /* notes.h in Copy libgit2 Headers */,
-				BE8DEE681AA6A8AD00AFE62D /* object.h in Copy libgit2 Headers */,
-				BE8DEE691AA6A8AD00AFE62D /* odb_backend.h in Copy libgit2 Headers */,
-				BE8DEE6A1AA6A8AD00AFE62D /* odb.h in Copy libgit2 Headers */,
-				BE8DEE6B1AA6A8AD00AFE62D /* oid.h in Copy libgit2 Headers */,
-				BE8DEE6C1AA6A8AD00AFE62D /* oidarray.h in Copy libgit2 Headers */,
-				BE8DEE6D1AA6A8AD00AFE62D /* pack.h in Copy libgit2 Headers */,
-				BE8DEE6E1AA6A8AD00AFE62D /* patch.h in Copy libgit2 Headers */,
-				BE8DEE6F1AA6A8AD00AFE62D /* pathspec.h in Copy libgit2 Headers */,
-				BE8DEE711AA6A8AD00AFE62D /* rebase.h in Copy libgit2 Headers */,
-				BE8DEE721AA6A8AD00AFE62D /* refdb.h in Copy libgit2 Headers */,
-				BE8DEE731AA6A8AD00AFE62D /* reflog.h in Copy libgit2 Headers */,
-				BE8DEE741AA6A8AD00AFE62D /* refs.h in Copy libgit2 Headers */,
-				BE8DEE751AA6A8AD00AFE62D /* refspec.h in Copy libgit2 Headers */,
-				BE8DEE761AA6A8AD00AFE62D /* remote.h in Copy libgit2 Headers */,
-				BE8DEE771AA6A8AD00AFE62D /* repository.h in Copy libgit2 Headers */,
-				BE8DEE781AA6A8AD00AFE62D /* reset.h in Copy libgit2 Headers */,
-				BE8DEE791AA6A8AD00AFE62D /* revert.h in Copy libgit2 Headers */,
-				BE8DEE7A1AA6A8AD00AFE62D /* revparse.h in Copy libgit2 Headers */,
-				BE8DEE7B1AA6A8AD00AFE62D /* revwalk.h in Copy libgit2 Headers */,
-				BE8DEE7C1AA6A8AD00AFE62D /* signature.h in Copy libgit2 Headers */,
-				BE8DEE7D1AA6A8AD00AFE62D /* stash.h in Copy libgit2 Headers */,
-				BE8DEE7E1AA6A8AD00AFE62D /* status.h in Copy libgit2 Headers */,
-				BE8DEE7F1AA6A8AD00AFE62D /* strarray.h in Copy libgit2 Headers */,
-				BE8DEE801AA6A8AD00AFE62D /* submodule.h in Copy libgit2 Headers */,
-				BE8DEE811AA6A8AD00AFE62D /* tag.h in Copy libgit2 Headers */,
-				BE8DEE821AA6A8AD00AFE62D /* trace.h in Copy libgit2 Headers */,
-				BE8DEE831AA6A8AD00AFE62D /* transaction.h in Copy libgit2 Headers */,
-				BE8DEE841AA6A8AD00AFE62D /* transport.h in Copy libgit2 Headers */,
-				BE8DEE851AA6A8AD00AFE62D /* tree.h in Copy libgit2 Headers */,
-				BE8DEE861AA6A8AD00AFE62D /* types.h in Copy libgit2 Headers */,
-				BE8DEE871AA6A8AD00AFE62D /* version.h in Copy libgit2 Headers */,
-				BE8DEE4E1AA6A89D00AFE62D /* annotated_commit.h in Copy libgit2 Headers */,
-				BE8DEE4F1AA6A89F00AFE62D /* attr.h in Copy libgit2 Headers */,
-				BE8DEE501AA6A8A100AFE62D /* blame.h in Copy libgit2 Headers */,
-			);
-			name = "Copy libgit2 Headers";
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-/* End PBXCopyFilesBuildPhase section */
-
 /* Begin PBXFileReference section */
 		621E66B41C72958800A0F352 /* SwiftGit2.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SwiftGit2.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		621E66CE1C72958D00A0F352 /* SwiftGit2-iOSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "SwiftGit2-iOSTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -382,7 +131,6 @@
 		BE14AA541A1984550015B439 /* Fixtures.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Fixtures.swift; sourceTree = "<group>"; };
 		BE14AA561A198C6E0015B439 /* simple-repository.zip */ = {isa = PBXFileReference; lastKnownFileType = archive.zip; path = "simple-repository.zip"; sourceTree = "<group>"; };
 		BE14AA581A1996B70015B439 /* FixturesSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FixturesSpec.swift; sourceTree = "<group>"; };
-		BE244A521A117DA100F8BE42 /* SwiftGit2.modulemap */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = "sourcecode.module-map"; path = SwiftGit2.modulemap; sourceTree = "<group>"; };
 		BE276B281ACCD3CF00D6DAD7 /* CheckoutStrategy.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CheckoutStrategy.swift; sourceTree = "<group>"; };
 		BE2E3BE51A31261300C67092 /* Objects.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Objects.swift; sourceTree = "<group>"; };
 		BE2E3BE71A31262800C67092 /* ObjectsSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ObjectsSpec.swift; sourceTree = "<group>"; };
@@ -390,63 +138,6 @@
 		BE70B3E41A1ACB1A002C3F4E /* OID.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OID.swift; sourceTree = "<group>"; };
 		BE70B3E61A1ACB37002C3F4E /* OIDSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OIDSpec.swift; sourceTree = "<group>"; };
 		BE7A753E1A4A2BCC002DA7E3 /* Pointers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Pointers.swift; sourceTree = "<group>"; };
-		BE8DED9C1AA6A7E200AFE62D /* annotated_commit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = annotated_commit.h; path = git2/annotated_commit.h; sourceTree = "<group>"; };
-		BE8DED9D1AA6A7E200AFE62D /* attr.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = attr.h; path = git2/attr.h; sourceTree = "<group>"; };
-		BE8DED9E1AA6A7E200AFE62D /* blame.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = blame.h; path = git2/blame.h; sourceTree = "<group>"; };
-		BE8DED9F1AA6A7E200AFE62D /* blob.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = blob.h; path = git2/blob.h; sourceTree = "<group>"; };
-		BE8DEDA01AA6A7E200AFE62D /* branch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = branch.h; path = git2/branch.h; sourceTree = "<group>"; };
-		BE8DEDA11AA6A7E200AFE62D /* buffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = buffer.h; path = git2/buffer.h; sourceTree = "<group>"; };
-		BE8DEDA21AA6A7E200AFE62D /* checkout.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = checkout.h; path = git2/checkout.h; sourceTree = "<group>"; };
-		BE8DEDA31AA6A7E200AFE62D /* cherrypick.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = cherrypick.h; path = git2/cherrypick.h; sourceTree = "<group>"; };
-		BE8DEDA41AA6A7E200AFE62D /* clone.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = clone.h; path = git2/clone.h; sourceTree = "<group>"; };
-		BE8DEDA51AA6A7E200AFE62D /* commit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = commit.h; path = git2/commit.h; sourceTree = "<group>"; };
-		BE8DEDA61AA6A7E200AFE62D /* common.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = common.h; path = git2/common.h; sourceTree = "<group>"; };
-		BE8DEDA71AA6A7E200AFE62D /* config.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = config.h; path = git2/config.h; sourceTree = "<group>"; };
-		BE8DEDA81AA6A7E200AFE62D /* cred_helpers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = cred_helpers.h; path = git2/cred_helpers.h; sourceTree = "<group>"; };
-		BE8DEDA91AA6A7E200AFE62D /* describe.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = describe.h; path = git2/describe.h; sourceTree = "<group>"; };
-		BE8DEDAA1AA6A7E200AFE62D /* diff.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = diff.h; path = git2/diff.h; sourceTree = "<group>"; };
-		BE8DEDAB1AA6A7E200AFE62D /* errors.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = errors.h; path = git2/errors.h; sourceTree = "<group>"; };
-		BE8DEDAC1AA6A7E200AFE62D /* filter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = filter.h; path = git2/filter.h; sourceTree = "<group>"; };
-		BE8DEDAD1AA6A7E200AFE62D /* global.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = global.h; path = git2/global.h; sourceTree = "<group>"; };
-		BE8DEDAE1AA6A7E200AFE62D /* graph.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = graph.h; path = git2/graph.h; sourceTree = "<group>"; };
-		BE8DEDAF1AA6A7E200AFE62D /* ignore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ignore.h; path = git2/ignore.h; sourceTree = "<group>"; };
-		BE8DEDB01AA6A7E200AFE62D /* index.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = index.h; path = git2/index.h; sourceTree = "<group>"; };
-		BE8DEDB11AA6A7E200AFE62D /* indexer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = indexer.h; path = git2/indexer.h; sourceTree = "<group>"; };
-		BE8DEDB31AA6A7E200AFE62D /* merge.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = merge.h; path = git2/merge.h; sourceTree = "<group>"; };
-		BE8DEDB41AA6A7E200AFE62D /* message.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = message.h; path = git2/message.h; sourceTree = "<group>"; };
-		BE8DEDB51AA6A7E200AFE62D /* net.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = net.h; path = git2/net.h; sourceTree = "<group>"; };
-		BE8DEDB61AA6A7E200AFE62D /* notes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = notes.h; path = git2/notes.h; sourceTree = "<group>"; };
-		BE8DEDB71AA6A7E200AFE62D /* object.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = object.h; path = git2/object.h; sourceTree = "<group>"; };
-		BE8DEDB81AA6A7E200AFE62D /* odb_backend.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = odb_backend.h; path = git2/odb_backend.h; sourceTree = "<group>"; };
-		BE8DEDB91AA6A7E200AFE62D /* odb.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = odb.h; path = git2/odb.h; sourceTree = "<group>"; };
-		BE8DEDBA1AA6A7E200AFE62D /* oid.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = oid.h; path = git2/oid.h; sourceTree = "<group>"; };
-		BE8DEDBB1AA6A7E200AFE62D /* oidarray.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = oidarray.h; path = git2/oidarray.h; sourceTree = "<group>"; };
-		BE8DEDBC1AA6A7E200AFE62D /* pack.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = pack.h; path = git2/pack.h; sourceTree = "<group>"; };
-		BE8DEDBD1AA6A7E200AFE62D /* patch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = patch.h; path = git2/patch.h; sourceTree = "<group>"; };
-		BE8DEDBE1AA6A7E200AFE62D /* pathspec.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = pathspec.h; path = git2/pathspec.h; sourceTree = "<group>"; };
-		BE8DEDC01AA6A7E200AFE62D /* rebase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = rebase.h; path = git2/rebase.h; sourceTree = "<group>"; };
-		BE8DEDC11AA6A7E200AFE62D /* refdb.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = refdb.h; path = git2/refdb.h; sourceTree = "<group>"; };
-		BE8DEDC21AA6A7E200AFE62D /* reflog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = reflog.h; path = git2/reflog.h; sourceTree = "<group>"; };
-		BE8DEDC31AA6A7E200AFE62D /* refs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = refs.h; path = git2/refs.h; sourceTree = "<group>"; };
-		BE8DEDC41AA6A7E200AFE62D /* refspec.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = refspec.h; path = git2/refspec.h; sourceTree = "<group>"; };
-		BE8DEDC51AA6A7E200AFE62D /* remote.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = remote.h; path = git2/remote.h; sourceTree = "<group>"; };
-		BE8DEDC61AA6A7E200AFE62D /* repository.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = repository.h; path = git2/repository.h; sourceTree = "<group>"; };
-		BE8DEDC71AA6A7E200AFE62D /* reset.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = reset.h; path = git2/reset.h; sourceTree = "<group>"; };
-		BE8DEDC81AA6A7E200AFE62D /* revert.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = revert.h; path = git2/revert.h; sourceTree = "<group>"; };
-		BE8DEDC91AA6A7E200AFE62D /* revparse.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = revparse.h; path = git2/revparse.h; sourceTree = "<group>"; };
-		BE8DEDCA1AA6A7E200AFE62D /* revwalk.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = revwalk.h; path = git2/revwalk.h; sourceTree = "<group>"; };
-		BE8DEDCB1AA6A7E200AFE62D /* signature.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = signature.h; path = git2/signature.h; sourceTree = "<group>"; };
-		BE8DEDCC1AA6A7E200AFE62D /* stash.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = stash.h; path = git2/stash.h; sourceTree = "<group>"; };
-		BE8DEDCD1AA6A7E200AFE62D /* status.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = status.h; path = git2/status.h; sourceTree = "<group>"; };
-		BE8DEDCF1AA6A7E200AFE62D /* strarray.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = strarray.h; path = git2/strarray.h; sourceTree = "<group>"; };
-		BE8DEDD01AA6A7E200AFE62D /* submodule.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = submodule.h; path = git2/submodule.h; sourceTree = "<group>"; };
-		BE8DEDD11AA6A7E200AFE62D /* tag.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = tag.h; path = git2/tag.h; sourceTree = "<group>"; };
-		BE8DEDD21AA6A7E200AFE62D /* trace.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = trace.h; path = git2/trace.h; sourceTree = "<group>"; };
-		BE8DEDD31AA6A7E200AFE62D /* transaction.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = transaction.h; path = git2/transaction.h; sourceTree = "<group>"; };
-		BE8DEDD41AA6A7E200AFE62D /* transport.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = transport.h; path = git2/transport.h; sourceTree = "<group>"; };
-		BE8DEDD51AA6A7E200AFE62D /* tree.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = tree.h; path = git2/tree.h; sourceTree = "<group>"; };
-		BE8DEDD61AA6A7E200AFE62D /* types.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = types.h; path = git2/types.h; sourceTree = "<group>"; };
-		BE8DEDD71AA6A7E200AFE62D /* version.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = version.h; path = git2/version.h; sourceTree = "<group>"; };
 		BEB31F231A0D6F7A00F525B9 /* SwiftGit2.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SwiftGit2.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		BEB31F271A0D6F7A00F525B9 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		BEB31F281A0D6F7A00F525B9 /* SwiftGit2.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SwiftGit2.h; sourceTree = "<group>"; };
@@ -473,7 +164,6 @@
 		BEB31F581A0D75EE00F525B9 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		BEB31F6C1A0D78F300F525B9 /* Repository.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Repository.swift; sourceTree = "<group>"; };
 		BEB31F8F1A0E563900F525B9 /* liblibgit2-OSX.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "liblibgit2-OSX.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		BEB31F9B1A0E581400F525B9 /* git2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = git2.h; sourceTree = "<group>"; };
 		BEB31F9D1A0E595100F525B9 /* libiconv.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libiconv.dylib; path = usr/lib/libiconv.dylib; sourceTree = SDKROOT; };
 		BEB31F9F1A0E595600F525B9 /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
 		BECB5F691A56F19900999413 /* References.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = References.swift; sourceTree = "<group>"; };
@@ -481,6 +171,7 @@
 		BECB5F6D1A57284700999413 /* Remotes.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Remotes.swift; sourceTree = "<group>"; };
 		BECB5F6F1A57286200999413 /* RemotesSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RemotesSpec.swift; sourceTree = "<group>"; };
 		BEE591C61ADF470500534F14 /* Result.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Result.framework; path = "../../Library/Developer/Xcode/DerivedData/SwiftGit2-cdzquzvlxdewyddxgdgxjagqvjba/Build/Products/Debug/Result.framework"; sourceTree = "<group>"; };
+		C92C09FF1DFFEF3700233A4A /* module.modulemap */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.module-map"; name = module.modulemap; path = libgit2/module.modulemap; sourceTree = SOURCE_ROOT; };
 		DA50239F1A969F1A004175D7 /* Nimble.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Nimble.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		DA59146C1A94549A00AED74C /* Guanaco.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Guanaco.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		DA5914751A94579000AED74C /* Errors.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Errors.swift; sourceTree = "<group>"; };
@@ -566,70 +257,6 @@
 			path = Fixtures;
 			sourceTree = "<group>";
 		};
-		BE8DED9B1AA6A7D400AFE62D /* git2 */ = {
-			isa = PBXGroup;
-			children = (
-				BE8DED9C1AA6A7E200AFE62D /* annotated_commit.h */,
-				BE8DED9D1AA6A7E200AFE62D /* attr.h */,
-				BE8DED9E1AA6A7E200AFE62D /* blame.h */,
-				BE8DED9F1AA6A7E200AFE62D /* blob.h */,
-				BE8DEDA01AA6A7E200AFE62D /* branch.h */,
-				BE8DEDA11AA6A7E200AFE62D /* buffer.h */,
-				BE8DEDA21AA6A7E200AFE62D /* checkout.h */,
-				BE8DEDA31AA6A7E200AFE62D /* cherrypick.h */,
-				BE8DEDA41AA6A7E200AFE62D /* clone.h */,
-				BE8DEDA51AA6A7E200AFE62D /* commit.h */,
-				BE8DEDA61AA6A7E200AFE62D /* common.h */,
-				BE8DEDA71AA6A7E200AFE62D /* config.h */,
-				BE8DEDA81AA6A7E200AFE62D /* cred_helpers.h */,
-				BE8DEDA91AA6A7E200AFE62D /* describe.h */,
-				BE8DEDAA1AA6A7E200AFE62D /* diff.h */,
-				BE8DEDAB1AA6A7E200AFE62D /* errors.h */,
-				BE8DEDAC1AA6A7E200AFE62D /* filter.h */,
-				BE8DEDAD1AA6A7E200AFE62D /* global.h */,
-				BE8DEDAE1AA6A7E200AFE62D /* graph.h */,
-				BE8DEDAF1AA6A7E200AFE62D /* ignore.h */,
-				BE8DEDB01AA6A7E200AFE62D /* index.h */,
-				BE8DEDB11AA6A7E200AFE62D /* indexer.h */,
-				BE8DEDB31AA6A7E200AFE62D /* merge.h */,
-				BE8DEDB41AA6A7E200AFE62D /* message.h */,
-				BE8DEDB51AA6A7E200AFE62D /* net.h */,
-				BE8DEDB61AA6A7E200AFE62D /* notes.h */,
-				BE8DEDB71AA6A7E200AFE62D /* object.h */,
-				BE8DEDB81AA6A7E200AFE62D /* odb_backend.h */,
-				BE8DEDB91AA6A7E200AFE62D /* odb.h */,
-				BE8DEDBA1AA6A7E200AFE62D /* oid.h */,
-				BE8DEDBB1AA6A7E200AFE62D /* oidarray.h */,
-				BE8DEDBC1AA6A7E200AFE62D /* pack.h */,
-				BE8DEDBD1AA6A7E200AFE62D /* patch.h */,
-				BE8DEDBE1AA6A7E200AFE62D /* pathspec.h */,
-				BE8DEDC01AA6A7E200AFE62D /* rebase.h */,
-				BE8DEDC11AA6A7E200AFE62D /* refdb.h */,
-				BE8DEDC21AA6A7E200AFE62D /* reflog.h */,
-				BE8DEDC31AA6A7E200AFE62D /* refs.h */,
-				BE8DEDC41AA6A7E200AFE62D /* refspec.h */,
-				BE8DEDC51AA6A7E200AFE62D /* remote.h */,
-				BE8DEDC61AA6A7E200AFE62D /* repository.h */,
-				BE8DEDC71AA6A7E200AFE62D /* reset.h */,
-				BE8DEDC81AA6A7E200AFE62D /* revert.h */,
-				BE8DEDC91AA6A7E200AFE62D /* revparse.h */,
-				BE8DEDCA1AA6A7E200AFE62D /* revwalk.h */,
-				BE8DEDCB1AA6A7E200AFE62D /* signature.h */,
-				BE8DEDCC1AA6A7E200AFE62D /* stash.h */,
-				BE8DEDCD1AA6A7E200AFE62D /* status.h */,
-				BE8DEDCF1AA6A7E200AFE62D /* strarray.h */,
-				BE8DEDD01AA6A7E200AFE62D /* submodule.h */,
-				BE8DEDD11AA6A7E200AFE62D /* tag.h */,
-				BE8DEDD21AA6A7E200AFE62D /* trace.h */,
-				BE8DEDD31AA6A7E200AFE62D /* transaction.h */,
-				BE8DEDD41AA6A7E200AFE62D /* transport.h */,
-				BE8DEDD51AA6A7E200AFE62D /* tree.h */,
-				BE8DEDD61AA6A7E200AFE62D /* types.h */,
-				BE8DEDD71AA6A7E200AFE62D /* version.h */,
-			);
-			name = git2;
-			sourceTree = "<group>";
-		};
 		BEB31F191A0D6F7A00F525B9 = {
 			isa = PBXGroup;
 			children = (
@@ -682,7 +309,6 @@
 			isa = PBXGroup;
 			children = (
 				BEB31F271A0D6F7A00F525B9 /* Info.plist */,
-				BE244A521A117DA100F8BE42 /* SwiftGit2.modulemap */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -783,8 +409,7 @@
 		BEB31F9A1A0E57FC00F525B9 /* libgit2 */ = {
 			isa = PBXGroup;
 			children = (
-				BE8DED9B1AA6A7D400AFE62D /* git2 */,
-				BEB31F9B1A0E581400F525B9 /* git2.h */,
+				C92C09FF1DFFEF3700233A4A /* module.modulemap */,
 			);
 			name = libgit2;
 			path = External/libgit2/include;
@@ -825,7 +450,6 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 621E66B11C72958800A0F352 /* Build configuration list for PBXNativeTarget "SwiftGit2-iOS" */;
 			buildPhases = (
-				621E66641C72958800A0F352 /* Copy libgit2 Headers */,
 				621E669F1C72958800A0F352 /* Sources */,
 				621E66AA1C72958800A0F352 /* Frameworks */,
 				621E66AE1C72958800A0F352 /* Headers */,
@@ -909,7 +533,6 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = BEB31F391A0D6F7A00F525B9 /* Build configuration list for PBXNativeTarget "SwiftGit2-OSX" */;
 			buildPhases = (
-				BEB31F961A0E579700F525B9 /* Copy libgit2 Headers */,
 				BEB31F1E1A0D6F7A00F525B9 /* Sources */,
 				BEB31F1F1A0D6F7A00F525B9 /* Frameworks */,
 				BEB31F201A0D6F7A00F525B9 /* Headers */,
@@ -1219,7 +842,6 @@
 					"External/libssh2-ios/lib",
 					"External/ios-openssl/lib",
 				);
-				MODULEMAP_FILE = SwiftGit2/SwiftGit2.modulemap;
 				OTHER_LDFLAGS = (
 					"-force_load",
 					"External/libgit2-ios/libgit2-ios.a",
@@ -1232,6 +854,7 @@
 				PRODUCT_NAME = SwiftGit2;
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
+				SWIFT_INCLUDE_PATHS = "$(SRCROOT)/libgit2";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				VALID_ARCHS = "arm64 armv7 armv7s";
 			};
@@ -1267,7 +890,6 @@
 					"External/libssh2-ios/lib",
 					"External/ios-openssl/lib",
 				);
-				MODULEMAP_FILE = SwiftGit2/SwiftGit2.modulemap;
 				OTHER_LDFLAGS = (
 					"-force_load",
 					"External/libgit2-ios/libgit2-ios.a",
@@ -1280,6 +902,7 @@
 				PRODUCT_NAME = SwiftGit2;
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
+				SWIFT_INCLUDE_PATHS = "$(SRCROOT)/libgit2";
 				VALID_ARCHS = "arm64 armv7 armv7s";
 			};
 			name = Release;
@@ -1518,7 +1141,6 @@
 				INFOPLIST_FILE = SwiftGit2/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
-				MODULEMAP_FILE = SwiftGit2/SwiftGit2.modulemap;
 				OTHER_LDFLAGS = (
 					"-lgit2",
 					"-force_load",
@@ -1532,6 +1154,7 @@
 				PRODUCT_NAME = SwiftGit2;
 				SKIP_INSTALL = YES;
 				SUPPORTED_PLATFORMS = macosx;
+				SWIFT_INCLUDE_PATHS = "$(SRCROOT)/libgit2";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
 			name = Debug;
@@ -1550,7 +1173,6 @@
 				INFOPLIST_FILE = SwiftGit2/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
-				MODULEMAP_FILE = SwiftGit2/SwiftGit2.modulemap;
 				OTHER_LDFLAGS = (
 					"-lgit2",
 					"-force_load",
@@ -1564,6 +1186,7 @@
 				PRODUCT_NAME = SwiftGit2;
 				SKIP_INSTALL = YES;
 				SUPPORTED_PLATFORMS = macosx;
+				SWIFT_INCLUDE_PATHS = "$(SRCROOT)/libgit2";
 			};
 			name = Release;
 		};

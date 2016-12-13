@@ -10,6 +10,7 @@ import Result
 import SwiftGit2
 import Nimble
 import Quick
+import libgit2
 
 func with_git_remote<T>(repository: Repository, name: String, f: COpaquePointer -> T) -> T {
 	let repository = repository.pointer

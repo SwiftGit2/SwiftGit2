@@ -6,6 +6,8 @@
 //  Copyright (c) 2015 GitHub, Inc. All rights reserved.
 //
 
+import libgit2
+
 func == (lhs: git_otype, rhs: git_otype) -> Bool {
 	return lhs.rawValue == rhs.rawValue
 }

@@ -6,8 +6,7 @@
 //  Copyright © 2016 GitHub, Inc. All rights reserved.
 //
 
-import Foundation
-import Result
+import libgit2
 
 private class Wrapper<T> {
 	let value: T

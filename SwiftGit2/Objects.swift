@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import libgit2
 
 /// A git object.
 public protocol ObjectType {

@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import Result
+import libgit2
 
 /// An identifier for a Git object.
 public struct OID {

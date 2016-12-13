@@ -10,6 +10,7 @@ import Result
 import SwiftGit2
 import Nimble
 import Quick
+import libgit2
 
 func from_git_object<T>(repository: Repository, oid: OID, f: COpaquePointer -> T) -> T {
 	let repository = repository.pointer
