@@ -6,9 +6,7 @@
 //  Copyright (c) 2014 GitHub, Inc. All rights reserved.
 //
 
-import Foundation
-
-import Foundation
+import libgit2
 
 /// A pointer to a git object.
 public protocol PointerType: Equatable, Hashable {

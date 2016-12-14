@@ -6,6 +6,8 @@
 //  Copyright (c) 2015 GitHub, Inc. All rights reserved.
 //
 
+import libgit2
+
 /// A remote in a git repository.
 public struct Remote {
 	/// The name of the remote.

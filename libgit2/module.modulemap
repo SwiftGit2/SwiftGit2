@@ -1,0 +1,31 @@
+module libgit2 {
+	umbrella header "git2.h"
+
+	export *
+	module * { export * }
+
+	// Exclude headers intended only for Microsoft compilers
+	exclude header "git2/inttypes.h"
+	exclude header "git2/stdint.h"
+
+	// Explicit modules for headers not included in the umbrella header:
+	explicit module cred_helpers {
+		header "git2/cred_helpers.h"
+
+		export *
+	}
+
+	explicit module trace {
+		header "git2/trace.h"
+
+		export *
+	}
+
+	// Explicit module for the "sys" headers:
+	explicit module sys {
+		umbrella "git2/sys"
+
+		export *
+		module * { export * }
+	}
+}

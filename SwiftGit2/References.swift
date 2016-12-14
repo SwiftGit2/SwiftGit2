@@ -6,6 +6,8 @@
 //  Copyright (c) 2015 GitHub, Inc. All rights reserved.
 //
 
+import libgit2
+
 /// A reference to a git object.
 public protocol ReferenceType {
 	/// The full name of the reference (e.g., `refs/heads/master`).
