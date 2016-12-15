@@ -961,7 +961,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = BEB31F451A0D75EE00F525B9 /* Debug.xcconfig */;
 			buildSettings = {
-				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				HEADER_SEARCH_PATHS = (
 					External/libgit2/include,
@@ -973,8 +972,6 @@
 					External,
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.9;
-				MTL_ENABLE_DEBUG_INFO = YES;
-				SDKROOT = macosx;
 				SWIFT_VERSION = 2.3;
 			};
 			name = Debug;
@@ -995,8 +992,6 @@
 					External,
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.9;
-				MTL_ENABLE_DEBUG_INFO = NO;
-				SDKROOT = macosx;
 				SWIFT_VERSION = 2.3;
 			};
 			name = Release;
