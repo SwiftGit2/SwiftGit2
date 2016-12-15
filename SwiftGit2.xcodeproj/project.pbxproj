@@ -828,7 +828,6 @@
 				PRODUCT_BUNDLE_IDENTIFIER = org.libgit2.SwiftGit2;
 				PRODUCT_NAME = SwiftGit2;
 				SWIFT_INCLUDE_PATHS = "$(SRCROOT)/libgit2";
-				VALID_ARCHS = "arm64 armv7 armv7s";
 			};
 			name = Debug;
 		};
@@ -859,7 +858,6 @@
 				PRODUCT_BUNDLE_IDENTIFIER = org.libgit2.SwiftGit2;
 				PRODUCT_NAME = SwiftGit2;
 				SWIFT_INCLUDE_PATHS = "$(SRCROOT)/libgit2";
-				VALID_ARCHS = "arm64 armv7 armv7s";
 			};
 			name = Release;
 		};
@@ -870,7 +868,6 @@
 				INFOPLIST_FILE = SwiftGit2/Info.plist;
 				PRODUCT_BUNDLE_IDENTIFIER = "org.libgit2.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				VALID_ARCHS = "arm64 armv7 armv7s";
 			};
 			name = Debug;
 		};
@@ -881,7 +878,6 @@
 				INFOPLIST_FILE = SwiftGit2/Info.plist;
 				PRODUCT_BUNDLE_IDENTIFIER = "org.libgit2.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				VALID_ARCHS = "arm64 armv7 armv7s";
 			};
 			name = Release;
 		};
@@ -986,7 +982,6 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "org.libgit2.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = SwiftGit2;
-				SUPPORTED_PLATFORMS = macosx;
 				SWIFT_INCLUDE_PATHS = "$(SRCROOT)/libgit2";
 			};
 			name = Debug;
@@ -1015,7 +1010,6 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "org.libgit2.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = SwiftGit2;
-				SUPPORTED_PLATFORMS = macosx;
 				SWIFT_INCLUDE_PATHS = "$(SRCROOT)/libgit2";
 			};
 			name = Release;
