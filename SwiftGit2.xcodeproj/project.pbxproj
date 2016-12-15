@@ -807,23 +807,17 @@
 			buildSettings = {
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				ENABLE_BITCODE = NO;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(BUILD_DIR)/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)",
-				);
 				HEADER_SEARCH_PATHS = (
-					"$(inherited)",
-					/usr/local/include,
 					External/libgit2/include,
-					External/openssl/include,
+					"$(inherited)",
 				);
 				INFOPLIST_FILE = SwiftGit2/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"External/libgit2-ios",
 					"External/libssh2-ios/lib",
 					"External/ios-openssl/lib",
+					"$(inherited)",
 				);
 				OTHER_LDFLAGS = (
 					"-force_load",
@@ -846,23 +840,17 @@
 			buildSettings = {
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				ENABLE_BITCODE = NO;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(BUILD_DIR)/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)",
-				);
 				HEADER_SEARCH_PATHS = (
-					"$(inherited)",
-					/usr/local/include,
 					External/libgit2/include,
-					External/openssl/include,
+					"$(inherited)",
 				);
 				INFOPLIST_FILE = SwiftGit2/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"External/libgit2-ios",
 					"External/libssh2-ios/lib",
 					"External/ios-openssl/lib",
+					"$(inherited)",
 				);
 				OTHER_LDFLAGS = (
 					"-force_load",
@@ -884,7 +872,6 @@
 			baseConfigurationReference = BEB31F4E1A0D75EE00F525B9 /* iOS-Application.xcconfig */;
 			buildSettings = {
 				INFOPLIST_FILE = SwiftGit2/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "org.libgit2.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				VALID_ARCHS = "arm64 armv7 armv7s";
@@ -896,7 +883,6 @@
 			baseConfigurationReference = BEB31F4E1A0D75EE00F525B9 /* iOS-Application.xcconfig */;
 			buildSettings = {
 				INFOPLIST_FILE = SwiftGit2/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "org.libgit2.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				VALID_ARCHS = "arm64 armv7 armv7s";
@@ -962,15 +948,7 @@
 			baseConfigurationReference = BEB31F451A0D75EE00F525B9 /* Debug.xcconfig */;
 			buildSettings = {
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
-				HEADER_SEARCH_PATHS = (
-					External/libgit2/include,
-					/usr/local/include,
-				);
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
-				LIBRARY_SEARCH_PATHS = (
-					.,
-					External,
-				);
 				MACOSX_DEPLOYMENT_TARGET = 10.9;
 				SWIFT_VERSION = 2.3;
 			};
@@ -982,15 +960,7 @@
 			buildSettings = {
 				ENABLE_NS_ASSERTIONS = NO;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
-				HEADER_SEARCH_PATHS = (
-					External/libgit2/include,
-					/usr/local/include,
-				);
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
-				LIBRARY_SEARCH_PATHS = (
-					.,
-					External,
-				);
 				MACOSX_DEPLOYMENT_TARGET = 10.9;
 				SWIFT_VERSION = 2.3;
 			};
@@ -1001,9 +971,16 @@
 			baseConfigurationReference = BEB31F561A0D75EE00F525B9 /* Mac-Framework.xcconfig */;
 			buildSettings = {
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				HEADER_SEARCH_PATHS = (
+					External/libgit2/include,
+					"$(inherited)",
+				);
 				INFOPLIST_FILE = SwiftGit2/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
+				LIBRARY_SEARCH_PATHS = (
+					External,
+					"$(inherited)",
+				);
 				OTHER_LDFLAGS = (
 					"-lgit2",
 					"-force_load",
@@ -1025,9 +1002,16 @@
 			baseConfigurationReference = BEB31F561A0D75EE00F525B9 /* Mac-Framework.xcconfig */;
 			buildSettings = {
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				HEADER_SEARCH_PATHS = (
+					External/libgit2/include,
+					"$(inherited)",
+				);
 				INFOPLIST_FILE = SwiftGit2/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
+				LIBRARY_SEARCH_PATHS = (
+					External,
+					"$(inherited)",
+				);
 				OTHER_LDFLAGS = (
 					"-lgit2",
 					"-force_load",
@@ -1049,7 +1033,6 @@
 			baseConfigurationReference = BEB31F531A0D75EE00F525B9 /* Mac-Application.xcconfig */;
 			buildSettings = {
 				INFOPLIST_FILE = SwiftGit2Tests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "org.libgit2.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
@@ -1060,7 +1043,6 @@
 			baseConfigurationReference = BEB31F531A0D75EE00F525B9 /* Mac-Application.xcconfig */;
 			buildSettings = {
 				INFOPLIST_FILE = SwiftGit2Tests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "org.libgit2.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
