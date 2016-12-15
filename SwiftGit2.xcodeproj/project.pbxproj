@@ -805,9 +805,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = BEB31F501A0D75EE00F525B9 /* iOS-Framework.xcconfig */;
 			buildSettings = {
-				CLANG_ENABLE_MODULES = YES;
-				COMBINE_HIDPI_IMAGES = YES;
-				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
@@ -841,10 +838,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = org.libgit2.SwiftGit2;
 				PRODUCT_NAME = SwiftGit2;
-				SDKROOT = iphoneos;
-				SKIP_INSTALL = YES;
 				SWIFT_INCLUDE_PATHS = "$(SRCROOT)/libgit2";
-				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				VALID_ARCHS = "arm64 armv7 armv7s";
 			};
 			name = Debug;
@@ -853,9 +847,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = BEB31F501A0D75EE00F525B9 /* iOS-Framework.xcconfig */;
 			buildSettings = {
-				CLANG_ENABLE_MODULES = YES;
-				COMBINE_HIDPI_IMAGES = YES;
-				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
@@ -889,8 +880,6 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = org.libgit2.SwiftGit2;
 				PRODUCT_NAME = SwiftGit2;
-				SDKROOT = iphoneos;
-				SKIP_INSTALL = YES;
 				SWIFT_INCLUDE_PATHS = "$(SRCROOT)/libgit2";
 				VALID_ARCHS = "arm64 armv7 armv7s";
 			};
@@ -900,16 +889,10 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = BEB31F4E1A0D75EE00F525B9 /* iOS-Application.xcconfig */;
 			buildSettings = {
-				COMBINE_HIDPI_IMAGES = YES;
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"DEBUG=1",
-					"$(inherited)",
-				);
 				INFOPLIST_FILE = SwiftGit2/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "org.libgit2.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = iphoneos;
 				VALID_ARCHS = "arm64 armv7 armv7s";
 			};
 			name = Debug;
@@ -918,12 +901,10 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = BEB31F4E1A0D75EE00F525B9 /* iOS-Application.xcconfig */;
 			buildSettings = {
-				COMBINE_HIDPI_IMAGES = YES;
 				INFOPLIST_FILE = SwiftGit2/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "org.libgit2.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = iphoneos;
 				VALID_ARCHS = "arm64 armv7 armv7s";
 			};
 			name = Release;
@@ -1054,9 +1035,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = BEB31F561A0D75EE00F525B9 /* Mac-Framework.xcconfig */;
 			buildSettings = {
-				CLANG_ENABLE_MODULES = YES;
-				COMBINE_HIDPI_IMAGES = YES;
-				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
@@ -1075,10 +1053,8 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "org.libgit2.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = SwiftGit2;
-				SKIP_INSTALL = YES;
 				SUPPORTED_PLATFORMS = macosx;
 				SWIFT_INCLUDE_PATHS = "$(SRCROOT)/libgit2";
-				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
 			name = Debug;
 		};
@@ -1086,9 +1062,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = BEB31F561A0D75EE00F525B9 /* Mac-Framework.xcconfig */;
 			buildSettings = {
-				CLANG_ENABLE_MODULES = YES;
-				COMBINE_HIDPI_IMAGES = YES;
-				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
@@ -1107,7 +1080,6 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "org.libgit2.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = SwiftGit2;
-				SKIP_INSTALL = YES;
 				SUPPORTED_PLATFORMS = macosx;
 				SWIFT_INCLUDE_PATHS = "$(SRCROOT)/libgit2";
 			};
@@ -1117,11 +1089,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = BEB31F531A0D75EE00F525B9 /* Mac-Application.xcconfig */;
 			buildSettings = {
-				COMBINE_HIDPI_IMAGES = YES;
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"DEBUG=1",
-					"$(inherited)",
-				);
 				INFOPLIST_FILE = SwiftGit2Tests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "org.libgit2.$(PRODUCT_NAME:rfc1034identifier)";
@@ -1133,7 +1100,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = BEB31F531A0D75EE00F525B9 /* Mac-Application.xcconfig */;
 			buildSettings = {
-				COMBINE_HIDPI_IMAGES = YES;
 				INFOPLIST_FILE = SwiftGit2Tests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "org.libgit2.$(PRODUCT_NAME:rfc1034identifier)";
