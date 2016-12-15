@@ -118,9 +118,9 @@
 		621E66B41C72958800A0F352 /* SwiftGit2.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SwiftGit2.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		621E66CE1C72958D00A0F352 /* SwiftGit2-iOSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "SwiftGit2-iOSTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		621E66D81C72989900A0F352 /* Result.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Result.framework; path = "Carthage/Checkouts/Result/build/Debug-iphoneos/Result.framework"; sourceTree = "<group>"; };
-		621E66E11C729CE500A0F352 /* liblibgit2-iOS.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "liblibgit2-iOS.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		621E66EC1C729EB800A0F352 /* libOpenSSL-iOS.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libOpenSSL-iOS.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		621E66F21C729EBB00A0F352 /* liblibssh2-iOS.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "liblibssh2-iOS.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		621E66E11C729CE500A0F352 /* libgit2.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libgit2.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		621E66EC1C729EB800A0F352 /* libssl.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libssl.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		621E66F21C729EBB00A0F352 /* libssh2.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libssh2.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		621E66FD1C72A5FF00A0F352 /* libiconv.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libiconv.tbd; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS9.2.sdk/usr/lib/libiconv.tbd; sourceTree = DEVELOPER_DIR; };
 		621E66FF1C72A60B00A0F352 /* libz.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS9.2.sdk/usr/lib/libz.tbd; sourceTree = DEVELOPER_DIR; };
 		622726331C84E52500C53D17 /* Credentials.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Credentials.swift; sourceTree = "<group>"; };
@@ -163,7 +163,7 @@
 		BEB31F571A0D75EE00F525B9 /* Mac-StaticLibrary.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = "Mac-StaticLibrary.xcconfig"; sourceTree = "<group>"; };
 		BEB31F581A0D75EE00F525B9 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		BEB31F6C1A0D78F300F525B9 /* Repository.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Repository.swift; sourceTree = "<group>"; };
-		BEB31F8F1A0E563900F525B9 /* liblibgit2-OSX.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "liblibgit2-OSX.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		BEB31F8F1A0E563900F525B9 /* libgit2.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libgit2.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		BEB31F9D1A0E595100F525B9 /* libiconv.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libiconv.dylib; path = usr/lib/libiconv.dylib; sourceTree = SDKROOT; };
 		BEB31F9F1A0E595600F525B9 /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
 		BECB5F691A56F19900999413 /* References.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = References.swift; sourceTree = "<group>"; };
@@ -273,12 +273,12 @@
 			children = (
 				BEB31F231A0D6F7A00F525B9 /* SwiftGit2.framework */,
 				BEB31F2E1A0D6F7A00F525B9 /* SwiftGit2-OSXTests.xctest */,
-				BEB31F8F1A0E563900F525B9 /* liblibgit2-OSX.a */,
+				BEB31F8F1A0E563900F525B9 /* libgit2.a */,
 				621E66B41C72958800A0F352 /* SwiftGit2.framework */,
 				621E66CE1C72958D00A0F352 /* SwiftGit2-iOSTests.xctest */,
-				621E66E11C729CE500A0F352 /* liblibgit2-iOS.a */,
-				621E66EC1C729EB800A0F352 /* libOpenSSL-iOS.a */,
-				621E66F21C729EBB00A0F352 /* liblibssh2-iOS.a */,
+				621E66E11C729CE500A0F352 /* libgit2.a */,
+				621E66EC1C729EB800A0F352 /* libssl.a */,
+				621E66F21C729EBB00A0F352 /* libssh2.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -484,7 +484,7 @@
 			);
 			name = "libgit2-iOS";
 			productName = libgit2;
-			productReference = 621E66E11C729CE500A0F352 /* liblibgit2-iOS.a */;
+			productReference = 621E66E11C729CE500A0F352 /* libgit2.a */;
 			productType = "com.apple.product-type.library.static";
 		};
 		621E66E71C729EB800A0F352 /* OpenSSL-iOS */ = {
@@ -499,7 +499,7 @@
 			);
 			name = "OpenSSL-iOS";
 			productName = libgit2;
-			productReference = 621E66EC1C729EB800A0F352 /* libOpenSSL-iOS.a */;
+			productReference = 621E66EC1C729EB800A0F352 /* libssl.a */;
 			productType = "com.apple.product-type.library.static";
 		};
 		621E66ED1C729EBB00A0F352 /* libssh2-iOS */ = {
@@ -515,7 +515,7 @@
 			);
 			name = "libssh2-iOS";
 			productName = libgit2;
-			productReference = 621E66F21C729EBB00A0F352 /* liblibssh2-iOS.a */;
+			productReference = 621E66F21C729EBB00A0F352 /* libssh2.a */;
 			productType = "com.apple.product-type.library.static";
 		};
 		BEB31F221A0D6F7A00F525B9 /* SwiftGit2-OSX */ = {
@@ -566,7 +566,7 @@
 			);
 			name = "libgit2-OSX";
 			productName = libgit2;
-			productReference = BEB31F8F1A0E563900F525B9 /* liblibgit2-OSX.a */;
+			productReference = BEB31F8F1A0E563900F525B9 /* libgit2.a */;
 			productType = "com.apple.product-type.library.static";
 		};
 /* End PBXNativeTarget section */
@@ -883,8 +883,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = BEB31F511A0D75EE00F525B9 /* iOS-StaticLibrary.xcconfig */;
 			buildSettings = {
-				EXECUTABLE_PREFIX = lib;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = git2;
 			};
 			name = Debug;
 		};
@@ -892,8 +891,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = BEB31F511A0D75EE00F525B9 /* iOS-StaticLibrary.xcconfig */;
 			buildSettings = {
-				EXECUTABLE_PREFIX = lib;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = git2;
 			};
 			name = Release;
 		};
@@ -901,8 +899,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = BEB31F511A0D75EE00F525B9 /* iOS-StaticLibrary.xcconfig */;
 			buildSettings = {
-				EXECUTABLE_PREFIX = lib;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = ssl;
 			};
 			name = Debug;
 		};
@@ -910,8 +907,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = BEB31F511A0D75EE00F525B9 /* iOS-StaticLibrary.xcconfig */;
 			buildSettings = {
-				EXECUTABLE_PREFIX = lib;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = ssl;
 			};
 			name = Release;
 		};
@@ -919,8 +915,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = BEB31F511A0D75EE00F525B9 /* iOS-StaticLibrary.xcconfig */;
 			buildSettings = {
-				EXECUTABLE_PREFIX = lib;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = ssh2;
 			};
 			name = Debug;
 		};
@@ -928,8 +923,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = BEB31F511A0D75EE00F525B9 /* iOS-StaticLibrary.xcconfig */;
 			buildSettings = {
-				EXECUTABLE_PREFIX = lib;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = ssh2;
 			};
 			name = Release;
 		};
@@ -1036,8 +1030,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = BEB31F571A0D75EE00F525B9 /* Mac-StaticLibrary.xcconfig */;
 			buildSettings = {
-				EXECUTABLE_PREFIX = lib;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = git2;
 			};
 			name = Debug;
 		};
@@ -1045,8 +1038,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = BEB31F571A0D75EE00F525B9 /* Mac-StaticLibrary.xcconfig */;
 			buildSettings = {
-				EXECUTABLE_PREFIX = lib;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = git2;
 			};
 			name = Release;
 		};
