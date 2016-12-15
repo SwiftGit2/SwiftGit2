@@ -805,7 +805,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = BEB31F501A0D75EE00F525B9 /* iOS-Framework.xcconfig */;
 			buildSettings = {
-				ENABLE_BITCODE = NO;
 				HEADER_SEARCH_PATHS = (
 					External/libgit2/include,
 					"$(inherited)",
@@ -835,7 +834,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = BEB31F501A0D75EE00F525B9 /* iOS-Framework.xcconfig */;
 			buildSettings = {
-				ENABLE_BITCODE = NO;
 				HEADER_SEARCH_PATHS = (
 					External/libgit2/include,
 					"$(inherited)",
