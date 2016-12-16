@@ -64,12 +64,21 @@ elif [ "$SCHEME" == "SwiftGit2-iOS" ]; then
   echo "*** Prebuilding OpenSSL"
   "$SCRIPT_DIR/update_libssl_ios"
 
+  echo "*** Creating a simulator for testing..."
+  # Create a new simulator device and reference it by id to avoid xcodebuild exit status 70 with the following errors: 
+  #   "The requested device could not be found because no available devices matched the request."
+  #   "The requested device could not be found because multiple devices matched the request."
+  SIMULATOR_NAME="Custom Simulator"
+  DEVICE_ID=com.apple.CoreSimulator.SimDeviceType.iPhone-5
+  RUNTIME_ID=com.apple.CoreSimulator.SimRuntime.iOS-10-2
+  DESTINATION_ID=$(xcrun simctl create "$SIMULATOR_NAME" $DEVICE_ID $RUNTIME_ID)
+
   echo "*** Building and testing $SCHEME..."
   echo
 
   xcodebuild -workspace "$XCWORKSPACE" \
     -scheme "$SCHEME" \
-    -destination "platform=iOS Simulator,name=iPhone 5" \
+    -destination "id=$DESTINATION_ID" \
     -sdk iphonesimulator \
     ${XCODE_OPTIONS[*]} \
     build test \
