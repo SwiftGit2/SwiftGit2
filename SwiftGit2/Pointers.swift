@@ -30,26 +30,26 @@ public enum Pointer: PointerType {
 	
 	public var oid: OID {
 		switch self {
-		case let Commit(oid):
+		case let .Commit(oid):
 			return oid
-		case let Tree(oid):
+		case let .Tree(oid):
 			return oid
-		case let Blob(oid):
+		case let .Blob(oid):
 			return oid
-		case let Tag(oid):
+		case let .Tag(oid):
 			return oid
 		}
 	}
 	
 	public var type: git_otype {
 		switch self {
-		case Commit:
+		case .Commit:
 			return GIT_OBJ_COMMIT
-		case Tree:
+		case .Tree:
 			return GIT_OBJ_TREE
-		case Blob:
+		case .Blob:
 			return GIT_OBJ_BLOB
-		case Tag:
+		case .Tag:
 			return GIT_OBJ_TAG
 		}
 	}
@@ -58,13 +58,13 @@ public enum Pointer: PointerType {
 	init?(oid: OID, type: git_otype) {
 		switch type {
 		case GIT_OBJ_COMMIT:
-			self = Commit(oid)
+			self = .Commit(oid)
 		case GIT_OBJ_TREE:
-			self = Tree(oid)
+			self = .Tree(oid)
 		case GIT_OBJ_BLOB:
-			self = Blob(oid)
+			self = .Blob(oid)
 		case GIT_OBJ_TAG:
-			self = Tag(oid)
+			self = .Tag(oid)
 		default:
 			return nil
 		}
@@ -80,13 +80,13 @@ extension Pointer: Hashable {
 extension Pointer: CustomStringConvertible {
 	public var description: String {
 		switch self {
-		case Commit:
+		case .Commit:
 			return "commit(\(oid))"
-		case Tree:
+		case .Tree:
 			return "tree(\(oid))"
-		case Blob:
+		case .Blob:
 			return "blob(\(oid))"
-		case Tag:
+		case .Tag:
 			return "tag(\(oid))"
 		}
 	}

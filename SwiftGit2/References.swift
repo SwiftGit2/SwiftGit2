@@ -26,7 +26,7 @@ public func ==<T: ReferenceType>(lhs: T, rhs: T) -> Bool {
 }
 
 /// Create a Reference, Branch, or TagReference from a libgit2 `git_reference`.
-internal func referenceWithLibGit2Reference(pointer: COpaquePointer) -> ReferenceType {
+internal func referenceWithLibGit2Reference(_ pointer: OpaquePointer?) -> ReferenceType {
 	if git_reference_is_branch(pointer) != 0 || git_reference_is_remote(pointer) != 0 {
 		return Branch(pointer)!
 	} else if git_reference_is_tag(pointer) != 0 {
@@ -48,11 +48,11 @@ public struct Reference: ReferenceType {
 	public let oid: OID
 	
 	/// Create an instance with a libgit2 `git_reference` object.
-	public init(_ pointer: COpaquePointer) {
-		let shorthand = String.fromCString(git_reference_shorthand(pointer))!
-		longName = String.fromCString(git_reference_name(pointer))!
+	public init(_ pointer: OpaquePointer?) {
+		let shorthand = String(validatingUTF8: git_reference_shorthand(pointer))!
+		longName = String(validatingUTF8: git_reference_name(pointer))!
 		shortName = (shorthand == longName ? nil : shorthand)
-		oid = OID(git_reference_target(pointer).memory)
+		oid = OID(git_reference_target(pointer).pointee)
 	}
 }
 
@@ -95,29 +95,29 @@ public struct Branch: ReferenceType {
 	/// Create an instance with a libgit2 `git_reference` object.
 	///
 	/// Returns `nil` if the pointer isn't a branch.
-	public init?(_ pointer: COpaquePointer) {
-		let namePointer = UnsafeMutablePointer<UnsafePointer<Int8>>.alloc(1)
+	public init?(_ pointer: OpaquePointer?) {
+		let namePointer = UnsafeMutablePointer<UnsafePointer<Int8>?>.allocate(capacity: 1)
 		let success = git_branch_name(namePointer, pointer)
 		if success != GIT_OK.rawValue {
-			namePointer.dealloc(1)
+			namePointer.deallocate(capacity: 1)
 			return nil
 		}
-		name = String.fromCString(namePointer.memory)!
-		namePointer.dealloc(1)
+		name = String(validatingUTF8: namePointer.pointee!)!
+		namePointer.deallocate(capacity: 1)
 		
-		longName = String.fromCString(git_reference_name(pointer))!
+		longName = String(validatingUTF8: git_reference_name(pointer))!
 		
 		var oid: OID
 		if git_reference_type(pointer).rawValue == GIT_REF_SYMBOLIC.rawValue {
-			var resolved: COpaquePointer = nil
+			var resolved: OpaquePointer? = nil
 			let success = git_reference_resolve(&resolved, pointer)
 			if success != GIT_OK.rawValue {
 				return nil
 			}
-			oid = OID(git_reference_target(resolved).memory)
+			oid = OID(git_reference_target(resolved).pointee)
 			git_reference_free(resolved)
 		} else {
-			oid = OID(git_reference_target(pointer).memory)
+			oid = OID(git_reference_target(pointer).pointee)
 		}
 		commit = PointerTo<Commit>(oid)
 	}
@@ -149,7 +149,7 @@ public enum TagReference: ReferenceType {
 	
 	/// The short human-readable name of the branch (e.g., `master`).
 	public var name: String {
-		return longName.substringFromIndex("refs/tags/".endIndex)
+		return longName.substring(from: "refs/tags/".endIndex)
 	}
 	
 	/// The OID of the target object.
@@ -175,16 +175,16 @@ public enum TagReference: ReferenceType {
 	/// Create an instance with a libgit2 `git_reference` object.
 	///
 	/// Returns `nil` if the pointer isn't a branch.
-	public init?(_ pointer: COpaquePointer) {
+	public init?(_ pointer: OpaquePointer?) {
 		if git_reference_is_tag(pointer) == 0 {
 			return nil;
 		}
 		
-		let name = String.fromCString(git_reference_name(pointer))!
+		let name = String(validatingUTF8: git_reference_name(pointer))!
 		let repo = git_reference_owner(pointer)
-		var oid = git_reference_target(pointer).memory
+		var oid = git_reference_target(pointer).pointee
 		
-		var pointer: COpaquePointer = nil
+		var pointer: OpaquePointer? = nil
 		let result = git_object_lookup(&pointer, repo, &oid, GIT_OBJ_TAG)
 		if result == GIT_OK.rawValue {
 			self = .Annotated(name, Tag(pointer))

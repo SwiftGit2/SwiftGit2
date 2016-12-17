@@ -12,11 +12,11 @@ import Nimble
 import Quick
 import libgit2
 
-func from_git_object<T>(repository: Repository, oid: OID, f: COpaquePointer -> T) -> T {
+func from_git_object<T>(_ repository: Repository, oid: OID, f: (OpaquePointer?) -> T) -> T {
 	let repository = repository.pointer
 	var oid = oid.oid
 	
-	var pointer: COpaquePointer = nil
+	var pointer: OpaquePointer? = nil
 	git_object_lookup(&pointer, repository, &oid, GIT_OBJ_ANY)
 	let result = f(pointer)
 	git_object_free(pointer)
@@ -31,7 +31,7 @@ class SignatureSpec: QuickSpec {
 				let repo = Fixtures.simpleRepository
 				let oid = OID(string: "dc220a3f0c22920dab86d4a8d3a3cb7e69d6205a")!
 				
-				let raw_signature = from_git_object(repo, oid: oid) { git_commit_author($0).memory }
+				let raw_signature = from_git_object(repo, oid: oid) { git_commit_author($0).pointee }
 				let signature = Signature(raw_signature)
 				
 				expect(signature.name).to(equal("Matt Diephouse"))
@@ -47,7 +47,7 @@ class SignatureSpec: QuickSpec {
 				let oid = OID(string: "dc220a3f0c22920dab86d4a8d3a3cb7e69d6205a")!
 				
 				let author1 = from_git_object(repo, oid: oid) { commit in
-					Signature(git_commit_author(commit).memory)
+					Signature(git_commit_author(commit).pointee)
 				}
 				let author2 = author1
 				
@@ -60,10 +60,10 @@ class SignatureSpec: QuickSpec {
 				let oid2 = OID(string: "24e1e40ee77525d9e279f079f9906ad6d98c8940")!
 				
 				let author1 = from_git_object(repo, oid: oid1) { commit in
-					Signature(git_commit_author(commit).memory)
+					Signature(git_commit_author(commit).pointee)
 				}
 				let author2 = from_git_object(repo, oid: oid2) { commit in
-					Signature(git_commit_author(commit).memory)
+					Signature(git_commit_author(commit).pointee)
 				}
 				
 				expect(author1).notTo(equal(author2))
@@ -76,7 +76,7 @@ class SignatureSpec: QuickSpec {
 				let oid = OID(string: "dc220a3f0c22920dab86d4a8d3a3cb7e69d6205a")!
 				
 				let author1 = from_git_object(repo, oid: oid) { commit in
-					Signature(git_commit_author(commit).memory)
+					Signature(git_commit_author(commit).pointee)
 				}
 				let author2 = author1
 				
@@ -95,10 +95,10 @@ class CommitSpec: QuickSpec {
 				
 				let commit = from_git_object(repo, oid: oid) { Commit($0) }
 				let author = from_git_object(repo, oid: oid) { commit in
-					Signature(git_commit_author(commit).memory)
+					Signature(git_commit_author(commit).pointee)
 				}
 				let committer = from_git_object(repo, oid: oid) { commit in
-					Signature(git_commit_committer(commit).memory)
+					Signature(git_commit_committer(commit).pointee)
 				}
 				let tree = PointerTo<Tree>(OID(string: "219e9f39c2fb59ed1dfb3e78ed75055a57528f31")!)
 				let parents: [PointerTo<Commit>] = [
@@ -286,7 +286,7 @@ class BlobSpec: QuickSpec {
 				
 				let blob = from_git_object(repo, oid: oid) { Blob($0) }
 				let contents = "# Simple Repository\nA simple repository used for testing SwiftGit2.\n\n## Branches\n\n- master\n\n"
-				let data = (contents as NSString).dataUsingEncoding(NSUTF8StringEncoding)!
+				let data = contents.data(using: String.Encoding.utf8)!
 				expect(blob.oid).to(equal(oid))
 				expect(blob.data).to(equal(data))
 			}
@@ -334,7 +334,7 @@ class TagSpec: QuickSpec {
 				let oid = OID(string: "57943b8ee00348180ceeedc960451562750f6d33")!
 				
 				let tag = from_git_object(repo, oid: oid) { Tag($0) }
-				let tagger = from_git_object(repo, oid: oid) { Signature(git_tag_tagger($0).memory) }
+				let tagger = from_git_object(repo, oid: oid) { Signature(git_tag_tagger($0).pointee) }
 				
 				expect(tag.oid).to(equal(oid))
 				expect(tag.target).to(equal(Pointer.Commit(OID(string: "dc220a3f0c22920dab86d4a8d3a3cb7e69d6205a")!)))

@@ -19,7 +19,7 @@ extension git_strarray {
 	
 	func map<T>(f: (String) -> T) -> [T] {
 		return (0..<self.count).map {
-			let string = String.fromCString(self.strings[Int($0)])!
+			let string = String(validatingUTF8: self.strings[$0]!)!
 			return f(string)
 		}
 	}

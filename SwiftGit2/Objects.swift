@@ -17,7 +17,7 @@ public protocol ObjectType {
 	var oid: OID { get }
 	
 	/// Create an instance with the underlying libgit2 type.
-	init(_ pointer: COpaquePointer)
+	init(_ pointer: OpaquePointer?)
 }
 
 public func == <O: ObjectType>(lhs: O, rhs: O) -> Bool {
@@ -39,9 +39,9 @@ public struct Signature {
 	
 	/// Create an instance with a libgit2 `git_signature`.
 	public init(_ signature: git_signature) {
-		name = String.fromCString(signature.name)!
-		email = String.fromCString(signature.email)!
-		time = NSDate(timeIntervalSince1970: NSTimeInterval(signature.when.time))
+		name = String(validatingUTF8: signature.name)!
+		email = String(validatingUTF8: signature.email)!
+		time = NSDate(timeIntervalSince1970: TimeInterval(signature.when.time))
 		timeZone = NSTimeZone(forSecondsFromGMT: NSInteger(60 * signature.when.offset))
 	}
 }
@@ -82,15 +82,15 @@ public struct Commit: ObjectType {
 	public let message: String
 	
 	/// Create an instance with a libgit2 `git_commit` object.
-	public init(_ pointer: COpaquePointer) {
-		oid = OID(git_object_id(pointer).memory)
-		message = String.fromCString(git_commit_message(pointer))!
-		author = Signature(git_commit_author(pointer).memory)
-		committer = Signature(git_commit_committer(pointer).memory)
-		tree = PointerTo(OID(git_commit_tree_id(pointer).memory))
+	public init(_ pointer: OpaquePointer?) {
+		oid = OID(git_object_id(pointer).pointee)
+		message = String(validatingUTF8: git_commit_message(pointer))!
+		author = Signature(git_commit_author(pointer).pointee)
+		committer = Signature(git_commit_committer(pointer).pointee)
+		tree = PointerTo(OID(git_commit_tree_id(pointer).pointee))
 		
 		self.parents = (0..<git_commit_parentcount(pointer)).map {
-			return PointerTo(OID(git_commit_parent_id(pointer, $0).memory))
+			return PointerTo(OID(git_commit_parent_id(pointer, $0).pointee))
 		}
 	}
 }
@@ -117,11 +117,11 @@ public struct Tree: ObjectType {
 		public let name: String
 		
 		/// Create an instance with a libgit2 `git_tree_entry`.
-		public init(_ pointer: COpaquePointer) {
-			let oid = OID(git_tree_entry_id(pointer).memory)
+		public init(_ pointer: OpaquePointer?) {
+			let oid = OID(git_tree_entry_id(pointer).pointee)
 			attributes = Int32(git_tree_entry_filemode(pointer).rawValue)
 			object = Pointer(oid: oid, type: git_tree_entry_type(pointer))!
-			name = String.fromCString(git_tree_entry_name(pointer))!
+			name = String(validatingUTF8: git_tree_entry_name(pointer))!
 		}
 		
 		/// Create an instance with the individual values.
@@ -139,8 +139,8 @@ public struct Tree: ObjectType {
 	public let entries: [String: Entry]
 	
 	/// Create an instance with a libgit2 `git_tree`.
-	public init(_ pointer: COpaquePointer) {
-		oid = OID(git_object_id(pointer).memory)
+	public init(_ pointer: OpaquePointer?) {
+		oid = OID(git_object_id(pointer).pointee)
 		
 		var entries: [String: Entry] = [:]
 		for idx in 0..<git_tree_entrycount(pointer) {
@@ -183,14 +183,14 @@ public struct Blob: ObjectType {
 	public let oid: OID
 	
 	/// The contents of the blob.
-	public let data: NSData
+	public let data: Data
 	
 	/// Create an instance with a libgit2 `git_blob`.
-	public init(_ pointer: COpaquePointer) {
-		oid = OID(git_object_id(pointer).memory)
+	public init(_ pointer: OpaquePointer?) {
+		oid = OID(git_object_id(pointer).pointee)
 		
 		let length = Int(git_blob_rawsize(pointer))
-		data = NSData(bytes: git_blob_rawcontent(pointer), length: length)
+		data = Data(bytes: git_blob_rawcontent(pointer), count: length)
 	}
 }
 
@@ -220,13 +220,13 @@ public struct Tag: ObjectType {
 	public let message: String
 	
 	/// Create an instance with a libgit2 `git_tag`.
-	public init(_ pointer: COpaquePointer) {
-		oid = OID(git_object_id(pointer).memory)
-		let targetOID = OID(git_tag_target_id(pointer).memory)
+	public init(_ pointer: OpaquePointer?) {
+		oid = OID(git_object_id(pointer).pointee)
+		let targetOID = OID(git_tag_target_id(pointer).pointee)
 		target = Pointer(oid: targetOID, type: git_tag_target_type(pointer))!
-		name = String.fromCString(git_tag_name(pointer))!
-		tagger = Signature(git_tag_tagger(pointer).memory)
-		message = String.fromCString(git_tag_message(pointer))!
+		name = String(validatingUTF8: git_tag_name(pointer))!
+		tagger = Signature(git_tag_tagger(pointer).pointee)
+		message = String(validatingUTF8: git_tag_message(pointer))!
 	}
 }
 

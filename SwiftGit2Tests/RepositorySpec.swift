@@ -21,7 +21,7 @@ class RepositorySpec: QuickSpec {
 			}
 			
 			it("should fail if the repo doesn't exist") {
-				let url = NSURL(fileURLWithPath: "blah")
+				let url = URL(fileURLWithPath: "blah")
 				let result = Repository.atURL(url)
 				expect(result).to(haveFailed(beAnError(
 					domain: equal(libGit2ErrorDomain),
@@ -38,7 +38,7 @@ class RepositorySpec: QuickSpec {
 
 				expect(result).to(haveSucceeded())
 
-				if case .Success(let clonedRepo) = result {
+				if case .success(let clonedRepo) = result {
 					expect(clonedRepo.directoryURL).notTo(beNil())
 				}
 			}
@@ -50,7 +50,7 @@ class RepositorySpec: QuickSpec {
 
 				expect(result).to(haveSucceeded())
 
-				if case .Success(let clonedRepo) = result {
+				if case .success(let clonedRepo) = result {
 					expect(clonedRepo.directoryURL).to(beNil())
 				}
 			}
@@ -62,11 +62,11 @@ class RepositorySpec: QuickSpec {
 
 				expect(cloneResult).to(haveSucceeded())
 
-				if case .Success(let clonedRepo) = cloneResult {
+				if case .success(let clonedRepo) = cloneResult {
 					let remoteResult = clonedRepo.remoteWithName("origin")
 					expect(remoteResult).to(haveSucceeded())
 
-					if case .Success(let remote) = remoteResult {
+					if case .success(let remote) = remoteResult {
 						expect(remote.URL).to(equal(remoteRepo.directoryURL?.absoluteString))
 					}
 				}
@@ -79,20 +79,20 @@ class RepositorySpec: QuickSpec {
 
 				expect(cloneResult).to(haveSucceeded())
 
-				if case .Success(let clonedRepo) = cloneResult {
+				if case .success(let clonedRepo) = cloneResult {
 					let remoteResult = clonedRepo.remoteWithName("origin")
 					expect(remoteResult).to(haveSucceeded())
 
-					if case .Success(let remote) = remoteResult {
+					if case .success(let remote) = remoteResult {
 						expect(remote.URL).to(equal(remoteRepoURL?.absoluteString))
 					}
 				}
 			}
 
-			let env = NSProcessInfo.processInfo().environment
+			let env = ProcessInfo.processInfo.environment
 
-			if let privateRepo = env["SG2TestPrivateRepo"], gitUsername = env["SG2TestUsername"], publicKey = env["SG2TestPublicKey"],
-				privateKey = env["SG2TestPrivateKey"], passphrase = env["SG2TestPassphrase"] {
+			if let privateRepo = env["SG2TestPrivateRepo"], let gitUsername = env["SG2TestUsername"], let publicKey = env["SG2TestPublicKey"],
+				let privateKey = env["SG2TestPrivateKey"], let passphrase = env["SG2TestPassphrase"] {
 
 				it("should be able to clone a remote repository requiring credentials") {
 					let remoteRepoURL = NSURL(string: privateRepo)
@@ -103,11 +103,11 @@ class RepositorySpec: QuickSpec {
 
 					expect(cloneResult).to(haveSucceeded())
 
-					if case .Success(let clonedRepo) = cloneResult {
+					if case .success(let clonedRepo) = cloneResult {
 						let remoteResult = clonedRepo.remoteWithName("origin")
 						expect(remoteResult).to(haveSucceeded())
 
-						if case .Success(let remote) = remoteResult {
+						if case .success(let remote) = remoteResult {
 							expect(remote.URL).to(equal(remoteRepoURL?.absoluteString))
 						}
 					}
@@ -443,8 +443,8 @@ class RepositorySpec: QuickSpec {
 					"upstream/subclassing-notes",
 				]
 				let expected = expectedNames.map { repo.remoteBranchWithName($0).value! }
-				let actual = repo.remoteBranches().value!.sort {
-					return $0.longName.characters.lexicographicalCompare($1.longName.characters)
+				let actual = repo.remoteBranches().value!.sorted {
+					return $0.longName.characters.lexicographicallyPrecedes($1.longName.characters)
 				}
 				expect(actual).to(equal(expected))
 				expect(actual.map { $0.name }).to(equal(expectedNames))
@@ -596,8 +596,8 @@ class RepositorySpec: QuickSpec {
 		}
 	}
 
-	func temporaryURLForPurpose(purpose: String) -> NSURL {
-		let globallyUniqueString = NSProcessInfo.processInfo().globallyUniqueString
+	func temporaryURLForPurpose(_ purpose: String) -> NSURL {
+		let globallyUniqueString = ProcessInfo.processInfo.globallyUniqueString
 		let path = "\(NSTemporaryDirectory())\(globallyUniqueString)_\(purpose)"
 		return NSURL(fileURLWithPath: path)
 	}
