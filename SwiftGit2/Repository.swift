@@ -105,7 +105,9 @@ final public class Repository {
 	/// Returns a `Result` with a `Repository` or an error.
 	class public func atURL(_ url: URL) -> Result<Repository, NSError> {
 		var pointer: OpaquePointer? = nil
-		let result = git_repository_open(&pointer, (url as NSURL).fileSystemRepresentation)
+		let result = url.withUnsafeFileSystemRepresentation {
+			git_repository_open(&pointer, $0)
+		}
 		
 		if result != GIT_OK.rawValue {
 			return Result.failure(libGit2Error(result, libGit2PointOfFailure: "git_repository_open"))
@@ -135,7 +137,9 @@ final public class Repository {
 
 			var pointer: OpaquePointer? = nil
 			let remoteURLString = (remoteURL as NSURL).isFileReferenceURL() ? remoteURL.path : remoteURL.absoluteString
-			let result = git_clone(&pointer, remoteURLString, (toURL as NSURL).fileSystemRepresentation, &options)
+			let result = toURL.withUnsafeFileSystemRepresentation {
+				git_clone(&pointer, remoteURLString, $0, &options)
+			}
 
 			if result != GIT_OK.rawValue {
 				return Result.failure(libGit2Error(result, libGit2PointOfFailure: "git_clone"))
