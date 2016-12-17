@@ -156,9 +156,9 @@ final public class Repository {
 	/// The Repository assumes ownership of the `git_repository` object.
 	public init(_ pointer: OpaquePointer) {
 		self.pointer = pointer
-
+		
 		let path = git_repository_workdir(pointer)
-		self.directoryURL = path.map({ path in URL(fileURLWithPath: String(validatingUTF8: path)!, isDirectory: true) })
+		self.directoryURL = path.map({ URL(fileURLWithPath: String(validatingUTF8: $0)!, isDirectory: true) })
 	}
 	
 	deinit {
