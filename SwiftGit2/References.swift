@@ -96,14 +96,12 @@ public struct Branch: ReferenceType {
 	///
 	/// Returns `nil` if the pointer isn't a branch.
 	public init?(_ pointer: OpaquePointer) {
-		let namePointer = UnsafeMutablePointer<UnsafePointer<Int8>?>.allocate(capacity: 1)
-		let success = git_branch_name(namePointer, pointer)
+		var namePointer: UnsafePointer<Int8>? = nil
+		let success = git_branch_name(&namePointer, pointer)
 		if success != GIT_OK.rawValue {
-			namePointer.deallocate(capacity: 1)
 			return nil
 		}
-		name = String(validatingUTF8: namePointer.pointee!)!
-		namePointer.deallocate(capacity: 1)
+		name = String(validatingUTF8: namePointer!)!
 		
 		longName = String(validatingUTF8: git_reference_name(pointer))!
 		
