@@ -19,7 +19,7 @@ public struct OID {
 	/// string - A 40-byte hex formatted string.
 	public init?(string: String) {
 		// libgit2 doesn't enforce a maximum length
-		if (string.lengthOfBytes(using: String.Encoding.ascii) > 40) {
+		if string.lengthOfBytes(using: String.Encoding.ascii) > 40 {
 			return nil
 		}
 		
@@ -28,10 +28,10 @@ public struct OID {
 		
 		if result < GIT_OK.rawValue {
 			pointer.deallocate(capacity: 1)
-			return nil;
+			return nil
 		}
 		
-		oid = pointer.pointee;
+		oid = pointer.pointee
 		pointer.deallocate(capacity: 1)
 	}
 	
@@ -66,7 +66,7 @@ extension OID: Hashable {
 			self.oid.id.4,
 			self.oid.id.5,
 			self.oid.id.6,
-			self.oid.id.7
+			self.oid.id.7,
 		]
 		return bytes.reduce(0) { (hash, byte) in
 			return Int(hash << 8) | Int(byte)

@@ -24,4 +24,3 @@ extension git_strarray {
 		}
 	}
 }
-
