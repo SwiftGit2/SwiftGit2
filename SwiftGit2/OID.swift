@@ -66,7 +66,7 @@ extension OID: Hashable {
 			self.oid.id.4,
 			self.oid.id.5,
 			self.oid.id.6,
-			self.oid.id.7
+			self.oid.id.7,
 		]
 		return bytes.reduce(0) { (hash, byte) in
 			return Int(hash << 8) | Int(byte)

@@ -225,7 +225,7 @@ final public class Repository {
 				domain: "org.libgit2.SwiftGit2",
 				code: 1,
 				userInfo: [
-					NSLocalizedDescriptionKey: "Unrecognized git_otype '\(type)' for oid '\(oid)'."
+					NSLocalizedDescriptionKey: "Unrecognized git_otype '\(type)' for oid '\(oid)'.",
 				]
 			)
 			return Result.failure(error)

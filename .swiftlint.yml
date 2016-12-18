@@ -4,7 +4,6 @@ disabled_rules:
   - force_try
   - function_body_length
   - line_length
-  - trailing_comma
   - trailing_whitespace
   - type_body_length
   - variable_name
@@ -22,3 +21,6 @@ opt_in_rules:
 excluded:
   - Carthage
   - External
+
+trailing_comma:
+  mandatory_comma: true
