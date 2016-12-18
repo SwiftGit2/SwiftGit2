@@ -4,7 +4,6 @@ disabled_rules:
   - force_try
   - function_body_length
   - line_length
-  - trailing_whitespace
   - type_body_length
   - variable_name
 
@@ -24,3 +23,7 @@ excluded:
 
 trailing_comma:
   mandatory_comma: true
+
+trailing_whitespace:
+  ignores_comments: false
+  ignores_empty_lines: true
