@@ -8,7 +8,6 @@ disabled_rules:
   - trailing_whitespace
   - type_body_length
   - variable_name
-  - vertical_whitespace
 
 opt_in_rules:
   - closure_spacing
