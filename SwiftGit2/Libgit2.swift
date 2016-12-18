@@ -13,14 +13,14 @@ func == (lhs: git_otype, rhs: git_otype) -> Bool {
 }
 
 extension git_strarray {
-	func filter(f: (String) -> Bool) -> [String] {
-		return map { $0 }.filter(f)
+	func filter(_ isIncluded: (String) -> Bool) -> [String] {
+		return map { $0 }.filter(isIncluded)
 	}
 	
-	func map<T>(f: (String) -> T) -> [T] {
+	func map<T>(_ transform: (String) -> T) -> [T] {
 		return (0..<self.count).map {
 			let string = String(validatingUTF8: self.strings[$0]!)!
-			return f(string)
+			return transform(string)
 		}
 	}
 }
