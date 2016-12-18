@@ -198,4 +198,3 @@ extension TagReference: Hashable {
 		return longName.hashValue ^ oid.hashValue
 	}
 }
-
