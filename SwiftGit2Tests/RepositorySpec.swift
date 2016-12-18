@@ -33,7 +33,7 @@ class RepositorySpec: QuickSpec {
 		describe("Repository.Type.clone()") {
 			it("should handle local clones") {
 				let remoteRepo = Fixtures.simpleRepository
-				let localURL = self.temporaryURLForPurpose("local-clone")
+				let localURL = self.temporaryURL(forPurpose: "local-clone")
 				let result = Repository.clone(from: remoteRepo.directoryURL!, to: localURL, localClone: true)
 
 				expect(result).to(haveSucceeded())
@@ -45,7 +45,7 @@ class RepositorySpec: QuickSpec {
 
 			it("should handle bare clones") {
 				let remoteRepo = Fixtures.simpleRepository
-				let localURL = self.temporaryURLForPurpose("bare-clone")
+				let localURL = self.temporaryURL(forPurpose: "bare-clone")
 				let result = Repository.clone(from: remoteRepo.directoryURL!, to: localURL, localClone: true, bare: true)
 
 				expect(result).to(haveSucceeded())
@@ -57,7 +57,7 @@ class RepositorySpec: QuickSpec {
 
 			it("should have set a valid remote url") {
 				let remoteRepo = Fixtures.simpleRepository
-				let localURL = self.temporaryURLForPurpose("valid-remote-clone")
+				let localURL = self.temporaryURL(forPurpose: "valid-remote-clone")
 				let cloneResult = Repository.clone(from: remoteRepo.directoryURL!, to: localURL, localClone: true)
 
 				expect(cloneResult).to(haveSucceeded())
@@ -74,7 +74,7 @@ class RepositorySpec: QuickSpec {
 
 			it("should be able to clone a remote repository") {
 				let remoteRepoURL = URL(string: "https://github.com/libgit2/libgit2.github.com.git")
-				let localURL =  self.temporaryURLForPurpose("public-remote-clone")
+				let localURL =  self.temporaryURL(forPurpose: "public-remote-clone")
 				let cloneResult = Repository.clone(from: remoteRepoURL!, to: localURL)
 
 				expect(cloneResult).to(haveSucceeded())
@@ -96,7 +96,7 @@ class RepositorySpec: QuickSpec {
 
 				it("should be able to clone a remote repository requiring credentials") {
 					let remoteRepoURL = URL(string: privateRepo)
-					let localURL =  self.temporaryURLForPurpose("private-remote-clone")
+					let localURL =  self.temporaryURL(forPurpose: "private-remote-clone")
 
 					let cloneResult = Repository.clone(from: remoteRepoURL!, to: localURL,
 						credentials: .SSHMemory(username: gitUsername, publicKey: publicKey, privateKey: privateKey, passphrase: passphrase))
@@ -596,7 +596,7 @@ class RepositorySpec: QuickSpec {
 		}
 	}
 
-	func temporaryURLForPurpose(_ purpose: String) -> URL {
+	func temporaryURL(forPurpose purpose: String) -> URL {
 		let globallyUniqueString = ProcessInfo.processInfo.globallyUniqueString
 		let path = "\(NSTemporaryDirectory())\(globallyUniqueString)_\(purpose)"
 		return URL(fileURLWithPath: path)
