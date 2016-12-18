@@ -110,7 +110,7 @@ final public class Repository {
 		}
 		
 		if result != GIT_OK.rawValue {
-			return Result.failure(libGit2Error(result, libGit2PointOfFailure: "git_repository_open"))
+			return Result.failure(NSError(gitError: result, pointOfFailure: "git_repository_open"))
 		}
 		
 		let repository = Repository(pointer!)
@@ -142,7 +142,7 @@ final public class Repository {
 			}
 
 			if result != GIT_OK.rawValue {
-				return Result.failure(libGit2Error(result, libGit2PointOfFailure: "git_clone"))
+				return Result.failure(NSError(gitError: result, pointOfFailure: "git_clone"))
 			}
 
 			let repository = Repository(pointer!)
@@ -191,7 +191,7 @@ final public class Repository {
 		let result = git_object_lookup(&pointer, self.pointer, &oid, type)
 		
 		if result != GIT_OK.rawValue {
-			return Result.failure(libGit2Error(result, libGit2PointOfFailure: "git_object_lookup"))
+			return Result.failure(NSError(gitError: result, pointOfFailure: "git_object_lookup"))
 		}
 		
 		let value = transform(pointer!)
@@ -306,7 +306,7 @@ final public class Repository {
 		
 		if result != GIT_OK.rawValue {
 			pointer.deallocate(capacity: 1)
-			return Result.failure(libGit2Error(result, libGit2PointOfFailure: "git_remote_list"))
+			return Result.failure(NSError(gitError: result, pointOfFailure: "git_remote_list"))
 		}
 		
 		let strarray = pointer.pointee
@@ -333,7 +333,7 @@ final public class Repository {
 		let result = git_remote_lookup(&pointer, self.pointer, name)
 		
 		if result != GIT_OK.rawValue {
-			return Result.failure(libGit2Error(result, libGit2PointOfFailure: "git_remote_lookup"))
+			return Result.failure(NSError(gitError: result, pointOfFailure: "git_remote_lookup"))
 		}
 		
 		let value = Remote(pointer!)
@@ -350,7 +350,7 @@ final public class Repository {
 		
 		if result != GIT_OK.rawValue {
 			pointer.deallocate(capacity: 1)
-			return Result.failure(libGit2Error(result, libGit2PointOfFailure: "git_reference_list"))
+			return Result.failure(NSError(gitError: result, pointOfFailure: "git_reference_list"))
 		}
 		
 		let strarray = pointer.pointee
@@ -381,7 +381,7 @@ final public class Repository {
 		let result = git_reference_lookup(&pointer, self.pointer, name)
 		
 		if result != GIT_OK.rawValue {
-			return Result.failure(libGit2Error(result, libGit2PointOfFailure: "git_reference_lookup"))
+			return Result.failure(NSError(gitError: result, pointOfFailure: "git_reference_lookup"))
 		}
 		
 		let value = referenceWithLibGit2Reference(pointer!)
@@ -437,7 +437,7 @@ final public class Repository {
 		var pointer: OpaquePointer? = nil
 		let result = git_repository_head(&pointer, self.pointer)
 		if result != GIT_OK.rawValue {
-			return Result.failure(libGit2Error(result, libGit2PointOfFailure: "git_repository_head"))
+			return Result.failure(NSError(gitError: result, pointOfFailure: "git_repository_head"))
 		}
 		let value = referenceWithLibGit2Reference(pointer!)
 		git_reference_free(pointer)
@@ -452,7 +452,7 @@ final public class Repository {
 		var oid = oid.oid
 		let result = git_repository_set_head_detached(self.pointer, &oid)
 		if result != GIT_OK.rawValue {
-			return Result.failure(libGit2Error(result, libGit2PointOfFailure: "git_repository_set_head"))
+			return Result.failure(NSError(gitError: result, pointOfFailure: "git_repository_set_head"))
 		}
 		return Result.success()
 	}
@@ -464,7 +464,7 @@ final public class Repository {
 	public func setHEAD(_ reference: ReferenceType) -> Result<(), NSError> {
 		let result = git_repository_set_head(self.pointer, reference.longName)
 		if result != GIT_OK.rawValue {
-			return Result.failure(libGit2Error(result, libGit2PointOfFailure: "git_repository_set_head"))
+			return Result.failure(NSError(gitError: result, pointOfFailure: "git_repository_set_head"))
 		}
 		return Result.success()
 	}
@@ -479,7 +479,7 @@ final public class Repository {
 		
 		let result = git_checkout_head(self.pointer, &options)
 		if result != GIT_OK.rawValue {
-			return Result.failure(libGit2Error(result, libGit2PointOfFailure: "git_checkout_head"))
+			return Result.failure(NSError(gitError: result, pointOfFailure: "git_checkout_head"))
 		}
 		
 		return Result.success()
