@@ -6,6 +6,20 @@
 	objectVersion = 46;
 	objects = {
 
+/* Begin PBXAggregateTarget section */
+		C9CE0DD21E0710BD0053205D /* SwiftLint */ = {
+			isa = PBXAggregateTarget;
+			buildConfigurationList = C9CE0DD31E0710BD0053205D /* Build configuration list for PBXAggregateTarget "SwiftLint" */;
+			buildPhases = (
+				C9CE0DD61E0710C20053205D /* Lint Sources */,
+			);
+			dependencies = (
+			);
+			name = SwiftLint;
+			productName = SwiftLint;
+		};
+/* End PBXAggregateTarget section */
+
 /* Begin PBXBuildFile section */
 		621E66A01C72958800A0F352 /* OID.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE70B3E41A1ACB1A002C3F4E /* OID.swift */; };
 		621E66A11C72958800A0F352 /* Remotes.swift in Sources */ = {isa = PBXBuildFile; fileRef = BECB5F6D1A57284700999413 /* Remotes.swift */; };
@@ -596,6 +610,10 @@
 					BEB31F8E1A0E563900F525B9 = {
 						CreatedOnToolsVersion = 6.1;
 					};
+					C9CE0DD21E0710BD0053205D = {
+						CreatedOnToolsVersion = 8.2;
+						ProvisioningStyle = Automatic;
+					};
 				};
 			};
 			buildConfigurationList = BEB31F1D1A0D6F7A00F525B9 /* Build configuration list for PBXProject "SwiftGit2" */;
@@ -618,6 +636,7 @@
 				621E66DC1C729CE500A0F352 /* libgit2-iOS */,
 				621E66E71C729EB800A0F352 /* OpenSSL-iOS */,
 				621E66ED1C729EBB00A0F352 /* libssh2-iOS */,
+				C9CE0DD21E0710BD0053205D /* SwiftLint */,
 			);
 		};
 /* End PBXProject section */
@@ -697,6 +716,20 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = script/update_libgit2;
+		};
+		C9CE0DD61E0710C20053205D /* Lint Sources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Lint Sources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "if which swiftlint >/dev/null; then\n    swiftlint\nelse\n    echo \"warning: SwiftLint is not installed\"\nfi";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -1042,6 +1075,20 @@
 			};
 			name = Release;
 		};
+		C9CE0DD41E0710BD0053205D /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		C9CE0DD51E0710BD0053205D /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -1125,6 +1172,14 @@
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
+		};
+		C9CE0DD31E0710BD0053205D /* Build configuration list for PBXAggregateTarget "SwiftLint" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C9CE0DD41E0710BD0053205D /* Debug */,
+				C9CE0DD51E0710BD0053205D /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
 		};
 /* End XCConfigurationList section */
 	};
