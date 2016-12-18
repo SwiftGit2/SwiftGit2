@@ -19,20 +19,20 @@ public struct OID {
 	/// string - A 40-byte hex formatted string.
 	public init?(string: String) {
 		// libgit2 doesn't enforce a maximum length
-		if (string.lengthOfBytesUsingEncoding(NSASCIIStringEncoding) > 40) {
+		if (string.lengthOfBytes(using: String.Encoding.ascii) > 40) {
 			return nil
 		}
 		
-		let pointer = UnsafeMutablePointer<git_oid>.alloc(1)
+		let pointer = UnsafeMutablePointer<git_oid>.allocate(capacity: 1)
 		let result = git_oid_fromstr(pointer, string)
 		
 		if result < GIT_OK.rawValue {
-			pointer.dealloc(1)
+			pointer.deallocate(capacity: 1)
 			return nil;
 		}
 		
-		oid = pointer.memory;
-		pointer.dealloc(1)
+		oid = pointer.pointee;
+		pointer.deallocate(capacity: 1)
 	}
 	
 	/// Create an instance from a libgit2 `git_oid`.
@@ -48,11 +48,11 @@ public struct OID {
 extension OID: CustomStringConvertible {
 	public var description: String {
 		let length = Int(GIT_OID_RAWSZ) * 2
-		let string = UnsafeMutablePointer<Int8>.alloc(length)
+		let string = UnsafeMutablePointer<Int8>.allocate(capacity: length)
 		var oid = self.oid
 		git_oid_fmt(string, &oid)
 		
-		return String(bytesNoCopy: string, length: length, encoding: NSASCIIStringEncoding, freeWhenDone: true)!
+		return String(bytesNoCopy: string, length: length, encoding: .ascii, freeWhenDone: true)!
 	}
 }
 

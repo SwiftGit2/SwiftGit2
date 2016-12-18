@@ -9,7 +9,7 @@ public let libGit2ErrorDomain = "org.libgit2.libgit2"
 /// :param: libGit2PointOfFailure The name of the libgit2 function that produced the
 ///         error code.
 /// :returns: An NSError with a libgit2 error domain, code, and message.
-internal func libGit2Error(errorCode: Int32, libGit2PointOfFailure: String? = nil) -> NSError {
+internal func libGit2Error(_ errorCode: Int32, libGit2PointOfFailure: String? = nil) -> NSError {
 	let code = Int(errorCode)
 	var userInfo: [String: String] = [:]
 
@@ -37,12 +37,12 @@ internal func libGit2Error(errorCode: Int32, libGit2PointOfFailure: String? = ni
 ///           or errno has been set by the system, this function returns the
 ///           corresponding string representation of that error. Otherwise, it returns
 ///           nil.
-private func errorMessage(errorCode: Int32) -> String? {
+private func errorMessage(_ errorCode: Int32) -> String? {
 	let last = giterr_last()
-	if last != nil {
-		return String.fromCString(last.memory.message)
+	if let lastErrorPointer = last {
+		return String(validatingUTF8: lastErrorPointer.pointee.message)
 	} else if UInt32(errorCode) == GITERR_OS.rawValue {
-		return String.fromCString(strerror(errno))
+		return String(validatingUTF8: strerror(errno))
 	} else {
 		return nil
 	}

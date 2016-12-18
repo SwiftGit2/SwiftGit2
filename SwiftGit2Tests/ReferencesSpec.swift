@@ -12,12 +12,12 @@ import Nimble
 import Quick
 import libgit2
 
-func from_git_reference<T>(repository: Repository, name: String, f: COpaquePointer -> T) -> T {
+func from_git_reference<T>(_ repository: Repository, name: String, f: (OpaquePointer) -> T) -> T {
 	let repository = repository.pointer
 	
-	var pointer: COpaquePointer = nil
+	var pointer: OpaquePointer? = nil
 	git_reference_lookup(&pointer, repository, name)
-	let result = f(pointer)
+	let result = f(pointer!)
 	git_object_free(pointer)
 	
 	return result
