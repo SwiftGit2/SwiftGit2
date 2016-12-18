@@ -19,7 +19,7 @@ public struct OID {
 	/// string - A 40-byte hex formatted string.
 	public init?(string: String) {
 		// libgit2 doesn't enforce a maximum length
-		if (string.lengthOfBytes(using: String.Encoding.ascii) > 40) {
+		if string.lengthOfBytes(using: String.Encoding.ascii) > 40 {
 			return nil
 		}
 		
