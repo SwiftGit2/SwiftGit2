@@ -10,7 +10,7 @@ import libgit2
 
 /// The flags defining how a checkout should be performed.
 /// More detail is available in the libgit2 documentation for `git_checkout_strategy_t`.
-public struct CheckoutStrategy : OptionSet {
+public struct CheckoutStrategy: OptionSet {
 	private let value: UInt
 	
 	// MARK: - Initialization
