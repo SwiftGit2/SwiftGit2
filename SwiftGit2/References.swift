@@ -175,7 +175,7 @@ public enum TagReference: ReferenceType {
 	/// Returns `nil` if the pointer isn't a branch.
 	public init?(_ pointer: OpaquePointer) {
 		if git_reference_is_tag(pointer) == 0 {
-			return nil;
+			return nil
 		}
 		
 		let name = String(validatingUTF8: git_reference_name(pointer))!

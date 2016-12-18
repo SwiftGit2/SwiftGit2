@@ -24,7 +24,7 @@ private func checkoutProgressCallback(path: UnsafePointer<Int8>?, completed_step
 			block = buffer.move()
 			buffer.deallocate(capacity: 1)
 		}
-		block(path.flatMap(String.init(validatingUTF8:)), completed_steps, total_steps);
+		block(path.flatMap(String.init(validatingUTF8:)), completed_steps, total_steps)
 	}
 }
 
@@ -450,7 +450,7 @@ final public class Repository {
 	/// :returns: Returns a result with void or the error that occurred.
 	public func setHEAD(_ oid: OID) -> Result<(), NSError> {
 		var oid = oid.oid
-		let result = git_repository_set_head_detached(self.pointer, &oid);
+		let result = git_repository_set_head_detached(self.pointer, &oid)
 		if result != GIT_OK.rawValue {
 			return Result.failure(libGit2Error(result, libGit2PointOfFailure: "git_repository_set_head"))
 		}
@@ -462,7 +462,7 @@ final public class Repository {
 	/// :param: reference The reference to set as HEAD.
 	/// :returns: Returns a result with void or the error that occurred.
 	public func setHEAD(_ reference: ReferenceType) -> Result<(), NSError> {
-		let result = git_repository_set_head(self.pointer, reference.longName);
+		let result = git_repository_set_head(self.pointer, reference.longName)
 		if result != GIT_OK.rawValue {
 			return Result.failure(libGit2Error(result, libGit2PointOfFailure: "git_repository_set_head"))
 		}

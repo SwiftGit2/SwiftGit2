@@ -28,10 +28,10 @@ public struct OID {
 		
 		if result < GIT_OK.rawValue {
 			pointer.deallocate(capacity: 1)
-			return nil;
+			return nil
 		}
 		
-		oid = pointer.pointee;
+		oid = pointer.pointee
 		pointer.deallocate(capacity: 1)
 	}
 	
