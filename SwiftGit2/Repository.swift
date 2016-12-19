@@ -103,10 +103,6 @@ final public class Repository {
 	/// URL - The URL of the repository.
 	///
 	/// Returns a `Result` with a `Repository` or an error.
-	@available(*, unavailable, renamed: "at(_:)")
-	class public func atURL(_ url: URL) -> Result<Repository, NSError> {
-		fatalError()
-	}
 	class public func at(_ url: URL) -> Result<Repository, NSError> {
 		var pointer: OpaquePointer? = nil
 		let result = url.withUnsafeFileSystemRepresentation {
@@ -132,11 +128,6 @@ final public class Repository {
 	/// checkoutProgress - A block that's called with the progress of the checkout.
 	///
 	/// Returns a `Result` with a `Repository` or an error.
-	@available(*, unavailable, renamed: "clone(from:to:localClone:bare:credentials:checkoutStrategy:checkoutProgress:)")
-	class public func cloneFromURL(_ remoteURL: URL, toURL: URL, localClone: Bool = false, bare: Bool = false,
-		credentials: Credentials = .Default(), checkoutStrategy: CheckoutStrategy = .Safe, checkoutProgress: CheckoutProgressBlock? = nil) -> Result<Repository, NSError> {
-		fatalError()
-	}
 	class public func clone(from remoteURL: URL, to localURL: URL, localClone: Bool = false, bare: Bool = false,
 		credentials: Credentials = .Default(), checkoutStrategy: CheckoutStrategy = .Safe, checkoutProgress: CheckoutProgressBlock? = nil) -> Result<Repository, NSError> {
 			var options = cloneOptions(
@@ -217,10 +208,6 @@ final public class Repository {
 	/// oid - The OID of the blob to look up.
 	///
 	/// Returns a `Blob`, `Commit`, `Tag`, or `Tree` if one exists, or an error.
-	@available(*, unavailable, renamed: "object(withIdentity:)")
-	public func objectWithOID(_ oid: OID) -> Result<ObjectType, NSError> {
-		fatalError()
-	}
 	public func object(withIdentity oid: OID) -> Result<ObjectType, NSError> {
 		return mapGitObject(withIdentity: oid, type: GIT_OBJ_ANY) { object in
 			let type = git_object_type(object)
@@ -250,10 +237,6 @@ final public class Repository {
 	/// oid - The OID of the blob to look up.
 	///
 	/// Returns the blob if it exists, or an error.
-	@available(*, unavailable, renamed: "blob(withIdentity:)")
-	public func blobWithOID(_ oid: OID) -> Result<Blob, NSError> {
-		fatalError()
-	}
 	public func blob(withIdentity oid: OID) -> Result<Blob, NSError> {
 		return mapGitObject(withIdentity: oid, type: GIT_OBJ_BLOB) { Blob($0) }
 	}
@@ -263,10 +246,6 @@ final public class Repository {
 	/// oid - The OID of the commit to look up.
 	///
 	/// Returns the commit if it exists, or an error.
-	@available(*, unavailable, renamed: "commit(withIdentity:)")
-	public func commitWithOID(_ oid: OID) -> Result<Commit, NSError> {
-		fatalError()
-	}
 	public func commit(withIdentity oid: OID) -> Result<Commit, NSError> {
 		return mapGitObject(withIdentity: oid, type: GIT_OBJ_COMMIT) { Commit($0) }
 	}
@@ -276,10 +255,6 @@ final public class Repository {
 	/// oid - The OID of the tag to look up.
 	///
 	/// Returns the tag if it exists, or an error.
-	@available(*, unavailable, renamed: "tag(withIdentity:)")
-	public func tagWithOID(_ oid: OID) -> Result<Tag, NSError> {
-		fatalError()
-	}
 	public func tag(withIdentity oid: OID) -> Result<Tag, NSError> {
 		return mapGitObject(withIdentity: oid, type: GIT_OBJ_TAG) { Tag($0) }
 	}
@@ -289,10 +264,6 @@ final public class Repository {
 	/// oid - The OID of the tree to look up.
 	///
 	/// Returns the tree if it exists, or an error.
-	@available(*, unavailable, renamed: "tree(withIdentity:)")
-	public func treeWithOID(_ oid: OID) -> Result<Tree, NSError> {
-		fatalError()
-	}
 	public func tree(withIdentity oid: OID) -> Result<Tree, NSError> {
 		return mapGitObject(withIdentity: oid, type: GIT_OBJ_TREE) { Tree($0) }
 	}
@@ -302,10 +273,6 @@ final public class Repository {
 	/// pointer - A pointer to an object.
 	///
 	/// Returns the object if it exists, or an error.
-	@available(*, unavailable, renamed: "object(from:)")
-	public func objectFromPointer<T>(_ pointer: PointerTo<T>) -> Result<T, NSError> {
-		fatalError()
-	}
 	public func object<T>(from pointer: PointerTo<T>) -> Result<T, NSError> {
 		return mapGitObject(withIdentity: pointer.oid, type: pointer.type) { T($0) }
 	}
@@ -315,10 +282,6 @@ final public class Repository {
 	/// pointer - A pointer to an object.
 	///
 	/// Returns the object if it exists, or an error.
-	@available(*, unavailable, renamed: "object(from:)")
-	public func objectFromPointer(_ pointer: Pointer) -> Result<ObjectType, NSError> {
-		fatalError()
-	}
 	public func object(from pointer: Pointer) -> Result<ObjectType, NSError> {
 		switch pointer {
 		case let .Blob(oid):
@@ -365,10 +328,6 @@ final public class Repository {
 	/// name - The name of the remote.
 	///
 	/// Returns the remote if it exists, or an error.
-	@available(*, unavailable, renamed: "remote(withName:)")
-	public func remoteWithName(_ name: String) -> Result<Remote, NSError> {
-		fatalError()
-	}
 	public func remote(withName name: String) -> Result<Remote, NSError> {
 		var pointer: OpaquePointer? = nil
 		let result = git_remote_lookup(&pointer, self.pointer, name)
@@ -385,10 +344,6 @@ final public class Repository {
 	// MARK: - Reference Lookups
 	
 	/// Load all the references with the given prefix (e.g. "refs/heads/")
-	@available(*, unavailable, renamed: "references(withPrefix:)")
-	public func referencesWithPrefix(_ prefix: String) -> Result<[ReferenceType], NSError> {
-		fatalError()
-	}
 	public func references(withPrefix prefix: String) -> Result<[ReferenceType], NSError> {
 		let pointer = UnsafeMutablePointer<git_strarray>.allocate(capacity: 1)
 		let result = git_reference_list(pointer, self.pointer)
@@ -421,10 +376,6 @@ final public class Repository {
 	/// If the reference is a branch, a `Branch` will be returned. If the
 	/// reference is a tag, a `TagReference` will be returned. Otherwise, a
 	/// `Reference` will be returned.
-	@available(*, unavailable, renamed: "reference(withName:)")
-	public func referenceWithName(_ name: String) -> Result<ReferenceType, NSError> {
-		fatalError()
-	}
 	public func reference(withName name: String) -> Result<ReferenceType, NSError> {
 		var pointer: OpaquePointer? = nil
 		let result = git_reference_lookup(&pointer, self.pointer, name)
@@ -455,19 +406,11 @@ final public class Repository {
 	}
 	
 	/// Load the local branch with the given name (e.g., "master").
-	@available(*, unavailable, renamed: "localBranch(withName:)")
-	public func localBranchWithName(_ name: String) -> Result<Branch, NSError> {
-		fatalError()
-	}
 	public func localBranch(withName name: String) -> Result<Branch, NSError> {
 		return reference(withName: "refs/heads/" + name).map { $0 as! Branch }
 	}
 	
 	/// Load the remote branch with the given name (e.g., "origin/master").
-	@available(*, unavailable, renamed: "remoteBranch(withName:)")
-	public func remoteBranchWithName(_ name: String) -> Result<Branch, NSError> {
-		fatalError()
-	}
 	public func remoteBranch(withName name: String) -> Result<Branch, NSError> {
 		return reference(withName: "refs/remotes/" + name).map { $0 as! Branch }
 	}
@@ -481,10 +424,6 @@ final public class Repository {
 	}
 	
 	/// Load the tag with the given name (e.g., "tag-2").
-	@available(*, unavailable, renamed: "tag(withName:)")
-	public func tagWithName(_ name: String) -> Result<TagReference, NSError> {
-		fatalError()
-	}
 	public func tag(withName name: String) -> Result<TagReference, NSError> {
 		return reference(withName: "refs/tags/" + name).map { $0 as! TagReference }
 	}
