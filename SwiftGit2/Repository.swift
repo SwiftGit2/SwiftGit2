@@ -194,7 +194,7 @@ final public class Repository {
 	///
 	/// Returns the result of calling `transform` or an error if the object
 	/// cannot be loaded.
-	private func withLibgit2Object<T>(_ oid: OID, type: git_otype, transform: (OpaquePointer) -> Result<T, NSError>) -> Result<T, NSError> {
+	private func mapGitObject<T>(withIdentity oid: OID, type: git_otype, transform: (OpaquePointer) -> Result<T, NSError>) -> Result<T, NSError> {
 		var pointer: OpaquePointer? = nil
 		var oid = oid.oid
 		let result = git_object_lookup(&pointer, self.pointer, &oid, type)
@@ -208,8 +208,8 @@ final public class Repository {
 		return value
 	}
 	
-	private func withLibgit2Object<T>(_ oid: OID, type: git_otype, transform: (OpaquePointer) -> T) -> Result<T, NSError> {
-		return withLibgit2Object(oid, type: type) { Result.success(transform($0)) }
+	private func mapGitObject<T>(withIdentity oid: OID, type: git_otype, transform: (OpaquePointer) -> T) -> Result<T, NSError> {
+		return mapGitObject(withIdentity: oid, type: type) { Result.success(transform($0)) }
 	}
 	
 	/// Loads the object with the given OID.
@@ -222,7 +222,7 @@ final public class Repository {
 		fatalError()
 	}
 	public func object(withIdentity oid: OID) -> Result<ObjectType, NSError> {
-		return withLibgit2Object(oid, type: GIT_OBJ_ANY) { object in
+		return mapGitObject(withIdentity: oid, type: GIT_OBJ_ANY) { object in
 			let type = git_object_type(object)
 			if type == Blob.type {
 				return Result.success(Blob(object))
@@ -255,7 +255,7 @@ final public class Repository {
 		fatalError()
 	}
 	public func blob(withIdentity oid: OID) -> Result<Blob, NSError> {
-		return self.withLibgit2Object(oid, type: GIT_OBJ_BLOB) { Blob($0) }
+		return mapGitObject(withIdentity: oid, type: GIT_OBJ_BLOB) { Blob($0) }
 	}
 	
 	/// Loads the commit with the given OID.
@@ -268,7 +268,7 @@ final public class Repository {
 		fatalError()
 	}
 	public func commit(withIdentity oid: OID) -> Result<Commit, NSError> {
-		return self.withLibgit2Object(oid, type: GIT_OBJ_COMMIT) { Commit($0) }
+		return mapGitObject(withIdentity: oid, type: GIT_OBJ_COMMIT) { Commit($0) }
 	}
 	
 	/// Loads the tag with the given OID.
@@ -281,7 +281,7 @@ final public class Repository {
 		fatalError()
 	}
 	public func tag(withIdentity oid: OID) -> Result<Tag, NSError> {
-		return self.withLibgit2Object(oid, type: GIT_OBJ_TAG) { Tag($0) }
+		return mapGitObject(withIdentity: oid, type: GIT_OBJ_TAG) { Tag($0) }
 	}
 	
 	/// Loads the tree with the given OID.
@@ -294,7 +294,7 @@ final public class Repository {
 		fatalError()
 	}
 	public func tree(withIdentity oid: OID) -> Result<Tree, NSError> {
-		return self.withLibgit2Object(oid, type: GIT_OBJ_TREE) { Tree($0) }
+		return mapGitObject(withIdentity: oid, type: GIT_OBJ_TREE) { Tree($0) }
 	}
 	
 	/// Loads the referenced object from the pointer.
@@ -307,7 +307,7 @@ final public class Repository {
 		fatalError()
 	}
 	public func object<T>(from pointer: PointerTo<T>) -> Result<T, NSError> {
-		return self.withLibgit2Object(pointer.oid, type: pointer.type) { T($0) }
+		return mapGitObject(withIdentity: pointer.oid, type: pointer.type) { T($0) }
 	}
 	
 	/// Loads the referenced object from the pointer.
