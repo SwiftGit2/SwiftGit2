@@ -217,11 +217,11 @@ final public class Repository {
 	/// oid - The OID of the blob to look up.
 	///
 	/// Returns a `Blob`, `Commit`, `Tag`, or `Tree` if one exists, or an error.
-	@available(*, unavailable, renamed: "object(with:)")
+	@available(*, unavailable, renamed: "object(withIdentity:)")
 	public func objectWithOID(_ oid: OID) -> Result<ObjectType, NSError> {
 		fatalError()
 	}
-	public func object(with oid: OID) -> Result<ObjectType, NSError> {
+	public func object(withIdentity oid: OID) -> Result<ObjectType, NSError> {
 		return withLibgit2Object(oid, type: GIT_OBJ_ANY) { object in
 			let type = git_object_type(object)
 			if type == Blob.type {
@@ -250,11 +250,11 @@ final public class Repository {
 	/// oid - The OID of the blob to look up.
 	///
 	/// Returns the blob if it exists, or an error.
-	@available(*, unavailable, renamed: "blob(with:)")
+	@available(*, unavailable, renamed: "blob(withIdentity:)")
 	public func blobWithOID(_ oid: OID) -> Result<Blob, NSError> {
 		fatalError()
 	}
-	public func blob(with oid: OID) -> Result<Blob, NSError> {
+	public func blob(withIdentity oid: OID) -> Result<Blob, NSError> {
 		return self.withLibgit2Object(oid, type: GIT_OBJ_BLOB) { Blob($0) }
 	}
 	
@@ -263,11 +263,11 @@ final public class Repository {
 	/// oid - The OID of the commit to look up.
 	///
 	/// Returns the commit if it exists, or an error.
-	@available(*, unavailable, renamed: "commit(with:)")
+	@available(*, unavailable, renamed: "commit(withIdentity:)")
 	public func commitWithOID(_ oid: OID) -> Result<Commit, NSError> {
 		fatalError()
 	}
-	public func commit(with oid: OID) -> Result<Commit, NSError> {
+	public func commit(withIdentity oid: OID) -> Result<Commit, NSError> {
 		return self.withLibgit2Object(oid, type: GIT_OBJ_COMMIT) { Commit($0) }
 	}
 	
@@ -276,11 +276,11 @@ final public class Repository {
 	/// oid - The OID of the tag to look up.
 	///
 	/// Returns the tag if it exists, or an error.
-	@available(*, unavailable, renamed: "tag(with:)")
+	@available(*, unavailable, renamed: "tag(withIdentity:)")
 	public func tagWithOID(_ oid: OID) -> Result<Tag, NSError> {
 		fatalError()
 	}
-	public func tag(with oid: OID) -> Result<Tag, NSError> {
+	public func tag(withIdentity oid: OID) -> Result<Tag, NSError> {
 		return self.withLibgit2Object(oid, type: GIT_OBJ_TAG) { Tag($0) }
 	}
 	
@@ -289,11 +289,11 @@ final public class Repository {
 	/// oid - The OID of the tree to look up.
 	///
 	/// Returns the tree if it exists, or an error.
-	@available(*, unavailable, renamed: "tree(with:)")
+	@available(*, unavailable, renamed: "tree(withIdentity:)")
 	public func treeWithOID(_ oid: OID) -> Result<Tree, NSError> {
 		fatalError()
 	}
-	public func tree(with oid: OID) -> Result<Tree, NSError> {
+	public func tree(withIdentity oid: OID) -> Result<Tree, NSError> {
 		return self.withLibgit2Object(oid, type: GIT_OBJ_TREE) { Tree($0) }
 	}
 	
@@ -322,13 +322,13 @@ final public class Repository {
 	public func object(from pointer: Pointer) -> Result<ObjectType, NSError> {
 		switch pointer {
 		case let .Blob(oid):
-			return blob(with: oid).map { $0 as ObjectType }
+			return blob(withIdentity: oid).map { $0 as ObjectType }
 		case let .Commit(oid):
-			return commit(with: oid).map { $0 as ObjectType }
+			return commit(withIdentity: oid).map { $0 as ObjectType }
 		case let .Tag(oid):
-			return tag(with: oid).map { $0 as ObjectType }
+			return tag(withIdentity: oid).map { $0 as ObjectType }
 		case let .Tree(oid):
-			return tree(with: oid).map { $0 as ObjectType }
+			return tree(withIdentity: oid).map { $0 as ObjectType }
 		}
 	}
 	
