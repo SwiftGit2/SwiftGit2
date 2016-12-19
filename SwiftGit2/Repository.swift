@@ -14,17 +14,17 @@ public typealias CheckoutProgressBlock = (String?, Int, Int) -> Void
 
 /// Helper function used as the libgit2 progress callback in git_checkout_options.
 /// This is a function with a type signature of git_checkout_progress_cb.
-private func checkoutProgressCallback(path: UnsafePointer<Int8>?, completed_steps: Int, total_steps: Int, payload: UnsafeMutableRawPointer?) -> Void {
+private func checkoutProgressCallback(path: UnsafePointer<Int8>?, completedSteps: Int, totalSteps: Int, payload: UnsafeMutableRawPointer?) -> Void {
 	if let payload = payload {
 		let buffer = payload.assumingMemoryBound(to: CheckoutProgressBlock.self)
 		let block: CheckoutProgressBlock
-		if completed_steps < total_steps {
+		if completedSteps < totalSteps {
 			block = buffer.pointee
 		} else {
 			block = buffer.move()
 			buffer.deallocate(capacity: 1)
 		}
-		block(path.flatMap(String.init(validatingUTF8:)), completed_steps, total_steps)
+		block(path.flatMap(String.init(validatingUTF8:)), completedSteps, totalSteps)
 	}
 }
 
@@ -40,7 +40,7 @@ private func checkoutOptions(strategy: CheckoutStrategy, progress: CheckoutProgr
 	var options = pointer.move()
 	pointer.deallocate(capacity: 1)
 
-	options.checkout_strategy = strategy.git_checkout_strategy.rawValue
+	options.checkout_strategy = strategy.gitCheckoutStrategy.rawValue
 
 	if progress != nil {
 		options.progress_cb = checkoutProgressCallback
