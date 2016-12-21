@@ -98,7 +98,7 @@ public struct Branch: ReferenceType {
 	public init?(_ pointer: OpaquePointer) {
 		var namePointer: UnsafePointer<Int8>? = nil
 		let success = git_branch_name(&namePointer, pointer)
-		if success != GIT_OK.rawValue {
+		guard success == GIT_OK.rawValue else {
 			return nil
 		}
 		name = String(validatingUTF8: namePointer!)!
@@ -109,7 +109,7 @@ public struct Branch: ReferenceType {
 		if git_reference_type(pointer).rawValue == GIT_REF_SYMBOLIC.rawValue {
 			var resolved: OpaquePointer? = nil
 			let success = git_reference_resolve(&resolved, pointer)
-			if success != GIT_OK.rawValue {
+			guard success == GIT_OK.rawValue else {
 				return nil
 			}
 			oid = OID(git_reference_target(resolved).pointee)

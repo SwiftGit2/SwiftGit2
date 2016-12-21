@@ -109,7 +109,7 @@ final public class Repository {
 			git_repository_open(&pointer, $0)
 		}
 		
-		if result != GIT_OK.rawValue {
+		guard result == GIT_OK.rawValue else {
 			return Result.failure(NSError(gitError: result, pointOfFailure: "git_repository_open"))
 		}
 		
@@ -141,7 +141,7 @@ final public class Repository {
 				git_clone(&pointer, remoteURLString, localPath, &options)
 			}
 
-			if result != GIT_OK.rawValue {
+			guard result == GIT_OK.rawValue else {
 				return Result.failure(NSError(gitError: result, pointOfFailure: "git_clone"))
 			}
 
@@ -190,7 +190,7 @@ final public class Repository {
 		var oid = oid.oid
 		let result = git_object_lookup(&pointer, self.pointer, &oid, type)
 		
-		if result != GIT_OK.rawValue {
+		guard result == GIT_OK.rawValue else {
 			return Result.failure(NSError(gitError: result, pointOfFailure: "git_object_lookup"))
 		}
 		
@@ -304,7 +304,7 @@ final public class Repository {
 		let pointer = UnsafeMutablePointer<git_strarray>.allocate(capacity: 1)
 		let result = git_remote_list(pointer, self.pointer)
 		
-		if result != GIT_OK.rawValue {
+		guard result == GIT_OK.rawValue else {
 			pointer.deallocate(capacity: 1)
 			return Result.failure(NSError(gitError: result, pointOfFailure: "git_remote_list"))
 		}
@@ -332,7 +332,7 @@ final public class Repository {
 		var pointer: OpaquePointer? = nil
 		let result = git_remote_lookup(&pointer, self.pointer, name)
 		
-		if result != GIT_OK.rawValue {
+		guard result == GIT_OK.rawValue else {
 			return Result.failure(NSError(gitError: result, pointOfFailure: "git_remote_lookup"))
 		}
 		
@@ -348,7 +348,7 @@ final public class Repository {
 		let pointer = UnsafeMutablePointer<git_strarray>.allocate(capacity: 1)
 		let result = git_reference_list(pointer, self.pointer)
 		
-		if result != GIT_OK.rawValue {
+		guard result == GIT_OK.rawValue else {
 			pointer.deallocate(capacity: 1)
 			return Result.failure(NSError(gitError: result, pointOfFailure: "git_reference_list"))
 		}
@@ -380,7 +380,7 @@ final public class Repository {
 		var pointer: OpaquePointer? = nil
 		let result = git_reference_lookup(&pointer, self.pointer, name)
 		
-		if result != GIT_OK.rawValue {
+		guard result == GIT_OK.rawValue else {
 			return Result.failure(NSError(gitError: result, pointOfFailure: "git_reference_lookup"))
 		}
 		
@@ -436,7 +436,7 @@ final public class Repository {
 	public func HEAD() -> Result<ReferenceType, NSError> {
 		var pointer: OpaquePointer? = nil
 		let result = git_repository_head(&pointer, self.pointer)
-		if result != GIT_OK.rawValue {
+		guard result == GIT_OK.rawValue else {
 			return Result.failure(NSError(gitError: result, pointOfFailure: "git_repository_head"))
 		}
 		let value = referenceWithLibGit2Reference(pointer!)
@@ -451,7 +451,7 @@ final public class Repository {
 	public func setHEAD(_ oid: OID) -> Result<(), NSError> {
 		var oid = oid.oid
 		let result = git_repository_set_head_detached(self.pointer, &oid)
-		if result != GIT_OK.rawValue {
+		guard result == GIT_OK.rawValue else {
 			return Result.failure(NSError(gitError: result, pointOfFailure: "git_repository_set_head"))
 		}
 		return Result.success()
@@ -463,7 +463,7 @@ final public class Repository {
 	/// :returns: Returns a result with void or the error that occurred.
 	public func setHEAD(_ reference: ReferenceType) -> Result<(), NSError> {
 		let result = git_repository_set_head(self.pointer, reference.longName)
-		if result != GIT_OK.rawValue {
+		guard result == GIT_OK.rawValue else {
 			return Result.failure(NSError(gitError: result, pointOfFailure: "git_repository_set_head"))
 		}
 		return Result.success()
@@ -478,7 +478,7 @@ final public class Repository {
 		var options = checkoutOptions(strategy: strategy, progress: progress)
 		
 		let result = git_checkout_head(self.pointer, &options)
-		if result != GIT_OK.rawValue {
+		guard result == GIT_OK.rawValue else {
 			return Result.failure(NSError(gitError: result, pointOfFailure: "git_checkout_head"))
 		}
 		
