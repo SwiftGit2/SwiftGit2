@@ -311,7 +311,7 @@ final public class Repository {
 		
 		let strarray = pointer.pointee
 		let remotes: [Result<Remote, NSError>] = strarray.map {
-			return self.remote(withName: $0)
+			return self.remote(named: $0)
 		}
 		git_strarray_free(pointer)
 		pointer.deallocate(capacity: 1)
@@ -328,7 +328,7 @@ final public class Repository {
 	/// name - The name of the remote.
 	///
 	/// Returns the remote if it exists, or an error.
-	public func remote(withName name: String) -> Result<Remote, NSError> {
+	public func remote(named name: String) -> Result<Remote, NSError> {
 		var pointer: OpaquePointer? = nil
 		let result = git_remote_lookup(&pointer, self.pointer, name)
 		
@@ -359,7 +359,7 @@ final public class Repository {
 				$0.hasPrefix(prefix)
 			}
 			.map {
-				self.reference(withName: $0)
+				self.reference(named: $0)
 			}
 		git_strarray_free(pointer)
 		pointer.deallocate(capacity: 1)
@@ -376,7 +376,7 @@ final public class Repository {
 	/// If the reference is a branch, a `Branch` will be returned. If the
 	/// reference is a tag, a `TagReference` will be returned. Otherwise, a
 	/// `Reference` will be returned.
-	public func reference(withName name: String) -> Result<ReferenceType, NSError> {
+	public func reference(named name: String) -> Result<ReferenceType, NSError> {
 		var pointer: OpaquePointer? = nil
 		let result = git_reference_lookup(&pointer, self.pointer, name)
 		
@@ -406,13 +406,13 @@ final public class Repository {
 	}
 	
 	/// Load the local branch with the given name (e.g., "master").
-	public func localBranch(withName name: String) -> Result<Branch, NSError> {
-		return reference(withName: "refs/heads/" + name).map { $0 as! Branch }
+	public func localBranch(named name: String) -> Result<Branch, NSError> {
+		return reference(named: "refs/heads/" + name).map { $0 as! Branch }
 	}
 	
 	/// Load the remote branch with the given name (e.g., "origin/master").
-	public func remoteBranch(withName name: String) -> Result<Branch, NSError> {
-		return reference(withName: "refs/remotes/" + name).map { $0 as! Branch }
+	public func remoteBranch(named name: String) -> Result<Branch, NSError> {
+		return reference(named: "refs/remotes/" + name).map { $0 as! Branch }
 	}
 	
 	/// Load and return a list of all the `TagReference`s.
@@ -424,8 +424,8 @@ final public class Repository {
 	}
 	
 	/// Load the tag with the given name (e.g., "tag-2").
-	public func tag(withName name: String) -> Result<TagReference, NSError> {
-		return reference(withName: "refs/tags/" + name).map { $0 as! TagReference }
+	public func tag(named name: String) -> Result<TagReference, NSError> {
+		return reference(named: "refs/tags/" + name).map { $0 as! TagReference }
 	}
 	
 	// MARK: - Working Directory

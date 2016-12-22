@@ -13,7 +13,7 @@ import Quick
 import libgit2
 
 private extension Repository {
-	func withGitRemote<T>(withName name: String, transform: (OpaquePointer) -> T) -> T {
+	func withGitRemote<T>(named name: String, transform: (OpaquePointer) -> T) -> T {
 		let repository = self.pointer
 
 		var pointer: OpaquePointer? = nil
@@ -30,7 +30,7 @@ class RemoteSpec: QuickSpec {
 		describe("Remote(pointer)") {
 			it("should initialize its properties") {
 				let repo = Fixtures.mantleRepository
-				let remote = repo.withGitRemote(withName: "upstream") { Remote($0) }
+				let remote = repo.withGitRemote(named: "upstream") { Remote($0) }
 				
 				expect(remote.name).to(equal("upstream"))
 				expect(remote.URL).to(equal("git@github.com:Mantle/Mantle.git"))
@@ -40,15 +40,15 @@ class RemoteSpec: QuickSpec {
 		describe("==(Remote, Remote)") {
 			it("should be true with equal objects") {
 				let repo = Fixtures.mantleRepository
-				let remote1 = repo.withGitRemote(withName: "upstream") { Remote($0) }
+				let remote1 = repo.withGitRemote(named: "upstream") { Remote($0) }
 				let remote2 = remote1
 				expect(remote1).to(equal(remote2))
 			}
 			
 			it("should be false with unequal objcets") {
 				let repo = Fixtures.mantleRepository
-				let origin = repo.withGitRemote(withName: "origin") { Remote($0) }
-				let upstream = repo.withGitRemote(withName: "upstream") { Remote($0) }
+				let origin = repo.withGitRemote(named: "origin") { Remote($0) }
+				let upstream = repo.withGitRemote(named: "upstream") { Remote($0) }
 				expect(origin).notTo(equal(upstream))
 			}
 		}
@@ -56,7 +56,7 @@ class RemoteSpec: QuickSpec {
 		describe("Remote.hashValue") {
 			it("should be equal with equal objcets") {
 				let repo = Fixtures.mantleRepository
-				let remote1 = repo.withGitRemote(withName: "upstream") { Remote($0) }
+				let remote1 = repo.withGitRemote(named: "upstream") { Remote($0) }
 				let remote2 = remote1
 				expect(remote1.hashValue).to(equal(remote2.hashValue))
 			}

@@ -63,7 +63,7 @@ class RepositorySpec: QuickSpec {
 				expect(cloneResult).to(haveSucceeded())
 
 				if case .success(let clonedRepo) = cloneResult {
-					let remoteResult = clonedRepo.remote(withName: "origin")
+					let remoteResult = clonedRepo.remote(named: "origin")
 					expect(remoteResult).to(haveSucceeded())
 
 					if case .success(let remote) = remoteResult {
@@ -80,7 +80,7 @@ class RepositorySpec: QuickSpec {
 				expect(cloneResult).to(haveSucceeded())
 
 				if case .success(let clonedRepo) = cloneResult {
-					let remoteResult = clonedRepo.remote(withName: "origin")
+					let remoteResult = clonedRepo.remote(named: "origin")
 					expect(remoteResult).to(haveSucceeded())
 
 					if case .success(let remote) = remoteResult {
@@ -104,7 +104,7 @@ class RepositorySpec: QuickSpec {
 					expect(cloneResult).to(haveSucceeded())
 
 					if case .success(let clonedRepo) = cloneResult {
-						let remoteResult = clonedRepo.remote(withName: "origin")
+						let remoteResult = clonedRepo.remote(named: "origin")
 						expect(remoteResult).to(haveSucceeded())
 
 						if case .success(let remote) = remoteResult {
@@ -360,50 +360,50 @@ class RepositorySpec: QuickSpec {
 			}
 		}
 		
-		describe("Repository.remote(withName:)") {
+		describe("Repository.remote(named:)") {
 			it("should return the remote if it exists") {
 				let repo = Fixtures.mantleRepository
-				let result = repo.remote(withName: "upstream")
+				let result = repo.remote(named: "upstream")
 				expect(result.map { $0.name }).to(haveSucceeded(equal("upstream")))
 			}
 			
 			it("should error if the remote doesn't exist") {
 				let repo = Fixtures.simpleRepository
-				let result = repo.remote(withName: "nonexistent")
+				let result = repo.remote(named: "nonexistent")
 				expect(result).to(haveFailed(beAnError(domain: equal(libGit2ErrorDomain))))
 			}
 		}
 		
-		describe("Repository.reference(withName:)") {
+		describe("Repository.reference(named:)") {
 			it("should return a local branch if it exists") {
 				let name = "refs/heads/master"
-				let result = Fixtures.simpleRepository.reference(withName: name)
+				let result = Fixtures.simpleRepository.reference(named: name)
 				expect(result.map { $0.longName }).to(haveSucceeded(equal(name)))
 				expect(result.value as? Branch).notTo(beNil())
 			}
 
 			it("should return a remote branch if it exists") {
 				let name = "refs/remotes/upstream/master"
-				let result = Fixtures.mantleRepository.reference(withName: name)
+				let result = Fixtures.mantleRepository.reference(named: name)
 				expect(result.map { $0.longName }).to(haveSucceeded(equal(name)))
 				expect(result.value as? Branch).notTo(beNil())
 			}
 			
 			it("should return a tag if it exists") {
 				let name = "refs/tags/tag-2"
-				let result = Fixtures.simpleRepository.reference(withName: name)
+				let result = Fixtures.simpleRepository.reference(named: name)
 				expect(result.value?.longName).to(equal(name))
 				expect(result.value as? TagReference).notTo(beNil())
 			}
 			
 			it("should return the reference if it exists") {
 				let name = "refs/other-ref"
-				let result = Fixtures.simpleRepository.reference(withName: name)
+				let result = Fixtures.simpleRepository.reference(named: name)
 				expect(result.value?.longName).to(equal(name))
 			}
 			
 			it("should error if the reference doesn't exist") {
-				let result = Fixtures.simpleRepository.reference(withName: "refs/heads/nonexistent")
+				let result = Fixtures.simpleRepository.reference(named: "refs/heads/nonexistent")
 				expect(result).to(haveFailed(beAnError(domain: equal(libGit2ErrorDomain))))
 			}
 		}
@@ -412,9 +412,9 @@ class RepositorySpec: QuickSpec {
 			it("should return all the local branches") {
 				let repo = Fixtures.simpleRepository
 				let expected = [
-					repo.localBranch(withName: "another-branch").value!,
-					repo.localBranch(withName: "master").value!,
-					repo.localBranch(withName: "yet-another-branch").value!,
+					repo.localBranch(named: "another-branch").value!,
+					repo.localBranch(named: "master").value!,
+					repo.localBranch(named: "yet-another-branch").value!,
 				]
 				expect(repo.localBranches().value).to(equal(expected))
 			}
@@ -442,7 +442,7 @@ class RepositorySpec: QuickSpec {
 					"upstream/reversible-transformer",
 					"upstream/subclassing-notes",
 				]
-				let expected = expectedNames.map { repo.remoteBranch(withName: $0).value! }
+				let expected = expectedNames.map { repo.remoteBranch(named: $0).value! }
 				let actual = repo.remoteBranches().value!.sorted {
 					return $0.longName.characters.lexicographicallyPrecedes($1.longName.characters)
 				}
@@ -451,26 +451,26 @@ class RepositorySpec: QuickSpec {
 			}
 		}
 		
-		describe("Repository.localBranch(withName:)") {
+		describe("Repository.localBranch(named:)") {
 			it("should return the branch if it exists") {
-				let result = Fixtures.simpleRepository.localBranch(withName: "master")
+				let result = Fixtures.simpleRepository.localBranch(named: "master")
 				expect(result.value?.longName).to(equal("refs/heads/master"))
 			}
 			
 			it("should error if the branch doesn't exists") {
-				let result = Fixtures.simpleRepository.localBranch(withName: "nonexistent")
+				let result = Fixtures.simpleRepository.localBranch(named: "nonexistent")
 				expect(result).to(haveFailed(beAnError(domain: equal(libGit2ErrorDomain))))
 			}
 		}
 		
-		describe("Repository.remoteBranch(withName:)") {
+		describe("Repository.remoteBranch(named:)") {
 			it("should return the branch if it exists") {
-				let result = Fixtures.mantleRepository.remoteBranch(withName: "upstream/master")
+				let result = Fixtures.mantleRepository.remoteBranch(named: "upstream/master")
 				expect(result.value?.longName).to(equal("refs/remotes/upstream/master"))
 			}
 			
 			it("should error if the branch doesn't exists") {
-				let result = Fixtures.simpleRepository.remoteBranch(withName: "origin/nonexistent")
+				let result = Fixtures.simpleRepository.remoteBranch(named: "origin/nonexistent")
 				expect(result).to(haveFailed(beAnError(domain: equal(libGit2ErrorDomain))))
 			}
 		}
@@ -479,21 +479,21 @@ class RepositorySpec: QuickSpec {
 			it("should return all the tags") {
 				let repo = Fixtures.simpleRepository
 				let expected = [
-					repo.tag(withName: "tag-1").value!,
-					repo.tag(withName: "tag-2").value!,
+					repo.tag(named: "tag-1").value!,
+					repo.tag(named: "tag-2").value!,
 				]
 				expect(repo.allTags().value).to(equal(expected))
 			}
 		}
 		
-		describe("Repository.tag(withName:)") {
+		describe("Repository.tag(named:)") {
 			it("should return the tag if it exists") {
-				let result = Fixtures.simpleRepository.tag(withName: "tag-2")
+				let result = Fixtures.simpleRepository.tag(named: "tag-2")
 				expect(result.value?.longName).to(equal("refs/tags/tag-2"))
 			}
 			
 			it("should error if the branch doesn't exists") {
-				let result = Fixtures.simpleRepository.tag(withName: "nonexistent")
+				let result = Fixtures.simpleRepository.tag(named: "nonexistent")
 				expect(result).to(haveFailed(beAnError(domain: equal(libGit2ErrorDomain))))
 			}
 		}
@@ -526,7 +526,7 @@ class RepositorySpec: QuickSpec {
 				expect(HEAD?.longName).to(equal("HEAD"))
 				expect(HEAD?.oid).to(equal(oid))
 				
-				expect(repo.setHEAD(repo.localBranch(withName: "master").value!)).to(haveSucceeded())
+				expect(repo.setHEAD(repo.localBranch(named: "master").value!)).to(haveSucceeded())
 				expect(repo.HEAD().value?.shortName).to(equal("master"))
 			}
 		}
@@ -537,7 +537,7 @@ class RepositorySpec: QuickSpec {
 				let oid = repo.HEAD().value!.oid
 				expect(repo.HEAD().value?.longName).to(equal("HEAD"))
 				
-				let branch = repo.localBranch(withName: "another-branch").value!
+				let branch = repo.localBranch(named: "another-branch").value!
 				expect(repo.setHEAD(branch)).to(haveSucceeded())
 				expect(repo.HEAD().value?.shortName).to(equal(branch.name))
 				
@@ -561,7 +561,7 @@ class RepositorySpec: QuickSpec {
 				expect(HEAD?.longName).to(equal("HEAD"))
 				expect(HEAD?.oid).to(equal(oid))
 
-				expect(repo.checkout(repo.localBranch(withName: "master").value!, strategy: CheckoutStrategy.None)).to(haveSucceeded())
+				expect(repo.checkout(repo.localBranch(named: "master").value!, strategy: CheckoutStrategy.None)).to(haveSucceeded())
 				expect(repo.HEAD().value?.shortName).to(equal("master"))
 			}
 
@@ -586,7 +586,7 @@ class RepositorySpec: QuickSpec {
 				let oid = repo.HEAD().value!.oid
 				expect(repo.HEAD().value?.longName).to(equal("HEAD"))
 				
-				let branch = repo.localBranch(withName: "another-branch").value!
+				let branch = repo.localBranch(named: "another-branch").value!
 				expect(repo.checkout(branch, strategy: CheckoutStrategy.None)).to(haveSucceeded())
 				expect(repo.HEAD().value?.shortName).to(equal(branch.name))
 				
