@@ -11,9 +11,9 @@ import libgit2
 
 /// An identifier for a Git object.
 public struct OID {
-	
+
 	// MARK: - Initializers
-	
+
 	/// Create an instance from a hex formatted string.
 	///
 	/// string - A 40-byte hex formatted string.
@@ -22,26 +22,26 @@ public struct OID {
 		if string.lengthOfBytes(using: String.Encoding.ascii) > 40 {
 			return nil
 		}
-		
+
 		let pointer = UnsafeMutablePointer<git_oid>.allocate(capacity: 1)
 		let result = git_oid_fromstr(pointer, string)
-		
+
 		if result < GIT_OK.rawValue {
 			pointer.deallocate(capacity: 1)
 			return nil
 		}
-		
+
 		oid = pointer.pointee
 		pointer.deallocate(capacity: 1)
 	}
-	
+
 	/// Create an instance from a libgit2 `git_oid`.
 	public init(_ oid: git_oid) {
 		self.oid = oid
 	}
-	
+
 	// MARK: - Properties
-	
+
 	public let oid: git_oid
 }
 
@@ -51,7 +51,7 @@ extension OID: CustomStringConvertible {
 		let string = UnsafeMutablePointer<Int8>.allocate(capacity: length)
 		var oid = self.oid
 		git_oid_fmt(string, &oid)
-		
+
 		return String(bytesNoCopy: string, length: length, encoding: .ascii, freeWhenDone: true)!
 	}
 }

@@ -36,7 +36,7 @@ class ReferenceSpec: QuickSpec {
 				expect(ref.oid).to(equal(OID(string: "c4ed03a6b7d7ce837d31d83757febbe84dd465fd")!))
 			}
 		}
-		
+
 		describe("==(Reference, Reference)") {
 			it("should be true with equal references") {
 				let repo = Fixtures.simpleRepository
@@ -44,7 +44,7 @@ class ReferenceSpec: QuickSpec {
 				let ref2 = repo.withGitReference(named: "refs/heads/master") { Reference($0) }
 				expect(ref1).to(equal(ref2))
 			}
-			
+
 			it("should be false with unequal references") {
 				let repo = Fixtures.simpleRepository
 				let ref1 = repo.withGitReference(named: "refs/heads/master") { Reference($0) }
@@ -78,7 +78,7 @@ class BranchSpec: QuickSpec {
 				expect(branch.isLocal).to(beTrue())
 				expect(branch.isRemote).to(beFalse())
 			}
-			
+
 			it("should work with symoblic refs") {
 				let repo = Fixtures.mantleRepository
 				let branch = repo.withGitReference(named: "refs/remotes/origin/HEAD") { Branch($0)! }
@@ -91,7 +91,7 @@ class BranchSpec: QuickSpec {
 				expect(branch.isRemote).to(beTrue())
 			}
 		}
-		
+
 		describe("==(Branch, Branch)") {
 			it("should be true with equal branches") {
 				let repo = Fixtures.simpleRepository
@@ -99,7 +99,7 @@ class BranchSpec: QuickSpec {
 				let branch2 = repo.withGitReference(named: "refs/heads/master") { Branch($0)! }
 				expect(branch1).to(equal(branch2))
 			}
-			
+
 			it("should be false with unequal branches") {
 				let repo = Fixtures.simpleRepository
 				let branch1 = repo.withGitReference(named: "refs/heads/master") { Branch($0)! }
@@ -130,7 +130,7 @@ class TagReferenceSpec: QuickSpec {
 				expect(tag.shortName).to(equal(tag.name))
 				expect(tag.oid).to(equal(OID(string: "24e1e40ee77525d9e279f079f9906ad6d98c8940")!))
 			}
-			
+
 			it("should work with a lightweight tag") {
 				let repo = Fixtures.mantleRepository
 				let tag = repo.withGitReference(named: "refs/tags/1.5.4") { TagReference($0)! }
@@ -139,14 +139,14 @@ class TagReferenceSpec: QuickSpec {
 				expect(tag.shortName).to(equal(tag.name))
 				expect(tag.oid).to(equal(OID(string: "d9dc95002cfbf3929d2b70d2c8a77e6bf5b1b88a")!))
 			}
-			
+
 			it("should return nil if not a tag") {
 				let repo = Fixtures.simpleRepository
 				let tag = repo.withGitReference(named: "refs/heads/master") { TagReference($0) }
 				expect(tag).to(beNil())
 			}
 		}
-		
+
 		describe("==(TagReference, TagReference)") {
 			it("should be true with equal tag references") {
 				let repo = Fixtures.simpleRepository
@@ -154,7 +154,7 @@ class TagReferenceSpec: QuickSpec {
 				let tag2 = repo.withGitReference(named: "refs/tags/tag-2") { TagReference($0)! }
 				expect(tag1).to(equal(tag2))
 			}
-			
+
 			it("should be false with unequal tag references") {
 				let repo = Fixtures.simpleRepository
 				let tag1 = repo.withGitReference(named: "refs/tags/tag-1") { TagReference($0)! }
@@ -162,7 +162,7 @@ class TagReferenceSpec: QuickSpec {
 				expect(tag1).notTo(equal(tag2))
 			}
 		}
-		
+
 		describe("TagReference.hashValue") {
 			it("should be equal with equal references") {
 				let repo = Fixtures.simpleRepository

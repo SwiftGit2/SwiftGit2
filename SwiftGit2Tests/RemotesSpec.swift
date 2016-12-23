@@ -31,12 +31,12 @@ class RemoteSpec: QuickSpec {
 			it("should initialize its properties") {
 				let repo = Fixtures.mantleRepository
 				let remote = repo.withGitRemote(named: "upstream") { Remote($0) }
-				
+
 				expect(remote.name).to(equal("upstream"))
 				expect(remote.URL).to(equal("git@github.com:Mantle/Mantle.git"))
 			}
 		}
-		
+
 		describe("==(Remote, Remote)") {
 			it("should be true with equal objects") {
 				let repo = Fixtures.mantleRepository
@@ -44,7 +44,7 @@ class RemoteSpec: QuickSpec {
 				let remote2 = remote1
 				expect(remote1).to(equal(remote2))
 			}
-			
+
 			it("should be false with unequal objcets") {
 				let repo = Fixtures.mantleRepository
 				let origin = repo.withGitRemote(named: "origin") { Remote($0) }
@@ -52,7 +52,7 @@ class RemoteSpec: QuickSpec {
 				expect(origin).notTo(equal(upstream))
 			}
 		}
-		
+
 		describe("Remote.hashValue") {
 			it("should be equal with equal objcets") {
 				let repo = Fixtures.mantleRepository

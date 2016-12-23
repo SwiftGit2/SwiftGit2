@@ -12,7 +12,7 @@ import libgit2
 public protocol PointerType: Equatable, Hashable {
 	/// The OID of the referenced object.
 	var oid: OID { get }
-	
+
 	/// The libgit2 `git_otype` of the referenced object.
 	var type: git_otype { get }
 }
@@ -27,7 +27,7 @@ public enum Pointer: PointerType {
 	case Tree(OID)
 	case Blob(OID)
 	case Tag(OID)
-	
+
 	public var oid: OID {
 		switch self {
 		case let .Commit(oid):
@@ -40,7 +40,7 @@ public enum Pointer: PointerType {
 			return oid
 		}
 	}
-	
+
 	public var type: git_otype {
 		switch self {
 		case .Commit:
@@ -53,7 +53,7 @@ public enum Pointer: PointerType {
 			return GIT_OBJ_TAG
 		}
 	}
-	
+
 	/// Create an instance with an OID and a libgit2 `git_otype`.
 	init?(oid: OID, type: git_otype) {
 		switch type {
@@ -94,7 +94,7 @@ extension Pointer: CustomStringConvertible {
 
 public struct PointerTo<T: ObjectType>: PointerType {
 	public let oid: OID
-	
+
 	public var type: git_otype {
 		return T.type
 	}
