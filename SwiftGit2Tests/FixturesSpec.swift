@@ -13,7 +13,7 @@ class FixturesSpec: QuickSpec {
 		beforeSuite {
 			Fixtures.sharedInstance.setUp()
 		}
-		
+
 		afterSuite {
 			Fixtures.sharedInstance.tearDown()
 		}

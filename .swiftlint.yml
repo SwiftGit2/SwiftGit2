@@ -25,4 +25,4 @@ trailing_comma:
 
 trailing_whitespace:
   ignores_comments: false
-  ignores_empty_lines: true
+  ignores_empty_lines: false
