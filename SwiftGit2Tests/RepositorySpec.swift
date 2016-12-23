@@ -74,7 +74,7 @@ class RepositorySpec: QuickSpec {
 
 			it("should be able to clone a remote repository") {
 				let remoteRepoURL = URL(string: "https://github.com/libgit2/libgit2.github.com.git")
-				let localURL =  self.temporaryURL(forPurpose: "public-remote-clone")
+				let localURL = self.temporaryURL(forPurpose: "public-remote-clone")
 				let cloneResult = Repository.clone(from: remoteRepoURL!, to: localURL)
 
 				expect(cloneResult).to(haveSucceeded())
@@ -99,7 +99,7 @@ class RepositorySpec: QuickSpec {
 
 				it("should be able to clone a remote repository requiring credentials") {
 					let remoteRepoURL = URL(string: privateRepo)
-					let localURL =  self.temporaryURL(forPurpose: "private-remote-clone")
+					let localURL = self.temporaryURL(forPurpose: "private-remote-clone")
 					let credentials = Credentials.SSHMemory(username: gitUsername,
 					                                        publicKey: publicKey,
 					                                        privateKey: privateKey,
