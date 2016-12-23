@@ -570,7 +570,7 @@ class RepositorySpec: QuickSpec {
 				let oid = OID(string: "315b3f344221db91ddc54b269f3c9af422da0f2e")!
 				expect(repo.HEAD().value?.shortName).to(equal("master"))
 
-				expect(repo.checkout(oid, strategy: .None, progress: { (path, completedSteps, totalSteps) -> Void in
+				expect(repo.checkout(oid, strategy: .None, progress: { (_, completedSteps, totalSteps) -> Void in
 					expect(completedSteps).to(beLessThanOrEqualTo(totalSteps))
 				})).to(haveSucceeded())
 
