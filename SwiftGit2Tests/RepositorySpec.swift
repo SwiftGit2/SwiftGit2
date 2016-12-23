@@ -91,15 +91,21 @@ class RepositorySpec: QuickSpec {
 
 			let env = ProcessInfo.processInfo.environment
 
-			if let privateRepo = env["SG2TestPrivateRepo"], let gitUsername = env["SG2TestUsername"], let publicKey = env["SG2TestPublicKey"],
-				let privateKey = env["SG2TestPrivateKey"], let passphrase = env["SG2TestPassphrase"] {
+			if let privateRepo = env["SG2TestPrivateRepo"],
+				let gitUsername = env["SG2TestUsername"],
+				let publicKey = env["SG2TestPublicKey"],
+				let privateKey = env["SG2TestPrivateKey"],
+				let passphrase = env["SG2TestPassphrase"] {
 
 				it("should be able to clone a remote repository requiring credentials") {
 					let remoteRepoURL = URL(string: privateRepo)
 					let localURL =  self.temporaryURL(forPurpose: "private-remote-clone")
+					let credentials = Credentials.SSHMemory(username: gitUsername,
+					                                        publicKey: publicKey,
+					                                        privateKey: privateKey,
+					                                        passphrase: passphrase)
 
-					let cloneResult = Repository.clone(from: remoteRepoURL!, to: localURL,
-						credentials: .SSHMemory(username: gitUsername, publicKey: publicKey, privateKey: privateKey, passphrase: passphrase))
+					let cloneResult = Repository.clone(from: remoteRepoURL!, to: localURL, credentials: credentials)
 
 					expect(cloneResult).to(haveSucceeded())
 

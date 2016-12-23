@@ -31,9 +31,10 @@ public enum Credentials {
 }
 
 /// Handle the request of credentials, passing through to a wrapped block after converting the arguments.
-/// Converts the result to the correct error code required by libgit2 (0 = success, 1 = rejected setting creds, -1 error)
-internal func credentialsCallback(cred: UnsafeMutablePointer<UnsafeMutablePointer<git_cred>?>?, _: UnsafePointer<Int8>?, _: UnsafePointer<Int8>?, _: UInt32,
-	payload: UnsafeMutableRawPointer?) -> Int32 {
+/// Converts the result to the correct error code required by libgit2 (0 = success, 1 = rejected setting creds,
+/// -1 = error)
+internal func credentialsCallback(cred: UnsafeMutablePointer<UnsafeMutablePointer<git_cred>?>?, _: UnsafePointer<Int8>?,
+                                  _: UnsafePointer<Int8>?, _: UInt32, payload: UnsafeMutableRawPointer?) -> Int32 {
 	let result: Int32
 
 	switch Credentials.fromPointer(payload!) {

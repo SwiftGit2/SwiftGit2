@@ -14,7 +14,8 @@ public typealias CheckoutProgressBlock = (String?, Int, Int) -> Void
 
 /// Helper function used as the libgit2 progress callback in git_checkout_options.
 /// This is a function with a type signature of git_checkout_progress_cb.
-private func checkoutProgressCallback(path: UnsafePointer<Int8>?, completedSteps: Int, totalSteps: Int, payload: UnsafeMutableRawPointer?) -> Void {
+private func checkoutProgressCallback(path: UnsafePointer<Int8>?, completedSteps: Int, totalSteps: Int,
+                                      payload: UnsafeMutableRawPointer?) -> Void {
 	if let payload = payload {
 		let buffer = payload.assumingMemoryBound(to: CheckoutProgressBlock.self)
 		let block: CheckoutProgressBlock
@@ -33,7 +34,8 @@ private func checkoutProgressCallback(path: UnsafePointer<Int8>?, completedSteps
 /// :param: strategy The strategy to be used when checking out the repo, see CheckoutStrategy
 /// :param: progress A block that's called with the progress of the checkout.
 /// :returns: Returns a git_checkout_options struct with the progress members set.
-private func checkoutOptions(strategy: CheckoutStrategy, progress: CheckoutProgressBlock? = nil) -> git_checkout_options {
+private func checkoutOptions(strategy: CheckoutStrategy,
+                             progress: CheckoutProgressBlock? = nil) -> git_checkout_options {
 	// Do this because GIT_CHECKOUT_OPTIONS_INIT is unavailable in swift
 	let pointer = UnsafeMutablePointer<git_checkout_options>.allocate(capacity: 1)
 	git_checkout_init_options(pointer, UInt32(GIT_CHECKOUT_OPTIONS_VERSION))
@@ -67,8 +69,7 @@ private func fetchOptions(credentials: Credentials) -> git_fetch_options {
 }
 
 private func cloneOptions(bare: Bool = false, localClone: Bool = false, fetchOptions: git_fetch_options? = nil,
-	checkoutOptions: git_checkout_options? = nil) -> git_clone_options {
-
+                          checkoutOptions: git_checkout_options? = nil) -> git_clone_options {
 	let pointer = UnsafeMutablePointer<git_clone_options>.allocate(capacity: 1)
 	git_clone_init_options(pointer, UInt32(GIT_CLONE_OPTIONS_VERSION))
 
@@ -129,7 +130,8 @@ final public class Repository {
 	///
 	/// Returns a `Result` with a `Repository` or an error.
 	class public func clone(from remoteURL: URL, to localURL: URL, localClone: Bool = false, bare: Bool = false,
-		credentials: Credentials = .Default(), checkoutStrategy: CheckoutStrategy = .Safe, checkoutProgress: CheckoutProgressBlock? = nil) -> Result<Repository, NSError> {
+	                        credentials: Credentials = .Default(), checkoutStrategy: CheckoutStrategy = .Safe,
+	                        checkoutProgress: CheckoutProgressBlock? = nil) -> Result<Repository, NSError> {
 			var options = cloneOptions(
 				bare: bare, localClone: localClone,
 				fetchOptions: fetchOptions(credentials: credentials),
@@ -185,7 +187,8 @@ final public class Repository {
 	///
 	/// Returns the result of calling `transform` or an error if the object
 	/// cannot be loaded.
-	private func withGitObject<T>(_ oid: OID, type: git_otype, transform: (OpaquePointer) -> Result<T, NSError>) -> Result<T, NSError> {
+	private func withGitObject<T>(_ oid: OID, type: git_otype,
+	                              transform: (OpaquePointer) -> Result<T, NSError>) -> Result<T, NSError> {
 		var pointer: OpaquePointer? = nil
 		var oid = oid.oid
 		let result = git_object_lookup(&pointer, self.pointer, &oid, type)
@@ -491,7 +494,8 @@ final public class Repository {
 	/// :param: strategy The checkout strategy to use.
 	/// :param: progress A block that's called with the progress of the checkout.
 	/// :returns: Returns a result with void or the error that occurred.
-	public func checkout(_ oid: OID, strategy: CheckoutStrategy, progress: CheckoutProgressBlock? = nil) -> Result<(), NSError> {
+	public func checkout(_ oid: OID, strategy: CheckoutStrategy,
+	                     progress: CheckoutProgressBlock? = nil) -> Result<(), NSError> {
 		return setHEAD(oid).flatMap { self.checkout(strategy: strategy, progress: progress) }
 	}
 
@@ -501,7 +505,8 @@ final public class Repository {
 	/// :param: strategy The checkout strategy to use.
 	/// :param: progress A block that's called with the progress of the checkout.
 	/// :returns: Returns a result with void or the error that occurred.
-	public func checkout(_ reference: ReferenceType, strategy: CheckoutStrategy, progress: CheckoutProgressBlock? = nil) -> Result<(), NSError> {
+	public func checkout(_ reference: ReferenceType, strategy: CheckoutStrategy,
+	                     progress: CheckoutProgressBlock? = nil) -> Result<(), NSError> {
 		return setHEAD(reference).flatMap { self.checkout(strategy: strategy, progress: progress) }
 	}
 }
