@@ -115,12 +115,12 @@ class RepositorySpec: QuickSpec {
 			}
 		}
 		
-		describe("Repository.blob(withIdentity:)") {
+		describe("Repository.blob(_:)") {
 			it("should return the commit if it exists") {
 				let repo = Fixtures.simpleRepository
 				let oid = OID(string: "41078396f5187daed5f673e4a13b185bbad71fba")!
 				
-				let result = repo.blob(withIdentity: oid)
+				let result = repo.blob(oid)
 				expect(result.map { $0.oid }).to(haveSucceeded(equal(oid)))
 			}
 			
@@ -128,7 +128,7 @@ class RepositorySpec: QuickSpec {
 				let repo = Fixtures.simpleRepository
 				let oid = OID(string: "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")!
 				
-				let result = repo.blob(withIdentity: oid)
+				let result = repo.blob(oid)
 				expect(result).to(haveFailed(beAnError(domain: equal(libGit2ErrorDomain))))
 			}
 			
@@ -137,17 +137,17 @@ class RepositorySpec: QuickSpec {
 				// This is a tree in the repository
 				let oid = OID(string: "f93e3a1a1525fb5b91020da86e44810c87a2d7bc")!
 				
-				let result = repo.blob(withIdentity: oid)
+				let result = repo.blob(oid)
 				expect(result).to(haveFailed())
 			}
 		}
 		
-		describe("Repository.commit(withIdentity:)") {
+		describe("Repository.commit(_:)") {
 			it("should return the commit if it exists") {
 				let repo = Fixtures.simpleRepository
 				let oid = OID(string: "dc220a3f0c22920dab86d4a8d3a3cb7e69d6205a")!
 				
-				let result = repo.commit(withIdentity: oid)
+				let result = repo.commit(oid)
 				expect(result.map { $0.oid }).to(haveSucceeded(equal(oid)))
 			}
 			
@@ -155,7 +155,7 @@ class RepositorySpec: QuickSpec {
 				let repo = Fixtures.simpleRepository
 				let oid = OID(string: "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")!
 				
-				let result = repo.commit(withIdentity: oid)
+				let result = repo.commit(oid)
 				expect(result).to(haveFailed(beAnError(domain: equal(libGit2ErrorDomain))))
 			}
 			
@@ -164,17 +164,17 @@ class RepositorySpec: QuickSpec {
 				// This is a tree in the repository
 				let oid = OID(string: "f93e3a1a1525fb5b91020da86e44810c87a2d7bc")!
 				
-				let result = repo.commit(withIdentity: oid)
+				let result = repo.commit(oid)
 				expect(result).to(haveFailed(beAnError(domain: equal(libGit2ErrorDomain))))
 			}
 		}
 		
-		describe("Repository.tag(withIdentity:)") {
+		describe("Repository.tag(_:)") {
 			it("should return the tag if it exists") {
 				let repo = Fixtures.simpleRepository
 				let oid = OID(string: "57943b8ee00348180ceeedc960451562750f6d33")!
 				
-				let result = repo.tag(withIdentity: oid)
+				let result = repo.tag(oid)
 				expect(result.map { $0.oid }).to(haveSucceeded(equal(oid)))
 			}
 			
@@ -182,7 +182,7 @@ class RepositorySpec: QuickSpec {
 				let repo = Fixtures.simpleRepository
 				let oid = OID(string: "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")!
 				
-				let result = repo.tag(withIdentity: oid)
+				let result = repo.tag(oid)
 				expect(result).to(haveFailed(beAnError(domain: equal(libGit2ErrorDomain))))
 			}
 			
@@ -191,17 +191,17 @@ class RepositorySpec: QuickSpec {
 				// This is a commit in the repository
 				let oid = OID(string: "dc220a3f0c22920dab86d4a8d3a3cb7e69d6205a")!
 				
-				let result = repo.tag(withIdentity: oid)
+				let result = repo.tag(oid)
 				expect(result).to(haveFailed(beAnError(domain: equal(libGit2ErrorDomain))))
 			}
 		}
 		
-		describe("Repository.tree(withIdentity:)") {
+		describe("Repository.tree(_:)") {
 			it("should return the tree if it exists") {
 				let repo = Fixtures.simpleRepository
 				let oid = OID(string: "f93e3a1a1525fb5b91020da86e44810c87a2d7bc")!
 				
-				let result = repo.tree(withIdentity: oid)
+				let result = repo.tree(oid)
 				expect(result.map { $0.oid }).to(haveSucceeded(equal(oid)))
 			}
 			
@@ -209,7 +209,7 @@ class RepositorySpec: QuickSpec {
 				let repo = Fixtures.simpleRepository
 				let oid = OID(string: "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")!
 				
-				let result = repo.tree(withIdentity: oid)
+				let result = repo.tree(oid)
 				expect(result).to(haveFailed(beAnError(domain: equal(libGit2ErrorDomain))))
 			}
 			
@@ -218,48 +218,48 @@ class RepositorySpec: QuickSpec {
 				// This is a commit in the repository
 				let oid = OID(string: "dc220a3f0c22920dab86d4a8d3a3cb7e69d6205a")!
 				
-				let result = repo.tree(withIdentity: oid)
+				let result = repo.tree(oid)
 				expect(result).to(haveFailed(beAnError(domain: equal(libGit2ErrorDomain))))
 			}
 		}
 		
-		describe("Repository.object(withIdentity:)") {
+		describe("Repository.object(_:)") {
 			it("should work with a blob") {
 				let repo   = Fixtures.simpleRepository
 				let oid    = OID(string: "41078396f5187daed5f673e4a13b185bbad71fba")!
-				let blob   = repo.blob(withIdentity: oid).value
-				let result = repo.object(withIdentity: oid)
+				let blob   = repo.blob(oid).value
+				let result = repo.object(oid)
 				expect(result.map { $0 as! Blob }).to(haveSucceeded(equal(blob)))
 			}
 			
 			it("should work with a commit") {
 				let repo   = Fixtures.simpleRepository
 				let oid    = OID(string: "dc220a3f0c22920dab86d4a8d3a3cb7e69d6205a")!
-				let commit = repo.commit(withIdentity: oid).value
-				let result = repo.object(withIdentity: oid)
+				let commit = repo.commit(oid).value
+				let result = repo.object(oid)
 				expect(result.map { $0 as! Commit }).to(haveSucceeded(equal(commit)))
 			}
 			
 			it("should work with a tag") {
 				let repo   = Fixtures.simpleRepository
 				let oid    = OID(string: "57943b8ee00348180ceeedc960451562750f6d33")!
-				let tag    = repo.tag(withIdentity: oid).value
-				let result = repo.object(withIdentity: oid)
+				let tag    = repo.tag(oid).value
+				let result = repo.object(oid)
 				expect(result.map { $0 as! Tag }).to(haveSucceeded(equal(tag)))
 			}
 			
 			it("should work with a tree") {
 				let repo   = Fixtures.simpleRepository
 				let oid    = OID(string: "f93e3a1a1525fb5b91020da86e44810c87a2d7bc")!
-				let tree   = repo.tree(withIdentity: oid).value
-				let result = repo.object(withIdentity: oid)
+				let tree   = repo.tree(oid).value
+				let result = repo.object(oid)
 				expect(result.map { $0 as! Tree }).to(haveSucceeded(equal(tree)))
 			}
 			
 			it("should error if there's no object with that oid") {
 				let repo   = Fixtures.simpleRepository
 				let oid    = OID(string: "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")!
-				let result = repo.object(withIdentity: oid)
+				let result = repo.object(oid)
 				expect(result).to(haveFailed(beAnError(domain: equal(libGit2ErrorDomain))))
 			}
 		}
@@ -270,7 +270,7 @@ class RepositorySpec: QuickSpec {
 				let oid = OID(string: "dc220a3f0c22920dab86d4a8d3a3cb7e69d6205a")!
 				
 				let pointer = PointerTo<Commit>(oid)
-				let commit = repo.commit(withIdentity: oid).value!
+				let commit = repo.commit(oid).value!
 				expect(repo.object(from: pointer)).to(haveSucceeded(equal(commit)))
 			}
 			
@@ -279,7 +279,7 @@ class RepositorySpec: QuickSpec {
 				let oid = OID(string: "f93e3a1a1525fb5b91020da86e44810c87a2d7bc")!
 				
 				let pointer = PointerTo<Tree>(oid)
-				let tree = repo.tree(withIdentity: oid).value!
+				let tree = repo.tree(oid).value!
 				expect(repo.object(from: pointer)).to(haveSucceeded(equal(tree)))
 			}
 			
@@ -288,7 +288,7 @@ class RepositorySpec: QuickSpec {
 				let oid = OID(string: "41078396f5187daed5f673e4a13b185bbad71fba")!
 				
 				let pointer = PointerTo<Blob>(oid)
-				let blob = repo.blob(withIdentity: oid).value!
+				let blob = repo.blob(oid).value!
 				expect(repo.object(from: pointer)).to(haveSucceeded(equal(blob)))
 			}
 			
@@ -297,7 +297,7 @@ class RepositorySpec: QuickSpec {
 				let oid = OID(string: "57943b8ee00348180ceeedc960451562750f6d33")!
 				
 				let pointer = PointerTo<Tag>(oid)
-				let tag = repo.tag(withIdentity: oid).value!
+				let tag = repo.tag(oid).value!
 				expect(repo.object(from: pointer)).to(haveSucceeded(equal(tag)))
 			}
 		}
@@ -308,7 +308,7 @@ class RepositorySpec: QuickSpec {
 				let oid = OID(string: "dc220a3f0c22920dab86d4a8d3a3cb7e69d6205a")!
 				
 				let pointer = Pointer.Commit(oid)
-				let commit = repo.commit(withIdentity: oid).value!
+				let commit = repo.commit(oid).value!
 				let result = repo.object(from: pointer).map { $0 as! Commit }
 				expect(result).to(haveSucceeded(equal(commit)))
 			}
@@ -318,7 +318,7 @@ class RepositorySpec: QuickSpec {
 				let oid = OID(string: "f93e3a1a1525fb5b91020da86e44810c87a2d7bc")!
 				
 				let pointer = Pointer.Tree(oid)
-				let tree = repo.tree(withIdentity: oid).value!
+				let tree = repo.tree(oid).value!
 				let result = repo.object(from: pointer).map { $0 as! Tree }
 				expect(result).to(haveSucceeded(equal(tree)))
 			}
@@ -328,7 +328,7 @@ class RepositorySpec: QuickSpec {
 				let oid = OID(string: "41078396f5187daed5f673e4a13b185bbad71fba")!
 				
 				let pointer = Pointer.Blob(oid)
-				let blob = repo.blob(withIdentity: oid).value!
+				let blob = repo.blob(oid).value!
 				let result = repo.object(from: pointer).map { $0 as! Blob }
 				expect(result).to(haveSucceeded(equal(blob)))
 			}
@@ -338,7 +338,7 @@ class RepositorySpec: QuickSpec {
 				let oid = OID(string: "57943b8ee00348180ceeedc960451562750f6d33")!
 				
 				let pointer = Pointer.Tag(oid)
-				let tag = repo.tag(withIdentity: oid).value!
+				let tag = repo.tag(oid).value!
 				let result = repo.object(from: pointer).map { $0 as! Tag }
 				expect(result).to(haveSucceeded(equal(tag)))
 			}

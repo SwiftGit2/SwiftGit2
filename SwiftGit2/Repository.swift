@@ -185,7 +185,7 @@ final public class Repository {
 	///
 	/// Returns the result of calling `transform` or an error if the object
 	/// cannot be loaded.
-	private func withGitObject<T>(withIdentity oid: OID, type: git_otype, transform: (OpaquePointer) -> Result<T, NSError>) -> Result<T, NSError> {
+	private func withGitObject<T>(_ oid: OID, type: git_otype, transform: (OpaquePointer) -> Result<T, NSError>) -> Result<T, NSError> {
 		var pointer: OpaquePointer? = nil
 		var oid = oid.oid
 		let result = git_object_lookup(&pointer, self.pointer, &oid, type)
@@ -199,8 +199,8 @@ final public class Repository {
 		return value
 	}
 	
-	private func withGitObject<T>(withIdentity oid: OID, type: git_otype, transform: (OpaquePointer) -> T) -> Result<T, NSError> {
-		return withGitObject(withIdentity: oid, type: type) { Result.success(transform($0)) }
+	private func withGitObject<T>(_ oid: OID, type: git_otype, transform: (OpaquePointer) -> T) -> Result<T, NSError> {
+		return withGitObject(oid, type: type) { Result.success(transform($0)) }
 	}
 	
 	/// Loads the object with the given OID.
@@ -208,8 +208,8 @@ final public class Repository {
 	/// oid - The OID of the blob to look up.
 	///
 	/// Returns a `Blob`, `Commit`, `Tag`, or `Tree` if one exists, or an error.
-	public func object(withIdentity oid: OID) -> Result<ObjectType, NSError> {
-		return withGitObject(withIdentity: oid, type: GIT_OBJ_ANY) { object in
+	public func object(_ oid: OID) -> Result<ObjectType, NSError> {
+		return withGitObject(oid, type: GIT_OBJ_ANY) { object in
 			let type = git_object_type(object)
 			if type == Blob.type {
 				return Result.success(Blob(object))
@@ -237,8 +237,8 @@ final public class Repository {
 	/// oid - The OID of the blob to look up.
 	///
 	/// Returns the blob if it exists, or an error.
-	public func blob(withIdentity oid: OID) -> Result<Blob, NSError> {
-		return withGitObject(withIdentity: oid, type: GIT_OBJ_BLOB) { Blob($0) }
+	public func blob(_ oid: OID) -> Result<Blob, NSError> {
+		return withGitObject(oid, type: GIT_OBJ_BLOB) { Blob($0) }
 	}
 	
 	/// Loads the commit with the given OID.
@@ -246,8 +246,8 @@ final public class Repository {
 	/// oid - The OID of the commit to look up.
 	///
 	/// Returns the commit if it exists, or an error.
-	public func commit(withIdentity oid: OID) -> Result<Commit, NSError> {
-		return withGitObject(withIdentity: oid, type: GIT_OBJ_COMMIT) { Commit($0) }
+	public func commit(_ oid: OID) -> Result<Commit, NSError> {
+		return withGitObject(oid, type: GIT_OBJ_COMMIT) { Commit($0) }
 	}
 	
 	/// Loads the tag with the given OID.
@@ -255,8 +255,8 @@ final public class Repository {
 	/// oid - The OID of the tag to look up.
 	///
 	/// Returns the tag if it exists, or an error.
-	public func tag(withIdentity oid: OID) -> Result<Tag, NSError> {
-		return withGitObject(withIdentity: oid, type: GIT_OBJ_TAG) { Tag($0) }
+	public func tag(_ oid: OID) -> Result<Tag, NSError> {
+		return withGitObject(oid, type: GIT_OBJ_TAG) { Tag($0) }
 	}
 	
 	/// Loads the tree with the given OID.
@@ -264,8 +264,8 @@ final public class Repository {
 	/// oid - The OID of the tree to look up.
 	///
 	/// Returns the tree if it exists, or an error.
-	public func tree(withIdentity oid: OID) -> Result<Tree, NSError> {
-		return withGitObject(withIdentity: oid, type: GIT_OBJ_TREE) { Tree($0) }
+	public func tree(_ oid: OID) -> Result<Tree, NSError> {
+		return withGitObject(oid, type: GIT_OBJ_TREE) { Tree($0) }
 	}
 	
 	/// Loads the referenced object from the pointer.
@@ -274,7 +274,7 @@ final public class Repository {
 	///
 	/// Returns the object if it exists, or an error.
 	public func object<T>(from pointer: PointerTo<T>) -> Result<T, NSError> {
-		return withGitObject(withIdentity: pointer.oid, type: pointer.type) { T($0) }
+		return withGitObject(pointer.oid, type: pointer.type) { T($0) }
 	}
 	
 	/// Loads the referenced object from the pointer.
@@ -285,13 +285,13 @@ final public class Repository {
 	public func object(from pointer: Pointer) -> Result<ObjectType, NSError> {
 		switch pointer {
 		case let .Blob(oid):
-			return blob(withIdentity: oid).map { $0 as ObjectType }
+			return blob(oid).map { $0 as ObjectType }
 		case let .Commit(oid):
-			return commit(withIdentity: oid).map { $0 as ObjectType }
+			return commit(oid).map { $0 as ObjectType }
 		case let .Tag(oid):
-			return tag(withIdentity: oid).map { $0 as ObjectType }
+			return tag(oid).map { $0 as ObjectType }
 		case let .Tree(oid):
-			return tree(withIdentity: oid).map { $0 as ObjectType }
+			return tree(oid).map { $0 as ObjectType }
 		}
 	}
 	
