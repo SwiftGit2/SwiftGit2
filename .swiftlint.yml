@@ -7,12 +7,16 @@ disabled_rules:
   - type_body_length
 
 opt_in_rules:
+  - attributes
+  - closure_end_indentation
   - closure_spacing
   - conditional_returns_on_newline
   - empty_count
   - explicit_init
+  - first_where
   - overridden_super_call
   - private_outlet
+  - prohibited_super_call
   - redundant_nil_coalescing
   - switch_case_on_newline
 
