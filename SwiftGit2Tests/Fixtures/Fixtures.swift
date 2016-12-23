@@ -54,22 +54,22 @@ final class Fixtures {
 	
 	// MARK: - Helpers
 	
-	func repositoryWithName(_ name: String) -> Repository {
+	func repository(named name: String) -> Repository {
 		let url = directoryURL.appendingPathComponent(name, isDirectory: true)
-		return Repository.atURL(url).value!
+		return Repository.at(url).value!
 	}
 	
 	// MARK: - The Fixtures
 	
 	class var detachedHeadRepository: Repository {
-		return Fixtures.sharedInstance.repositoryWithName("detached-head")
+		return Fixtures.sharedInstance.repository(named: "detached-head")
 	}
 	
 	class var simpleRepository: Repository {
-		return Fixtures.sharedInstance.repositoryWithName("simple-repository")
+		return Fixtures.sharedInstance.repository(named: "simple-repository")
 	}
 	
 	class var mantleRepository: Repository {
-		return Fixtures.sharedInstance.repositoryWithName("Mantle")
+		return Fixtures.sharedInstance.repository(named: "Mantle")
 	}
 }

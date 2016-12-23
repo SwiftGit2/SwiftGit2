@@ -12,15 +12,17 @@ import Nimble
 import Quick
 import libgit2
 
-func with_git_remote<T>(_ repository: Repository, name: String, f: (OpaquePointer) -> T) -> T {
-	let repository = repository.pointer
-	
-	var pointer: OpaquePointer? = nil
-	git_remote_lookup(&pointer, repository, name)
-	let result = f(pointer!)
-	git_object_free(pointer)
-	
-	return result
+private extension Repository {
+	func withGitRemote<T>(named name: String, transform: (OpaquePointer) -> T) -> T {
+		let repository = self.pointer
+
+		var pointer: OpaquePointer? = nil
+		git_remote_lookup(&pointer, repository, name)
+		let result = transform(pointer!)
+		git_remote_free(pointer)
+
+		return result
+	}
 }
 
 class RemoteSpec: QuickSpec {
@@ -28,7 +30,7 @@ class RemoteSpec: QuickSpec {
 		describe("Remote(pointer)") {
 			it("should initialize its properties") {
 				let repo = Fixtures.mantleRepository
-				let remote = with_git_remote(repo, name: "upstream") { Remote($0) }
+				let remote = repo.withGitRemote(named: "upstream") { Remote($0) }
 				
 				expect(remote.name).to(equal("upstream"))
 				expect(remote.URL).to(equal("git@github.com:Mantle/Mantle.git"))
@@ -38,15 +40,15 @@ class RemoteSpec: QuickSpec {
 		describe("==(Remote, Remote)") {
 			it("should be true with equal objects") {
 				let repo = Fixtures.mantleRepository
-				let remote1 = with_git_remote(repo, name: "upstream") { Remote($0) }
+				let remote1 = repo.withGitRemote(named: "upstream") { Remote($0) }
 				let remote2 = remote1
 				expect(remote1).to(equal(remote2))
 			}
 			
 			it("should be false with unequal objcets") {
 				let repo = Fixtures.mantleRepository
-				let origin = with_git_remote(repo, name: "origin") { Remote($0) }
-				let upstream = with_git_remote(repo, name: "upstream") { Remote($0) }
+				let origin = repo.withGitRemote(named: "origin") { Remote($0) }
+				let upstream = repo.withGitRemote(named: "upstream") { Remote($0) }
 				expect(origin).notTo(equal(upstream))
 			}
 		}
@@ -54,7 +56,7 @@ class RemoteSpec: QuickSpec {
 		describe("Remote.hashValue") {
 			it("should be equal with equal objcets") {
 				let repo = Fixtures.mantleRepository
-				let remote1 = with_git_remote(repo, name: "upstream") { Remote($0) }
+				let remote1 = repo.withGitRemote(named: "upstream") { Remote($0) }
 				let remote2 = remote1
 				expect(remote1.hashValue).to(equal(remote2.hashValue))
 			}

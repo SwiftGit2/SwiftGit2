@@ -38,7 +38,7 @@ public struct CheckoutStrategy: OptionSet {
 		return value
 	}
 	
-	public var git_checkout_strategy: git_checkout_strategy_t {
+	public var gitCheckoutStrategy: git_checkout_strategy_t {
 		return git_checkout_strategy_t(UInt32(self.value))
 	}
 	
