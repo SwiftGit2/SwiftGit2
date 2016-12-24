@@ -239,7 +239,9 @@ class TreeSpec: QuickSpec {
 
 				let tree = repo.withGitObject(oid) { Tree($0) }
 				let entries = [
-					"README.md": Tree.Entry(attributes: Int32(GIT_FILEMODE_BLOB.rawValue), object: .Blob(OID(string: "41078396f5187daed5f673e4a13b185bbad71fba")!), name: "README.md"),
+					"README.md": Tree.Entry(attributes: Int32(GIT_FILEMODE_BLOB.rawValue),
+					                        object: .Blob(OID(string: "41078396f5187daed5f673e4a13b185bbad71fba")!),
+					                        name: "README.md"),
 				]
 				expect(tree.entries).to(equal(entries))
 			}

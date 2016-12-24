@@ -74,7 +74,7 @@ class RepositorySpec: QuickSpec {
 
 			it("should be able to clone a remote repository") {
 				let remoteRepoURL = URL(string: "https://github.com/libgit2/libgit2.github.com.git")
-				let localURL =  self.temporaryURL(forPurpose: "public-remote-clone")
+				let localURL = self.temporaryURL(forPurpose: "public-remote-clone")
 				let cloneResult = Repository.clone(from: remoteRepoURL!, to: localURL)
 
 				expect(cloneResult).to(haveSucceeded())
@@ -91,15 +91,21 @@ class RepositorySpec: QuickSpec {
 
 			let env = ProcessInfo.processInfo.environment
 
-			if let privateRepo = env["SG2TestPrivateRepo"], let gitUsername = env["SG2TestUsername"], let publicKey = env["SG2TestPublicKey"],
-				let privateKey = env["SG2TestPrivateKey"], let passphrase = env["SG2TestPassphrase"] {
+			if let privateRepo = env["SG2TestPrivateRepo"],
+				let gitUsername = env["SG2TestUsername"],
+				let publicKey = env["SG2TestPublicKey"],
+				let privateKey = env["SG2TestPrivateKey"],
+				let passphrase = env["SG2TestPassphrase"] {
 
 				it("should be able to clone a remote repository requiring credentials") {
 					let remoteRepoURL = URL(string: privateRepo)
-					let localURL =  self.temporaryURL(forPurpose: "private-remote-clone")
+					let localURL = self.temporaryURL(forPurpose: "private-remote-clone")
+					let credentials = Credentials.SSHMemory(username: gitUsername,
+					                                        publicKey: publicKey,
+					                                        privateKey: privateKey,
+					                                        passphrase: passphrase)
 
-					let cloneResult = Repository.clone(from: remoteRepoURL!, to: localURL,
-						credentials: .SSHMemory(username: gitUsername, publicKey: publicKey, privateKey: privateKey, passphrase: passphrase))
+					let cloneResult = Repository.clone(from: remoteRepoURL!, to: localURL, credentials: credentials)
 
 					expect(cloneResult).to(haveSucceeded())
 
@@ -570,7 +576,7 @@ class RepositorySpec: QuickSpec {
 				let oid = OID(string: "315b3f344221db91ddc54b269f3c9af422da0f2e")!
 				expect(repo.HEAD().value?.shortName).to(equal("master"))
 
-				expect(repo.checkout(oid, strategy: .None, progress: { (path, completedSteps, totalSteps) -> Void in
+				expect(repo.checkout(oid, strategy: .None, progress: { (_, completedSteps, totalSteps) -> Void in
 					expect(completedSteps).to(beLessThanOrEqualTo(totalSteps))
 				})).to(haveSucceeded())
 
