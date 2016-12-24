@@ -12,47 +12,47 @@ import libgit2
 /// More detail is available in the libgit2 documentation for `git_checkout_strategy_t`.
 public struct CheckoutStrategy: OptionSet {
 	private let value: UInt
-	
+
 	// MARK: - Initialization
-	
+
 	/// Create an instance initialized with `nil`.
 	public init(nilLiteral: ()) {
 		self.value = 0
 	}
-	
+
 	public init(rawValue value: UInt) {
 		self.value = value
 	}
-	
+
 	public init(_ strategy: git_checkout_strategy_t) {
 		self.value = UInt(strategy.rawValue)
 	}
-	
+
 	public static var allZeros: CheckoutStrategy {
 		return self.init(rawValue: 0)
 	}
-	
+
 	// MARK: - Properties
-	
+
 	public var rawValue: UInt {
 		return value
 	}
-	
+
 	public var gitCheckoutStrategy: git_checkout_strategy_t {
 		return git_checkout_strategy_t(UInt32(self.value))
 	}
-	
+
 	// MARK: - Values
-	
+
 	/// Default is a dry run, no actual updates.
 	public static let None = CheckoutStrategy(GIT_CHECKOUT_NONE)
-	
+
 	/// Allow safe updates that cannot overwrite uncommitted data.
 	public static let Safe = CheckoutStrategy(GIT_CHECKOUT_SAFE)
-	
+
 	/// Allow all updates to force working directory to look like index
 	public static let Force = CheckoutStrategy(GIT_CHECKOUT_FORCE)
-	
+
 	/// Allow checkout to recreate missing files.
 	public static let RecreateMissing = CheckoutStrategy(GIT_CHECKOUT_RECREATE_MISSING)
 
@@ -77,10 +77,10 @@ public struct CheckoutStrategy: OptionSet {
 
 	/// Allow checkout to skip unmerged files
 	public static let SkipUnmerged = CheckoutStrategy(GIT_CHECKOUT_SKIP_UNMERGED)
-	
+
 	/// For unmerged files, checkout stage 2 from index
 	public static let UseOurs = CheckoutStrategy(GIT_CHECKOUT_USE_OURS)
-	
+
 	/// For unmerged files, checkout stage 3 from index
 	public static let UseTheirs = CheckoutStrategy(GIT_CHECKOUT_USE_THEIRS)
 
