@@ -1,13 +1,15 @@
-# SwiftGit2 [![Build Status](https://travis-ci.org/SwiftGit2/SwiftGit2.svg)](https://travis-ci.org/SwiftGit2/SwiftGit2)
+# SwiftGit2
+[![Build Status](https://travis-ci.org/SwiftGit2/SwiftGit2.svg)](https://travis-ci.org/SwiftGit2/SwiftGit2) [![Carthage compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)](#carthage) [![GitHub release](https://img.shields.io/github/release/ReactiveCocoa/ReactiveSwift.svg)](https://github.com/ReactiveCocoa/ReactiveSwift/releases) ![Swift 3.0.x](https://img.shields.io/badge/Swift-3.0.x-orange.svg)
+
 Swift bindings to [libgit2](https://github.com/libgit2/libgit2).
 
 ```swift
 let URL: NSURL = ...
-let repo = Repository.atURL(URL)
+let repo = Repository.at(URL)
 if let repo = repo.value {
     let latestCommit: Result<Commit, NSError> = repo
         .HEAD()
-        .flatMap { repo.commitWithOID($0.oid) }
+        .flatMap { repo.commit($0.oid) }
     if let commit = latestCommit.value {
         print("Latest Commit: \(commit.message) by \(commit.author.name)")
     } else {
@@ -17,8 +19,6 @@ if let repo = repo.value {
     println("Could not open repository: \(repo.error)")
 }
 ```
-
-SwiftGit2 requires Xcode 6.3 or later.
 
 ## Design
 SwiftGit2 uses value objects wherever possible. That means using Swift’s `struct`s and `enum`s without holding references to libgit2 objects. This has a number of advantages:
