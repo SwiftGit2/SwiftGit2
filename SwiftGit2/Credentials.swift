@@ -45,7 +45,7 @@ public enum Credentials {
 /// -1 = error)
 internal func credentialsCallback(cred: UnsafeMutablePointer<UnsafeMutablePointer<git_cred>?>?,
                                   url: UnsafePointer<CChar>?,
-                                  username: UnsafePointer<Int8>?,
+                                  username: UnsafePointer<CChar>?,
                                   _: UInt32, payload: UnsafeMutableRawPointer?) -> Int32 {
 	let result: Int32
 
