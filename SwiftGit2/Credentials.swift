@@ -58,7 +58,7 @@ internal func credentialsCallback(cred: UnsafeMutablePointer<UnsafeMutablePointe
 //	}
 
 	// Find username_from_url
-	let name: String?
+	let name: String!
 	if username == nil {
 		name = nil
 	} else {
