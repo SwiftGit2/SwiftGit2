@@ -65,17 +65,15 @@ internal func credentialsCallback(cred: UnsafeMutablePointer<UnsafeMutablePointe
 		name = git_string_converter(username!)
 	}
 
-	print("user name : \(name) \(name!)")
-
 	switch Credentials.fromPointer(payload!) {
 	case .Default():
 		result = git_cred_default_new(cred)
 	case .Agent():
 		result = git_cred_ssh_key_from_agent(cred, name!)
 	case .Plaintext(let password):
-		result = git_cred_userpass_plaintext_new(cred, name, password)
+		result = git_cred_userpass_plaintext_new(cred, name!, password)
 	case .SSHMemory(let publicKey, let privateKey, let passphrase):
-		result = git_cred_ssh_key_memory_new(cred, name, publicKey, privateKey, passphrase)
+		result = git_cred_ssh_key_memory_new(cred, name!, publicKey, privateKey, passphrase)
 	}
 
 	return (result != GIT_OK.rawValue) ? -1 : 0
