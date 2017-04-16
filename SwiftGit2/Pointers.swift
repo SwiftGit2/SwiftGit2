@@ -23,33 +23,33 @@ public func == <P: PointerType>(lhs: P, rhs: P) -> Bool {
 
 /// A pointer to a git object.
 public enum Pointer: PointerType {
-	case Commit(OID)
-	case Tree(OID)
-	case Blob(OID)
-	case Tag(OID)
+	case commit(OID)
+	case tree(OID)
+	case blob(OID)
+	case tag(OID)
 
 	public var oid: OID {
 		switch self {
-		case let .Commit(oid):
+		case let .commit(oid):
 			return oid
-		case let .Tree(oid):
+		case let .tree(oid):
 			return oid
-		case let .Blob(oid):
+		case let .blob(oid):
 			return oid
-		case let .Tag(oid):
+		case let .tag(oid):
 			return oid
 		}
 	}
 
 	public var type: git_otype {
 		switch self {
-		case .Commit:
+		case .commit:
 			return GIT_OBJ_COMMIT
-		case .Tree:
+		case .tree:
 			return GIT_OBJ_TREE
-		case .Blob:
+		case .blob:
 			return GIT_OBJ_BLOB
-		case .Tag:
+		case .tag:
 			return GIT_OBJ_TAG
 		}
 	}
@@ -58,13 +58,13 @@ public enum Pointer: PointerType {
 	init?(oid: OID, type: git_otype) {
 		switch type {
 		case GIT_OBJ_COMMIT:
-			self = .Commit(oid)
+			self = .commit(oid)
 		case GIT_OBJ_TREE:
-			self = .Tree(oid)
+			self = .tree(oid)
 		case GIT_OBJ_BLOB:
-			self = .Blob(oid)
+			self = .blob(oid)
 		case GIT_OBJ_TAG:
-			self = .Tag(oid)
+			self = .tag(oid)
 		default:
 			return nil
 		}
@@ -80,13 +80,13 @@ extension Pointer: Hashable {
 extension Pointer: CustomStringConvertible {
 	public var description: String {
 		switch self {
-		case .Commit:
+		case .commit:
 			return "commit(\(oid))"
-		case .Tree:
+		case .tree:
 			return "tree(\(oid))"
-		case .Blob:
+		case .blob:
 			return "blob(\(oid))"
-		case .Tag:
+		case .tag:
 			return "tag(\(oid))"
 		}
 	}

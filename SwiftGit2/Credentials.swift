@@ -26,10 +26,10 @@ func git_string_converter(_ cStr: UnsafePointer<CChar>) -> String {
 }
 
 public enum Credentials {
-	case Default()
-	case Agent()
-	case Plaintext(password: String)
-	case SSHMemory(publicKey: String, privateKey: String, passphrase: String)
+	case defaultCred()
+	case agent()
+	case plaintext(password: String)
+	case sshMemory(publicKey: String, privateKey: String, passphrase: String)
 
 	internal static func fromPointer(_ pointer: UnsafeMutableRawPointer) -> Credentials {
 		return Unmanaged<Wrapper<Credentials>>.fromOpaque(UnsafeRawPointer(pointer)).takeRetainedValue().value
@@ -66,13 +66,13 @@ internal func credentialsCallback(cred: UnsafeMutablePointer<UnsafeMutablePointe
 	}
 
 	switch Credentials.fromPointer(payload!) {
-	case .Default():
+	case .defaultCred():
 		result = git_cred_default_new(cred)
-	case .Agent():
+	case .agent():
 		result = git_cred_ssh_key_from_agent(cred, name!)
-	case .Plaintext(let password):
+	case .plaintext(let password):
 		result = git_cred_userpass_plaintext_new(cred, name!, password)
-	case .SSHMemory(let publicKey, let privateKey, let passphrase):
+	case .sshMemory(let publicKey, let privateKey, let passphrase):
 		result = git_cred_ssh_key_memory_new(cred, name!, publicKey, privateKey, passphrase)
 	}
 

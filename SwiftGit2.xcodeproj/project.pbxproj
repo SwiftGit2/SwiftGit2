@@ -996,6 +996,7 @@
 					External,
 					"$(inherited)",
 				);
+				MACOSX_DEPLOYMENT_TARGET = 10.12;
 				OTHER_LDFLAGS = (
 					"-lgit2",
 					"-force_load",
@@ -1024,6 +1025,7 @@
 					External,
 					"$(inherited)",
 				);
+				MACOSX_DEPLOYMENT_TARGET = 10.12;
 				OTHER_LDFLAGS = (
 					"-lgit2",
 					"-force_load",
@@ -1180,6 +1182,7 @@
 				C9CE0DD51E0710BD0053205D /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
