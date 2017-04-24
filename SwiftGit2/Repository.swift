@@ -130,7 +130,7 @@ final public class Repository {
 	///
 	/// Returns a `Result` with a `Repository` or an error.
 	class public func clone(from remoteURL: URL, to localURL: URL, localClone: Bool = false, bare: Bool = false,
-	                        credentials: Credentials = .Default(), checkoutStrategy: CheckoutStrategy = .Safe,
+	                        credentials: Credentials = .default(), checkoutStrategy: CheckoutStrategy = .Safe,
 	                        checkoutProgress: CheckoutProgressBlock? = nil) -> Result<Repository, NSError> {
 			var options = cloneOptions(
 				bare: bare, localClone: localClone,
@@ -287,13 +287,13 @@ final public class Repository {
 	/// Returns the object if it exists, or an error.
 	public func object(from pointer: Pointer) -> Result<ObjectType, NSError> {
 		switch pointer {
-		case let .Blob(oid):
+		case let .blob(oid):
 			return blob(oid).map { $0 as ObjectType }
-		case let .Commit(oid):
+		case let .commit(oid):
 			return commit(oid).map { $0 as ObjectType }
-		case let .Tag(oid):
+		case let .tag(oid):
 			return tag(oid).map { $0 as ObjectType }
-		case let .Tree(oid):
+		case let .tree(oid):
 			return tree(oid).map { $0 as ObjectType }
 		}
 	}
