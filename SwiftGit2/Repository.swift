@@ -130,7 +130,7 @@ final public class Repository {
 	///
 	/// Returns a `Result` with a `Repository` or an error.
 	class public func clone(from remoteURL: URL, to localURL: URL, localClone: Bool = false, bare: Bool = false,
-	                        credentials: Credentials = .default(), checkoutStrategy: CheckoutStrategy = .Safe,
+	                        credentials: Credentials = .default, checkoutStrategy: CheckoutStrategy = .Safe,
 	                        checkoutProgress: CheckoutProgressBlock? = nil) -> Result<Repository, NSError> {
 			var options = cloneOptions(
 				bare: bare, localClone: localClone,

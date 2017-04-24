@@ -17,7 +17,7 @@ private class Wrapper<T> {
 }
 
 public enum Credentials {
-	case `default`()
+	case `default`
 	case plaintext(username: String, password: String)
 	case sshMemory(username: String, publicKey: String, privateKey: String, passphrase: String)
 
@@ -38,7 +38,7 @@ internal func credentialsCallback(cred: UnsafeMutablePointer<UnsafeMutablePointe
 	let result: Int32
 
 	switch Credentials.fromPointer(payload!) {
-	case .default():
+	case .default:
 		result = git_cred_default_new(cred)
 	case .plaintext(let username, let password):
 		result = git_cred_userpass_plaintext_new(cred, username, password)
