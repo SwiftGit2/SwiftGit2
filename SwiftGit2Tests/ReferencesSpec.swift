@@ -116,6 +116,17 @@ class BranchSpec: QuickSpec {
 				expect(branch1.hashValue).to(equal(branch2.hashValue))
 			}
 		}
+		
+		describe("Branch.allCommits(in:)") {
+			it("should return all (9) commits") {
+				let repo = Fixtures.simpleRepository
+				var count = 0
+				for branch in repo.localBranches().value! {
+					count += branch.allCommits(in: repo).count
+				}
+				expect(count).to(equal(9))
+			}
+		}
 	}
 }
 
