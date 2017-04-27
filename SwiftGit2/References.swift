@@ -64,7 +64,6 @@ extension Reference: Hashable {
 
 /// A git branch.
 public struct Branch: ReferenceType {
-	
 	/// The full name of the reference (e.g., `refs/heads/master`).
 	public let longName: String
 
@@ -103,9 +102,9 @@ public struct Branch: ReferenceType {
 			return nil
 		}
 		name = String(validatingUTF8: namePointer!)!
-
+		
 		longName = String(validatingUTF8: git_reference_name(pointer))!
-
+		
 		var oid: OID
 		if git_reference_type(pointer).rawValue == GIT_REF_SYMBOLIC.rawValue {
 			var resolved: OpaquePointer? = nil
@@ -119,27 +118,6 @@ public struct Branch: ReferenceType {
 			oid = OID(git_reference_target(pointer).pointee)
 		}
 		commit = PointerTo<Commit>(oid)
-	}
-	
-	public func allCommits(in repo: Repository) -> [Commit] {
-		var commits: [Commit] = []
-		var walker: OpaquePointer? = nil
-		var unsafeCommit: OpaquePointer? = nil
-		var oid = self.oid.oid
-		git_revwalk_new(&walker, repo.pointer)
-		git_revwalk_sorting(walker, GIT_SORT_TOPOLOGICAL.rawValue)
-		git_revwalk_push(walker, &oid)
-		while git_revwalk_next(&oid, walker) == GIT_OK.rawValue {
-			guard
-				git_commit_lookup(&unsafeCommit, repo.pointer, &oid) == GIT_OK.rawValue,
-				let commit = unsafeCommit else {
-					return commits
-			}
-			commits += [Commit(commit)]
-			git_commit_free(unsafeCommit)
-		}
-		git_revwalk_free(walker)
-		return commits
 	}
 }
 
