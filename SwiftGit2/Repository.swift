@@ -516,7 +516,7 @@ final public class Repository {
 	/// :param: branch The branch to get all commits from
 	/// :returns: Returns a result with array of branches or the error that occurred
 	public func allCommits(in branch: Branch) -> Result<[Commit], NSError> {
-		var results = Result<[Commit], NSError>(error: NSError(domain: "", code: -1))
+		var commits: [Commit] = []
 		var walker: OpaquePointer? = nil
 		var unsafeCommit: OpaquePointer? = nil
 		var oid = branch.oid.oid
@@ -528,7 +528,8 @@ final public class Repository {
 		git_revwalk_sorting(walker, GIT_SORT_TIME.rawValue)
 		git_revwalk_push(walker, &oid)
 		while git_revwalk_next(&oid, walker) == GIT_OK.rawValue {
-			guard git_commit_lookup(&unsafeCommit, self.pointer, &oid) == GIT_OK.rawValue else {
+			let result = git_commit_lookup(&unsafeCommit, self.pointer, &oid)
+			guard result == GIT_OK.rawValue else {
 				return Result.failure(NSError(gitError: result, pointOfFailure: "git_commit_lookup"))
 			}
 			guard let commit = unsafeCommit else {
