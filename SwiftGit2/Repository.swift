@@ -511,7 +511,7 @@ final public class Repository {
 	}
 	
 	
-	/// Load all commits in the specified branch in topological & time order
+	/// Load all commits in the specified branch in topological & time order descending
 	///
 	/// :param: branch The branch to get all commits from
 	/// :returns: Returns a result with array of branches or the error that occurred
