@@ -605,9 +605,13 @@ class RepositorySpec: QuickSpec {
 			it("should return all (9) commits") {
 				let repo = Fixtures.simpleRepository
 				let branches = repo.localBranches().value!
-				let commits = branches.map { repo.allCommits(in: $0).value!.map { $0 } }
-				let count = commits.reduce(0) { $0 + $1.count }
-				let expected = 9
+                var count = 0
+                let expected = 9
+				for branch in branches {
+                    while let commit = repo.commits(in: branch).next() {
+                        count += 1
+                    }
+				}
 				expect(count).to(equal(expected))
 			}
 		}
