@@ -510,37 +510,6 @@ final public class Repository {
 		return setHEAD(reference).flatMap { self.checkout(strategy: strategy, progress: progress) }
 	}
 	
-	
-	/// Load all commits in the specified branch in topological & time order descending
-	///
-	/// :param: branch The branch to get all commits from
-	/// :returns: Returns a result with array of branches or the error that occurred
-	public func allCommits(in branch: Branch) -> Result<[Commit], NSError> {
-		var commits: [Commit] = []
-		var walker: OpaquePointer? = nil
-		var unsafeCommit: OpaquePointer? = nil
-		var oid = branch.oid.oid
-		git_revwalk_new(&walker, self.pointer)
-		defer {
-			git_revwalk_free(walker)
-		}
-		git_revwalk_sorting(walker, GIT_SORT_TOPOLOGICAL.rawValue)
-		git_revwalk_sorting(walker, GIT_SORT_TIME.rawValue)
-		git_revwalk_push(walker, &oid)
-		while git_revwalk_next(&oid, walker) == GIT_OK.rawValue {
-			let result = git_commit_lookup(&unsafeCommit, self.pointer, &oid)
-			guard result == GIT_OK.rawValue else {
-				return Result.failure(NSError(gitError: result, pointOfFailure: "git_commit_lookup"))
-			}
-			guard let commit = unsafeCommit else {
-				continue
-			}
-			commits += [Commit(commit)]
-			git_commit_free(unsafeCommit)
-		}
-		return Result.success(commits)
-	}
-	
 	public class CommitIterator: IteratorProtocol {
 		public typealias Element = Result<Commit, NSError>
 		var repo: Repository
@@ -597,6 +566,10 @@ final public class Repository {
 		}
 	}
 	
+	/// Load all commits in the specified branch in topological & time order descending
+	///
+	/// :param: branch The branch to get all commits from
+	/// :returns: Returns a result with array of branches or the error that occurred
 	public func commits(in branch: Branch) -> CommitIterator {
 		return CommitIterator(repo: self, branch: branch)
 	}
