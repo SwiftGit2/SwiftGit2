@@ -12,6 +12,7 @@ public class CommitIterator: IteratorProtocol {
     var branch: Branch
     var revisionWalker: OpaquePointer? = nil
     var oid: git_oid
+    private var unsafeCommit: OpaquePointer? = nil
     
     public init(repo: Repository, branch: Branch) {
         self.repo = repo
@@ -31,33 +32,36 @@ public class CommitIterator: IteratorProtocol {
         git_revwalk_push(revisionWalker, &oid)
     }
     
-    private func error(from gitCommands: [(key: String, value: () -> Int32)]) -> NSError? {
-        // TODO: Make a  flatMap command that stops on first nil
-        let errors: [NSError] = gitCommands.flatMap {
-            let result = $0.value()
-            return result == GIT_OK.rawValue ? nil : NSError(gitError: result, pointOfFailure: $0.key)
+    private func result(withName name: String, from result: Int32) -> (stop: Bool, error: NSError?) {
+        guard result == GIT_OK.rawValue else {
+            if result == GIT_ITEROVER.rawValue {
+                return (stop: true, error: nil)
+            } else {
+                return (stop: false, error: NSError(gitError: result, pointOfFailure: name))
+            }
         }
-        if errors.count > 0 {
-            return errors.first!
-        } else {
-            return nil
-        }
+        return (stop: false, error: nil)
     }
     
     public func next() -> Element? {
-        var unsafeCommit: OpaquePointer? = nil
-        let gitCommands = [
-            (key: "git_revwalk_next", value: { return git_revwalk_next(&self.oid, self.revisionWalker) }),
-            (key: "git_commit_lookup", value: { return git_commit_lookup(&unsafeCommit, self.repo.pointer, &self.oid) })
-        ]
-        if let error = error(from: gitCommands) {
+        let revwalkGitResult = git_revwalk_next(&self.oid, self.revisionWalker)
+        let revwalkResult = result(withName: "git_revwalk_next", from: revwalkGitResult)
+        if revwalkResult.stop {
+            return nil
+        } else if let error = revwalkResult.error {
             return Result.failure(error)
-        } else {
-            guard let commit = unsafeCommit else {
-                return nil
-            }
-            git_commit_free(unsafeCommit)
-            return Result.success(Commit(commit))
         }
+        let lookupGitResult = git_commit_lookup(&self.unsafeCommit, self.repo.pointer, &self.oid)
+        let lookupResult = result(withName: "git_commit_lookup", from: lookupGitResult)
+        if lookupResult.stop {
+            return nil
+        } else if let error = lookupResult.error {
+            return Result.failure(error)
+        }
+        guard let commit = unsafeCommit else {
+            return nil
+        }
+        git_commit_free(unsafeCommit)
+        return Result.success(Commit(commit))
     }
 }
