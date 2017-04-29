@@ -608,7 +608,7 @@ class RepositorySpec: QuickSpec {
                 var count = 0
                 let expected = 9
 				for branch in branches {
-                    while let commit = repo.commits(in: branch).next() {
+                    while repo.commits(in: branch).next() != nil {
                         count += 1
                     }
 				}
