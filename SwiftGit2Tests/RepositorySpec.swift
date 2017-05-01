@@ -92,18 +92,18 @@ class RepositorySpec: QuickSpec {
 			let env = ProcessInfo.processInfo.environment
 
 			if let privateRepo = env["SG2TestPrivateRepo"],
-				let gitUsername = env["SG2TestUsername"],
-				let publicKey = env["SG2TestPublicKey"],
-				let privateKey = env["SG2TestPrivateKey"],
-				let passphrase = env["SG2TestPassphrase"] {
+			   let gitUsername = env["SG2TestUsername"],
+			   let publicKey = env["SG2TestPublicKey"],
+			   let privateKey = env["SG2TestPrivateKey"],
+			   let passphrase = env["SG2TestPassphrase"] {
 
 				it("should be able to clone a remote repository requiring credentials") {
 					let remoteRepoURL = URL(string: privateRepo)
 					let localURL = self.temporaryURL(forPurpose: "private-remote-clone")
 					let credentials = Credentials.sshMemory(username: gitUsername,
-					                                        publicKey: publicKey,
-					                                        privateKey: privateKey,
-					                                        passphrase: passphrase)
+						publicKey: publicKey,
+						privateKey: privateKey,
+						passphrase: passphrase)
 
 					let cloneResult = Repository.clone(from: remoteRepoURL!, to: localURL, credentials: credentials)
 
@@ -600,19 +600,31 @@ class RepositorySpec: QuickSpec {
 				expect(repo.HEAD().value?.longName).to(equal("HEAD"))
 			}
 		}
-		
-		fdescribe("Repository.allCommits(in:)") {
+
+		describe("Repository.allCommits(in:)") {
 			it("should return all (9) commits") {
 				let repo = Fixtures.simpleRepository
 				let branches = repo.localBranches().value!
-                var count = 0
-                let expected = 9
+				let expectedCount = 9
+				let expectedMessages: [String] = [
+					"List branches in README\n",
+					"Create a README\n",
+					"Merge branch 'alphabetize'\n",
+					"Alphabetize branches\n",
+					"List new branches\n",
+					"List branches in README\n",
+					"Create a README\n",
+					"List branches in README\n",
+					"Create a README\n"
+				]
+				var commitMessages: [String] = []
 				for branch in branches {
-                    while repo.commits(in: branch).next() != nil {
-                        count += 1
-                    }
+					while let commit = repo.commits(in: branch).next() {
+						commitMessages.append(commit.value!.message)
+					}
 				}
-				expect(count).to(equal(expected))
+				expect(commitMessages.count).to(equal(expectedCount))
+				expect(commitMessages).to(equal(expectedMessages))
 			}
 		}
 	}
