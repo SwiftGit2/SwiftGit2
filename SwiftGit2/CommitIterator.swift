@@ -28,20 +28,21 @@ public class CommitIterator: IteratorProtocol {
 		}
 	}
 
-	init(repo: Repository, branch: Branch) {
+	init(repo: Repository, root: git_oid) {
 		self.repo = repo
-		setupRevisionWalker()
+		setupRevisionWalker(root: root)
 	}
 
 	deinit {
 		git_revwalk_free(self.revisionWalker)
 	}
 
-	private func setupRevisionWalker(branch: Branch) {
+	private func setupRevisionWalker(root: git_oid) {
+		var oid = root
 		git_revwalk_new(&revisionWalker, repo.pointer)
 		git_revwalk_sorting(revisionWalker, GIT_SORT_TOPOLOGICAL.rawValue)
 		git_revwalk_sorting(revisionWalker, GIT_SORT_TIME.rawValue)
-		git_revwalk_push(revisionWalker, &branch.oid.oid)
+		git_revwalk_push(revisionWalker, &oid)
 	}
 
 	private func next(withName name: String, from result: Int32) -> Next {

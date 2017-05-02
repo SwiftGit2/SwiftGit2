@@ -523,7 +523,7 @@ final public class Repository {
 		if let iterator = branchCommitIteratorMap[branch] {
 			return iterator
 		} else {
-			let iterator = CommitIterator(repo: self, branch: branch)
+			let iterator = CommitIterator(repo: self, root: branch.oid.oid)
 			branchCommitIteratorMap[branch] = iterator
 			return iterator
 		}
