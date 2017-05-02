@@ -9,7 +9,6 @@ import libgit2
 public class CommitIterator: IteratorProtocol {
 	public typealias Element = Result<Commit, NSError>
 	let repo: Repository
-	private var oid: git_oid
 	private var revisionWalker: OpaquePointer? = nil
 
 	private enum Next {
@@ -29,17 +28,17 @@ public class CommitIterator: IteratorProtocol {
 		}
 	}
 
-	init(repo: Repository, branch: Branch) {
+	init(repo: Repository, root: git_oid) {
 		self.repo = repo
-		self.oid = branch.oid.oid
-		setupRevisionWalker()
+		setupRevisionWalker(root: root)
 	}
 
 	deinit {
 		git_revwalk_free(self.revisionWalker)
 	}
 
-	private func setupRevisionWalker() {
+	private func setupRevisionWalker(root: git_oid) {
+		var oid = root
 		git_revwalk_new(&revisionWalker, repo.pointer)
 		git_revwalk_sorting(revisionWalker, GIT_SORT_TOPOLOGICAL.rawValue)
 		git_revwalk_sorting(revisionWalker, GIT_SORT_TIME.rawValue)
@@ -56,6 +55,7 @@ public class CommitIterator: IteratorProtocol {
 
 	public func next() -> Element? {
 		var unsafeCommit: OpaquePointer? = nil
+		var oid = git_oid()
 		let revwalkGitResult = git_revwalk_next(&oid, revisionWalker)
 		let nextResult = next(withName: "git_revwalk_next", from: revwalkGitResult)
 		if case let .error(error) = nextResult {
@@ -63,7 +63,8 @@ public class CommitIterator: IteratorProtocol {
 		} else if case .over = nextResult {
 			return nil
 		}
-		guard git_commit_lookup(&unsafeCommit, repo.pointer, &oid) == GIT_OK.rawValue,
+		let lookupGitResult = git_commit_lookup(&unsafeCommit, repo.pointer, &oid)
+		guard lookupGitResult == GIT_OK.rawValue,
 		      let unwrapCommit = unsafeCommit else {
 			return nil
 		}
