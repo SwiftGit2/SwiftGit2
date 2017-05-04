@@ -45,19 +45,11 @@ public class CommitIterator: IteratorProtocol {
 		git_revwalk_push(revisionWalker, &oid)
 	}
 
-	private func next(withName name: String, from result: Int32) -> Next {
-		if result == GIT_OK.rawValue || result == GIT_ITEROVER.rawValue {
-			return Next(result, name: name)
-		} else {
-			return Next.error(NSError(gitError: result, pointOfFailure: name))
-		}
-	}
-
 	public func next() -> Element? {
 		var unsafeCommit: OpaquePointer? = nil
 		var oid = git_oid()
 		let revwalkGitResult = git_revwalk_next(&oid, revisionWalker)
-		let nextResult = next(withName: "git_revwalk_next", from: revwalkGitResult)
+		let nextResult = Next(revwalkGitResult, name: "git_revwalk_next")
 		if case let .error(error) = nextResult {
 			return Result.failure(error)
 		} else if case .over = nextResult {
