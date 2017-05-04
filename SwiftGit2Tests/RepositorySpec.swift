@@ -601,7 +601,7 @@ class RepositorySpec: QuickSpec {
 			}
 		}
 		
-		fdescribe("Repository.allCommits(in:)") {
+		describe("Repository.allCommits(in:)") {
 			it("should return all (9) commits") {
 				let repo = Fixtures.simpleRepository
 				let branches = repo.localBranches().value!
