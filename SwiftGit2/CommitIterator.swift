@@ -58,7 +58,7 @@ public class CommitIterator: IteratorProtocol {
 		let lookupGitResult = git_commit_lookup(&unsafeCommit, repo.pointer, &oid)
 		guard lookupGitResult == GIT_OK.rawValue,
 		      let unwrapCommit = unsafeCommit else {
-			return nil
+			return Result.failure(NSError(gitError: lookupGitResult, pointOfFailure: "git_commit_lookup"))
 		}
 		let result: Element = Result.success(Commit(unwrapCommit))
 		git_commit_free(unsafeCommit)
