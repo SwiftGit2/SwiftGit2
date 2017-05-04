@@ -47,23 +47,25 @@ public class CommitIterator: IteratorProtocol, Sequence {
 	}
 
 	public func next() -> Element? {
-		var unsafeCommit: OpaquePointer? = nil
 		var oid = git_oid()
 		let revwalkGitResult = git_revwalk_next(&oid, revisionWalker)
 		let nextResult = Next(revwalkGitResult, name: "git_revwalk_next")
-		if case let .error(error) = nextResult {
+		switch nextResult {
+		case let .error(error):
 			return Result.failure(error)
-		} else if case .over = nextResult {
+		case .over:
 			return nil
+		case .ok:
+			var unsafeCommit: OpaquePointer? = nil
+			let lookupGitResult = git_commit_lookup(&unsafeCommit, repo.pointer, &oid)
+			guard lookupGitResult == GIT_OK.rawValue,
+			      let unwrapCommit = unsafeCommit else {
+				return Result.failure(NSError(gitError: lookupGitResult, pointOfFailure: "git_commit_lookup"))
+			}
+			let result: Element = Result.success(Commit(unwrapCommit))
+			git_commit_free(unsafeCommit)
+			return result
 		}
-		let lookupGitResult = git_commit_lookup(&unsafeCommit, repo.pointer, &oid)
-		guard lookupGitResult == GIT_OK.rawValue,
-		      let unwrapCommit = unsafeCommit else {
-			return Result.failure(NSError(gitError: lookupGitResult, pointOfFailure: "git_commit_lookup"))
-		}
-		let result: Element = Result.success(Commit(unwrapCommit))
-		git_commit_free(unsafeCommit)
-		return result
 	}
 	
 	public func makeIterator() -> CommitIterator {
