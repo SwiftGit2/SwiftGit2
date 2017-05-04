@@ -510,22 +510,12 @@ final public class Repository {
 		return setHEAD(reference).flatMap { self.checkout(strategy: strategy, progress: progress) }
 	}
 	
-	/// Cache for commits(in: branch)
-	///
-	/// Specifically for allowing syntax "while let commit = repo.commits(in: branch).next() {}"
-	public var branchCommitIteratorMap: [Branch: CommitIterator] = [:]
-	
 	/// Load all commits in the specified branch in topological & time order descending
 	///
 	/// :param: branch The branch to get all commits from
 	/// :returns: Returns a result with array of branches or the error that occurred
 	public func commits(in branch: Branch) -> CommitIterator {
-		if let iterator = branchCommitIteratorMap[branch] {
-			return iterator
-		} else {
-			let iterator = CommitIterator(repo: self, root: branch.oid.oid)
-			branchCommitIteratorMap[branch] = iterator
-			return iterator
-		}
+		let iterator = CommitIterator(repo: self, root: branch.oid.oid)
+		return iterator
 	}
 }

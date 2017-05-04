@@ -619,10 +619,10 @@ class RepositorySpec: QuickSpec {
 				]
 				var commitMessages: [String] = []
 				for branch in branches {
-					while let commit = repo.commits(in: branch).next() {
+					for commit in repo.commits(in: branch) {
 						commitMessages.append(commit.value!.message)
 					}
-				}
+			}
 				expect(commitMessages.count).to(equal(expectedCount))
 				expect(commitMessages).to(equal(expectedMessages))
 			}

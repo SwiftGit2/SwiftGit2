@@ -6,7 +6,8 @@
 import Result
 import libgit2
 
-public class CommitIterator: IteratorProtocol {
+public class CommitIterator: IteratorProtocol, Sequence {
+	public typealias Iterator = CommitIterator
 	public typealias Element = Result<Commit, NSError>
 	let repo: Repository
 	private var revisionWalker: OpaquePointer? = nil
@@ -64,4 +65,76 @@ public class CommitIterator: IteratorProtocol {
 		git_commit_free(unsafeCommit)
 		return result
 	}
+	
+	public func makeIterator() -> CommitIterator {
+		return self
+	}
+	
+	public private(set) var underestimatedCount: Int = 0
+	public func map<T>(_ transform: (Result<Commit, NSError>) throws -> T) rethrows -> [T] {
+		var new: [T] = []
+		for item in self {
+			new = new + [try transform(item)]
+		}
+		return new
+	}
+	
+	public func filter(_ isIncluded: (Result<Commit, NSError>) throws -> Bool) rethrows -> [Result<Commit, NSError>] {
+		var new: [Result<Commit, NSError>] = []
+		for item in self {
+			if try isIncluded(item) {
+				new = new + [item]
+			}
+		}
+		return new
+	}
+	
+	public func forEach(_ body: (Result<Commit, NSError>) throws -> Void) rethrows {
+		for item in self {
+			try body(item)
+		}
+	}
+	
+	private func notImplemented(functionName: Any) {
+		assert(false, "CommitIterator does not implement \(functionName)")
+	}
+	private init(repo: Repository) {
+		self.repo = repo
+	}
+	
+	public func dropFirst(_ n: Int) -> AnySequence<Iterator.Element> {
+		notImplemented(functionName: self.dropFirst)
+		return AnySequence<Iterator.Element> { return CommitIterator(repo: self.repo) }
+	}
+	
+	public func dropLast(_ n: Int) -> AnySequence<Iterator.Element> {
+		notImplemented(functionName: self.dropLast)
+		return AnySequence<Iterator.Element> { return CommitIterator(repo: self.repo) }
+	}
+	
+	public func drop(while predicate: (Result<Commit, NSError>) throws -> Bool) rethrows -> AnySequence<Iterator.Element> {
+		notImplemented(functionName: self.drop)
+		return AnySequence<Iterator.Element> { return CommitIterator(repo: self.repo) }
+	}
+	
+	public func prefix(_ maxLength: Int) -> AnySequence<Iterator.Element> {
+		notImplemented(functionName: "prefix(_ maxLength:")
+		return AnySequence<Iterator.Element> { return CommitIterator(repo: self.repo) }
+	}
+	
+	public func prefix(while predicate: (Result<Commit, NSError>) throws -> Bool) rethrows -> AnySequence<Iterator.Element> {
+		notImplemented(functionName: "prefix(with predicate:")
+		return AnySequence<Iterator.Element> { return CommitIterator(repo: self.repo) }
+	}
+	
+	public func suffix(_ maxLength: Int) -> AnySequence<Iterator.Element> {
+		notImplemented(functionName: self.suffix)
+		return AnySequence<Iterator.Element> { return CommitIterator(repo: self.repo) }
+	}
+	
+	public func split(maxSplits: Int, omittingEmptySubsequences: Bool, whereSeparator isSeparator: (Result<Commit, NSError>) throws -> Bool) rethrows -> [AnySequence<Iterator.Element>] {
+		notImplemented(functionName: self.split)
+		return [AnySequence<Iterator.Element> { return CommitIterator(repo: self.repo) }]
+	}
+	
 }
