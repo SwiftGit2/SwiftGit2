@@ -509,4 +509,13 @@ final public class Repository {
 	                     progress: CheckoutProgressBlock? = nil) -> Result<(), NSError> {
 		return setHEAD(reference).flatMap { self.checkout(strategy: strategy, progress: progress) }
 	}
+	
+	/// Load all commits in the specified branch in topological & time order descending
+	///
+	/// :param: branch The branch to get all commits from
+	/// :returns: Returns a result with array of branches or the error that occurred
+	public func commits(in branch: Branch) -> CommitIterator {
+		let iterator = CommitIterator(repo: self, root: branch.oid.oid)
+		return iterator
+	}
 }
