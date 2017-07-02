@@ -102,9 +102,9 @@ public struct Branch: ReferenceType {
 			return nil
 		}
 		name = String(validatingUTF8: namePointer!)!
-
+		
 		longName = String(validatingUTF8: git_reference_name(pointer))!
-
+		
 		var oid: OID
 		if git_reference_type(pointer).rawValue == GIT_REF_SYMBOLIC.rawValue {
 			var resolved: OpaquePointer? = nil

@@ -17,6 +17,7 @@ DerivedData
 *.ipa
 *.xcuserstate
 *.xcscmblueprint
+*.idea*
 
 External/libgit2*.a
 External/ios-openssl

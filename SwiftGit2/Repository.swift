@@ -149,7 +149,7 @@ final public class Repository {
 	///
 	/// Returns a `Result` with a `Repository` or an error.
 	class public func clone(from remoteURL: URL, to localURL: URL, localClone: Bool = false, bare: Bool = false,
-	                        credentials: Credentials = .defaultCred(), checkoutStrategy: CheckoutStrategy = .Safe,
+	                        credentials: Credentials = .default, checkoutStrategy: CheckoutStrategy = .Safe,
 	                        checkoutProgress: CheckoutProgressBlock? = nil) -> Result<Repository, NSError> {
 			var options = cloneOptions(
 				bare: bare, localClone: localClone,
@@ -527,5 +527,14 @@ final public class Repository {
 	public func checkout(_ reference: ReferenceType, strategy: CheckoutStrategy,
 	                     progress: CheckoutProgressBlock? = nil) -> Result<(), NSError> {
 		return setHEAD(reference).flatMap { self.checkout(strategy: strategy, progress: progress) }
+	}
+	
+	/// Load all commits in the specified branch in topological & time order descending
+	///
+	/// :param: branch The branch to get all commits from
+	/// :returns: Returns a result with array of branches or the error that occurred
+	public func commits(in branch: Branch) -> CommitIterator {
+		let iterator = CommitIterator(repo: self, root: branch.oid.oid)
+		return iterator
 	}
 }

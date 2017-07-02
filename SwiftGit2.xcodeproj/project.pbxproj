@@ -21,6 +21,8 @@
 /* End PBXAggregateTarget section */
 
 /* Begin PBXBuildFile section */
+		2549921B34FFC36AF8C9CD6D /* CommitIterator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25499A996CA7BD416620A397 /* CommitIterator.swift */; };
+		25499D325997CAB9BEFFCA4D /* CommitIterator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25499A996CA7BD416620A397 /* CommitIterator.swift */; };
 		621E66A01C72958800A0F352 /* OID.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE70B3E41A1ACB1A002C3F4E /* OID.swift */; };
 		621E66A11C72958800A0F352 /* Remotes.swift in Sources */ = {isa = PBXBuildFile; fileRef = BECB5F6D1A57284700999413 /* Remotes.swift */; };
 		621E66A21C72958800A0F352 /* CheckoutStrategy.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE276B281ACCD3CF00D6DAD7 /* CheckoutStrategy.swift */; };
@@ -129,6 +131,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		25499A996CA7BD416620A397 /* CommitIterator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CommitIterator.swift; sourceTree = "<group>"; };
 		621E66B41C72958800A0F352 /* SwiftGit2.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SwiftGit2.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		621E66CE1C72958D00A0F352 /* SwiftGit2-iOSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "SwiftGit2-iOSTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		621E66D81C72989900A0F352 /* Result.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Result.framework; path = "Carthage/Checkouts/Result/build/Debug-iphoneos/Result.framework"; sourceTree = "<group>"; };
@@ -313,6 +316,7 @@
 				BECB5F691A56F19900999413 /* References.swift */,
 				BECB5F6D1A57284700999413 /* Remotes.swift */,
 				BEB31F261A0D6F7A00F525B9 /* Supporting Files */,
+				25499A996CA7BD416620A397 /* CommitIterator.swift */,
 			);
 			path = SwiftGit2;
 			sourceTree = "<group>";
@@ -729,7 +733,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "if which swiftlint >/dev/null; then\n    swiftlint\nelse\n    echo \"warning: SwiftLint is not installed\"\nfi";
+			shellScript = "if which swiftlint >/dev/null; then\n    swiftlint --lenient\nelse\n    echo \"warning: SwiftLint is not installed\"\nfi";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -749,6 +753,7 @@
 				621E66A71C72958800A0F352 /* Pointers.swift in Sources */,
 				621E66A81C72958800A0F352 /* Errors.swift in Sources */,
 				621E66A91C72958800A0F352 /* SwiftGit2.m in Sources */,
+				2549921B34FFC36AF8C9CD6D /* CommitIterator.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -781,6 +786,7 @@
 				BE7A753F1A4A2BCC002DA7E3 /* Pointers.swift in Sources */,
 				DA5914761A94579000AED74C /* Errors.swift in Sources */,
 				BE14AA501A1974010015B439 /* SwiftGit2.m in Sources */,
+				25499D325997CAB9BEFFCA4D /* CommitIterator.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
