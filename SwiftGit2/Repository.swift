@@ -99,7 +99,7 @@ final public class Repository {
 
 	// MARK: - Creating Repositories
 
-	/// Load the repository at the given URL.
+	/// Create a new repository at the given URL.
 	///
 	/// URL - The URL of the repository.
 	///
