@@ -49,14 +49,6 @@ internal func credentialsCallback(cred: UnsafeMutablePointer<UnsafeMutablePointe
                                   _: UInt32, payload: UnsafeMutableRawPointer?) -> Int32 {
 	let result: Int32
 
-	// Find url
-//	let sUrl: String?
-//	if url == nil {
-//		sUrl = nil
-//	} else {
-//		sUrl = git_string_converter(url!)
-//	}
-
 	// Find username_from_url
 	let name: String?
 	if username == nil {
@@ -68,7 +60,7 @@ internal func credentialsCallback(cred: UnsafeMutablePointer<UnsafeMutablePointe
 	switch Credentials.fromPointer(payload!) {
 	case .default:
 		result = git_cred_default_new(cred)
-	case .agent():
+	case .agent:
 		result = git_cred_ssh_key_from_agent(cred, name!)
 	case .plaintext(let username, let password):
 		result = git_cred_userpass_plaintext_new(cred, username, password)

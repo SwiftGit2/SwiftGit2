@@ -1002,7 +1002,6 @@
 					External,
 					"$(inherited)",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 10.12;
 				OTHER_LDFLAGS = (
 					"-lgit2",
 					"-force_load",
@@ -1031,7 +1030,6 @@
 					External,
 					"$(inherited)",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 10.12;
 				OTHER_LDFLAGS = (
 					"-lgit2",
 					"-force_load",
