@@ -29,13 +29,27 @@ class RepositorySpec: QuickSpec {
 				)))
 			}
 		}
+
+		describe("Repository.Type.create(at:)") {
+			it("should create a new repo at the specified location") {
+				let remoteRepo = Fixtures.simpleRepository
+				let localURL = self.temporaryURL(forPurpose: "local-create")
+				let result = Repository.create(at: localURL)
+
+				expect(result).to(haveSucceeded())
+
+				if case .success(let clonedRepo) = result {
+					expect(clonedRepo.directoryURL).notTo(beNil())
+				}
+			}
+		}
 		
 		describe("Repository.Type.clone(from:to:)") {
 			it("should handle local clones") {
 				let remoteRepo = Fixtures.simpleRepository
 				let localURL = self.temporaryURL(forPurpose: "local-clone")
 				let result = Repository.clone(from: remoteRepo.directoryURL!, to: localURL, localClone: true)
-				
+
 				expect(result).to(haveSucceeded())
 				
 				if case .success(let clonedRepo) = result {
