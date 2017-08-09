@@ -104,7 +104,7 @@ final public class Repository {
 	/// URL - The URL of the repository.
 	///
 	/// Returns a `Result` with a `Repository` or an error.
-	class public func createAt(_ url: URL) -> Result<Repository, NSError> {
+	class public func create(at url: URL) -> Result<Repository, NSError> {
 		var pointer: OpaquePointer? = nil
 		let result = url.withUnsafeFileSystemRepresentation {
 			git_repository_init(&pointer, $0, 0)
