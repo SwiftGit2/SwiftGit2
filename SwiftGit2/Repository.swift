@@ -15,7 +15,7 @@ public typealias CheckoutProgressBlock = (String?, Int, Int) -> Void
 /// Helper function used as the libgit2 progress callback in git_checkout_options.
 /// This is a function with a type signature of git_checkout_progress_cb.
 private func checkoutProgressCallback(path: UnsafePointer<Int8>?, completedSteps: Int, totalSteps: Int,
-                                      payload: UnsafeMutableRawPointer?) -> Void {
+                                      payload: UnsafeMutableRawPointer?) {
 	if let payload = payload {
 		let buffer = payload.assumingMemoryBound(to: CheckoutProgressBlock.self)
 		let block: CheckoutProgressBlock
@@ -149,7 +149,7 @@ final public class Repository {
 	///
 	/// Returns a `Result` with a `Repository` or an error.
 	class public func clone(from remoteURL: URL, to localURL: URL, localClone: Bool = false, bare: Bool = false,
-	                        credentials: Credentials = .Default(), checkoutStrategy: CheckoutStrategy = .Safe,
+	                        credentials: Credentials = .default, checkoutStrategy: CheckoutStrategy = .Safe,
 	                        checkoutProgress: CheckoutProgressBlock? = nil) -> Result<Repository, NSError> {
 			var options = cloneOptions(
 				bare: bare, localClone: localClone,
@@ -306,13 +306,13 @@ final public class Repository {
 	/// Returns the object if it exists, or an error.
 	public func object(from pointer: Pointer) -> Result<ObjectType, NSError> {
 		switch pointer {
-		case let .Blob(oid):
+		case let .blob(oid):
 			return blob(oid).map { $0 as ObjectType }
-		case let .Commit(oid):
+		case let .commit(oid):
 			return commit(oid).map { $0 as ObjectType }
-		case let .Tag(oid):
+		case let .tag(oid):
 			return tag(oid).map { $0 as ObjectType }
-		case let .Tree(oid):
+		case let .tree(oid):
 			return tree(oid).map { $0 as ObjectType }
 		}
 	}
@@ -527,5 +527,14 @@ final public class Repository {
 	public func checkout(_ reference: ReferenceType, strategy: CheckoutStrategy,
 	                     progress: CheckoutProgressBlock? = nil) -> Result<(), NSError> {
 		return setHEAD(reference).flatMap { self.checkout(strategy: strategy, progress: progress) }
+	}
+	
+	/// Load all commits in the specified branch in topological & time order descending
+	///
+	/// :param: branch The branch to get all commits from
+	/// :returns: Returns a result with array of branches or the error that occurred
+	public func commits(in branch: Branch) -> CommitIterator {
+		let iterator = CommitIterator(repo: self, root: branch.oid.oid)
+		return iterator
 	}
 }

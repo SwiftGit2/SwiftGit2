@@ -102,9 +102,9 @@ public struct Branch: ReferenceType {
 			return nil
 		}
 		name = String(validatingUTF8: namePointer!)!
-
+		
 		longName = String(validatingUTF8: git_reference_name(pointer))!
-
+		
 		var oid: OID
 		if git_reference_type(pointer).rawValue == GIT_REF_SYMBOLIC.rawValue {
 			var resolved: OpaquePointer? = nil
@@ -130,17 +130,17 @@ extension Branch: Hashable {
 /// A git tag reference, which can be either a lightweight tag or a Tag object.
 public enum TagReference: ReferenceType {
 	/// A lightweight tag, which is just a name and an OID.
-	case Lightweight(String, OID)
+	case lightweight(String, OID)
 
 	/// An annotated tag, which points to a Tag object.
-	case Annotated(String, Tag)
+	case annotated(String, Tag)
 
 	/// The full name of the reference (e.g., `refs/tags/my-tag`).
 	public var longName: String {
 		switch self {
-		case let .Lightweight(name, _):
+		case let .lightweight(name, _):
 			return name
-		case let .Annotated(name, _):
+		case let .annotated(name, _):
 			return name
 		}
 	}
@@ -155,9 +155,9 @@ public enum TagReference: ReferenceType {
 	/// If this is an annotated tag, the OID will be the tag's target.
 	public var oid: OID {
 		switch self {
-		case let .Lightweight(_, oid):
+		case let .lightweight(_, oid):
 			return oid
-		case let .Annotated(_, tag):
+		case let .annotated(_, tag):
 			return tag.target.oid
 		}
 	}
@@ -185,9 +185,9 @@ public enum TagReference: ReferenceType {
 		var pointer: OpaquePointer? = nil
 		let result = git_object_lookup(&pointer, repo, &oid, GIT_OBJ_TAG)
 		if result == GIT_OK.rawValue {
-			self = .Annotated(name, Tag(pointer!))
+			self = .annotated(name, Tag(pointer!))
 		} else {
-			self = .Lightweight(name, OID(oid))
+			self = .lightweight(name, OID(oid))
 		}
 		git_object_free(pointer)
 	}
