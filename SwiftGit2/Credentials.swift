@@ -18,7 +18,7 @@ private class Wrapper<T> {
 
 public enum Credentials {
 	case `default`
-	case agent
+	case sshAgent
 	case plaintext(username: String, password: String)
 	case sshMemory(username: String, publicKey: String, privateKey: String, passphrase: String)
 
@@ -39,8 +39,7 @@ internal func credentialsCallback(
 	url: UnsafePointer<CChar>?,
 	username: UnsafePointer<CChar>?,
 	_: UInt32,
-	payload: UnsafeMutableRawPointer?
-	) -> Int32 {
+	payload: UnsafeMutableRawPointer? ) -> Int32 {
 
 	let result: Int32
 
@@ -50,7 +49,7 @@ internal func credentialsCallback(
 	switch Credentials.fromPointer(payload!) {
 	case .default:
 		result = git_cred_default_new(cred)
-	case .agent:
+	case .sshAgent:
 		result = git_cred_ssh_key_from_agent(cred, name!)
 	case .plaintext(let username, let password):
 		result = git_cred_userpass_plaintext_new(cred, username, password)
