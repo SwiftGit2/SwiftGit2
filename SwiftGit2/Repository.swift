@@ -616,7 +616,8 @@ final public class Repository {
 				////				git_submodule *sm = NULL;
 				//				let smstatus = 0
 				//
-				//				if (!git_submodule_lookup(&sm, self, s?.pointee.index_to_workdir.new_file.path) && !git_submodule_status(&smstatus, sm))
+				//				if (!git_submodule_lookup(&sm, self, s?.pointee.index_to_workdir.new_file.path) && 
+				//				!git_submodule_status(&smstatus, sm))
 				//				{
 				//					if (smstatus & GIT_SUBMODULE_STATUS_WD_MODIFIED) {
 				//					extra = " (new commits)";
@@ -633,33 +634,33 @@ final public class Repository {
 				//				}
 				//			}
 				//
-				if s?.pointee.head_to_index != nil {
-					a = (s?.pointee.head_to_index.pointee.old_file.path!).map(String.init(cString:))!
-					b = (s?.pointee.head_to_index.pointee.new_file.path!).map(String.init(cString:))!
+			}
+			if s?.pointee.head_to_index != nil {
+				a = (s?.pointee.head_to_index.pointee.old_file.path!).map(String.init(cString:))!
+				b = (s?.pointee.head_to_index.pointee.new_file.path!).map(String.init(cString:))!
+			}
+			if s?.pointee.index_to_workdir != nil {
+				if a == nil {
+					a = (s?.pointee.index_to_workdir.pointee.old_file.path!).map(String.init(cString:))!
 				}
-				if s?.pointee.index_to_workdir != nil {
-					if a == nil {
-						a = (s?.pointee.index_to_workdir.pointee.old_file.path!).map(String.init(cString:))!
-					}
-					if b == nil {
-						b = (s?.pointee.index_to_workdir.pointee.old_file.path!).map(String.init(cString:))!
-						c = (s?.pointee.index_to_workdir.pointee.new_file.path!).map(String.init(cString:))!
-					}
+				if b == nil {
+					b = (s?.pointee.index_to_workdir.pointee.old_file.path!).map(String.init(cString:))!
+					c = (s?.pointee.index_to_workdir.pointee.new_file.path!).map(String.init(cString:))!
 				}
+			}
 
-				if istatus == "R" {
-					if wstatus == "R" {
-						returnString = String.localizedStringWithFormat("%c%c %s %s %s%s\n", istatus, wstatus, a!, b!, c!, extra)
-						returnString = String.localizedStringWithFormat("%c%c %s %s %s%s\n", istatus, wstatus, a!, b!, c!, extra)
-					} else {
-						returnString = String.localizedStringWithFormat("%c%c %s %s%s\n", istatus, wstatus, a!, b!, extra)
-					}
+			if istatus == "R" {
+				if wstatus == "R" {
+					returnString = String.localizedStringWithFormat("%@%@ %@ %@ %@%@\n", istatus, wstatus, a!, b!, c!, extra)
+					returnString = String.localizedStringWithFormat("%@%@ %@ %@ %@%@\n", istatus, wstatus, a!, b!, c!, extra)
 				} else {
-					if wstatus == "R" {
-						returnString = String.localizedStringWithFormat("%c%c %s %s%s\n", istatus, wstatus, a!, c!, extra)
-					} else {
-						returnString = String.localizedStringWithFormat("%c%c %s%s\n", istatus, wstatus, a!, extra)
-					}
+					returnString = String.localizedStringWithFormat("%@%@ %@ %@%@\n", istatus, wstatus, a!, b!, extra)
+				}
+			} else {
+				if wstatus == "R" {
+					returnString = String.localizedStringWithFormat("%@%@ %@ %@%@\n", istatus, wstatus, a!, c!, extra)
+				} else {
+					returnString = String.localizedStringWithFormat("%@%@ %@%@\n", istatus, wstatus, a!, extra)
 				}
 			}
 		}

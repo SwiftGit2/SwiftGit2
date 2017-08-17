@@ -641,6 +641,15 @@ class RepositorySpec: QuickSpec {
 				expect(commitMessages).to(equal(expectedMessages))
 			}
 		}
+
+		describe("Repository.getRepositoryStatus") {
+			it("Should not return nothing") {
+				let repo = Fixtures.sharedInstance.repository(named: "repository-with-status")
+				let status = repo.getRepositoryStatus() as! String
+
+				expect(status).to(equal("A  staged-file\n"))
+			}
+		}
 	}
 	
 	func temporaryURL(forPurpose purpose: String) -> URL {
