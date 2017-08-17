@@ -537,4 +537,133 @@ final public class Repository {
 		let iterator = CommitIterator(repo: self, root: branch.oid.oid)
 		return iterator
 	}
+
+	// MARK: - Status
+
+	public func getRepositoryStatus() -> String {
+
+		// adapted from https://github.com/arrbee/libgit2/blob/f18f772a8ec0cdff9315216886383dadce1379b5/examples/status.c
+
+		var returnString = ""
+
+		// Do this because GIT_STATUS_OPTIONS_INIT is unavailable in swift
+		let pointer = UnsafeMutablePointer<git_status_options>.allocate(capacity: 1)
+		git_status_init_options(pointer, UInt32(GIT_STATUS_OPTIONS_VERSION))
+		var options = pointer.move()
+		pointer.deallocate(capacity: 1)
+
+		var status: OpaquePointer? = nil
+		git_status_list_new(&status, self.pointer, &options)
+
+		let count = git_status_list_entrycount(status)
+
+		for i in 0..<count {
+			let s = git_status_byindex(status, i)
+			if s?.pointee.status.rawValue == GIT_STATUS_CURRENT.rawValue {
+				continue
+			}
+			var a, b, c: String?
+			var istatus = " ", wstatus = " "
+			var extra = ""
+
+			if s?.pointee.status.rawValue == GIT_STATUS_INDEX_NEW.rawValue {
+				istatus = "A"
+			}
+			if s?.pointee.status.rawValue == GIT_STATUS_INDEX_MODIFIED.rawValue {
+				istatus = "M"
+			}
+			if s?.pointee.status.rawValue == GIT_STATUS_INDEX_DELETED.rawValue {
+				istatus = "D"
+			}
+			if s?.pointee.status.rawValue ==  GIT_STATUS_INDEX_RENAMED.rawValue {
+				istatus = "R"
+			}
+			if s?.pointee.status.rawValue == GIT_STATUS_INDEX_TYPECHANGE.rawValue {
+				istatus = "T"
+			}
+
+			if s?.pointee.status.rawValue == GIT_STATUS_WT_NEW.rawValue {
+				if istatus == " " {
+					istatus = "?"
+					wstatus = "?"
+				}
+			}
+
+			if s?.pointee.status.rawValue == GIT_STATUS_WT_MODIFIED.rawValue {
+				wstatus = "M"
+			}
+			if s?.pointee.status.rawValue == GIT_STATUS_WT_DELETED.rawValue {
+				wstatus = "D"
+			}
+			if s?.pointee.status.rawValue == GIT_STATUS_WT_RENAMED.rawValue {
+				wstatus = "R"
+			}
+			if s?.pointee.status.rawValue == GIT_STATUS_WT_TYPECHANGE.rawValue {
+				wstatus = "T"
+			}
+			if s?.pointee.status.rawValue == GIT_STATUS_IGNORED.rawValue {
+				istatus = "!"
+				wstatus = "!"
+			}
+
+			if istatus == "?" && wstatus == "?" {
+				continue
+			}
+
+			if s?.pointee.index_to_workdir != nil &&
+				UInt((s?.pointee.index_to_workdir.pointee.new_file.mode)!) == UInt(GIT_FILEMODE_COMMIT.rawValue) {
+				//				let sm : git_submodule = nil
+				////				git_submodule *sm = NULL;
+				//				let smstatus = 0
+				//
+				//				if (!git_submodule_lookup(&sm, self, s?.pointee.index_to_workdir.new_file.path) && !git_submodule_status(&smstatus, sm))
+				//				{
+				//					if (smstatus & GIT_SUBMODULE_STATUS_WD_MODIFIED) {
+				//					extra = " (new commits)";
+				//					}
+				//					else if (smstatus & GIT_SUBMODULE_STATUS_WD_INDEX_MODIFIED) {
+				//					extra = " (modified content)";
+				//					}
+				//					else if (smstatus & GIT_SUBMODULE_STATUS_WD_WD_MODIFIED) {
+				//					extra = " (modified content)";
+				//					}
+				//					else if (smstatus & GIT_SUBMODULE_STATUS_WD_UNTRACKED) {
+				//					extra = " (untracked content)";
+				//					}
+				//				}
+				//			}
+				//
+				if s?.pointee.head_to_index != nil {
+					a = (s?.pointee.head_to_index.pointee.old_file.path!).map(String.init(cString:))!
+					b = (s?.pointee.head_to_index.pointee.new_file.path!).map(String.init(cString:))!
+				}
+				if s?.pointee.index_to_workdir != nil {
+					if a == nil {
+						a = (s?.pointee.index_to_workdir.pointee.old_file.path!).map(String.init(cString:))!
+					}
+					if b == nil {
+						b = (s?.pointee.index_to_workdir.pointee.old_file.path!).map(String.init(cString:))!
+						c = (s?.pointee.index_to_workdir.pointee.new_file.path!).map(String.init(cString:))!
+					}
+				}
+
+				if istatus == "R" {
+					if wstatus == "R" {
+						returnString = String.localizedStringWithFormat("%c%c %s %s %s%s\n", istatus, wstatus, a!, b!, c!, extra)
+						returnString = String.localizedStringWithFormat("%c%c %s %s %s%s\n", istatus, wstatus, a!, b!, c!, extra)
+					} else {
+						returnString = String.localizedStringWithFormat("%c%c %s %s%s\n", istatus, wstatus, a!, b!, extra)
+					}
+				} else {
+					if wstatus == "R" {
+						returnString = String.localizedStringWithFormat("%c%c %s %s%s\n", istatus, wstatus, a!, c!, extra)
+					} else {
+						returnString = String.localizedStringWithFormat("%c%c %s%s\n", istatus, wstatus, a!, extra)
+					}
+				}
+			}
+		}
+
+		return returnString
+	}
 }
