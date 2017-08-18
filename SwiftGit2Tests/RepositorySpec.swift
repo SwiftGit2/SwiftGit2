@@ -645,9 +645,18 @@ class RepositorySpec: QuickSpec {
 		describe("Repository.getRepositoryStatus") {
 			it("Should not return nothing") {
 				let repo = Fixtures.sharedInstance.repository(named: "repository-with-status")
-				let status = repo.getRepositoryStatus() as! String
+				let status = repo.getRepositoryStatus()
 
 				expect(status).to(equal("A  staged-file\n"))
+			}
+
+			it("Should have objects with status") {
+				let repo = Fixtures.sharedInstance.repository(named: "repository-with-status")
+				let head = repo.HEAD().value!
+				let commit = repo.object(head.oid).value! as! Commit
+				let objects = repo.getObjectsWithStatus(for: commit)
+
+				expect(objects.value?.count).to(equal(1))
 			}
 		}
 	}

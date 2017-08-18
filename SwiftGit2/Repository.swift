@@ -540,6 +540,74 @@ final public class Repository {
 
 	// MARK: - Status
 
+	public func getObjectsWithStatus(for commit: Commit) -> Result<[ObjectType], NSError> {
+		var returnDict = [ObjectType]()
+
+		var unsafeBaseCommit: OpaquePointer? = nil
+		let unsafeBaseOid = UnsafeMutablePointer<git_oid>.allocate(capacity: 1)
+		git_oid_fromstr(unsafeBaseOid, commit.oid.description)
+		let lookupBaseGitResult = git_commit_lookup(&unsafeBaseCommit, self.pointer, unsafeBaseOid)
+		guard lookupBaseGitResult == GIT_OK.rawValue, let unwrapBaseCommit = unsafeBaseCommit else {
+				return Result.failure(NSError(gitError: lookupBaseGitResult, pointOfFailure: "git_commit_lookup"))
+		}
+		git_commit_free(unsafeBaseCommit)
+
+		guard !commit.parents.isEmpty else {
+			// TODO: need to handle the initial commit
+			return Result.failure(NSError(gitError: 0, pointOfFailure: "getObjectsWithStatus"))
+		}
+		let parent = commit.parents[0]
+		var unsafeParentCommit: OpaquePointer? = nil
+		let unsafeParentOid = UnsafeMutablePointer<git_oid>.allocate(capacity: 1)
+		git_oid_fromstr(unsafeParentOid, parent.oid.description)
+		let lookupParentGitResult = git_commit_lookup(&unsafeParentCommit, self.pointer, unsafeParentOid)
+		guard lookupParentGitResult == GIT_OK.rawValue, let unwrapParentCommit = unsafeParentCommit else {
+			return Result.failure(NSError(gitError: lookupParentGitResult, pointOfFailure: "git_commit_lookup"))
+		}
+		git_commit_free(unsafeParentCommit)
+
+		var unsafeBaseTree: OpaquePointer? = nil
+		let baseTreeResult = git_commit_tree(&unsafeBaseTree, unwrapBaseCommit)
+		guard baseTreeResult == GIT_OK.rawValue, let unwrapBaseTree = unsafeBaseTree else {
+			return Result.failure(NSError(gitError: baseTreeResult, pointOfFailure: "git_commit_tree"))
+		}
+		git_tree_free(unsafeBaseTree)
+
+		var unsafeParentTree: OpaquePointer? = nil
+		let parentTreeResult = git_commit_tree(&unsafeParentTree, unwrapParentCommit)
+		guard parentTreeResult == GIT_OK.rawValue, let unwrapParentTree = unsafeParentTree else {
+			return Result.failure(NSError(gitError: parentTreeResult, pointOfFailure: "git_commit_tree"))
+		}
+		git_tree_free(unsafeParentTree)
+
+		var unsafeDiff: OpaquePointer? = nil
+		let diffResult = git_diff_tree_to_tree(&unsafeDiff, self.pointer, unwrapBaseTree, unwrapParentTree, nil)
+		guard diffResult == GIT_OK.rawValue, let unwrapDiffResult = unsafeDiff else {
+			return Result.failure(NSError(gitError: diffResult, pointOfFailure: "git_diff_tree_to_tree"))
+		}
+
+		let count = git_diff_num_deltas(unwrapDiffResult)
+
+		for i in 0..<count {
+			let delta = git_diff_get_delta(unwrapDiffResult, i)
+			let oldFilePath = (delta?.pointee.old_file.path!).map(String.init(cString:))
+			print("Old: " + oldFilePath!)
+			let newFilePath = (delta?.pointee.new_file.path!).map(String.init(cString:))
+			print("Old: " + newFilePath!)
+			let oldOid = delta?.pointee.old_file.id
+			returnDict.append(self.object(OID(oldOid!)).value!)
+		}
+
+		let result = Result<[ObjectType], NSError>.success(returnDict)
+		return result
+	}
+
+	public func getStatus(for object: ObjectType, in commit: Commit) -> String {
+		let returnString = ""
+
+		return returnString
+	}
+
 	public func getRepositoryStatus() -> String {
 
 		// adapted from https://github.com/arrbee/libgit2/blob/f18f772a8ec0cdff9315216886383dadce1379b5/examples/status.c
