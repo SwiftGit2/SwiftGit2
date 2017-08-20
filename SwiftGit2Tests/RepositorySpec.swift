@@ -643,24 +643,52 @@ class RepositorySpec: QuickSpec {
 		}
 
 		describe("Repository.getRepositoryStatus") {
-			it("Should not return nothing") {
-				let repo = Fixtures.sharedInstance.repository(named: "repository-with-status")
+			it("Should return accurate status") {
+				let repo = Fixtures.mantleRepository
+				let branch = repo.localBranch(named: "master").value!
+				expect(repo.checkout(branch, strategy: CheckoutStrategy.None)).to(haveSucceeded())
+
 				let status = repo.getRepositoryStatus()
 
-				expect(status).to(equal("A  staged-file\n"))
+				expect(status).to(equal(""))
 			}
 
-			it("Should have objects with status") {
-				let repo = Fixtures.sharedInstance.repository(named: "repository-with-status")
+			it("Should have accurate delta information") {
+				let repo = Fixtures.mantleRepository
+				let branch = repo.localBranch(named: "master").value!
+				expect(repo.checkout(branch, strategy: CheckoutStrategy.None)).to(haveSucceeded())
+
 				let head = repo.HEAD().value!
 				let commit = repo.object(head.oid).value! as! Commit
-				let objects = repo.getObjectsWithStatus(for: commit)
+				let objects = repo.getDiffDeltas(for: commit)
 
-				expect(objects.value?.count).to(equal(1))
+				expect(objects.value?.count).to(equal(13))
+			}
+
+			it("Should handle initial commit well") {
+				let repo = Fixtures.mantleRepository
+				expect(repo.checkout(OID(string: "047b931bd7f5478340cef5885a6fff713005f4d6")!,
+				                     strategy: CheckoutStrategy.None)).to(haveSucceeded())
+				let head = repo.HEAD().value!
+				let initalCommit = repo.object(head.oid).value! as! Commit
+				let objects = repo.getDiffDeltas(for: initalCommit)
+
+				expect(objects.value?.count).to(equal(2))
+			}
+
+			it("Should handle merge commits well") {
+				let repo = Fixtures.mantleRepository
+				expect(repo.checkout(OID(string: "d0d9c13da5eb5f9e8cf2a9f1f6ca3bdbe975b57d")!,
+				                     strategy: CheckoutStrategy.None)).to(haveSucceeded())
+				let head = repo.HEAD().value!
+				let initalCommit = repo.object(head.oid).value! as! Commit
+				let objects = repo.getDiffDeltas(for: initalCommit)
+
+				expect(objects.value?.count).to(equal(20))
 			}
 		}
 	}
-	
+
 	func temporaryURL(forPurpose purpose: String) -> URL {
 		let globallyUniqueString = ProcessInfo.processInfo.globallyUniqueString
 		let path = "\(NSTemporaryDirectory())\(globallyUniqueString)_\(purpose)"

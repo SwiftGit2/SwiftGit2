@@ -538,11 +538,10 @@ final public class Repository {
 		return iterator
 	}
 
-	// MARK: - Status
+	// MARK: - Diffs
 
-	public func getObjectsWithStatus(for commit: Commit) -> Result<[ObjectType], NSError> {
-		var returnDict = [ObjectType]()
-
+	public func getDiffDeltas(for commit: Commit) -> Result<[GitDiffDelta], NSError> {
+		/// Get the Base Tree
 		var unsafeBaseCommit: OpaquePointer? = nil
 		let unsafeBaseOid = UnsafeMutablePointer<git_oid>.allocate(capacity: 1)
 		git_oid_fromstr(unsafeBaseOid, commit.oid.description)
@@ -552,10 +551,35 @@ final public class Repository {
 		}
 		git_commit_free(unsafeBaseCommit)
 
-		guard !commit.parents.isEmpty else {
-			// TODO: need to handle the initial commit
-			return Result.failure(NSError(gitError: 0, pointOfFailure: "getObjectsWithStatus"))
+		var unsafeBaseTree: OpaquePointer? = nil
+		let baseTreeResult = git_commit_tree(&unsafeBaseTree, unwrapBaseCommit)
+		guard baseTreeResult == GIT_OK.rawValue, let unwrapBaseTree = unsafeBaseTree else {
+			return Result.failure(NSError(gitError: baseTreeResult, pointOfFailure: "git_commit_tree"))
 		}
+		git_tree_free(unsafeBaseTree)
+
+		if commit.parents.isEmpty {
+			return self.getDiffDeltasWithNoParents(from: unwrapBaseTree)
+		} else if commit.parents.count == 1 {
+			return self.getDiffDeltasWithOneParent(from: unwrapBaseTree, in: commit)
+		} else {
+			return self.getDiffDeltasWithMultipleParents(from: unwrapBaseTree, in: commit)
+		}
+	}
+
+	private func getDiffDeltasWithNoParents(from baseTree: OpaquePointer) -> Result<[GitDiffDelta], NSError> {
+		var unsafeDiff: OpaquePointer? = nil
+		let diffResult = git_diff_tree_to_tree(&unsafeDiff, self.pointer, nil, baseTree, nil)
+		guard diffResult == GIT_OK.rawValue, let unwrapDiffResult = unsafeDiff else {
+			return Result.failure(NSError(gitError: diffResult, pointOfFailure: "git_diff_tree_to_tree"))
+		}
+
+		return self.processDiffDeltas(unwrapDiffResult)
+	}
+
+	private func getDiffDeltasWithOneParent(from baseTree: OpaquePointer,
+	                                        in commit: Commit) -> Result<[GitDiffDelta], NSError> {
+		/// Get the Parent Tree
 		let parent = commit.parents[0]
 		var unsafeParentCommit: OpaquePointer? = nil
 		let unsafeParentOid = UnsafeMutablePointer<git_oid>.allocate(capacity: 1)
@@ -566,13 +590,6 @@ final public class Repository {
 		}
 		git_commit_free(unsafeParentCommit)
 
-		var unsafeBaseTree: OpaquePointer? = nil
-		let baseTreeResult = git_commit_tree(&unsafeBaseTree, unwrapBaseCommit)
-		guard baseTreeResult == GIT_OK.rawValue, let unwrapBaseTree = unsafeBaseTree else {
-			return Result.failure(NSError(gitError: baseTreeResult, pointOfFailure: "git_commit_tree"))
-		}
-		git_tree_free(unsafeBaseTree)
-
 		var unsafeParentTree: OpaquePointer? = nil
 		let parentTreeResult = git_commit_tree(&unsafeParentTree, unwrapParentCommit)
 		guard parentTreeResult == GIT_OK.rawValue, let unwrapParentTree = unsafeParentTree else {
@@ -581,32 +598,117 @@ final public class Repository {
 		git_tree_free(unsafeParentTree)
 
 		var unsafeDiff: OpaquePointer? = nil
-		let diffResult = git_diff_tree_to_tree(&unsafeDiff, self.pointer, unwrapBaseTree, unwrapParentTree, nil)
+		let diffResult = git_diff_tree_to_tree(&unsafeDiff, self.pointer, unwrapParentTree, baseTree, nil)
 		guard diffResult == GIT_OK.rawValue, let unwrapDiffResult = unsafeDiff else {
 			return Result.failure(NSError(gitError: diffResult, pointOfFailure: "git_diff_tree_to_tree"))
 		}
 
-		let count = git_diff_num_deltas(unwrapDiffResult)
+		return self.processDiffDeltas(unwrapDiffResult)
+	}
+
+	private func getDiffDeltasWithMultipleParents(from baseTree: OpaquePointer,
+	                                              in commit: Commit) -> Result<[GitDiffDelta], NSError> {
+		// Merge Commit, merge diffs of base with each parent
+		var mergeDiff: OpaquePointer? = nil
+		for parent in commit.parents {
+			var unsafeParentCommit: OpaquePointer? = nil
+			let unsafeParentOid = UnsafeMutablePointer<git_oid>.allocate(capacity: 1)
+			git_oid_fromstr(unsafeParentOid, parent.oid.description)
+			let lookupParentGitResult = git_commit_lookup(&unsafeParentCommit, self.pointer, unsafeParentOid)
+			guard lookupParentGitResult == GIT_OK.rawValue, let unwrapParentCommit = unsafeParentCommit else {
+				return Result.failure(NSError(gitError: lookupParentGitResult, pointOfFailure: "git_commit_lookup"))
+			}
+			git_commit_free(unsafeParentCommit)
+
+			var unsafeParentTree: OpaquePointer? = nil
+			let parentTreeResult = git_commit_tree(&unsafeParentTree, unwrapParentCommit)
+			guard parentTreeResult == GIT_OK.rawValue, let unwrapParentTree = unsafeParentTree else {
+				return Result.failure(NSError(gitError: parentTreeResult, pointOfFailure: "git_commit_tree"))
+			}
+			git_tree_free(unsafeParentTree)
+
+			var unsafeDiff: OpaquePointer? = nil
+			let diffResult = git_diff_tree_to_tree(&unsafeDiff, self.pointer, unwrapParentTree, baseTree, nil)
+			guard diffResult == GIT_OK.rawValue, let unwrapDiffResult = unsafeDiff else {
+				return Result.failure(NSError(gitError: diffResult, pointOfFailure: "git_diff_tree_to_tree"))
+			}
+
+			if mergeDiff == nil {
+				mergeDiff = unwrapDiffResult
+			} else {
+				let mergeResult = git_diff_merge(mergeDiff, unwrapDiffResult)
+				guard mergeResult == GIT_OK.rawValue else {
+					return Result.failure(NSError(gitError: mergeResult, pointOfFailure: "git_diff_merge"))
+				}
+			}
+		}
+		return self.processDiffDeltas(mergeDiff!)
+	}
+
+	private func processDiffDeltas(_ diffResult: OpaquePointer) -> Result<[GitDiffDelta], NSError> {
+		var returnDict = [GitDiffDelta]()
+
+		let count = git_diff_num_deltas(diffResult)
 
 		for i in 0..<count {
-			let delta = git_diff_get_delta(unwrapDiffResult, i)
+			let delta = git_diff_get_delta(diffResult, i)
+
 			let oldFilePath = (delta?.pointee.old_file.path!).map(String.init(cString:))
-			print("Old: " + oldFilePath!)
+			let oldOid = OID((delta?.pointee.old_file.id)!)
+			let oldSize = delta?.pointee.old_file.size
+			let oldFlags = delta?.pointee.old_file.flags
+			let oldFile = GitDiffFile(oid: oldOid, path: oldFilePath!, size: oldSize!, flags: oldFlags!)
+
 			let newFilePath = (delta?.pointee.new_file.path!).map(String.init(cString:))
-			print("Old: " + newFilePath!)
-			let oldOid = delta?.pointee.old_file.id
-			returnDict.append(self.object(OID(oldOid!)).value!)
+			let newOid = OID((delta?.pointee.new_file.id)!)
+			let newSize = delta?.pointee.new_file.size
+			let newFlags = delta?.pointee.new_file.flags
+			let newFile = GitDiffFile(oid: newOid, path: newFilePath!, size: newSize!, flags: newFlags!)
+
+			var gitDeltaStatus = GitDeltaStatus.current
+
+			let emptyOid = OID(string: "0000000000000000000000000000000000000000")
+			if newOid == emptyOid {
+				gitDeltaStatus = GitDeltaStatus.indexDeleted
+			} else if oldOid == emptyOid {
+				gitDeltaStatus = GitDeltaStatus.indexNew
+			} else {
+				if let statusValue = delta?.pointee.status.rawValue {
+					if (statusValue & GitDeltaStatus.current.value) != 0 {
+					}
+					if (statusValue & GitDeltaStatus.indexModified.value) != 0 {
+						gitDeltaStatus = GitDeltaStatus.indexModified
+					}
+					if (statusValue & GitDeltaStatus.indexRenamed.value) != 0 {
+						gitDeltaStatus = GitDeltaStatus.indexRenamed
+					}
+					if (statusValue & GitDeltaStatus.indexTypeChange.value) != 0 {
+						gitDeltaStatus = GitDeltaStatus.indexTypeChange
+					}
+					if (statusValue & GitDeltaStatus.ignored.value) != 0 {
+						gitDeltaStatus = GitDeltaStatus.ignored
+					}
+					if (statusValue & GitDeltaStatus.conflicted.value) != 0 {
+						gitDeltaStatus = GitDeltaStatus.conflicted
+					}
+				}
+			}
+
+			let gitDiffDelta = GitDiffDelta(status: gitDeltaStatus,
+			                                flags: (delta?.pointee.flags)!,
+			                                oldFile: oldFile,
+			                                newFile: newFile)
+
+			returnDict.append(gitDiffDelta)
+
+			git_diff_free(OpaquePointer(delta))
 		}
 
-		let result = Result<[ObjectType], NSError>.success(returnDict)
+		let result = Result<[GitDiffDelta], NSError>.success(returnDict)
 		return result
 	}
 
-	public func getStatus(for object: ObjectType, in commit: Commit) -> String {
-		let returnString = ""
-
-		return returnString
-	}
+	// MARK: - Status
 
 	public func getRepositoryStatus() -> String {
 
