@@ -7,10 +7,10 @@
 //
 
 public struct GitDiffFile {
-	var oid: OID
-	var path: String
-	var size: Int64
-	var flags: UInt32
+	public var oid: OID
+	public var path: String
+	public var size: Int64
+	public var flags: UInt32
 }
 
 public enum GitDeltaStatus: Int {
@@ -29,7 +29,7 @@ public enum GitDeltaStatus: Int {
 	case ignored
 	case conflicted
 
-	var value: UInt32 {
+	public var value: UInt32 {
 		if self.rawValue == 0 {
 			return UInt32(0)
 		}
@@ -38,10 +38,10 @@ public enum GitDeltaStatus: Int {
 }
 
 public struct GitDiffDelta {
-	var status: GitDeltaStatus
-	var flags: UInt32
-	var oldFile: GitDiffFile
-	var newFile: GitDiffFile
+	public var status: GitDeltaStatus
+	public var flags: UInt32
+	public var oldFile: GitDiffFile
+	public var newFile: GitDiffFile
 }
 
 public enum GitDiffFlag: Int {
@@ -50,7 +50,7 @@ public enum GitDiffFlag: Int {
 	case validId
 	case exists
 
-	var value: UInt32 {
+	public var value: UInt32 {
 		if self.rawValue == 0 {
 			return UInt32(0)
 		}
