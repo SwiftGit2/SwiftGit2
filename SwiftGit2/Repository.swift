@@ -665,31 +665,31 @@ final public class Repository {
 			let newFlags = delta?.pointee.new_file.flags
 			let newFile = GitDiffFile(oid: newOid, path: newFilePath!, size: newSize!, flags: newFlags!)
 
-			var gitDeltaStatus = GitDeltaStatus.current
+			var gitDeltaStatus = GitStatus.current
 
 			let emptyOid = OID(string: "0000000000000000000000000000000000000000")
 			if newOid == emptyOid {
-				gitDeltaStatus = GitDeltaStatus.indexDeleted
+				gitDeltaStatus = GitStatus.indexDeleted
 			} else if oldOid == emptyOid {
-				gitDeltaStatus = GitDeltaStatus.indexNew
+				gitDeltaStatus = GitStatus.indexNew
 			} else {
 				if let statusValue = delta?.pointee.status.rawValue {
-					if (statusValue & GitDeltaStatus.current.value) != 0 {
+					if (statusValue & GitStatus.current.value) != 0 {
 					}
-					if (statusValue & GitDeltaStatus.indexModified.value) != 0 {
-						gitDeltaStatus = GitDeltaStatus.indexModified
+					if (statusValue & GitStatus.indexModified.value) != 0 {
+						gitDeltaStatus = GitStatus.indexModified
 					}
-					if (statusValue & GitDeltaStatus.indexRenamed.value) != 0 {
-						gitDeltaStatus = GitDeltaStatus.indexRenamed
+					if (statusValue & GitStatus.indexRenamed.value) != 0 {
+						gitDeltaStatus = GitStatus.indexRenamed
 					}
-					if (statusValue & GitDeltaStatus.indexTypeChange.value) != 0 {
-						gitDeltaStatus = GitDeltaStatus.indexTypeChange
+					if (statusValue & GitStatus.indexTypeChange.value) != 0 {
+						gitDeltaStatus = GitStatus.indexTypeChange
 					}
-					if (statusValue & GitDeltaStatus.ignored.value) != 0 {
-						gitDeltaStatus = GitDeltaStatus.ignored
+					if (statusValue & GitStatus.ignored.value) != 0 {
+						gitDeltaStatus = GitStatus.ignored
 					}
-					if (statusValue & GitDeltaStatus.conflicted.value) != 0 {
-						gitDeltaStatus = GitDeltaStatus.conflicted
+					if (statusValue & GitStatus.conflicted.value) != 0 {
+						gitDeltaStatus = GitStatus.conflicted
 					}
 				}
 			}
@@ -710,11 +710,9 @@ final public class Repository {
 
 	// MARK: - Status
 
-	public func getRepositoryStatus() -> String {
+	public func getRepositoryStatus() -> [GitStatusEntry] {
 
-		// adapted from https://github.com/arrbee/libgit2/blob/f18f772a8ec0cdff9315216886383dadce1379b5/examples/status.c
-
-		var returnString = ""
+		var returnArray = [GitStatusEntry]()
 
 		// Do this because GIT_STATUS_OPTIONS_INIT is unavailable in swift
 		let pointer = UnsafeMutablePointer<git_status_options>.allocate(capacity: 1)
@@ -732,109 +730,104 @@ final public class Repository {
 			if s?.pointee.status.rawValue == GIT_STATUS_CURRENT.rawValue {
 				continue
 			}
-			var a, b, c: String?
-			var istatus = " ", wstatus = " "
-			var extra = ""
+			var status: GitStatus? = nil
 
-			if s?.pointee.status.rawValue == GIT_STATUS_INDEX_NEW.rawValue {
-				istatus = "A"
-			}
-			if s?.pointee.status.rawValue == GIT_STATUS_INDEX_MODIFIED.rawValue {
-				istatus = "M"
-			}
-			if s?.pointee.status.rawValue == GIT_STATUS_INDEX_DELETED.rawValue {
-				istatus = "D"
-			}
-			if s?.pointee.status.rawValue ==  GIT_STATUS_INDEX_RENAMED.rawValue {
-				istatus = "R"
-			}
-			if s?.pointee.status.rawValue == GIT_STATUS_INDEX_TYPECHANGE.rawValue {
-				istatus = "T"
+			var headToIndex: GitDiffDelta? = nil
+			var htoiStatus: GitStatus? = nil
+			var htoiOldFile: GitDiffFile? = nil
+			var htoiNewFile: GitDiffFile? = nil
+
+			var indexToWorkDir: GitDiffDelta? = nil
+			var itowStatus: GitStatus? = nil
+			var itowOldFile: GitDiffFile? = nil
+			var itowNewFile: GitDiffFile? = nil
+
+			// Delta status
+			if let statusValue = s?.pointee.status.rawValue {
+				status = self.convertStatus(statusValue)
 			}
 
-			if s?.pointee.status.rawValue == GIT_STATUS_WT_NEW.rawValue {
-				if istatus == " " {
-					istatus = "?"
-					wstatus = "?"
-				}
-			}
-
-			if s?.pointee.status.rawValue == GIT_STATUS_WT_MODIFIED.rawValue {
-				wstatus = "M"
-			}
-			if s?.pointee.status.rawValue == GIT_STATUS_WT_DELETED.rawValue {
-				wstatus = "D"
-			}
-			if s?.pointee.status.rawValue == GIT_STATUS_WT_RENAMED.rawValue {
-				wstatus = "R"
-			}
-			if s?.pointee.status.rawValue == GIT_STATUS_WT_TYPECHANGE.rawValue {
-				wstatus = "T"
-			}
-			if s?.pointee.status.rawValue == GIT_STATUS_IGNORED.rawValue {
-				istatus = "!"
-				wstatus = "!"
-			}
-
-			if istatus == "?" && wstatus == "?" {
-				continue
-			}
-
-			if s?.pointee.index_to_workdir != nil &&
-				UInt((s?.pointee.index_to_workdir.pointee.new_file.mode)!) == UInt(GIT_FILEMODE_COMMIT.rawValue) {
-				//				let sm : git_submodule = nil
-				////				git_submodule *sm = NULL;
-				//				let smstatus = 0
-				//
-				//				if (!git_submodule_lookup(&sm, self, s?.pointee.index_to_workdir.new_file.path) && 
-				//				!git_submodule_status(&smstatus, sm))
-				//				{
-				//					if (smstatus & GIT_SUBMODULE_STATUS_WD_MODIFIED) {
-				//					extra = " (new commits)";
-				//					}
-				//					else if (smstatus & GIT_SUBMODULE_STATUS_WD_INDEX_MODIFIED) {
-				//					extra = " (modified content)";
-				//					}
-				//					else if (smstatus & GIT_SUBMODULE_STATUS_WD_WD_MODIFIED) {
-				//					extra = " (modified content)";
-				//					}
-				//					else if (smstatus & GIT_SUBMODULE_STATUS_WD_UNTRACKED) {
-				//					extra = " (untracked content)";
-				//					}
-				//				}
-				//			}
-				//
-			}
+			// Head To Index status and files
 			if s?.pointee.head_to_index != nil {
-				a = (s?.pointee.head_to_index.pointee.old_file.path!).map(String.init(cString:))!
-				b = (s?.pointee.head_to_index.pointee.new_file.path!).map(String.init(cString:))!
-			}
-			if s?.pointee.index_to_workdir != nil {
-				if a == nil {
-					a = (s?.pointee.index_to_workdir.pointee.old_file.path!).map(String.init(cString:))!
+				if let statusValue = s?.pointee.head_to_index.pointee.status.rawValue {
+					htoiStatus = self.convertStatus(statusValue)
 				}
-				if b == nil {
-					b = (s?.pointee.index_to_workdir.pointee.old_file.path!).map(String.init(cString:))!
-					c = (s?.pointee.index_to_workdir.pointee.new_file.path!).map(String.init(cString:))!
+				if let oldFile = s?.pointee.head_to_index.pointee.old_file {
+					htoiOldFile = self.convertDiffFile(oldFile)
 				}
+				if let newFile = s?.pointee.head_to_index.pointee.new_file {
+					htoiNewFile = self.convertDiffFile(newFile)
+				}
+
+				headToIndex = GitDiffDelta(status: htoiStatus,
+				                           flags: s?.pointee.head_to_index.pointee.flags,
+				                           oldFile: htoiOldFile,
+				                           newFile: htoiNewFile)
 			}
 
-			if istatus == "R" {
-				if wstatus == "R" {
-					returnString = String.localizedStringWithFormat("%@%@ %@ %@ %@%@\n", istatus, wstatus, a!, b!, c!, extra)
-					returnString = String.localizedStringWithFormat("%@%@ %@ %@ %@%@\n", istatus, wstatus, a!, b!, c!, extra)
-				} else {
-					returnString = String.localizedStringWithFormat("%@%@ %@ %@%@\n", istatus, wstatus, a!, b!, extra)
+			// Index to Working Directory status and files
+			if s?.pointee.index_to_workdir != nil {
+				if let statusValue = s?.pointee.index_to_workdir.pointee.status.rawValue {
+					itowStatus = self.convertStatus(statusValue)
 				}
-			} else {
-				if wstatus == "R" {
-					returnString = String.localizedStringWithFormat("%@%@ %@ %@%@\n", istatus, wstatus, a!, c!, extra)
-				} else {
-					returnString = String.localizedStringWithFormat("%@%@ %@%@\n", istatus, wstatus, a!, extra)
+				if let oldFile = s?.pointee.index_to_workdir.pointee.old_file {
+					itowOldFile = self.convertDiffFile(oldFile)
 				}
+				if let newFile = s?.pointee.index_to_workdir.pointee.new_file {
+					itowNewFile = self.convertDiffFile(newFile)
+				}
+
+				indexToWorkDir = GitDiffDelta(status: itowStatus,
+				                              flags: s?.pointee.index_to_workdir.pointee.flags,
+				                              oldFile: itowOldFile,
+				                              newFile: itowNewFile)
 			}
+
+			let statusEntry = GitStatusEntry(status: status, headToIndex: headToIndex, indexToWorkDir: indexToWorkDir)
+			returnArray.append(statusEntry)
 		}
 
-		return returnString
+		return returnArray
+	}
+
+	private func convertStatus(_ statusValue: UInt32) -> GitStatus {
+		var status: GitStatus? = nil
+
+		// Index status
+		if (statusValue & GIT_STATUS_INDEX_NEW.rawValue) == GIT_STATUS_INDEX_NEW.rawValue {
+			status = GitStatus.indexNew
+		} else if (statusValue & GIT_STATUS_INDEX_MODIFIED.rawValue) == GIT_STATUS_INDEX_MODIFIED.rawValue {
+			status = GitStatus.indexModified
+		} else if (statusValue & GIT_STATUS_INDEX_DELETED.rawValue) == GIT_STATUS_INDEX_DELETED.rawValue {
+			status = GitStatus.indexDeleted
+		} else if (statusValue & GIT_STATUS_INDEX_RENAMED.rawValue) == GIT_STATUS_INDEX_RENAMED.rawValue {
+			status = GitStatus.indexRenamed
+		} else if (statusValue & GIT_STATUS_INDEX_TYPECHANGE.rawValue) == GIT_STATUS_INDEX_TYPECHANGE.rawValue {
+			status = GitStatus.indexTypeChange
+		}
+
+		// Worktree status
+		if (statusValue & GIT_STATUS_WT_NEW.rawValue) == GIT_STATUS_WT_NEW.rawValue {
+			status = GitStatus(rawValue: Int(status!.value & GitStatus.workTreeNew.value))
+		} else if (statusValue & GIT_STATUS_WT_MODIFIED.rawValue) == GIT_STATUS_WT_MODIFIED.rawValue {
+			status = GitStatus(rawValue: Int(status!.value & GitStatus.workTreeModified.value))
+		} else if (statusValue & GIT_STATUS_WT_DELETED.rawValue) == GIT_STATUS_WT_DELETED.rawValue {
+			status = GitStatus(rawValue: Int(status!.value & GitStatus.workTreeDeleted.value))
+		} else if (statusValue & GIT_STATUS_WT_RENAMED.rawValue) == GIT_STATUS_WT_RENAMED.rawValue {
+			status = GitStatus(rawValue: Int(status!.value & GitStatus.workTreeRenamed.value))
+		} else if (statusValue & GIT_STATUS_WT_TYPECHANGE.rawValue) == GIT_STATUS_WT_TYPECHANGE.rawValue {
+			status = GitStatus(rawValue: Int(status!.value & GitStatus.workTreeTypeChange.value))
+		}
+
+		return status!
+	}
+
+	private func convertDiffFile(_ file: git_diff_file) -> GitDiffFile {
+		let path = file.path
+		let newFile = GitDiffFile(oid: OID(file.id),
+		                          path: path.map(String.init(cString:))!,
+		                          size: file.size,
+		                          flags: file.flags)
+		return newFile
 	}
 }

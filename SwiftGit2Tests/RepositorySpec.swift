@@ -644,13 +644,22 @@ class RepositorySpec: QuickSpec {
 
 		describe("Repository.getRepositoryStatus") {
 			it("Should return accurate status") {
+				// Repo with no status
 				let repo = Fixtures.mantleRepository
 				let branch = repo.localBranch(named: "master").value!
 				expect(repo.checkout(branch, strategy: CheckoutStrategy.None)).to(haveSucceeded())
 
 				let status = repo.getRepositoryStatus()
 
-				expect(status).to(equal(""))
+				expect(status.count).to(equal(0))
+
+				let repoWithStatus = Fixtures.sharedInstance.repository(named: "repository-with-status")
+				let branchWithStatus = repoWithStatus.localBranch(named: "master").value!
+				expect(repoWithStatus.checkout(branchWithStatus, strategy: CheckoutStrategy.None)).to(haveSucceeded())
+
+				let statusWithStatus = repoWithStatus.getRepositoryStatus()
+
+				expect(statusWithStatus.count).to(equal(5))
 			}
 
 			it("Should have accurate delta information") {

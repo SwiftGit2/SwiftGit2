@@ -22,9 +22,7 @@
 
 /* Begin PBXBuildFile section */
 		232861431F4A3A2E00276D65 /* Diffs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 232861421F4A3A2E00276D65 /* Diffs.swift */; };
-		232861441F4A3A2E00276D65 /* Diffs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 232861421F4A3A2E00276D65 /* Diffs.swift */; };
 		232861451F4A3A2E00276D65 /* Diffs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 232861421F4A3A2E00276D65 /* Diffs.swift */; };
-		232861461F4A3A2E00276D65 /* Diffs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 232861421F4A3A2E00276D65 /* Diffs.swift */; };
 		237731C71F46542B0020A3FE /* repository-with-status.zip in Resources */ = {isa = PBXBuildFile; fileRef = 237731C61F46542B0020A3FE /* repository-with-status.zip */; };
 		2549921B34FFC36AF8C9CD6D /* CommitIterator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25499A996CA7BD416620A397 /* CommitIterator.swift */; };
 		25499D325997CAB9BEFFCA4D /* CommitIterator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25499A996CA7BD416620A397 /* CommitIterator.swift */; };
@@ -775,7 +773,6 @@
 			files = (
 				621E66BA1C72958D00A0F352 /* RepositorySpec.swift in Sources */,
 				621E66BB1C72958D00A0F352 /* ObjectsSpec.swift in Sources */,
-				232861461F4A3A2E00276D65 /* Diffs.swift in Sources */,
 				621E66BC1C72958D00A0F352 /* RemotesSpec.swift in Sources */,
 				621E66BD1C72958D00A0F352 /* FixturesSpec.swift in Sources */,
 				621E66BE1C72958D00A0F352 /* Fixtures.swift in Sources */,
@@ -810,7 +807,6 @@
 			files = (
 				BEB31F361A0D6F7A00F525B9 /* RepositorySpec.swift in Sources */,
 				BE2E3BE81A31262800C67092 /* ObjectsSpec.swift in Sources */,
-				232861441F4A3A2E00276D65 /* Diffs.swift in Sources */,
 				BECB5F701A57286200999413 /* RemotesSpec.swift in Sources */,
 				BE14AA591A1996B70015B439 /* FixturesSpec.swift in Sources */,
 				BE14AA551A1984550015B439 /* Fixtures.swift in Sources */,
