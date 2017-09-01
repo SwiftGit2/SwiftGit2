@@ -36,20 +36,20 @@ public struct Status: OptionSet {
 	}
 	public let rawValue: UInt32
 
-	static let current                = Status(rawValue:  0)
-	static let indexNew               = Status(rawValue:  1 << 0)
-	static let indexModified          = Status(rawValue:  1 << 1)
-	static let indexDeleted           = Status(rawValue:  1 << 2)
-	static let indexRenamed           = Status(rawValue:  1 << 3)
-	static let indexTypeChange        = Status(rawValue:  1 << 4)
-	static let workTreeNew            = Status(rawValue:  1 << 5)
-	static let workTreeModified       = Status(rawValue:  1 << 6)
-	static let workTreeDeleted        = Status(rawValue:  1 << 7)
-	static let workTreeTypeChange     = Status(rawValue:  1 << 8)
-	static let workTreeRenamed        = Status(rawValue:  1 << 9)
-	static let workTreeUnreadable     = Status(rawValue:  1 << 10)
-	static let ignored                = Status(rawValue:  1 << 11)
-	static let conflicted             = Status(rawValue:  1 << 12)
+	public static let current                = Status(rawValue:  0)
+	public static let indexNew               = Status(rawValue:  1 << 0)
+	public static let indexModified          = Status(rawValue:  1 << 1)
+	public static let indexDeleted           = Status(rawValue:  1 << 2)
+	public static let indexRenamed           = Status(rawValue:  1 << 3)
+	public static let indexTypeChange        = Status(rawValue:  1 << 4)
+	public static let workTreeNew            = Status(rawValue:  1 << 5)
+	public static let workTreeModified       = Status(rawValue:  1 << 6)
+	public static let workTreeDeleted        = Status(rawValue:  1 << 7)
+	public static let workTreeTypeChange     = Status(rawValue:  1 << 8)
+	public static let workTreeRenamed        = Status(rawValue:  1 << 9)
+	public static let workTreeUnreadable     = Status(rawValue:  1 << 10)
+	public static let ignored                = Status(rawValue:  1 << 11)
+	public static let conflicted             = Status(rawValue:  1 << 12)
 }
 
 public struct DiffFlag: OptionSet {
@@ -60,10 +60,10 @@ public struct DiffFlag: OptionSet {
 	}
 	public let rawValue: UInt32
 
-	static let binary     = DiffFlag(rawValue: 0)
-	static let notBinary  = DiffFlag(rawValue: 1 << 0)
-	static let validId    = DiffFlag(rawValue: 1 << 1)
-	static let exists     = DiffFlag(rawValue: 1 << 2)
+	public static let binary     = DiffFlag(rawValue: 0)
+	public static let notBinary  = DiffFlag(rawValue: 1 << 0)
+	public static let validId    = DiffFlag(rawValue: 1 << 1)
+	public static let exists     = DiffFlag(rawValue: 1 << 2)
 }
 
 public struct DiffDelta {
