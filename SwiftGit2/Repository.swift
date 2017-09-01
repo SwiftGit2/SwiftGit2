@@ -613,52 +613,7 @@ final public class Repository {
 
 		for i in 0..<count {
 			let delta = git_diff_get_delta(diffResult, i)
-
-			let oldFilePath = (delta?.pointee.old_file.path!).map(String.init(cString:))
-			let oldOid = OID((delta?.pointee.old_file.id)!)
-			let oldSize = delta?.pointee.old_file.size
-			let oldFlags = delta?.pointee.old_file.flags
-			let oldFile = DiffFile(oid: oldOid, path: oldFilePath!, size: oldSize!, flags: oldFlags!)
-
-			let newFilePath = (delta?.pointee.new_file.path!).map(String.init(cString:))
-			let newOid = OID((delta?.pointee.new_file.id)!)
-			let newSize = delta?.pointee.new_file.size
-			let newFlags = delta?.pointee.new_file.flags
-			let newFile = DiffFile(oid: newOid, path: newFilePath!, size: newSize!, flags: newFlags!)
-
-			var gitDeltaStatus = Status.current
-
-			let emptyOid = OID(string: "0000000000000000000000000000000000000000")
-			if newOid == emptyOid {
-				gitDeltaStatus = Status.indexDeleted
-			} else if oldOid == emptyOid {
-				gitDeltaStatus = Status.indexNew
-			} else {
-				if let statusValue = delta?.pointee.status.rawValue {
-					if (statusValue & Status.current.rawValue) != 0 {
-					}
-					if (statusValue & Status.indexModified.rawValue) != 0 {
-						gitDeltaStatus = Status.indexModified
-					}
-					if (statusValue & Status.indexRenamed.rawValue) != 0 {
-						gitDeltaStatus = Status.indexRenamed
-					}
-					if (statusValue & Status.indexTypeChange.rawValue) != 0 {
-						gitDeltaStatus = Status.indexTypeChange
-					}
-					if (statusValue & Status.ignored.rawValue) != 0 {
-						gitDeltaStatus = Status.ignored
-					}
-					if (statusValue & Status.conflicted.rawValue) != 0 {
-						gitDeltaStatus = Status.conflicted
-					}
-				}
-			}
-
-			let gitDiffDelta = DiffDelta(status: gitDeltaStatus,
-			                             flags: (delta?.pointee.flags)!,
-			                             oldFile: oldFile,
-			                             newFile: newFile)
+			let gitDiffDelta = DiffDelta(from: (delta?.pointee)!)
 
 			returnDict.append(gitDiffDelta)
 
@@ -700,54 +655,19 @@ final public class Repository {
 			var status: Status? = nil
 
 			var headToIndex: DiffDelta? = nil
-			var htoiStatus: Status? = nil
-			var htoiOldFile: DiffFile? = nil
-			var htoiNewFile: DiffFile? = nil
-
 			var indexToWorkDir: DiffDelta? = nil
-			var itowStatus: Status? = nil
-			var itowOldFile: DiffFile? = nil
-			var itowNewFile: DiffFile? = nil
 
 			// Delta status
 			if let statusValue = s?.pointee.status.rawValue {
-				status = self.convertStatus(statusValue)
+				status = DiffDelta.convertStatus(statusValue)
 			}
 
-			// Head To Index status and files
 			if s?.pointee.head_to_index != nil {
-				if let statusValue = s?.pointee.head_to_index.pointee.status.rawValue {
-					htoiStatus = self.convertStatus(statusValue)
-				}
-				if let oldFile = s?.pointee.head_to_index.pointee.old_file {
-					htoiOldFile = self.convertDiffFile(oldFile)
-				}
-				if let newFile = s?.pointee.head_to_index.pointee.new_file {
-					htoiNewFile = self.convertDiffFile(newFile)
-				}
-
-				headToIndex = DiffDelta(status: htoiStatus,
-				                        flags: s?.pointee.head_to_index.pointee.flags,
-				                        oldFile: htoiOldFile,
-				                        newFile: htoiNewFile)
+				headToIndex = DiffDelta(from: (s?.pointee.head_to_index.pointee)!)
 			}
 
-			// Index to Working Directory status and files
 			if s?.pointee.index_to_workdir != nil {
-				if let statusValue = s?.pointee.index_to_workdir.pointee.status.rawValue {
-					itowStatus = self.convertStatus(statusValue)
-				}
-				if let oldFile = s?.pointee.index_to_workdir.pointee.old_file {
-					itowOldFile = self.convertDiffFile(oldFile)
-				}
-				if let newFile = s?.pointee.index_to_workdir.pointee.new_file {
-					itowNewFile = self.convertDiffFile(newFile)
-				}
-
-				indexToWorkDir = DiffDelta(status: itowStatus,
-				                           flags: s?.pointee.index_to_workdir.pointee.flags,
-				                           oldFile: itowOldFile,
-				                           newFile: itowNewFile)
+				indexToWorkDir = DiffDelta(from: (s?.pointee.index_to_workdir.pointee)!)
 			}
 
 			let statusEntry = StatusEntry(status: status, headToIndex: headToIndex, indexToWorkDir: indexToWorkDir)
@@ -755,46 +675,5 @@ final public class Repository {
 		}
 
 		return Result.success(returnArray)
-	}
-
-	private func convertStatus(_ statusValue: UInt32) -> Status {
-		var status: Status? = nil
-
-		// Index status
-		if (statusValue & GIT_STATUS_INDEX_NEW.rawValue) == GIT_STATUS_INDEX_NEW.rawValue {
-			status = Status.indexNew
-		} else if (statusValue & GIT_STATUS_INDEX_MODIFIED.rawValue) == GIT_STATUS_INDEX_MODIFIED.rawValue {
-			status = Status.indexModified
-		} else if (statusValue & GIT_STATUS_INDEX_DELETED.rawValue) == GIT_STATUS_INDEX_DELETED.rawValue {
-			status = Status.indexDeleted
-		} else if (statusValue & GIT_STATUS_INDEX_RENAMED.rawValue) == GIT_STATUS_INDEX_RENAMED.rawValue {
-			status = Status.indexRenamed
-		} else if (statusValue & GIT_STATUS_INDEX_TYPECHANGE.rawValue) == GIT_STATUS_INDEX_TYPECHANGE.rawValue {
-			status = Status.indexTypeChange
-		}
-
-		// Worktree status
-		if (statusValue & GIT_STATUS_WT_NEW.rawValue) == GIT_STATUS_WT_NEW.rawValue {
-			status = Status(rawValue: status!.rawValue & Status.workTreeNew.rawValue)
-		} else if (statusValue & GIT_STATUS_WT_MODIFIED.rawValue) == GIT_STATUS_WT_MODIFIED.rawValue {
-			status = Status(rawValue: status!.rawValue & Status.workTreeModified.rawValue)
-		} else if (statusValue & GIT_STATUS_WT_DELETED.rawValue) == GIT_STATUS_WT_DELETED.rawValue {
-			status = Status(rawValue: status!.rawValue & Status.workTreeDeleted.rawValue)
-		} else if (statusValue & GIT_STATUS_WT_RENAMED.rawValue) == GIT_STATUS_WT_RENAMED.rawValue {
-			status = Status(rawValue: status!.rawValue & Status.workTreeRenamed.rawValue)
-		} else if (statusValue & GIT_STATUS_WT_TYPECHANGE.rawValue) == GIT_STATUS_WT_TYPECHANGE.rawValue {
-			status = Status(rawValue: status!.rawValue & Status.workTreeTypeChange.rawValue)
-		}
-
-		return status!
-	}
-
-	private func convertDiffFile(_ file: git_diff_file) -> DiffFile {
-		let path = file.path
-		let newFile = DiffFile(oid: OID(file.id),
-		                          path: path.map(String.init(cString:))!,
-		                          size: file.size,
-		                          flags: file.flags)
-		return newFile
 	}
 }
