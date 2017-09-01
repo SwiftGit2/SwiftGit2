@@ -649,7 +649,7 @@ class RepositorySpec: QuickSpec {
 				let branch = repo.localBranch(named: "master").value!
 				expect(repo.checkout(branch, strategy: CheckoutStrategy.None)).to(haveSucceeded())
 
-				let status = repo.getRepositoryStatus()
+				let status = repo.status()
 
 				expect(status.value?.count).to(equal(0))
 
@@ -657,7 +657,7 @@ class RepositorySpec: QuickSpec {
 				let branchWithStatus = repoWithStatus.localBranch(named: "master").value!
 				expect(repoWithStatus.checkout(branchWithStatus, strategy: CheckoutStrategy.None)).to(haveSucceeded())
 
-				let statusWithStatus = repoWithStatus.getRepositoryStatus()
+				let statusWithStatus = repoWithStatus.status()
 
 				expect(statusWithStatus.value?.count).to(equal(5))
 			}

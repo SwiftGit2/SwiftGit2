@@ -671,7 +671,7 @@ final public class Repository {
 
 	// MARK: - Status
 
-	public func getRepositoryStatus() -> Result<[StatusEntry], NSError> {
+	public func status() -> Result<[StatusEntry], NSError> {
 
 		var returnArray = [StatusEntry]()
 
