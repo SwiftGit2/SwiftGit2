@@ -65,54 +65,10 @@ public struct DiffDelta {
 	public var newFile: DiffFile?
 
 	public init(from diffDelta: git_diff_delta) {
-		let emptyOid = OID(string: "0000000000000000000000000000000000000000")
-		let oldOid = OID(diffDelta.old_file.id)
-		let newOid = OID(diffDelta.old_file.id)
-
-		// Because of the way git diffs work, new or deleted files can have confusing statuses
-		// We're simplifying that here by checking directly
-		if newOid == emptyOid {
-			self.status = Status.indexDeleted
-		} else if oldOid == emptyOid {
-			self.status = Status.indexNew
-		} else {
-			self.status = DiffDelta.convertStatus(diffDelta.status.rawValue)
-		}
+		self.status = Status(rawValue: diffDelta.status.rawValue)
 		self.flags = DiffFlag(rawValue: diffDelta.flags)
 		self.oldFile = self.convertDiffFile(diffDelta.old_file)
 		self.newFile = self.convertDiffFile(diffDelta.new_file)
-	}
-
-	static func convertStatus(_ statusValue: UInt32) -> Status {
-		var status: Status? = nil
-
-		// Index status
-		if (statusValue & GIT_STATUS_INDEX_NEW.rawValue) == GIT_STATUS_INDEX_NEW.rawValue {
-			status = Status.indexNew
-		} else if (statusValue & GIT_STATUS_INDEX_MODIFIED.rawValue) == GIT_STATUS_INDEX_MODIFIED.rawValue {
-			status = Status.indexModified
-		} else if (statusValue & GIT_STATUS_INDEX_DELETED.rawValue) == GIT_STATUS_INDEX_DELETED.rawValue {
-			status = Status.indexDeleted
-		} else if (statusValue & GIT_STATUS_INDEX_RENAMED.rawValue) == GIT_STATUS_INDEX_RENAMED.rawValue {
-			status = Status.indexRenamed
-		} else if (statusValue & GIT_STATUS_INDEX_TYPECHANGE.rawValue) == GIT_STATUS_INDEX_TYPECHANGE.rawValue {
-			status = Status.indexTypeChange
-		}
-
-		// Worktree status
-		if (statusValue & GIT_STATUS_WT_NEW.rawValue) == GIT_STATUS_WT_NEW.rawValue {
-			status = Status(rawValue: status!.rawValue & Status.workTreeNew.rawValue)
-		} else if (statusValue & GIT_STATUS_WT_MODIFIED.rawValue) == GIT_STATUS_WT_MODIFIED.rawValue {
-			status = Status(rawValue: status!.rawValue & Status.workTreeModified.rawValue)
-		} else if (statusValue & GIT_STATUS_WT_DELETED.rawValue) == GIT_STATUS_WT_DELETED.rawValue {
-			status = Status(rawValue: status!.rawValue & Status.workTreeDeleted.rawValue)
-		} else if (statusValue & GIT_STATUS_WT_RENAMED.rawValue) == GIT_STATUS_WT_RENAMED.rawValue {
-			status = Status(rawValue: status!.rawValue & Status.workTreeRenamed.rawValue)
-		} else if (statusValue & GIT_STATUS_WT_TYPECHANGE.rawValue) == GIT_STATUS_WT_TYPECHANGE.rawValue {
-			status = Status(rawValue: status!.rawValue & Status.workTreeTypeChange.rawValue)
-		}
-
-		return status!
 	}
 
 	private func convertDiffFile(_ file: git_diff_file) -> DiffFile {

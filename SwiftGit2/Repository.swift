@@ -657,17 +657,16 @@ final public class Repository {
 			var headToIndex: DiffDelta? = nil
 			var indexToWorkDir: DiffDelta? = nil
 
-			// Delta status
 			if let statusValue = s?.pointee.status.rawValue {
-				status = DiffDelta.convertStatus(statusValue)
+				status = Status(rawValue: statusValue)
 			}
 
-			if s?.pointee.head_to_index != nil {
-				headToIndex = DiffDelta(from: (s?.pointee.head_to_index.pointee)!)
+			if let htoi = s?.pointee.head_to_index {
+				headToIndex = DiffDelta(from: htoi.pointee)
 			}
 
-			if s?.pointee.index_to_workdir != nil {
-				indexToWorkDir = DiffDelta(from: (s?.pointee.index_to_workdir.pointee)!)
+			if let itow = s?.pointee.index_to_workdir {
+				indexToWorkDir = DiffDelta(from: itow.pointee)
 			}
 
 			let statusEntry = StatusEntry(status: status, headToIndex: headToIndex, indexToWorkDir: indexToWorkDir)
