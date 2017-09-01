@@ -12,6 +12,14 @@ public struct DiffFile {
 	public var path: String
 	public var size: Int64
 	public var flags: UInt32
+
+	public init(from diffFile: git_diff_file) {
+		self.oid = OID(diffFile.id)
+		let path = diffFile.path
+		self.path = path.map(String.init(cString:))!
+		self.size = diffFile.size
+		self.flags = diffFile.flags
+	}
 }
 
 public struct StatusEntry {
@@ -67,16 +75,7 @@ public struct DiffDelta {
 	public init(from diffDelta: git_diff_delta) {
 		self.status = Status(rawValue: diffDelta.status.rawValue)
 		self.flags = DiffFlag(rawValue: diffDelta.flags)
-		self.oldFile = self.convertDiffFile(diffDelta.old_file)
-		self.newFile = self.convertDiffFile(diffDelta.new_file)
-	}
-
-	private func convertDiffFile(_ file: git_diff_file) -> DiffFile {
-		let path = file.path
-		let newFile = DiffFile(oid: OID(file.id),
-		                       path: path.map(String.init(cString:))!,
-		                       size: file.size,
-		                       flags: file.flags)
-		return newFile
+		self.oldFile = DiffFile(from: diffDelta.old_file)
+		self.newFile = DiffFile(from: diffDelta.new_file)
 	}
 }
