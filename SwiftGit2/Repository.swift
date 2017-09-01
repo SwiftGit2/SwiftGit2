@@ -528,7 +528,7 @@ final public class Repository {
 	                     progress: CheckoutProgressBlock? = nil) -> Result<(), NSError> {
 		return setHEAD(reference).flatMap { self.checkout(strategy: strategy, progress: progress) }
 	}
-	
+
 	/// Load all commits in the specified branch in topological & time order descending
 	///
 	/// :param: branch The branch to get all commits from
@@ -540,7 +540,7 @@ final public class Repository {
 
 	// MARK: - Diffs
 
-	public func getDiffDeltas(for commit: Commit) -> Result<[GitDiffDelta], NSError> {
+	public func getDiffDeltas(for commit: Commit) -> Result<[DiffDelta], NSError> {
 		/// Get the Base Tree
 		var unsafeBaseCommit: OpaquePointer? = nil
 		let unsafeBaseOid = UnsafeMutablePointer<git_oid>.allocate(capacity: 1)
@@ -567,7 +567,7 @@ final public class Repository {
 		}
 	}
 
-	private func getDiffDeltasWithNoParents(from baseTree: OpaquePointer) -> Result<[GitDiffDelta], NSError> {
+	private func getDiffDeltasWithNoParents(from baseTree: OpaquePointer) -> Result<[DiffDelta], NSError> {
 		var unsafeDiff: OpaquePointer? = nil
 		let diffResult = git_diff_tree_to_tree(&unsafeDiff, self.pointer, nil, baseTree, nil)
 		guard diffResult == GIT_OK.rawValue, let unwrapDiffResult = unsafeDiff else {
@@ -578,7 +578,7 @@ final public class Repository {
 	}
 
 	private func getDiffDeltasWithOneParent(from baseTree: OpaquePointer,
-	                                        in commit: Commit) -> Result<[GitDiffDelta], NSError> {
+	                                        in commit: Commit) -> Result<[DiffDelta], NSError> {
 		/// Get the Parent Tree
 		let parent = commit.parents[0]
 		var unsafeParentCommit: OpaquePointer? = nil
@@ -607,7 +607,7 @@ final public class Repository {
 	}
 
 	private func getDiffDeltasWithMultipleParents(from baseTree: OpaquePointer,
-	                                              in commit: Commit) -> Result<[GitDiffDelta], NSError> {
+	                                              in commit: Commit) -> Result<[DiffDelta], NSError> {
 		// Merge Commit, merge diffs of base with each parent
 		var mergeDiff: OpaquePointer? = nil
 		for parent in commit.parents {
@@ -645,8 +645,8 @@ final public class Repository {
 		return self.processDiffDeltas(mergeDiff!)
 	}
 
-	private func processDiffDeltas(_ diffResult: OpaquePointer) -> Result<[GitDiffDelta], NSError> {
-		var returnDict = [GitDiffDelta]()
+	private func processDiffDeltas(_ diffResult: OpaquePointer) -> Result<[DiffDelta], NSError> {
+		var returnDict = [DiffDelta]()
 
 		let count = git_diff_num_deltas(diffResult)
 
@@ -657,62 +657,62 @@ final public class Repository {
 			let oldOid = OID((delta?.pointee.old_file.id)!)
 			let oldSize = delta?.pointee.old_file.size
 			let oldFlags = delta?.pointee.old_file.flags
-			let oldFile = GitDiffFile(oid: oldOid, path: oldFilePath!, size: oldSize!, flags: oldFlags!)
+			let oldFile = DiffFile(oid: oldOid, path: oldFilePath!, size: oldSize!, flags: oldFlags!)
 
 			let newFilePath = (delta?.pointee.new_file.path!).map(String.init(cString:))
 			let newOid = OID((delta?.pointee.new_file.id)!)
 			let newSize = delta?.pointee.new_file.size
 			let newFlags = delta?.pointee.new_file.flags
-			let newFile = GitDiffFile(oid: newOid, path: newFilePath!, size: newSize!, flags: newFlags!)
+			let newFile = DiffFile(oid: newOid, path: newFilePath!, size: newSize!, flags: newFlags!)
 
-			var gitDeltaStatus = GitStatus.current
+			var gitDeltaStatus = Status.current
 
 			let emptyOid = OID(string: "0000000000000000000000000000000000000000")
 			if newOid == emptyOid {
-				gitDeltaStatus = GitStatus.indexDeleted
+				gitDeltaStatus = Status.indexDeleted
 			} else if oldOid == emptyOid {
-				gitDeltaStatus = GitStatus.indexNew
+				gitDeltaStatus = Status.indexNew
 			} else {
 				if let statusValue = delta?.pointee.status.rawValue {
-					if (statusValue & GitStatus.current.value) != 0 {
+					if (statusValue & Status.current.rawValue) != 0 {
 					}
-					if (statusValue & GitStatus.indexModified.value) != 0 {
-						gitDeltaStatus = GitStatus.indexModified
+					if (statusValue & Status.indexModified.rawValue) != 0 {
+						gitDeltaStatus = Status.indexModified
 					}
-					if (statusValue & GitStatus.indexRenamed.value) != 0 {
-						gitDeltaStatus = GitStatus.indexRenamed
+					if (statusValue & Status.indexRenamed.rawValue) != 0 {
+						gitDeltaStatus = Status.indexRenamed
 					}
-					if (statusValue & GitStatus.indexTypeChange.value) != 0 {
-						gitDeltaStatus = GitStatus.indexTypeChange
+					if (statusValue & Status.indexTypeChange.rawValue) != 0 {
+						gitDeltaStatus = Status.indexTypeChange
 					}
-					if (statusValue & GitStatus.ignored.value) != 0 {
-						gitDeltaStatus = GitStatus.ignored
+					if (statusValue & Status.ignored.rawValue) != 0 {
+						gitDeltaStatus = Status.ignored
 					}
-					if (statusValue & GitStatus.conflicted.value) != 0 {
-						gitDeltaStatus = GitStatus.conflicted
+					if (statusValue & Status.conflicted.rawValue) != 0 {
+						gitDeltaStatus = Status.conflicted
 					}
 				}
 			}
 
-			let gitDiffDelta = GitDiffDelta(status: gitDeltaStatus,
-			                                flags: (delta?.pointee.flags)!,
-			                                oldFile: oldFile,
-			                                newFile: newFile)
+			let gitDiffDelta = DiffDelta(status: gitDeltaStatus,
+			                             flags: (delta?.pointee.flags)!,
+			                             oldFile: oldFile,
+			                             newFile: newFile)
 
 			returnDict.append(gitDiffDelta)
 
 			git_diff_free(OpaquePointer(delta))
 		}
 
-		let result = Result<[GitDiffDelta], NSError>.success(returnDict)
+		let result = Result<[DiffDelta], NSError>.success(returnDict)
 		return result
 	}
 
 	// MARK: - Status
 
-	public func getRepositoryStatus() -> [GitStatusEntry] {
+	public func getRepositoryStatus() -> [StatusEntry] {
 
-		var returnArray = [GitStatusEntry]()
+		var returnArray = [StatusEntry]()
 
 		// Do this because GIT_STATUS_OPTIONS_INIT is unavailable in swift
 		let pointer = UnsafeMutablePointer<git_status_options>.allocate(capacity: 1)
@@ -730,17 +730,17 @@ final public class Repository {
 			if s?.pointee.status.rawValue == GIT_STATUS_CURRENT.rawValue {
 				continue
 			}
-			var status: GitStatus? = nil
+			var status: Status? = nil
 
-			var headToIndex: GitDiffDelta? = nil
-			var htoiStatus: GitStatus? = nil
-			var htoiOldFile: GitDiffFile? = nil
-			var htoiNewFile: GitDiffFile? = nil
+			var headToIndex: DiffDelta? = nil
+			var htoiStatus: Status? = nil
+			var htoiOldFile: DiffFile? = nil
+			var htoiNewFile: DiffFile? = nil
 
-			var indexToWorkDir: GitDiffDelta? = nil
-			var itowStatus: GitStatus? = nil
-			var itowOldFile: GitDiffFile? = nil
-			var itowNewFile: GitDiffFile? = nil
+			var indexToWorkDir: DiffDelta? = nil
+			var itowStatus: Status? = nil
+			var itowOldFile: DiffFile? = nil
+			var itowNewFile: DiffFile? = nil
 
 			// Delta status
 			if let statusValue = s?.pointee.status.rawValue {
@@ -759,7 +759,7 @@ final public class Repository {
 					htoiNewFile = self.convertDiffFile(newFile)
 				}
 
-				headToIndex = GitDiffDelta(status: htoiStatus,
+				headToIndex = DiffDelta(status: htoiStatus,
 				                           flags: s?.pointee.head_to_index.pointee.flags,
 				                           oldFile: htoiOldFile,
 				                           newFile: htoiNewFile)
@@ -777,54 +777,54 @@ final public class Repository {
 					itowNewFile = self.convertDiffFile(newFile)
 				}
 
-				indexToWorkDir = GitDiffDelta(status: itowStatus,
+				indexToWorkDir = DiffDelta(status: itowStatus,
 				                              flags: s?.pointee.index_to_workdir.pointee.flags,
 				                              oldFile: itowOldFile,
 				                              newFile: itowNewFile)
 			}
 
-			let statusEntry = GitStatusEntry(status: status, headToIndex: headToIndex, indexToWorkDir: indexToWorkDir)
+			let statusEntry = StatusEntry(status: status, headToIndex: headToIndex, indexToWorkDir: indexToWorkDir)
 			returnArray.append(statusEntry)
 		}
 
 		return returnArray
 	}
 
-	private func convertStatus(_ statusValue: UInt32) -> GitStatus {
-		var status: GitStatus? = nil
+	private func convertStatus(_ statusValue: UInt32) -> Status {
+		var status: Status? = nil
 
 		// Index status
 		if (statusValue & GIT_STATUS_INDEX_NEW.rawValue) == GIT_STATUS_INDEX_NEW.rawValue {
-			status = GitStatus.indexNew
+			status = Status.indexNew
 		} else if (statusValue & GIT_STATUS_INDEX_MODIFIED.rawValue) == GIT_STATUS_INDEX_MODIFIED.rawValue {
-			status = GitStatus.indexModified
+			status = Status.indexModified
 		} else if (statusValue & GIT_STATUS_INDEX_DELETED.rawValue) == GIT_STATUS_INDEX_DELETED.rawValue {
-			status = GitStatus.indexDeleted
+			status = Status.indexDeleted
 		} else if (statusValue & GIT_STATUS_INDEX_RENAMED.rawValue) == GIT_STATUS_INDEX_RENAMED.rawValue {
-			status = GitStatus.indexRenamed
+			status = Status.indexRenamed
 		} else if (statusValue & GIT_STATUS_INDEX_TYPECHANGE.rawValue) == GIT_STATUS_INDEX_TYPECHANGE.rawValue {
-			status = GitStatus.indexTypeChange
+			status = Status.indexTypeChange
 		}
 
 		// Worktree status
 		if (statusValue & GIT_STATUS_WT_NEW.rawValue) == GIT_STATUS_WT_NEW.rawValue {
-			status = GitStatus(rawValue: Int(status!.value & GitStatus.workTreeNew.value))
+			status = Status(rawValue: status!.rawValue & Status.workTreeNew.rawValue)
 		} else if (statusValue & GIT_STATUS_WT_MODIFIED.rawValue) == GIT_STATUS_WT_MODIFIED.rawValue {
-			status = GitStatus(rawValue: Int(status!.value & GitStatus.workTreeModified.value))
+			status = Status(rawValue: status!.rawValue & Status.workTreeModified.rawValue)
 		} else if (statusValue & GIT_STATUS_WT_DELETED.rawValue) == GIT_STATUS_WT_DELETED.rawValue {
-			status = GitStatus(rawValue: Int(status!.value & GitStatus.workTreeDeleted.value))
+			status = Status(rawValue: status!.rawValue & Status.workTreeDeleted.rawValue)
 		} else if (statusValue & GIT_STATUS_WT_RENAMED.rawValue) == GIT_STATUS_WT_RENAMED.rawValue {
-			status = GitStatus(rawValue: Int(status!.value & GitStatus.workTreeRenamed.value))
+			status = Status(rawValue: status!.rawValue & Status.workTreeRenamed.rawValue)
 		} else if (statusValue & GIT_STATUS_WT_TYPECHANGE.rawValue) == GIT_STATUS_WT_TYPECHANGE.rawValue {
-			status = GitStatus(rawValue: Int(status!.value & GitStatus.workTreeTypeChange.value))
+			status = Status(rawValue: status!.rawValue & Status.workTreeTypeChange.rawValue)
 		}
 
 		return status!
 	}
 
-	private func convertDiffFile(_ file: git_diff_file) -> GitDiffFile {
+	private func convertDiffFile(_ file: git_diff_file) -> DiffFile {
 		let path = file.path
-		let newFile = GitDiffFile(oid: OID(file.id),
+		let newFile = DiffFile(oid: OID(file.id),
 		                          path: path.map(String.init(cString:))!,
 		                          size: file.size,
 		                          flags: file.flags)
