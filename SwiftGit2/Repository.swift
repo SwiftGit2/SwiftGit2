@@ -540,7 +540,7 @@ final public class Repository {
 
 	// MARK: - Diffs
 
-	public func getDiffDeltas(for commit: Commit) -> Result<[DiffDelta], NSError> {
+	public func diff(for commit: Commit) -> Result<[DiffDelta], NSError> {
 		/// Get the Base Tree
 		var unsafeBaseCommit: OpaquePointer? = nil
 		let unsafeBaseOid = UnsafeMutablePointer<git_oid>.allocate(capacity: 1)

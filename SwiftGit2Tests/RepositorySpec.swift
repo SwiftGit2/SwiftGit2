@@ -669,7 +669,7 @@ class RepositorySpec: QuickSpec {
 
 				let head = repo.HEAD().value!
 				let commit = repo.object(head.oid).value! as! Commit
-				let objects = repo.getDiffDeltas(for: commit)
+				let objects = repo.diff(for: commit)
 
 				expect(objects.value?.count).to(equal(13))
 			}
@@ -680,7 +680,7 @@ class RepositorySpec: QuickSpec {
 				                     strategy: CheckoutStrategy.None)).to(haveSucceeded())
 				let head = repo.HEAD().value!
 				let initalCommit = repo.object(head.oid).value! as! Commit
-				let objects = repo.getDiffDeltas(for: initalCommit)
+				let objects = repo.diff(for: initalCommit)
 
 				expect(objects.value?.count).to(equal(2))
 			}
@@ -691,7 +691,7 @@ class RepositorySpec: QuickSpec {
 				                     strategy: CheckoutStrategy.None)).to(haveSucceeded())
 				let head = repo.HEAD().value!
 				let initalCommit = repo.object(head.oid).value! as! Commit
-				let objects = repo.getDiffDeltas(for: initalCommit)
+				let objects = repo.diff(for: initalCommit)
 
 				expect(objects.value?.count).to(equal(20))
 			}
