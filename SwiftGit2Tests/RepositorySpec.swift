@@ -651,7 +651,7 @@ class RepositorySpec: QuickSpec {
 
 				let status = repo.getRepositoryStatus()
 
-				expect(status.count).to(equal(0))
+				expect(status.value?.count).to(equal(0))
 
 				let repoWithStatus = Fixtures.sharedInstance.repository(named: "repository-with-status")
 				let branchWithStatus = repoWithStatus.localBranch(named: "master").value!
@@ -659,7 +659,7 @@ class RepositorySpec: QuickSpec {
 
 				let statusWithStatus = repoWithStatus.getRepositoryStatus()
 
-				expect(statusWithStatus.count).to(equal(5))
+				expect(statusWithStatus.value?.count).to(equal(5))
 			}
 
 			it("Should have accurate delta information") {

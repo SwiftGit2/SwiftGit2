@@ -671,7 +671,7 @@ final public class Repository {
 
 	// MARK: - Status
 
-	public func getRepositoryStatus() -> [StatusEntry] {
+	public func getRepositoryStatus() -> Result<[StatusEntry], NSError> {
 
 		var returnArray = [StatusEntry]()
 
@@ -681,13 +681,16 @@ final public class Repository {
 		var options = pointer.move()
 		pointer.deallocate(capacity: 1)
 
-		var status: OpaquePointer? = nil
-		git_status_list_new(&status, self.pointer, &options)
+		var unsafeStatus: OpaquePointer? = nil
+		let statusResult = git_status_list_new(&unsafeStatus, self.pointer, &options)
+		guard statusResult == GIT_OK.rawValue, let unwrapStatusResult = unsafeStatus else {
+			return Result.failure(NSError(gitError: statusResult, pointOfFailure: "git_status_list_new"))
+		}
 
-		let count = git_status_list_entrycount(status)
+		let count = git_status_list_entrycount(unwrapStatusResult)
 
 		for i in 0..<count {
-			let s = git_status_byindex(status, i)
+			let s = git_status_byindex(unwrapStatusResult, i)
 			if s?.pointee.status.rawValue == GIT_STATUS_CURRENT.rawValue {
 				continue
 			}
@@ -721,9 +724,9 @@ final public class Repository {
 				}
 
 				headToIndex = DiffDelta(status: htoiStatus,
-				                           flags: s?.pointee.head_to_index.pointee.flags,
-				                           oldFile: htoiOldFile,
-				                           newFile: htoiNewFile)
+				                        flags: s?.pointee.head_to_index.pointee.flags,
+				                        oldFile: htoiOldFile,
+				                        newFile: htoiNewFile)
 			}
 
 			// Index to Working Directory status and files
@@ -739,16 +742,16 @@ final public class Repository {
 				}
 
 				indexToWorkDir = DiffDelta(status: itowStatus,
-				                              flags: s?.pointee.index_to_workdir.pointee.flags,
-				                              oldFile: itowOldFile,
-				                              newFile: itowNewFile)
+				                           flags: s?.pointee.index_to_workdir.pointee.flags,
+				                           oldFile: itowOldFile,
+				                           newFile: itowNewFile)
 			}
 
 			let statusEntry = StatusEntry(status: status, headToIndex: headToIndex, indexToWorkDir: indexToWorkDir)
 			returnArray.append(statusEntry)
 		}
 
-		return returnArray
+		return Result.success(returnArray)
 	}
 
 	private func convertStatus(_ statusValue: UInt32) -> Status {
