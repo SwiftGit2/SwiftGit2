@@ -44,9 +44,23 @@ public struct Status: OptionSet {
 	static let conflicted             = Status(rawValue:  1 << 12)
 }
 
+public struct DiffFlag: OptionSet {
+	// This appears to be necessary due to bug in Swift
+	// https://bugs.swift.org/browse/SR-3003
+	public init(rawValue: UInt32) {
+		self.rawValue = rawValue
+	}
+	public let rawValue: UInt32
+
+	static let binary     = DiffFlag(rawValue: 0)
+	static let notBinary  = DiffFlag(rawValue: 1 << 0)
+	static let validId    = DiffFlag(rawValue: 1 << 1)
+	static let exists     = DiffFlag(rawValue: 1 << 2)
+}
+
 public struct DiffDelta {
 	public var status: Status?
-	public var flags: UInt32?
+	public var flags: DiffFlag?
 	public var oldFile: DiffFile?
 	public var newFile: DiffFile?
 
@@ -64,7 +78,7 @@ public struct DiffDelta {
 		} else {
 			self.status = DiffDelta.convertStatus(diffDelta.status.rawValue)
 		}
-		self.flags = diffDelta.flags
+		self.flags = DiffFlag(rawValue: diffDelta.flags)
 		self.oldFile = self.convertDiffFile(diffDelta.old_file)
 		self.newFile = self.convertDiffFile(diffDelta.new_file)
 	}
@@ -109,18 +123,4 @@ public struct DiffDelta {
 		                       flags: file.flags)
 		return newFile
 	}
-}
-
-public struct DiffFlag: OptionSet {
-	// This appears to be necessary due to bug in Swift
-	// https://bugs.swift.org/browse/SR-3003
-	public init(rawValue: UInt32) {
-		self.rawValue = rawValue
-	}
-	public let rawValue: UInt32
-
-	static let binary     = DiffFlag(rawValue: 0)
-	static let notBinary  = DiffFlag(rawValue: 1 << 0)
-	static let validId    = DiffFlag(rawValue: 1 << 1)
-	static let exists     = DiffFlag(rawValue: 1 << 2)
 }
