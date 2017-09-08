@@ -688,20 +688,7 @@ final public class Repository {
 				continue
 			}
 
-			var headToIndex: Diff.Delta? = nil
-			var indexToWorkDir: Diff.Delta? = nil
-
-			let status = Diff.Status(rawValue: (s?.pointee.status.rawValue)!)
-
-			if let htoi = s?.pointee.head_to_index {
-				headToIndex = Diff.Delta(from: htoi.pointee)
-			}
-
-			if let itow = s?.pointee.index_to_workdir {
-				indexToWorkDir = Diff.Delta(from: itow.pointee)
-			}
-
-			let statusEntry = StatusEntry(status: status, headToIndex: headToIndex, indexToWorkDir: indexToWorkDir)
+			let statusEntry = StatusEntry(from: (s?.pointee)!)
 			returnArray.append(statusEntry)
 		}
 
