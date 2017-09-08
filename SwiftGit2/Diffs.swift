@@ -7,6 +7,12 @@
 //
 import libgit2
 
+public struct StatusEntry {
+	public var status: Diff.Status
+	public var headToIndex: Diff.Delta?
+	public var indexToWorkDir: Diff.Delta?
+}
+
 public struct Diff {
 	public struct File {
 		public var oid: OID
@@ -21,12 +27,6 @@ public struct Diff {
 			self.size = diffFile.size
 			self.flags = Flags(rawValue: diffFile.flags)
 		}
-	}
-
-	public struct StatusEntry {
-		public var status: Status
-		public var headToIndex: Delta?
-		public var indexToWorkDir: Delta?
 	}
 
 	public struct Status: OptionSet {

@@ -662,8 +662,7 @@ final public class Repository {
 
 	// MARK: - Status
 
-	public func status() -> Result<[Diff.StatusEntry], NSError> {
-		typealias StatusEntry = Diff.StatusEntry
+	public func status() -> Result<[StatusEntry], NSError> {
 		var returnArray = [StatusEntry]()
 
 		// Do this because GIT_STATUS_OPTIONS_INIT is unavailable in swift
@@ -702,7 +701,7 @@ final public class Repository {
 				indexToWorkDir = Diff.Delta(from: itow.pointee)
 			}
 
-			let statusEntry = Diff.StatusEntry(status: status, headToIndex: headToIndex, indexToWorkDir: indexToWorkDir)
+			let statusEntry = StatusEntry(status: status, headToIndex: headToIndex, indexToWorkDir: indexToWorkDir)
 			returnArray.append(statusEntry)
 		}
 
