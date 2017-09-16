@@ -541,55 +541,43 @@ final public class Repository {
 	// MARK: - Diffs
 
 	public func diff(for commit: Commit) -> Result<[Diff.Delta], NSError> {
-		/// Get the Base Tree
-		let baseCommit = self.commit(with: commit.oid)
-		guard baseCommit.error == nil else {
-			return Result.failure(baseCommit.error!)
-		}
-
-		let baseTree = self.tree(from: baseCommit.value!)
-		guard baseTree.error == nil else {
-			return Result.failure(baseTree.error!)
-		}
-
-		if commit.parents.isEmpty {
-			// Initial commit in a repository
-			let diffResult = self.diff(withOldTree: nil, andNewTree: baseTree.value)
-			guard diffResult.error == nil else {
-				return Result.failure(diffResult.error!)
+		return self
+			.commit(with: commit.oid)
+			.flatMap { baseCommit in
+				return self.tree(from: baseCommit)
 			}
-
-			return self.processDiffDeltas(diffResult.value!)
-		} else {
-			// Possible Merge Commit, merge diffs of base with each parent
-			var mergeDiff: OpaquePointer? = nil
-			for parent in commit.parents {
-
-				let parentCommit = self.parentCommit(from: parent)
-				guard parentCommit.error == nil else {
-					return Result.failure(parentCommit.error!)
+			.flatMap { baseTree in
+				guard !commit.parents.isEmpty else {
+					// Initial commit in a repository
+					return self.diff(withOldTree: nil, andNewTree: baseTree)
 				}
 
-				let parentTree = self.tree(from: parentCommit.value!)
-				guard parentTree.error == nil else {
-					return Result.failure(parentTree.error!)
-				}
-
-				let diffResult = self.diff(withOldTree: parentTree.value!, andNewTree: baseTree.value!)
-				guard diffResult.error == nil else {
-					return Result.failure(diffResult.error!)
-				}
-
-				if mergeDiff == nil {
-					mergeDiff = diffResult.value
-				} else {
-					let mergeResult = git_diff_merge(mergeDiff, diffResult.value)
-					guard mergeResult == GIT_OK.rawValue else {
-						return Result.failure(NSError(gitError: mergeResult, pointOfFailure: "git_diff_merge"))
+				var mergeDiff: Result<OpaquePointer?, NSError> = .success(nil)
+				for parent in commit.parents {
+					mergeDiff = mergeDiff
+						.flatMap { mergeDiff in
+							return self
+								.parentCommit(from: parent)
+								.flatMap { commit in
+									return self.tree(from: commit)
+								}
+								.flatMap { tree in
+									return self.diff(withOldTree: tree, andNewTree: baseTree)
+								}
+								.flatMap { diff in
+									guard let mergeDiff = mergeDiff else { return .success(diff) }
+									let mergeResult = git_diff_merge(mergeDiff, diff)
+									guard mergeResult == GIT_OK.rawValue else {
+										return .failure(NSError(gitError: mergeResult, pointOfFailure: "git_diff_merge"))
+									}
+									return .success(mergeDiff)
+							}
 					}
 				}
+				return .success(mergeDiff.value!!)
 			}
-			return self.processDiffDeltas(mergeDiff!)
+			.flatMap { diffResult in
+				return self.processDiffDeltas(diffResult)
 		}
 	}
 
