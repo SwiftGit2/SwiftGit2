@@ -642,7 +642,7 @@ class RepositorySpec: QuickSpec {
 			}
 		}
 
-		describe("Repository.getRepositoryStatus") {
+		describe("Repository.status	") {
 			it("Should return accurate status") {
 				// Repo with no status
 				let repo = Fixtures.mantleRepository
@@ -661,7 +661,9 @@ class RepositorySpec: QuickSpec {
 
 				expect(statusWithStatus.value?.count).to(equal(5))
 			}
+		}
 
+		describe("Repository.diff") {
 			it("Should have accurate delta information") {
 				let repo = Fixtures.mantleRepository
 				let branch = repo.localBranch(named: "master").value!
