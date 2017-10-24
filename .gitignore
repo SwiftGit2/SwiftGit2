@@ -19,6 +19,9 @@ DerivedData
 *.xcscmblueprint
 *.idea*
 
+### swift package manager ###
+.build/
+
 External/libgit2*.a
 External/ios-openssl
 External/libgit2-ios
