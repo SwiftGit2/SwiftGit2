@@ -1025,6 +1025,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "org.libgit2.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = SwiftGit2;
 				SWIFT_INCLUDE_PATHS = "$(SRCROOT)/libgit2";
+				SWIFT_VERSION = 4.0;
 			};
 			name = Debug;
 		};
@@ -1053,6 +1054,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "org.libgit2.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = SwiftGit2;
 				SWIFT_INCLUDE_PATHS = "$(SRCROOT)/libgit2";
+				SWIFT_VERSION = 4.0;
 			};
 			name = Release;
 		};
