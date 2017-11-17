@@ -16,11 +16,11 @@ public struct StatusEntry {
 		self.status = Diff.Status(rawValue: statusEntry.status.rawValue)
 
 		if let htoi = statusEntry.head_to_index {
-			self.headToIndex = Diff.Delta(from: htoi.pointee)
+			self.headToIndex = Diff.Delta(_: htoi.pointee)
 		}
 
 		if let itow = statusEntry.index_to_workdir {
-			self.indexToWorkDir = Diff.Delta(from: itow.pointee)
+			self.indexToWorkDir = Diff.Delta(_: itow.pointee)
 		}
 	}
 }
@@ -32,7 +32,7 @@ public struct Diff {
 		public var size: Int64
 		public var flags: Flags
 
-		public init(from diffFile: git_diff_file) {
+		public init(_ diffFile: git_diff_file) {
 			self.oid = OID(diffFile.id)
 			let path = diffFile.path
 			self.path = path.map(String.init(cString:))!
@@ -85,11 +85,11 @@ public struct Diff {
 		public var oldFile: File?
 		public var newFile: File?
 
-		public init(from delta: git_diff_delta) {
+		public init(_ delta: git_diff_delta) {
 			self.status = Status(rawValue: delta.status.rawValue)
 			self.flags = Flags(rawValue: delta.flags)
-			self.oldFile = File(from: delta.old_file)
-			self.newFile = File(from: delta.new_file)
+			self.oldFile = File(_: delta.old_file)
+			self.newFile = File(_: delta.new_file)
 		}
 	}
 }

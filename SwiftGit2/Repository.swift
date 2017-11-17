@@ -549,36 +549,37 @@ final public class Repository {
 			.flatMap { baseTree in
 				guard !commit.parents.isEmpty else {
 					// Initial commit in a repository
-					return self.diff(withOldTree: nil, andNewTree: baseTree)
+					return self.diff(fromTree: nil, toTree: baseTree)
 				}
 
-				var mergeDiff: Result<OpaquePointer?, NSError> = .success(nil)
+				let mergeDiff: Result<OpaquePointer?, NSError> = .success(nil)
 				for parent in commit.parents {
-					mergeDiff = mergeDiff
-						.flatMap { mergeDiff in
-							return self
-								.parentCommit(from: parent)
-								.flatMap { commit in
-									return self.tree(from: commit)
-								}
-								.flatMap { tree in
-									return self.diff(withOldTree: tree, andNewTree: baseTree)
-								}
-								.flatMap { diff in
-									guard let mergeDiff = mergeDiff else { return .success(diff) }
-									let mergeResult = git_diff_merge(mergeDiff, diff)
-									guard mergeResult == GIT_OK.rawValue else {
-										return .failure(NSError(gitError: mergeResult, pointOfFailure: "git_diff_merge"))
-									}
-									return .success(mergeDiff)
+					let diff = self
+						.commit(with: parent.oid)
+						.flatMap { commit in
+							return self.tree(from: commit)
+						}
+						.flatMap { tree in
+							return self.diff(fromTree: tree, toTree: baseTree)
+						}
+					return mergeDiff
+						.fanout(diff)
+						.flatMap { (mergeDiff, diff) in
+							guard let mergeDiff = mergeDiff else {
+								return .success(diff)
 							}
-					}
+							let mergeResult = git_diff_merge(mergeDiff, diff)
+							guard mergeResult == GIT_OK.rawValue else {
+								return .failure(NSError(gitError: mergeResult, pointOfFailure: "git_diff_merge"))
+							}
+							return .success(mergeDiff)
+						}
 				}
 				return .success(mergeDiff.value!!)
 			}
 			.flatMap { diffResult in
 				return self.processDiffDeltas(diffResult)
-		}
+			}
 	}
 
 	private func commit(with oid: OID) -> Result<OpaquePointer, NSError> {
@@ -594,8 +595,8 @@ final public class Repository {
 		return Result.success(unwrapBaseCommit)
 	}
 
-	private func diff(withOldTree oldTree: OpaquePointer?,
-	                  andNewTree newTree: OpaquePointer?) -> Result<OpaquePointer, NSError> {
+	private func diff(fromTree oldTree: OpaquePointer?,
+	                  toTree newTree: OpaquePointer?) -> Result<OpaquePointer, NSError> {
 		var unsafeDiff: OpaquePointer? = nil
 		let diffResult = git_diff_tree_to_tree(&unsafeDiff, self.pointer, oldTree, newTree, nil)
 		guard diffResult == GIT_OK.rawValue, let unwrapDiffResult = unsafeDiff else {
@@ -603,19 +604,6 @@ final public class Repository {
 		}
 
 		return Result.success(unwrapDiffResult)
-	}
-
-	private func parentCommit(from parent: PointerTo<Commit>) -> Result<OpaquePointer, NSError> {
-		var unsafeParentCommit: OpaquePointer? = nil
-		let unsafeParentOid = UnsafeMutablePointer<git_oid>.allocate(capacity: 1)
-		git_oid_fromstr(unsafeParentOid, parent.oid.description)
-		let lookupParentGitResult = git_commit_lookup(&unsafeParentCommit, self.pointer, unsafeParentOid)
-		guard lookupParentGitResult == GIT_OK.rawValue, let unwrapParentCommit = unsafeParentCommit else {
-			return Result.failure(NSError(gitError: lookupParentGitResult, pointOfFailure: "git_commit_lookup"))
-		}
-		git_commit_free(unsafeParentCommit)
-
-		return Result.success(unwrapParentCommit)
 	}
 
 	private func tree(from commit: OpaquePointer) -> Result<OpaquePointer, NSError> {
@@ -637,7 +625,7 @@ final public class Repository {
 
 		for i in 0..<count {
 			let delta = git_diff_get_delta(diffResult, i)
-			let gitDiffDelta = Diff.Delta(from: (delta?.pointee)!)
+			let gitDiffDelta = Diff.Delta(_: (delta?.pointee)!)
 
 			returnDict.append(gitDiffDelta)
 
