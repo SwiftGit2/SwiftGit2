@@ -10,7 +10,6 @@ import Result
 import SwiftGit2
 import Nimble
 import Quick
-import Guanaco
 
 class RepositorySpec: QuickSpec {
 	override func spec() {
@@ -23,20 +22,17 @@ class RepositorySpec: QuickSpec {
 			it("should fail if the repo doesn't exist") {
 				let url = URL(fileURLWithPath: "blah")
 				let result = Repository.at(url)
-				expect(result).to(haveFailed(beAnError(
-					domain: equal(libGit2ErrorDomain),
-					localizedDescription: match("Failed to resolve path")
-				)))
+				expect(result.error?.domain) == libGit2ErrorDomain
+				expect(result.error?.localizedDescription).to(match("Failed to resolve path"))
 			}
 		}
 
 		describe("Repository.Type.create(at:)") {
 			it("should create a new repo at the specified location") {
-				let remoteRepo = Fixtures.simpleRepository
 				let localURL = self.temporaryURL(forPurpose: "local-create")
 				let result = Repository.create(at: localURL)
 
-				expect(result).to(haveSucceeded())
+				expect(result.error).to(beNil())
 
 				if case .success(let clonedRepo) = result {
 					expect(clonedRepo.directoryURL).notTo(beNil())
@@ -50,7 +46,7 @@ class RepositorySpec: QuickSpec {
 				let localURL = self.temporaryURL(forPurpose: "local-clone")
 				let result = Repository.clone(from: remoteRepo.directoryURL!, to: localURL, localClone: true)
 				
-				expect(result).to(haveSucceeded())
+				expect(result.error).to(beNil())
 				
 				if case .success(let clonedRepo) = result {
 					expect(clonedRepo.directoryURL).notTo(beNil())
@@ -62,7 +58,7 @@ class RepositorySpec: QuickSpec {
 				let localURL = self.temporaryURL(forPurpose: "bare-clone")
 				let result = Repository.clone(from: remoteRepo.directoryURL!, to: localURL, localClone: true, bare: true)
 				
-				expect(result).to(haveSucceeded())
+				expect(result.error).to(beNil())
 				
 				if case .success(let clonedRepo) = result {
 					expect(clonedRepo.directoryURL).to(beNil())
@@ -74,11 +70,11 @@ class RepositorySpec: QuickSpec {
 				let localURL = self.temporaryURL(forPurpose: "valid-remote-clone")
 				let cloneResult = Repository.clone(from: remoteRepo.directoryURL!, to: localURL, localClone: true)
 				
-				expect(cloneResult).to(haveSucceeded())
+				expect(cloneResult.error).to(beNil())
 				
 				if case .success(let clonedRepo) = cloneResult {
 					let remoteResult = clonedRepo.remote(named: "origin")
-					expect(remoteResult).to(haveSucceeded())
+					expect(remoteResult.error).to(beNil())
 					
 					if case .success(let remote) = remoteResult {
 						expect(remote.URL).to(equal(remoteRepo.directoryURL?.absoluteString))
@@ -91,11 +87,11 @@ class RepositorySpec: QuickSpec {
 				let localURL = self.temporaryURL(forPurpose: "public-remote-clone")
 				let cloneResult = Repository.clone(from: remoteRepoURL!, to: localURL)
 				
-				expect(cloneResult).to(haveSucceeded())
+				expect(cloneResult.error).to(beNil())
 				
 				if case .success(let clonedRepo) = cloneResult {
 					let remoteResult = clonedRepo.remote(named: "origin")
-					expect(remoteResult).to(haveSucceeded())
+					expect(remoteResult.error).to(beNil())
 					
 					if case .success(let remote) = remoteResult {
 						expect(remote.URL).to(equal(remoteRepoURL?.absoluteString))
@@ -121,11 +117,11 @@ class RepositorySpec: QuickSpec {
 					
 					let cloneResult = Repository.clone(from: remoteRepoURL!, to: localURL, credentials: credentials)
 					
-					expect(cloneResult).to(haveSucceeded())
+					expect(cloneResult.error).to(beNil())
 					
 					if case .success(let clonedRepo) = cloneResult {
 						let remoteResult = clonedRepo.remote(named: "origin")
-						expect(remoteResult).to(haveSucceeded())
+						expect(remoteResult.error).to(beNil())
 						
 						if case .success(let remote) = remoteResult {
 							expect(remote.URL).to(equal(remoteRepoURL?.absoluteString))
@@ -141,7 +137,7 @@ class RepositorySpec: QuickSpec {
 				let oid = OID(string: "41078396f5187daed5f673e4a13b185bbad71fba")!
 				
 				let result = repo.blob(oid)
-				expect(result.map { $0.oid }).to(haveSucceeded(equal(oid)))
+				expect(result.map { $0.oid }.value) == oid
 			}
 			
 			it("should error if the blob doesn't exist") {
@@ -149,7 +145,7 @@ class RepositorySpec: QuickSpec {
 				let oid = OID(string: "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")!
 				
 				let result = repo.blob(oid)
-				expect(result).to(haveFailed(beAnError(domain: equal(libGit2ErrorDomain))))
+				expect(result.error?.domain) == libGit2ErrorDomain
 			}
 			
 			it("should error if the oid doesn't point to a blob") {
@@ -158,7 +154,7 @@ class RepositorySpec: QuickSpec {
 				let oid = OID(string: "f93e3a1a1525fb5b91020da86e44810c87a2d7bc")!
 				
 				let result = repo.blob(oid)
-				expect(result).to(haveFailed())
+				expect(result.error).notTo(beNil())
 			}
 		}
 		
@@ -168,7 +164,7 @@ class RepositorySpec: QuickSpec {
 				let oid = OID(string: "dc220a3f0c22920dab86d4a8d3a3cb7e69d6205a")!
 				
 				let result = repo.commit(oid)
-				expect(result.map { $0.oid }).to(haveSucceeded(equal(oid)))
+				expect(result.map { $0.oid }.value) == oid
 			}
 			
 			it("should error if the commit doesn't exist") {
@@ -176,7 +172,7 @@ class RepositorySpec: QuickSpec {
 				let oid = OID(string: "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")!
 				
 				let result = repo.commit(oid)
-				expect(result).to(haveFailed(beAnError(domain: equal(libGit2ErrorDomain))))
+				expect(result.error?.domain) == libGit2ErrorDomain
 			}
 			
 			it("should error if the oid doesn't point to a commit") {
@@ -185,7 +181,7 @@ class RepositorySpec: QuickSpec {
 				let oid = OID(string: "f93e3a1a1525fb5b91020da86e44810c87a2d7bc")!
 				
 				let result = repo.commit(oid)
-				expect(result).to(haveFailed(beAnError(domain: equal(libGit2ErrorDomain))))
+				expect(result.error?.domain) == libGit2ErrorDomain
 			}
 		}
 		
@@ -195,7 +191,7 @@ class RepositorySpec: QuickSpec {
 				let oid = OID(string: "57943b8ee00348180ceeedc960451562750f6d33")!
 				
 				let result = repo.tag(oid)
-				expect(result.map { $0.oid }).to(haveSucceeded(equal(oid)))
+				expect(result.map { $0.oid }.value) == oid
 			}
 			
 			it("should error if the tag doesn't exist") {
@@ -203,7 +199,7 @@ class RepositorySpec: QuickSpec {
 				let oid = OID(string: "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")!
 				
 				let result = repo.tag(oid)
-				expect(result).to(haveFailed(beAnError(domain: equal(libGit2ErrorDomain))))
+				expect(result.error?.domain) == libGit2ErrorDomain
 			}
 			
 			it("should error if the oid doesn't point to a tag") {
@@ -212,7 +208,7 @@ class RepositorySpec: QuickSpec {
 				let oid = OID(string: "dc220a3f0c22920dab86d4a8d3a3cb7e69d6205a")!
 				
 				let result = repo.tag(oid)
-				expect(result).to(haveFailed(beAnError(domain: equal(libGit2ErrorDomain))))
+				expect(result.error?.domain) == libGit2ErrorDomain
 			}
 		}
 		
@@ -222,7 +218,7 @@ class RepositorySpec: QuickSpec {
 				let oid = OID(string: "f93e3a1a1525fb5b91020da86e44810c87a2d7bc")!
 				
 				let result = repo.tree(oid)
-				expect(result.map { $0.oid }).to(haveSucceeded(equal(oid)))
+				expect(result.map { $0.oid }.value) == oid
 			}
 			
 			it("should error if the tree doesn't exist") {
@@ -230,7 +226,7 @@ class RepositorySpec: QuickSpec {
 				let oid = OID(string: "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")!
 				
 				let result = repo.tree(oid)
-				expect(result).to(haveFailed(beAnError(domain: equal(libGit2ErrorDomain))))
+				expect(result.error?.domain) == libGit2ErrorDomain
 			}
 			
 			it("should error if the oid doesn't point to a tree") {
@@ -239,7 +235,7 @@ class RepositorySpec: QuickSpec {
 				let oid = OID(string: "dc220a3f0c22920dab86d4a8d3a3cb7e69d6205a")!
 				
 				let result = repo.tree(oid)
-				expect(result).to(haveFailed(beAnError(domain: equal(libGit2ErrorDomain))))
+				expect(result.error?.domain) == libGit2ErrorDomain
 			}
 		}
 		
@@ -249,7 +245,7 @@ class RepositorySpec: QuickSpec {
 				let oid    = OID(string: "41078396f5187daed5f673e4a13b185bbad71fba")!
 				let blob   = repo.blob(oid).value
 				let result = repo.object(oid)
-				expect(result.map { $0 as! Blob }).to(haveSucceeded(equal(blob)))
+				expect(result.map { $0 as! Blob }.value) == blob
 			}
 			
 			it("should work with a commit") {
@@ -257,7 +253,7 @@ class RepositorySpec: QuickSpec {
 				let oid    = OID(string: "dc220a3f0c22920dab86d4a8d3a3cb7e69d6205a")!
 				let commit = repo.commit(oid).value
 				let result = repo.object(oid)
-				expect(result.map { $0 as! Commit }).to(haveSucceeded(equal(commit)))
+				expect(result.map { $0 as! Commit }.value) == commit
 			}
 			
 			it("should work with a tag") {
@@ -265,7 +261,7 @@ class RepositorySpec: QuickSpec {
 				let oid    = OID(string: "57943b8ee00348180ceeedc960451562750f6d33")!
 				let tag    = repo.tag(oid).value
 				let result = repo.object(oid)
-				expect(result.map { $0 as! Tag }).to(haveSucceeded(equal(tag)))
+				expect(result.map { $0 as! Tag }.value) == tag
 			}
 			
 			it("should work with a tree") {
@@ -273,14 +269,14 @@ class RepositorySpec: QuickSpec {
 				let oid    = OID(string: "f93e3a1a1525fb5b91020da86e44810c87a2d7bc")!
 				let tree   = repo.tree(oid).value
 				let result = repo.object(oid)
-				expect(result.map { $0 as! Tree }).to(haveSucceeded(equal(tree)))
+				expect(result.map { $0 as! Tree }.value) == tree
 			}
 			
 			it("should error if there's no object with that oid") {
 				let repo   = Fixtures.simpleRepository
 				let oid    = OID(string: "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")!
 				let result = repo.object(oid)
-				expect(result).to(haveFailed(beAnError(domain: equal(libGit2ErrorDomain))))
+				expect(result.error?.domain) == libGit2ErrorDomain
 			}
 		}
 		
@@ -291,7 +287,7 @@ class RepositorySpec: QuickSpec {
 				
 				let pointer = PointerTo<Commit>(oid)
 				let commit = repo.commit(oid).value!
-				expect(repo.object(from: pointer)).to(haveSucceeded(equal(commit)))
+				expect(repo.object(from: pointer).value) == commit
 			}
 			
 			it("should work with trees") {
@@ -300,7 +296,7 @@ class RepositorySpec: QuickSpec {
 				
 				let pointer = PointerTo<Tree>(oid)
 				let tree = repo.tree(oid).value!
-				expect(repo.object(from: pointer)).to(haveSucceeded(equal(tree)))
+				expect(repo.object(from: pointer).value) == tree
 			}
 			
 			it("should work with blobs") {
@@ -309,7 +305,7 @@ class RepositorySpec: QuickSpec {
 				
 				let pointer = PointerTo<Blob>(oid)
 				let blob = repo.blob(oid).value!
-				expect(repo.object(from: pointer)).to(haveSucceeded(equal(blob)))
+				expect(repo.object(from: pointer).value) == blob
 			}
 			
 			it("should work with tags") {
@@ -318,7 +314,7 @@ class RepositorySpec: QuickSpec {
 				
 				let pointer = PointerTo<Tag>(oid)
 				let tag = repo.tag(oid).value!
-				expect(repo.object(from: pointer)).to(haveSucceeded(equal(tag)))
+				expect(repo.object(from: pointer).value) == tag
 			}
 		}
 		
@@ -330,7 +326,7 @@ class RepositorySpec: QuickSpec {
 				let pointer = Pointer.commit(oid)
 				let commit = repo.commit(oid).value!
 				let result = repo.object(from: pointer).map { $0 as! Commit }
-				expect(result).to(haveSucceeded(equal(commit)))
+				expect(result.value) == commit
 			}
 			
 			it("should work with trees") {
@@ -340,7 +336,7 @@ class RepositorySpec: QuickSpec {
 				let pointer = Pointer.tree(oid)
 				let tree = repo.tree(oid).value!
 				let result = repo.object(from: pointer).map { $0 as! Tree }
-				expect(result).to(haveSucceeded(equal(tree)))
+				expect(result.value) == tree
 			}
 			
 			it("should work with blobs") {
@@ -350,7 +346,7 @@ class RepositorySpec: QuickSpec {
 				let pointer = Pointer.blob(oid)
 				let blob = repo.blob(oid).value!
 				let result = repo.object(from: pointer).map { $0 as! Blob }
-				expect(result).to(haveSucceeded(equal(blob)))
+				expect(result.value) == blob
 			}
 			
 			it("should work with tags") {
@@ -360,7 +356,7 @@ class RepositorySpec: QuickSpec {
 				let pointer = Pointer.tag(oid)
 				let tag = repo.tag(oid).value!
 				let result = repo.object(from: pointer).map { $0 as! Tag }
-				expect(result).to(haveSucceeded(equal(tag)))
+				expect(result.value) == tag
 			}
 		}
 		
@@ -368,15 +364,15 @@ class RepositorySpec: QuickSpec {
 			it("should return an empty list if there are no remotes") {
 				let repo = Fixtures.simpleRepository
 				let result = repo.allRemotes()
-				expect(result).to(haveSucceeded(beEmpty()))
+				expect(result.value) == []
 			}
 			
 			it("should return all the remotes") {
 				let repo = Fixtures.mantleRepository
 				let remotes = repo.allRemotes()
 				let names = remotes.map { $0.map { $0.name } }
-				expect(remotes.map { $0.count }).to(haveSucceeded(equal(2)))
-				expect(names).to(haveSucceeded(contain("origin", "upstream")))
+				expect(remotes.map { $0.count }.value) == 2
+				expect(names.value).to(contain("origin", "upstream"))
 			}
 		}
 		
@@ -384,13 +380,13 @@ class RepositorySpec: QuickSpec {
 			it("should return the remote if it exists") {
 				let repo = Fixtures.mantleRepository
 				let result = repo.remote(named: "upstream")
-				expect(result.map { $0.name }).to(haveSucceeded(equal("upstream")))
+				expect(result.map { $0.name }.value) == "upstream"
 			}
 			
 			it("should error if the remote doesn't exist") {
 				let repo = Fixtures.simpleRepository
 				let result = repo.remote(named: "nonexistent")
-				expect(result).to(haveFailed(beAnError(domain: equal(libGit2ErrorDomain))))
+				expect(result.error?.domain) == libGit2ErrorDomain
 			}
 		}
 		
@@ -398,14 +394,14 @@ class RepositorySpec: QuickSpec {
 			it("should return a local branch if it exists") {
 				let name = "refs/heads/master"
 				let result = Fixtures.simpleRepository.reference(named: name)
-				expect(result.map { $0.longName }).to(haveSucceeded(equal(name)))
+				expect(result.map { $0.longName }.value) == name
 				expect(result.value as? Branch).notTo(beNil())
 			}
 			
 			it("should return a remote branch if it exists") {
 				let name = "refs/remotes/upstream/master"
 				let result = Fixtures.mantleRepository.reference(named: name)
-				expect(result.map { $0.longName }).to(haveSucceeded(equal(name)))
+				expect(result.map { $0.longName }.value) == name
 				expect(result.value as? Branch).notTo(beNil())
 			}
 			
@@ -424,7 +420,7 @@ class RepositorySpec: QuickSpec {
 			
 			it("should error if the reference doesn't exist") {
 				let result = Fixtures.simpleRepository.reference(named: "refs/heads/nonexistent")
-				expect(result).to(haveFailed(beAnError(domain: equal(libGit2ErrorDomain))))
+				expect(result.error?.domain) == libGit2ErrorDomain
 			}
 		}
 		
@@ -464,7 +460,7 @@ class RepositorySpec: QuickSpec {
 				]
 				let expected = expectedNames.map { repo.remoteBranch(named: $0).value! }
 				let actual = repo.remoteBranches().value!.sorted {
-					return $0.longName.characters.lexicographicallyPrecedes($1.longName.characters)
+					return $0.longName.lexicographicallyPrecedes($1.longName)
 				}
 				expect(actual).to(equal(expected))
 				expect(actual.map { $0.name }).to(equal(expectedNames))
@@ -479,7 +475,7 @@ class RepositorySpec: QuickSpec {
 			
 			it("should error if the branch doesn't exists") {
 				let result = Fixtures.simpleRepository.localBranch(named: "nonexistent")
-				expect(result).to(haveFailed(beAnError(domain: equal(libGit2ErrorDomain))))
+				expect(result.error?.domain) == libGit2ErrorDomain
 			}
 		}
 		
@@ -491,7 +487,7 @@ class RepositorySpec: QuickSpec {
 			
 			it("should error if the branch doesn't exists") {
 				let result = Fixtures.simpleRepository.remoteBranch(named: "origin/nonexistent")
-				expect(result).to(haveFailed(beAnError(domain: equal(libGit2ErrorDomain))))
+				expect(result.error?.domain) == libGit2ErrorDomain
 			}
 		}
 		
@@ -514,7 +510,7 @@ class RepositorySpec: QuickSpec {
 			
 			it("should error if the branch doesn't exists") {
 				let result = Fixtures.simpleRepository.tag(named: "nonexistent")
-				expect(result).to(haveFailed(beAnError(domain: equal(libGit2ErrorDomain))))
+				expect(result.error?.domain) == libGit2ErrorDomain
 			}
 		}
 		
@@ -541,12 +537,12 @@ class RepositorySpec: QuickSpec {
 				let oid = OID(string: "315b3f344221db91ddc54b269f3c9af422da0f2e")!
 				expect(repo.HEAD().value?.shortName).to(equal("master"))
 				
-				expect(repo.setHEAD(oid)).to(haveSucceeded())
+				expect(repo.setHEAD(oid).error).to(beNil())
 				let HEAD = repo.HEAD().value
 				expect(HEAD?.longName).to(equal("HEAD"))
 				expect(HEAD?.oid).to(equal(oid))
 				
-				expect(repo.setHEAD(repo.localBranch(named: "master").value!)).to(haveSucceeded())
+				expect(repo.setHEAD(repo.localBranch(named: "master").value!).error).to(beNil())
 				expect(repo.HEAD().value?.shortName).to(equal("master"))
 			}
 		}
@@ -558,10 +554,10 @@ class RepositorySpec: QuickSpec {
 				expect(repo.HEAD().value?.longName).to(equal("HEAD"))
 				
 				let branch = repo.localBranch(named: "another-branch").value!
-				expect(repo.setHEAD(branch)).to(haveSucceeded())
+				expect(repo.setHEAD(branch).error).to(beNil())
 				expect(repo.HEAD().value?.shortName).to(equal(branch.name))
 				
-				expect(repo.setHEAD(oid)).to(haveSucceeded())
+				expect(repo.setHEAD(oid).error).to(beNil())
 				expect(repo.HEAD().value?.longName).to(equal("HEAD"))
 			}
 		}
@@ -576,12 +572,12 @@ class RepositorySpec: QuickSpec {
 				let oid = OID(string: "315b3f344221db91ddc54b269f3c9af422da0f2e")!
 				expect(repo.HEAD().value?.shortName).to(equal("master"))
 				
-				expect(repo.checkout(oid, strategy: CheckoutStrategy.None)).to(haveSucceeded())
+				expect(repo.checkout(oid, strategy: CheckoutStrategy.None).error).to(beNil())
 				let HEAD = repo.HEAD().value
 				expect(HEAD?.longName).to(equal("HEAD"))
 				expect(HEAD?.oid).to(equal(oid))
 				
-				expect(repo.checkout(repo.localBranch(named: "master").value!, strategy: CheckoutStrategy.None)).to(haveSucceeded())
+				expect(repo.checkout(repo.localBranch(named: "master").value!, strategy: CheckoutStrategy.None).error).to(beNil())
 				expect(repo.HEAD().value?.shortName).to(equal("master"))
 			}
 			
@@ -592,7 +588,7 @@ class RepositorySpec: QuickSpec {
 				
 				expect(repo.checkout(oid, strategy: .None, progress: { (_, completedSteps, totalSteps) -> Void in
 					expect(completedSteps).to(beLessThanOrEqualTo(totalSteps))
-				})).to(haveSucceeded())
+				}).error).to(beNil())
 				
 				let HEAD = repo.HEAD().value
 				expect(HEAD?.longName).to(equal("HEAD"))
@@ -607,10 +603,10 @@ class RepositorySpec: QuickSpec {
 				expect(repo.HEAD().value?.longName).to(equal("HEAD"))
 				
 				let branch = repo.localBranch(named: "another-branch").value!
-				expect(repo.checkout(branch, strategy: CheckoutStrategy.None)).to(haveSucceeded())
+				expect(repo.checkout(branch, strategy: CheckoutStrategy.None).error).to(beNil())
 				expect(repo.HEAD().value?.shortName).to(equal(branch.name))
 				
-				expect(repo.checkout(oid, strategy: CheckoutStrategy.None)).to(haveSucceeded())
+				expect(repo.checkout(oid, strategy: CheckoutStrategy.None).error).to(beNil())
 				expect(repo.HEAD().value?.longName).to(equal("HEAD"))
 			}
 		}

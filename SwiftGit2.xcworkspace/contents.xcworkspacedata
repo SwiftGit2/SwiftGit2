@@ -14,9 +14,6 @@
       location = "group:Carthage/Checkouts/Nimble/Nimble.xcodeproj">
    </FileRef>
    <FileRef
-      location = "group:Carthage/Checkouts/Guanaco/Guanaco.xcodeproj">
-   </FileRef>
-   <FileRef
       location = "group:Carthage/Checkouts/ZipArchive/ZipArchive.xcodeproj">
    </FileRef>
 </Workspace>

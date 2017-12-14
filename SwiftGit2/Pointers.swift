@@ -9,7 +9,7 @@
 import libgit2
 
 /// A pointer to a git object.
-public protocol PointerType: Equatable, Hashable {
+public protocol PointerType: Hashable {
 	/// The OID of the referenced object.
 	var oid: OID { get }
 
