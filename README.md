@@ -34,7 +34,17 @@ This vastly simplifies the design of long-lived applications, which are the most
 
 All methods for reading from or writing to a repository are on SwiftGit’s only `class`: `Repository`. This highlights the failability and mutation of these methods, while freeing up all other instances to be immutable `struct`s and `enum`s.
 
-## Importing SwiftGit2
+## Required Tools
+To build SwiftGit2, you'll need the following tools installed locally:
+
+* cmake
+* libssh2
+* libtool
+* autoconf
+* automake
+* pkg-config
+
+## Adding SwiftGit2 to your Project
 The easiest way to add SwiftGit2 to your project is to use [Carthage](https://github.com/Carthage/Carthage). Simply add `github "SwiftGit2/SwiftGit2"` to your `Cartfile` and run `carthage update`.
 
 If you’d like, you can do things the ~~hard~~ old-fashioned way:
@@ -44,6 +54,13 @@ If you’d like, you can do things the ~~hard~~ old-fashioned way:
 3. Add `SwiftGit2.xcodeproj` to your project’s Xcode project or workspace.
 4. On the “Build Phases” tab of your application target, add `SwiftGit2.framework` to the “Link Binary With Libraries” phase. SwiftGit2 must also be added to a “Copy Frameworks” build phase.
 5. **If you added SwiftGit2 to a project (not a workspace)**, you will also need to add the appropriate SwiftGit2 target to the “Target Dependencies” of your application.
+
+## Building SwiftGit2 Manually
+If you want to build a copy of SwiftGit2 without Carthage, possibly for development:
+
+1. Clone SwiftGit2
+2. Run `git submodule update --init --recursive` to clone the submodules
+3. Build in Xcode
 
 ## Contributions
 We :heart: to receive pull requests! GitHub makes it easy:
