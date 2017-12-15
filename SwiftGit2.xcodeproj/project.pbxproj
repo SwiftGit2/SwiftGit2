@@ -42,7 +42,6 @@
 		621E66BF1C72958D00A0F352 /* ReferencesSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = BECB5F6B1A56F1B400999413 /* ReferencesSpec.swift */; };
 		621E66C01C72958D00A0F352 /* OIDSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE70B3E61A1ACB37002C3F4E /* OIDSpec.swift */; };
 		621E66C21C72958D00A0F352 /* ZipArchive.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 62E6FD8E1C727E9C00A312B0 /* ZipArchive.framework */; };
-		621E66C31C72958D00A0F352 /* Guanaco.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DA59146C1A94549A00AED74C /* Guanaco.framework */; };
 		621E66C41C72958D00A0F352 /* Nimble.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DA50239F1A969F1A004175D7 /* Nimble.framework */; };
 		621E66C51C72958D00A0F352 /* Quick.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DAC8143C1A99749D0063D88C /* Quick.framework */; };
 		621E66C81C72958D00A0F352 /* detached-head.zip in Resources */ = {isa = PBXBuildFile; fileRef = BE0B1C5C1A9978890004726D /* detached-head.zip */; };
@@ -80,7 +79,6 @@
 		BECB5F701A57286200999413 /* RemotesSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = BECB5F6F1A57286200999413 /* RemotesSpec.swift */; };
 		BEE591C71ADF470500534F14 /* Result.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BEE591C61ADF470500534F14 /* Result.framework */; };
 		DA5023A01A969F1A004175D7 /* Nimble.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DA50239F1A969F1A004175D7 /* Nimble.framework */; };
-		DA59146D1A94549A00AED74C /* Guanaco.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DA59146C1A94549A00AED74C /* Guanaco.framework */; };
 		DA5914761A94579000AED74C /* Errors.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA5914751A94579000AED74C /* Errors.swift */; };
 		DAC8143D1A99749D0063D88C /* Quick.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DAC8143C1A99749D0063D88C /* Quick.framework */; };
 /* End PBXBuildFile section */
@@ -189,7 +187,6 @@
 		BECB5F6F1A57286200999413 /* RemotesSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RemotesSpec.swift; sourceTree = "<group>"; };
 		BEE591C61ADF470500534F14 /* Result.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Result.framework; path = "../../Library/Developer/Xcode/DerivedData/SwiftGit2-cdzquzvlxdewyddxgdgxjagqvjba/Build/Products/Debug/Result.framework"; sourceTree = "<group>"; };
 		DA50239F1A969F1A004175D7 /* Nimble.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Nimble.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		DA59146C1A94549A00AED74C /* Guanaco.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Guanaco.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		DA5914751A94579000AED74C /* Errors.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Errors.swift; sourceTree = "<group>"; };
 		DAC8143C1A99749D0063D88C /* Quick.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Quick.framework; path = "../../../../Library/Developer/Xcode/DerivedData/SwiftGit2-ezqqkevntxbroughwcioyxqriijk/Build/Products/Debug/Quick.framework"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -211,7 +208,6 @@
 			files = (
 				621E66E61C729D9600A0F352 /* SwiftGit2.framework in Frameworks */,
 				621E66C21C72958D00A0F352 /* ZipArchive.framework in Frameworks */,
-				621E66C31C72958D00A0F352 /* Guanaco.framework in Frameworks */,
 				621E66C41C72958D00A0F352 /* Nimble.framework in Frameworks */,
 				621E66C51C72958D00A0F352 /* Quick.framework in Frameworks */,
 			);
@@ -232,7 +228,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				62E6FD8F1C727E9C00A312B0 /* ZipArchive.framework in Frameworks */,
-				DA59146D1A94549A00AED74C /* Guanaco.framework in Frameworks */,
 				DA5023A01A969F1A004175D7 /* Nimble.framework in Frameworks */,
 				DAC8143D1A99749D0063D88C /* Quick.framework in Frameworks */,
 				BEB31F2F1A0D6F7A00F525B9 /* SwiftGit2.framework in Frameworks */,
@@ -350,7 +345,6 @@
 				62E6FD8E1C727E9C00A312B0 /* ZipArchive.framework */,
 				DA50239F1A969F1A004175D7 /* Nimble.framework */,
 				DAC8143C1A99749D0063D88C /* Quick.framework */,
-				DA59146C1A94549A00AED74C /* Guanaco.framework */,
 				BEB31F341A0D6F7A00F525B9 /* Info.plist */,
 			);
 			name = "Supporting Files";
