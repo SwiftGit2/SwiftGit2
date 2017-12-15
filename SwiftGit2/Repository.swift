@@ -528,7 +528,7 @@ final public class Repository {
 	                     progress: CheckoutProgressBlock? = nil) -> Result<(), NSError> {
 		return setHEAD(reference).flatMap { self.checkout(strategy: strategy, progress: progress) }
 	}
-	
+
 	/// Load all commits in the specified branch in topological & time order descending
 	///
 	/// :param: branch The branch to get all commits from
