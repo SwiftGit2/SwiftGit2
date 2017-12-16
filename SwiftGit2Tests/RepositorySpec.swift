@@ -646,12 +646,12 @@ class RepositorySpec: QuickSpec {
 			}
 		}
 
-		describe("Repository.status	") {
+		describe("Repository.status") {
 			it("Should return accurate status") {
 				// Repo with no status
 				let repo = Fixtures.mantleRepository
 				let branch = repo.localBranch(named: "master").value!
-				expect(repo.checkout(branch, strategy: CheckoutStrategy.None)).to(haveSucceeded())
+				expect(repo.checkout(branch, strategy: CheckoutStrategy.None).error).to(beNil())
 
 				let status = repo.status()
 
@@ -659,7 +659,7 @@ class RepositorySpec: QuickSpec {
 
 				let repoWithStatus = Fixtures.sharedInstance.repository(named: "repository-with-status")
 				let branchWithStatus = repoWithStatus.localBranch(named: "master").value!
-				expect(repoWithStatus.checkout(branchWithStatus, strategy: CheckoutStrategy.None)).to(haveSucceeded())
+				expect(repoWithStatus.checkout(branchWithStatus, strategy: CheckoutStrategy.None).error).to(beNil())
 
 				let statusWithStatus = repoWithStatus.status()
 
@@ -671,7 +671,7 @@ class RepositorySpec: QuickSpec {
 			it("Should have accurate delta information") {
 				let repo = Fixtures.mantleRepository
 				let branch = repo.localBranch(named: "master").value!
-				expect(repo.checkout(branch, strategy: CheckoutStrategy.None)).to(haveSucceeded())
+				expect(repo.checkout(branch, strategy: CheckoutStrategy.None).error).to(beNil())
 
 				let head = repo.HEAD().value!
 				let commit = repo.object(head.oid).value! as! Commit
@@ -683,7 +683,7 @@ class RepositorySpec: QuickSpec {
 			it("Should handle initial commit well") {
 				let repo = Fixtures.mantleRepository
 				expect(repo.checkout(OID(string: "047b931bd7f5478340cef5885a6fff713005f4d6")!,
-				                     strategy: CheckoutStrategy.None)).to(haveSucceeded())
+				                     strategy: CheckoutStrategy.None).error).to(beNil())
 				let head = repo.HEAD().value!
 				let initalCommit = repo.object(head.oid).value! as! Commit
 				let objects = repo.diff(for: initalCommit)
@@ -694,7 +694,7 @@ class RepositorySpec: QuickSpec {
 			it("Should handle merge commits well") {
 				let repo = Fixtures.mantleRepository
 				expect(repo.checkout(OID(string: "d0d9c13da5eb5f9e8cf2a9f1f6ca3bdbe975b57d")!,
-				                     strategy: CheckoutStrategy.None)).to(haveSucceeded())
+				                     strategy: CheckoutStrategy.None).error).to(beNil())
 				let head = repo.HEAD().value!
 				let initalCommit = repo.object(head.oid).value! as! Commit
 				let objects = repo.diff(for: initalCommit)
