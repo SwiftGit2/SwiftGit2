@@ -491,6 +491,14 @@ class RepositorySpec: QuickSpec {
 			}
 		}
 
+		describe("Repository.fetch(_:)") {
+			it("should fetch the data") {
+				let repo = Fixtures.mantleRepository
+				let remote = repo.remote(named: "origin").value!
+				expect(repo.fetch(remote).value).toNot(beNil())
+			}
+		}
+
 		describe("Repository.allTags()") {
 			it("should return all the tags") {
 				let repo = Fixtures.simpleRepository
