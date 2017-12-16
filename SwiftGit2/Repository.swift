@@ -345,22 +345,43 @@ final public class Repository {
 		return Result.success(remotes.map { $0.value! })
 	}
 
+	private func remoteLookup<A>(named name: String, _ callback: (Result<OpaquePointer, NSError>) -> A) -> A {
+		var pointer: OpaquePointer? = nil
+		let result = git_remote_lookup(&pointer, self.pointer, name)
+
+		guard result == GIT_OK.rawValue else {
+			return callback(.failure(NSError(gitError: result, pointOfFailure: "git_remote_lookup")))
+		}
+
+		defer { git_remote_free(pointer) }
+		return callback(.success(pointer!))
+	}
+
 	/// Load a remote from the repository.
 	///
 	/// name - The name of the remote.
 	///
 	/// Returns the remote if it exists, or an error.
 	public func remote(named name: String) -> Result<Remote, NSError> {
-		var pointer: OpaquePointer? = nil
-		let result = git_remote_lookup(&pointer, self.pointer, name)
+		return remoteLookup(named: name) { $0.map(Remote.init) }
+	}
 
-		guard result == GIT_OK.rawValue else {
-			return Result.failure(NSError(gitError: result, pointOfFailure: "git_remote_lookup"))
+	/// Download new data and update tips
+	public func fetch(_ remote: Remote) -> Result<(), NSError> {
+		return remoteLookup(named: remote.name) { remote in
+			remote.flatMap { pointer in
+				var opts = git_fetch_options()
+				let resultInit = git_fetch_init_options(&opts, UInt32(GIT_FETCH_OPTIONS_VERSION))
+				assert(resultInit == GIT_OK.rawValue)
+
+				let result = git_remote_fetch(pointer, nil, &opts, nil)
+				guard result == GIT_OK.rawValue else {
+					let err = NSError(gitError: result, pointOfFailure: "git_remote_fetch")
+					return .failure(err)
+				}
+				return .success()
+			}
 		}
-
-		let value = Remote(pointer!)
-		git_remote_free(pointer)
-		return Result.success(value)
 	}
 
 	// MARK: - Reference Lookups

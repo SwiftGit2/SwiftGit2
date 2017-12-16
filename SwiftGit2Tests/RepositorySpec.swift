@@ -45,9 +45,9 @@ class RepositorySpec: QuickSpec {
 				let remoteRepo = Fixtures.simpleRepository
 				let localURL = self.temporaryURL(forPurpose: "local-clone")
 				let result = Repository.clone(from: remoteRepo.directoryURL!, to: localURL, localClone: true)
-				
+
 				expect(result.error).to(beNil())
-				
+
 				if case .success(let clonedRepo) = result {
 					expect(clonedRepo.directoryURL).notTo(beNil())
 				}
@@ -57,9 +57,9 @@ class RepositorySpec: QuickSpec {
 				let remoteRepo = Fixtures.simpleRepository
 				let localURL = self.temporaryURL(forPurpose: "bare-clone")
 				let result = Repository.clone(from: remoteRepo.directoryURL!, to: localURL, localClone: true, bare: true)
-				
+
 				expect(result.error).to(beNil())
-				
+
 				if case .success(let clonedRepo) = result {
 					expect(clonedRepo.directoryURL).to(beNil())
 				}
@@ -69,13 +69,13 @@ class RepositorySpec: QuickSpec {
 				let remoteRepo = Fixtures.simpleRepository
 				let localURL = self.temporaryURL(forPurpose: "valid-remote-clone")
 				let cloneResult = Repository.clone(from: remoteRepo.directoryURL!, to: localURL, localClone: true)
-				
+
 				expect(cloneResult.error).to(beNil())
-				
+
 				if case .success(let clonedRepo) = cloneResult {
 					let remoteResult = clonedRepo.remote(named: "origin")
 					expect(remoteResult.error).to(beNil())
-					
+
 					if case .success(let remote) = remoteResult {
 						expect(remote.URL).to(equal(remoteRepo.directoryURL?.absoluteString))
 					}
@@ -86,13 +86,13 @@ class RepositorySpec: QuickSpec {
 				let remoteRepoURL = URL(string: "https://github.com/libgit2/libgit2.github.com.git")
 				let localURL = self.temporaryURL(forPurpose: "public-remote-clone")
 				let cloneResult = Repository.clone(from: remoteRepoURL!, to: localURL)
-				
+
 				expect(cloneResult.error).to(beNil())
-				
+
 				if case .success(let clonedRepo) = cloneResult {
 					let remoteResult = clonedRepo.remote(named: "origin")
 					expect(remoteResult.error).to(beNil())
-					
+
 					if case .success(let remote) = remoteResult {
 						expect(remote.URL).to(equal(remoteRepoURL?.absoluteString))
 					}
@@ -116,13 +116,13 @@ class RepositorySpec: QuickSpec {
 						passphrase: passphrase)
 
 					let cloneResult = Repository.clone(from: remoteRepoURL!, to: localURL, credentials: credentials)
-					
+
 					expect(cloneResult.error).to(beNil())
-					
+
 					if case .success(let clonedRepo) = cloneResult {
 						let remoteResult = clonedRepo.remote(named: "origin")
 						expect(remoteResult.error).to(beNil())
-						
+
 						if case .success(let remote) = remoteResult {
 							expect(remote.URL).to(equal(remoteRepoURL?.absoluteString))
 						}
@@ -491,6 +491,14 @@ class RepositorySpec: QuickSpec {
 			}
 		}
 
+		describe("Repository.fetch(_:)") {
+			it("should fetch the data") {
+				let repo = Fixtures.mantleRepository
+				let remote = repo.remote(named: "origin").value!
+				expect(repo.fetch(remote).value).toNot(beNil())
+			}
+		}
+
 		describe("Repository.allTags()") {
 			it("should return all the tags") {
 				let repo = Fixtures.simpleRepository
@@ -536,12 +544,12 @@ class RepositorySpec: QuickSpec {
 				let repo = Fixtures.simpleRepository
 				let oid = OID(string: "315b3f344221db91ddc54b269f3c9af422da0f2e")!
 				expect(repo.HEAD().value?.shortName).to(equal("master"))
-				
+
 				expect(repo.setHEAD(oid).error).to(beNil())
 				let HEAD = repo.HEAD().value
 				expect(HEAD?.longName).to(equal("HEAD"))
 				expect(HEAD?.oid).to(equal(oid))
-				
+
 				expect(repo.setHEAD(repo.localBranch(named: "master").value!).error).to(beNil())
 				expect(repo.HEAD().value?.shortName).to(equal("master"))
 			}
@@ -556,7 +564,7 @@ class RepositorySpec: QuickSpec {
 				let branch = repo.localBranch(named: "another-branch").value!
 				expect(repo.setHEAD(branch).error).to(beNil())
 				expect(repo.HEAD().value?.shortName).to(equal(branch.name))
-				
+
 				expect(repo.setHEAD(oid).error).to(beNil())
 				expect(repo.HEAD().value?.longName).to(equal("HEAD"))
 			}
@@ -571,12 +579,12 @@ class RepositorySpec: QuickSpec {
 				let repo = Fixtures.simpleRepository
 				let oid = OID(string: "315b3f344221db91ddc54b269f3c9af422da0f2e")!
 				expect(repo.HEAD().value?.shortName).to(equal("master"))
-				
+
 				expect(repo.checkout(oid, strategy: CheckoutStrategy.None).error).to(beNil())
 				let HEAD = repo.HEAD().value
 				expect(HEAD?.longName).to(equal("HEAD"))
 				expect(HEAD?.oid).to(equal(oid))
-				
+
 				expect(repo.checkout(repo.localBranch(named: "master").value!, strategy: CheckoutStrategy.None).error).to(beNil())
 				expect(repo.HEAD().value?.shortName).to(equal("master"))
 			}
@@ -589,7 +597,7 @@ class RepositorySpec: QuickSpec {
 				expect(repo.checkout(oid, strategy: .None, progress: { (_, completedSteps, totalSteps) -> Void in
 					expect(completedSteps).to(beLessThanOrEqualTo(totalSteps))
 				}).error).to(beNil())
-				
+
 				let HEAD = repo.HEAD().value
 				expect(HEAD?.longName).to(equal("HEAD"))
 				expect(HEAD?.oid).to(equal(oid))
@@ -605,7 +613,7 @@ class RepositorySpec: QuickSpec {
 				let branch = repo.localBranch(named: "another-branch").value!
 				expect(repo.checkout(branch, strategy: CheckoutStrategy.None).error).to(beNil())
 				expect(repo.HEAD().value?.shortName).to(equal(branch.name))
-				
+
 				expect(repo.checkout(oid, strategy: CheckoutStrategy.None).error).to(beNil())
 				expect(repo.HEAD().value?.longName).to(equal("HEAD"))
 			}
