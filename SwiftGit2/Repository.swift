@@ -575,7 +575,6 @@ final public class Repository {
 
 				var mergeDiff: Result<OpaquePointer?, NSError> = .success(nil)
 				for parent in commit.parents {
-					print("parent: " + String(parent.hashValue))
 					let diff = self
 						.commit(with: parent.oid)
 						.flatMap { parentCommit in
