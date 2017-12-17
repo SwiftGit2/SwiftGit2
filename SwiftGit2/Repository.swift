@@ -379,7 +379,7 @@ final public class Repository {
 					let err = NSError(gitError: result, pointOfFailure: "git_remote_fetch")
 					return .failure(err)
 				}
-				return .success()
+				return .success(())
 			}
 		}
 	}
@@ -573,17 +573,18 @@ final public class Repository {
 					return self.diff(fromTree: nil, toTree: baseTree)
 				}
 
-				let mergeDiff: Result<OpaquePointer?, NSError> = .success(nil)
+				var mergeDiff: Result<OpaquePointer?, NSError> = .success(nil)
 				for parent in commit.parents {
+					print("parent: " + String(parent.hashValue))
 					let diff = self
 						.commit(with: parent.oid)
-						.flatMap { commit in
-							return self.tree(from: commit)
+						.flatMap { parentCommit in
+							return self.tree(from: parentCommit)
 						}
-						.flatMap { tree in
-							return self.diff(fromTree: tree, toTree: baseTree)
+						.flatMap { parentTree in
+							return self.diff(fromTree: parentTree, toTree: baseTree)
 						}
-					return mergeDiff
+					mergeDiff = mergeDiff
 						.fanout(diff)
 						.flatMap { (mergeDiff, diff) in
 							guard let mergeDiff = mergeDiff else {
