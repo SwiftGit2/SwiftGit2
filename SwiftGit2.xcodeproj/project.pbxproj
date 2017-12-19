@@ -839,7 +839,7 @@
 			baseConfigurationReference = BEB31F501A0D75EE00F525B9 /* iOS-Framework.xcconfig */;
 			buildSettings = {
 				HEADER_SEARCH_PATHS = (
-					External/libgit2/include,
+					"$(SRCROOT)/External/libgit2/include",
 					"$(inherited)",
 				);
 				INFOPLIST_FILE = SwiftGit2/Info.plist;
@@ -868,7 +868,7 @@
 			baseConfigurationReference = BEB31F501A0D75EE00F525B9 /* iOS-Framework.xcconfig */;
 			buildSettings = {
 				HEADER_SEARCH_PATHS = (
-					External/libgit2/include,
+					"$(SRCROOT)/External/libgit2/include",
 					"$(inherited)",
 				);
 				INFOPLIST_FILE = SwiftGit2/Info.plist;
@@ -988,7 +988,7 @@
 			baseConfigurationReference = BEB31F561A0D75EE00F525B9 /* Mac-Framework.xcconfig */;
 			buildSettings = {
 				HEADER_SEARCH_PATHS = (
-					External/libgit2/include,
+					"$(SRCROOT)/External/libgit2/include",
 					"$(inherited)",
 				);
 				INFOPLIST_FILE = SwiftGit2/Info.plist;
@@ -1016,7 +1016,7 @@
 			baseConfigurationReference = BEB31F561A0D75EE00F525B9 /* Mac-Framework.xcconfig */;
 			buildSettings = {
 				HEADER_SEARCH_PATHS = (
-					External/libgit2/include,
+					"$(SRCROOT)/External/libgit2/include",
 					"$(inherited)",
 				);
 				INFOPLIST_FILE = SwiftGit2/Info.plist;
