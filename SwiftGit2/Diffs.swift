@@ -16,11 +16,11 @@ public struct StatusEntry {
 		self.status = Diff.Status(rawValue: statusEntry.status.rawValue)
 
 		if let htoi = statusEntry.head_to_index {
-			self.headToIndex = Diff.Delta(_: htoi.pointee)
+			self.headToIndex = Diff.Delta(htoi.pointee)
 		}
 
 		if let itow = statusEntry.index_to_workdir {
-			self.indexToWorkDir = Diff.Delta(_: itow.pointee)
+			self.indexToWorkDir = Diff.Delta(itow.pointee)
 		}
 	}
 }
@@ -88,8 +88,8 @@ public struct Diff {
 		public init(_ delta: git_diff_delta) {
 			self.status = Status(rawValue: delta.status.rawValue)
 			self.flags = Flags(rawValue: delta.flags)
-			self.oldFile = File(_: delta.old_file)
-			self.newFile = File(_: delta.new_file)
+			self.oldFile = File(delta.old_file)
+			self.newFile = File(delta.new_file)
 		}
 	}
 }
