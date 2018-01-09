@@ -5,6 +5,7 @@
 //  Created by Jake Van Alstyne on 8/20/17.
 //  Copyright © 2017 GitHub, Inc. All rights reserved.
 //
+import Foundation
 import libgit2
 
 public struct StatusEntry {
@@ -26,6 +27,26 @@ public struct StatusEntry {
 }
 
 public struct Diff {
+
+	/// The set of deltas.
+	public var deltas = [Delta]()
+
+	public struct Delta {
+		public static let type = GIT_OBJ_REF_DELTA
+
+		public var status: Status
+		public var flags: Flags
+		public var oldFile: File?
+		public var newFile: File?
+
+		public init(_ delta: git_diff_delta) {
+			self.status = Status(rawValue: UInt32(git_diff_status_char(delta.status)))
+			self.flags = Flags(rawValue: delta.flags)
+			self.oldFile = File(delta.old_file)
+			self.newFile = File(delta.new_file)
+		}
+	}
+
 	public struct File {
 		public var oid: OID
 		public var path: String
@@ -79,17 +100,12 @@ public struct Diff {
 		public static let exists     = Flags(rawValue: 1 << 2)
 	}
 
-	public struct Delta {
-		public var status: Status
-		public var flags: Flags
-		public var oldFile: File?
-		public var newFile: File?
-
-		public init(_ delta: git_diff_delta) {
-			self.status = Status(rawValue: delta.status.rawValue)
-			self.flags = Flags(rawValue: delta.flags)
-			self.oldFile = File(delta.old_file)
-			self.newFile = File(delta.new_file)
+	/// Create an instance with a libgit2 `git_diff`.
+	public init(_ pointer: OpaquePointer) {
+		for i in 0..<git_diff_num_deltas(pointer) {
+			if let delta = git_diff_get_delta(pointer, i) {
+				deltas.append(Diff.Delta(delta.pointee))
+			}
 		}
 	}
 }

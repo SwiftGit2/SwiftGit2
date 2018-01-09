@@ -737,18 +737,12 @@ class RepositorySpec: QuickSpec {
 
 				let head = repo.HEAD().value!
 				let commit = repo.object(head.oid).value! as! Commit
-				let deltas = repo.diff(for: commit).value!
+				let diff = repo.diff(for: commit).value!
 
-				var newFilePaths: [String] = []
-				for delta in deltas {
-					newFilePaths.append((delta.newFile?.path)!)
-				}
-				var oldFilePaths: [String] = []
-				for delta in deltas {
-					oldFilePaths.append((delta.oldFile?.path)!)
-				}
+				let newFilePaths = diff.deltas.map { $0.newFile!.path }
+				let oldFilePaths = diff.deltas.map { $0.oldFile!.path }
 
-				expect(deltas.count).to(equal(expectedCount))
+				expect(diff.deltas.count).to(equal(expectedCount))
 				expect(newFilePaths).to(equal(expectedNewFilePaths))
 				expect(oldFilePaths).to(equal(expectedOldFilePaths))
 			}
@@ -769,18 +763,18 @@ class RepositorySpec: QuickSpec {
 				                     strategy: CheckoutStrategy.None).error).to(beNil())
 				let head = repo.HEAD().value!
 				let initalCommit = repo.object(head.oid).value! as! Commit
-				let deltas = repo.diff(for: initalCommit).value!
+				let diff = repo.diff(for: initalCommit).value!
 
 				var newFilePaths: [String] = []
-				for delta in deltas {
+				for delta in diff.deltas {
 					newFilePaths.append((delta.newFile?.path)!)
 				}
 				var oldFilePaths: [String] = []
-				for delta in deltas {
+				for delta in diff.deltas {
 					oldFilePaths.append((delta.oldFile?.path)!)
 				}
 
-				expect(deltas.count).to(equal(expectedCount))
+				expect(diff.deltas.count).to(equal(expectedCount))
 				expect(newFilePaths).to(equal(expectedNewFilePaths))
 				expect(oldFilePaths).to(equal(expectedOldFilePaths))
 			}
@@ -837,18 +831,18 @@ class RepositorySpec: QuickSpec {
 				                     strategy: CheckoutStrategy.None).error).to(beNil())
 				let head = repo.HEAD().value!
 				let initalCommit = repo.object(head.oid).value! as! Commit
-				let deltas = repo.diff(for: initalCommit).value!
+				let diff = repo.diff(for: initalCommit).value!
 
 				var newFilePaths: [String] = []
-				for delta in deltas {
+				for delta in diff.deltas {
 					newFilePaths.append((delta.newFile?.path)!)
 				}
 				var oldFilePaths: [String] = []
-				for delta in deltas {
+				for delta in diff.deltas {
 					oldFilePaths.append((delta.oldFile?.path)!)
 				}
 
-				expect(deltas.count).to(equal(expectedCount))
+				expect(diff.deltas.count).to(equal(expectedCount))
 				expect(newFilePaths).to(equal(expectedNewFilePaths))
 				expect(oldFilePaths).to(equal(expectedOldFilePaths))
 			}
