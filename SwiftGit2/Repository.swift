@@ -590,55 +590,56 @@ final public class Repository {
 			return self.diff(from: nil, to: commit.oid)
 		}
 
-		var diffs = [OpaquePointer]()
 		var mergeDiff: OpaquePointer? = nil
 		for parent in commit.parents {
-			let diff: Result<OpaquePointer, NSError> = self.diff(from: parent.oid, to: commit.oid)
-			guard diff.error == nil else {
-				return Result<Diff, NSError>.failure(diff.error!)
-			}
-
-			diffs.append(diff.value!)
-
-			if mergeDiff == nil {
-				mergeDiff = diff.value!
-			} else {
-				let mergeResult = git_diff_merge(mergeDiff, diff.value)
-				guard mergeResult == GIT_OK.rawValue else {
-					return .failure(NSError(gitError: mergeResult, pointOfFailure: "git_diff_merge"))
+			let error = self.diff(from: parent.oid, to: commit.oid) { (diff: Result<OpaquePointer, NSError>) -> NSError? in
+				guard diff.error == nil else {
+					return diff.error!
 				}
+
+				if mergeDiff == nil {
+					mergeDiff = diff.value!
+				} else {
+					let mergeResult = git_diff_merge(mergeDiff, diff.value)
+					guard mergeResult == GIT_OK.rawValue else {
+						return NSError(gitError: mergeResult, pointOfFailure: "git_diff_merge")
+					}
+				}
+				return nil
+			}
+
+			if error != nil {
+				return Result<Diff, NSError>.failure(error!)
 			}
 		}
 
-		for diff in diffs {
-			git_object_free(diff)
-		}
-
+		defer { git_object_free(mergeDiff) }
 		return .success(Diff(mergeDiff!))
 	}
 
-	/// Caller is responsible to free returned git_diff with git_object_free
-	private func diff(from oldCommitOid: OID?, to newCommitOid: OID?) -> Result<OpaquePointer, NSError> {
+	private func diff(from oldCommitOid: OID?, to newCommitOid: OID?, transform: (Result<OpaquePointer, NSError>) -> NSError?) -> NSError? {
 		assert(oldCommitOid != nil || newCommitOid != nil, "It is an error to pass nil for both the oldOid and newOid")
 
 		var oldTree: OpaquePointer? = nil
 		if let oid = oldCommitOid {
 			let result = unsafeTreeForCommitId(oid)
 			guard result.error == nil else {
-				return Result.failure(result.error!)
+				return transform(Result.failure(result.error!))
 			}
 
 			oldTree = result.value
+			git_object_free(oldTree)
 		}
 
 		var newTree: OpaquePointer? = nil
 		if let oid = newCommitOid {
 			let result = unsafeTreeForCommitId(oid)
 			guard result.error == nil else {
-				return Result.failure(result.error!)
+				return transform(Result.failure(result.error!))
 			}
 
 			newTree = result.value
+			git_object_free(newTree)
 		}
 
 		var diff: OpaquePointer? = nil
@@ -648,15 +649,12 @@ final public class Repository {
 																					 newTree,
 																					 nil)
 
-		git_object_free(oldTree)
-		git_object_free(newTree)
-
 		guard diffResult == GIT_OK.rawValue else {
-			return .failure(NSError(gitError: diffResult,
-															pointOfFailure: "git_diff_tree_to_tree"))
+			return transform(.failure(NSError(gitError: diffResult,
+															pointOfFailure: "git_diff_tree_to_tree")))
 		}
 
-		return Result<OpaquePointer, NSError>.success(diff!)
+		return transform(Result<OpaquePointer, NSError>.success(diff!))
 	}
 
 	/// Memory safe
