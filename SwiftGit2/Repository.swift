@@ -687,14 +687,7 @@ final public class Repository {
 																							 objects[0],
 																							 objects[1],
 																							 nil)
-				guard diffResult == GIT_OK.rawValue else {
-					return .failure(NSError(gitError: diffResult,
-																	pointOfFailure: "git_diff_tree_to_tree"))
-				}
-
-				let diffObj = Diff(diff!)
-				git_diff_free(diff)
-				return .success(diffObj)
+				return processTreeToTreeDiff(diffResult, diff: diff)
 			}
 		} else if let tree = oldTree {
 			return withGitObject(tree.oid, type: GIT_OBJ_TREE, transform: { tree in
@@ -704,14 +697,7 @@ final public class Repository {
 																							 tree,
 																							 nil,
 																							 nil)
-				guard diffResult == GIT_OK.rawValue else {
-					return .failure(NSError(gitError: diffResult,
-																	pointOfFailure: "git_diff_tree_to_tree"))
-				}
-
-				let diffObj = Diff(diff!)
-				git_diff_free(diff)
-				return .success(diffObj)
+				return processTreeToTreeDiff(diffResult, diff: diff)
 			})
 		} else if let tree = newTree {
 			return withGitObject(tree.oid, type: GIT_OBJ_TREE, transform: { tree in
@@ -721,18 +707,22 @@ final public class Repository {
 																							 nil,
 																							 tree,
 																							 nil)
-				guard diffResult == GIT_OK.rawValue else {
-					return .failure(NSError(gitError: diffResult,
-																	pointOfFailure: "git_diff_tree_to_tree"))
-				}
-
-				let diffObj = Diff(diff!)
-				git_diff_free(diff)
-				return .success(diffObj)
+				return processTreeToTreeDiff(diffResult, diff: diff)
 			})
 		}
 
 		return .failure(NSError(gitError: -1, pointOfFailure: "diff(from: to:)"))
+	}
+
+	private func processTreeToTreeDiff(_ diffResult: Int32, diff: OpaquePointer?) -> Result<Diff, NSError> {
+		guard diffResult == GIT_OK.rawValue else {
+			return .failure(NSError(gitError: diffResult,
+															pointOfFailure: "git_diff_tree_to_tree"))
+		}
+
+		let diffObj = Diff(diff!)
+		git_diff_free(diff)
+		return .success(diffObj)
 	}
 
 	private func processDiffDeltas(_ diffResult: OpaquePointer) -> Result<[Diff.Delta], NSError> {
