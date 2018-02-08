@@ -227,6 +227,12 @@ final public class Repository {
 
 	private func withGitObjects<T>(_ oids: [OID], type: git_otype, transform: ([OpaquePointer]) -> Result<T, NSError>) -> Result<T, NSError> {
 		var pointers = [OpaquePointer]()
+		defer {
+			for pointer in pointers {
+				git_object_free(pointer)
+			}
+		}
+
 		for oid in oids {
 			var pointer: OpaquePointer? = nil
 			var oid = oid.oid
@@ -239,11 +245,7 @@ final public class Repository {
 			pointers.append(pointer!)
 		}
 
-		let value = transform(pointers)
-		for pointer in pointers {
-			git_object_free(pointer)
-		}
-		return value
+		return transform(pointers)
 	}
 
 	/// Loads the object with the given OID.
