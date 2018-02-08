@@ -368,13 +368,14 @@ final public class Repository {
 
 	private func remoteLookup<A>(named name: String, _ callback: (Result<OpaquePointer, NSError>) -> A) -> A {
 		var pointer: OpaquePointer? = nil
+		defer { git_remote_free(pointer) }
+
 		let result = git_remote_lookup(&pointer, self.pointer, name)
 
 		guard result == GIT_OK.rawValue else {
 			return callback(.failure(NSError(gitError: result, pointOfFailure: "git_remote_lookup")))
 		}
 
-		defer { git_remote_free(pointer) }
 		return callback(.success(pointer!))
 	}
 
