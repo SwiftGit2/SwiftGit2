@@ -591,6 +591,7 @@ final public class Repository {
 		}
 
 		var mergeDiff: OpaquePointer? = nil
+		defer { git_object_free(mergeDiff) }
 		for parent in commit.parents {
 			let error = self.diff(from: parent.oid, to: commit.oid) { (diff: Result<OpaquePointer, NSError>) -> NSError? in
 				guard diff.error == nil else {
@@ -613,7 +614,6 @@ final public class Repository {
 			}
 		}
 
-		defer { git_object_free(mergeDiff) }
 		return .success(Diff(mergeDiff!))
 	}
 
@@ -621,6 +621,7 @@ final public class Repository {
 		assert(oldCommitOid != nil || newCommitOid != nil, "It is an error to pass nil for both the oldOid and newOid")
 
 		var oldTree: OpaquePointer? = nil
+		defer { git_object_free(oldTree) }
 		if let oid = oldCommitOid {
 			let result = unsafeTreeForCommitId(oid)
 			guard result.error == nil else {
@@ -628,10 +629,10 @@ final public class Repository {
 			}
 
 			oldTree = result.value
-			git_object_free(oldTree)
 		}
 
 		var newTree: OpaquePointer? = nil
+		defer { git_object_free(newTree) }
 		if let oid = newCommitOid {
 			let result = unsafeTreeForCommitId(oid)
 			guard result.error == nil else {
@@ -639,7 +640,6 @@ final public class Repository {
 			}
 
 			newTree = result.value
-			git_object_free(newTree)
 		}
 
 		var diff: OpaquePointer? = nil
