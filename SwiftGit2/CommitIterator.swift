@@ -10,11 +10,11 @@ public class CommitIterator: IteratorProtocol, Sequence {
 	public typealias Iterator = CommitIterator
 	public typealias Element = Result<Commit, NSError>
 	let repo: Repository
-	private var revisionWalker: OpaquePointer? = nil
+	private var revisionWalker: OpaquePointer?
 
 	private enum Next {
 		case over
-		case ok
+		case okay
 		case error(NSError)
 
 		init(_ result: Int32, name: String) {
@@ -22,7 +22,7 @@ public class CommitIterator: IteratorProtocol, Sequence {
 			case GIT_ITEROVER.rawValue:
 				self = .over
 			case GIT_OK.rawValue:
-				self = .ok
+				self = .okay
 			default:
 				self = .error(NSError(gitError: result, pointOfFailure: name))
 			}
@@ -55,7 +55,7 @@ public class CommitIterator: IteratorProtocol, Sequence {
 			return Result.failure(error)
 		case .over:
 			return nil
-		case .ok:
+		case .okay:
 			var unsafeCommit: OpaquePointer? = nil
 			let lookupGitResult = git_commit_lookup(&unsafeCommit, repo.pointer, &oid)
 			guard lookupGitResult == GIT_OK.rawValue,
@@ -76,7 +76,7 @@ public class CommitIterator: IteratorProtocol, Sequence {
 	public func map<T>(_ transform: (Result<Commit, NSError>) throws -> T) rethrows -> [T] {
 		var new: [T] = []
 		for item in self {
-			new = new + [try transform(item)]
+			new += [try transform(item)]
 		}
 		return new
 	}
@@ -85,7 +85,7 @@ public class CommitIterator: IteratorProtocol, Sequence {
 		var new: [Result<Commit, NSError>] = []
 		for item in self {
 			if try isIncluded(item) {
-				new = new + [item]
+				new += [item]
 			}
 		}
 		return new
@@ -104,12 +104,12 @@ public class CommitIterator: IteratorProtocol, Sequence {
 		self.repo = repo
 	}
 
-	public func dropFirst(_ n: Int) -> AnySequence<Iterator.Element> {
+	public func dropFirst(_ num: Int) -> AnySequence<Iterator.Element> {
 		notImplemented(functionName: self.dropFirst)
 		return AnySequence<Iterator.Element> { return CommitIterator(repo: self.repo) }
 	}
 
-	public func dropLast(_ n: Int) -> AnySequence<Iterator.Element> {
+	public func dropLast(_ num: Int) -> AnySequence<Iterator.Element> {
 		notImplemented(functionName: self.dropLast)
 		return AnySequence<Iterator.Element> { return CommitIterator(repo: self.repo) }
 	}

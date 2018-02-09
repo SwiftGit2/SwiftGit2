@@ -633,7 +633,7 @@ class RepositorySpec: QuickSpec {
 					"List branches in README\n",
 					"Create a README\n",
 					"List branches in README\n",
-					"Create a README\n"
+					"Create a README\n",
 				]
 				var commitMessages: [String] = []
 				for branch in branches {
@@ -643,6 +643,208 @@ class RepositorySpec: QuickSpec {
 				}
 				expect(commitMessages.count).to(equal(expectedCount))
 				expect(commitMessages).to(equal(expectedMessages))
+			}
+		}
+
+		describe("Repository.status") {
+			it("Should accurately report status for repositories with no status") {
+				let expectedCount = 0
+				
+				let repo = Fixtures.mantleRepository
+				let branch = repo.localBranch(named: "master").value!
+				expect(repo.checkout(branch, strategy: CheckoutStrategy.None).error).to(beNil())
+
+				let status = repo.status()
+
+				expect(status.value?.count).to(equal(expectedCount))
+			}
+
+			it("Should accurately report status for repositories with status") {
+				let expectedCount = 5
+				let expectedNewFilePaths = [
+					"stage-file-1",
+					"stage-file-2",
+					"stage-file-3",
+					"stage-file-4",
+					"stage-file-5",
+				]
+				let expectedOldFilePaths = [
+					"stage-file-1",
+					"stage-file-2",
+					"stage-file-3",
+					"stage-file-4",
+					"stage-file-5",
+				]
+
+				let repoWithStatus = Fixtures.sharedInstance.repository(named: "repository-with-status")
+				let branchWithStatus = repoWithStatus.localBranch(named: "master").value!
+				expect(repoWithStatus.checkout(branchWithStatus, strategy: CheckoutStrategy.None).error).to(beNil())
+
+				let statuses = repoWithStatus.status().value!
+
+				var newFilePaths: [String] = []
+				for status in statuses {
+					newFilePaths.append((status.headToIndex?.newFile?.path)!)
+				}
+				var oldFilePaths: [String] = []
+				for status in statuses {
+					oldFilePaths.append((status.headToIndex?.oldFile?.path)!)
+				}
+
+				expect(statuses.count).to(equal(expectedCount))
+				expect(newFilePaths).to(equal(expectedNewFilePaths))
+				expect(oldFilePaths).to(equal(expectedOldFilePaths))
+			}
+		}
+
+		describe("Repository.diff") {
+			it("Should have accurate delta information") {
+				let expectedCount = 13
+				let expectedNewFilePaths = [
+					".gitmodules",
+					"Cartfile",
+					"Cartfile.lock",
+					"Cartfile.private",
+					"Cartfile.resolved",
+					"Carthage.checkout/Nimble",
+					"Carthage.checkout/Quick",
+					"Carthage.checkout/xcconfigs",
+					"Carthage/Checkouts/Nimble",
+					"Carthage/Checkouts/Quick",
+					"Carthage/Checkouts/xcconfigs",
+					"Mantle.xcodeproj/project.pbxproj",
+					"Mantle.xcworkspace/contents.xcworkspacedata",
+				]
+				let expectedOldFilePaths = [
+					".gitmodules",
+					"Cartfile",
+					"Cartfile.lock",
+					"Cartfile.private",
+					"Cartfile.resolved",
+					"Carthage.checkout/Nimble",
+					"Carthage.checkout/Quick",
+					"Carthage.checkout/xcconfigs",
+					"Carthage/Checkouts/Nimble",
+					"Carthage/Checkouts/Quick",
+					"Carthage/Checkouts/xcconfigs",
+					"Mantle.xcodeproj/project.pbxproj",
+					"Mantle.xcworkspace/contents.xcworkspacedata",
+				]
+
+				let repo = Fixtures.mantleRepository
+				let branch = repo.localBranch(named: "master").value!
+				expect(repo.checkout(branch, strategy: CheckoutStrategy.None).error).to(beNil())
+
+				let head = repo.HEAD().value!
+				let commit = repo.object(head.oid).value! as! Commit
+				let diff = repo.diff(for: commit).value!
+
+				let newFilePaths = diff.deltas.map { $0.newFile!.path }
+				let oldFilePaths = diff.deltas.map { $0.oldFile!.path }
+
+				expect(diff.deltas.count).to(equal(expectedCount))
+				expect(newFilePaths).to(equal(expectedNewFilePaths))
+				expect(oldFilePaths).to(equal(expectedOldFilePaths))
+			}
+
+			it("Should handle initial commit well") {
+				let expectedCount = 2
+				let expectedNewFilePaths = [
+					".gitignore",
+					"README.md",
+				]
+				let expectedOldFilePaths = [
+					".gitignore",
+					"README.md",
+				]
+
+				let repo = Fixtures.mantleRepository
+				expect(repo.checkout(OID(string: "047b931bd7f5478340cef5885a6fff713005f4d6")!,
+				                     strategy: CheckoutStrategy.None).error).to(beNil())
+				let head = repo.HEAD().value!
+				let initalCommit = repo.object(head.oid).value! as! Commit
+				let diff = repo.diff(for: initalCommit).value!
+
+				var newFilePaths: [String] = []
+				for delta in diff.deltas {
+					newFilePaths.append((delta.newFile?.path)!)
+				}
+				var oldFilePaths: [String] = []
+				for delta in diff.deltas {
+					oldFilePaths.append((delta.oldFile?.path)!)
+				}
+
+				expect(diff.deltas.count).to(equal(expectedCount))
+				expect(newFilePaths).to(equal(expectedNewFilePaths))
+				expect(oldFilePaths).to(equal(expectedOldFilePaths))
+			}
+
+			it("Should handle merge commits well") {
+				let expectedCount = 20
+				let expectedNewFilePaths = [
+					"Mantle.xcodeproj/project.pbxproj",
+					"Mantle/MTLModel+NSCoding.m",
+					"Mantle/Mantle.h",
+					"Mantle/NSArray+MTLHigherOrderAdditions.h",
+					"Mantle/NSArray+MTLHigherOrderAdditions.m",
+					"Mantle/NSArray+MTLManipulationAdditions.m",
+					"Mantle/NSDictionary+MTLHigherOrderAdditions.h",
+					"Mantle/NSDictionary+MTLHigherOrderAdditions.m",
+					"Mantle/NSDictionary+MTLManipulationAdditions.m",
+					"Mantle/NSNotificationCenter+MTLWeakReferenceAdditions.h",
+					"Mantle/NSNotificationCenter+MTLWeakReferenceAdditions.m",
+					"Mantle/NSOrderedSet+MTLHigherOrderAdditions.h",
+					"Mantle/NSOrderedSet+MTLHigherOrderAdditions.m",
+					"Mantle/NSSet+MTLHigherOrderAdditions.h",
+					"Mantle/NSSet+MTLHigherOrderAdditions.m",
+					"Mantle/NSValueTransformer+MTLPredefinedTransformerAdditions.m",
+					"MantleTests/MTLHigherOrderAdditionsSpec.m",
+					"MantleTests/MTLNotificationCenterAdditionsSpec.m",
+					"MantleTests/MTLPredefinedTransformerAdditionsSpec.m",
+					"README.md",
+				]
+				let expectedOldFilePaths = [
+					"Mantle.xcodeproj/project.pbxproj",
+					"Mantle/MTLModel+NSCoding.m",
+					"Mantle/Mantle.h",
+					"Mantle/NSArray+MTLHigherOrderAdditions.h",
+					"Mantle/NSArray+MTLHigherOrderAdditions.m",
+					"Mantle/NSArray+MTLManipulationAdditions.m",
+					"Mantle/NSDictionary+MTLHigherOrderAdditions.h",
+					"Mantle/NSDictionary+MTLHigherOrderAdditions.m",
+					"Mantle/NSDictionary+MTLManipulationAdditions.m",
+					"Mantle/NSNotificationCenter+MTLWeakReferenceAdditions.h",
+					"Mantle/NSNotificationCenter+MTLWeakReferenceAdditions.m",
+					"Mantle/NSOrderedSet+MTLHigherOrderAdditions.h",
+					"Mantle/NSOrderedSet+MTLHigherOrderAdditions.m",
+					"Mantle/NSSet+MTLHigherOrderAdditions.h",
+					"Mantle/NSSet+MTLHigherOrderAdditions.m",
+					"Mantle/NSValueTransformer+MTLPredefinedTransformerAdditions.m",
+					"MantleTests/MTLHigherOrderAdditionsSpec.m",
+					"MantleTests/MTLNotificationCenterAdditionsSpec.m",
+					"MantleTests/MTLPredefinedTransformerAdditionsSpec.m",
+					"README.md",
+				]
+
+				let repo = Fixtures.mantleRepository
+				expect(repo.checkout(OID(string: "d0d9c13da5eb5f9e8cf2a9f1f6ca3bdbe975b57d")!,
+				                     strategy: CheckoutStrategy.None).error).to(beNil())
+				let head = repo.HEAD().value!
+				let initalCommit = repo.object(head.oid).value! as! Commit
+				let diff = repo.diff(for: initalCommit).value!
+
+				var newFilePaths: [String] = []
+				for delta in diff.deltas {
+					newFilePaths.append((delta.newFile?.path)!)
+				}
+				var oldFilePaths: [String] = []
+				for delta in diff.deltas {
+					oldFilePaths.append((delta.oldFile?.path)!)
+				}
+
+				expect(diff.deltas.count).to(equal(expectedCount))
+				expect(newFilePaths).to(equal(expectedNewFilePaths))
+				expect(oldFilePaths).to(equal(expectedOldFilePaths))
 			}
 		}
 	}
