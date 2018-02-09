@@ -793,6 +793,7 @@ final public class Repository {
 		pointer.deallocate(capacity: 1)
 
 		var unsafeStatus: OpaquePointer? = nil
+		defer { git_status_list_free(unsafeStatus) }
 		let statusResult = git_status_list_new(&unsafeStatus, self.pointer, &options)
 		guard statusResult == GIT_OK.rawValue, let unwrapStatusResult = unsafeStatus else {
 			return .failure(NSError(gitError: statusResult, pointOfFailure: "git_status_list_new"))
