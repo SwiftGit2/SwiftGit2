@@ -23,7 +23,7 @@ private func checkoutProgressCallback(path: UnsafePointer<Int8>?, completedSteps
 			block = buffer.pointee
 		} else {
 			block = buffer.move()
-			buffer.deallocate(capacity: 1)
+			buffer.deallocate()
 		}
 		block(path.flatMap(String.init(validatingUTF8:)), completedSteps, totalSteps)
 	}
@@ -40,7 +40,7 @@ private func checkoutOptions(strategy: CheckoutStrategy,
 	let pointer = UnsafeMutablePointer<git_checkout_options>.allocate(capacity: 1)
 	git_checkout_init_options(pointer, UInt32(GIT_CHECKOUT_OPTIONS_VERSION))
 	var options = pointer.move()
-	pointer.deallocate(capacity: 1)
+	pointer.deallocate()
 
 	options.checkout_strategy = strategy.gitCheckoutStrategy.rawValue
 
@@ -60,7 +60,7 @@ private func fetchOptions(credentials: Credentials) -> git_fetch_options {
 
 	var options = pointer.move()
 
-	pointer.deallocate(capacity: 1)
+	pointer.deallocate()
 
 	options.callbacks.payload = credentials.toPointer()
 	options.callbacks.credentials = credentialsCallback
@@ -75,7 +75,7 @@ private func cloneOptions(bare: Bool = false, localClone: Bool = false, fetchOpt
 
 	var options = pointer.move()
 
-	pointer.deallocate(capacity: 1)
+	pointer.deallocate()
 
 	options.bare = bare ? 1 : 0
 
@@ -350,7 +350,7 @@ final public class Repository {
 		let result = git_remote_list(pointer, self.pointer)
 
 		guard result == GIT_OK.rawValue else {
-			pointer.deallocate(capacity: 1)
+			pointer.deallocate()
 			return Result.failure(NSError(gitError: result, pointOfFailure: "git_remote_list"))
 		}
 
@@ -359,7 +359,7 @@ final public class Repository {
 			return self.remote(named: $0)
 		}
 		git_strarray_free(pointer)
-		pointer.deallocate(capacity: 1)
+		pointer.deallocate()
 
 		let error = remotes.reduce(nil) { $0 == nil ? $0 : $1.error }
 		if let error = error {
@@ -416,7 +416,7 @@ final public class Repository {
 		let result = git_reference_list(pointer, self.pointer)
 
 		guard result == GIT_OK.rawValue else {
-			pointer.deallocate(capacity: 1)
+			pointer.deallocate()
 			return Result.failure(NSError(gitError: result, pointOfFailure: "git_reference_list"))
 		}
 
@@ -429,7 +429,7 @@ final public class Repository {
 				self.reference(named: $0)
 			}
 		git_strarray_free(pointer)
-		pointer.deallocate(capacity: 1)
+		pointer.deallocate()
 
 		let error = references.reduce(nil) { $0 == nil ? $0 : $1.error }
 		if let error = error {
@@ -790,7 +790,7 @@ final public class Repository {
 			return .failure(NSError(gitError: optionsResult, pointOfFailure: "git_status_init_options"))
 		}
 		var options = pointer.move()
-		pointer.deallocate(capacity: 1)
+		pointer.deallocate()
 
 		var unsafeStatus: OpaquePointer? = nil
 		defer { git_status_list_free(unsafeStatus) }

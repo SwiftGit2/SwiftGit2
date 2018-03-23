@@ -1,6 +1,7 @@
 language: objective-c
 
-osx_image: xcode9.2
+os: osx
+osx_image: xcode9.3
 
 sudo: false # Enable container-based builds
 
