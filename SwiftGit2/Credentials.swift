@@ -31,6 +31,33 @@ public enum Credentials {
 	}
 }
 
+extension Credentials: Equatable {
+	public static func ==(lhs: Credentials, rhs: Credentials) -> Bool {
+		switch lhs {
+		case .`default`: if case .`default` = rhs { return true } else { return false }
+		case .sshAgent: if case .sshAgent = rhs { return true } else { return false }
+		case .plaintext(let username, let password):
+			if case .plaintext(let username2, let password2) = rhs,
+			username == username2,
+			password == password2 {
+				return true
+			} else {
+				return false
+			}
+		case .sshMemory(let username, let publicKey, let privateKey, let passphrase):
+			if case .sshMemory(let username2, let publicKey2, let privateKey2, let passphrase2) = rhs,
+				username == username2,
+				publicKey == publicKey2,
+				privateKey == privateKey2,
+				passphrase == passphrase2 {
+				return true
+			} else {
+				return false
+			}
+		}
+	}
+}
+
 /// Handle the request of credentials, passing through to a wrapped block after converting the arguments.
 /// Converts the result to the correct error code required by libgit2 (0 = success, 1 = rejected setting creds,
 /// -1 = error)

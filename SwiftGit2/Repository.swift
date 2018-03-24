@@ -391,12 +391,17 @@ final public class Repository {
 	}
 
 	/// Download new data and update tips
-	public func fetch(_ remote: Remote) -> Result<(), NSError> {
+	public func fetch(_ remote: Remote, credentials: Credentials = .default) -> Result<(), NSError> {
 		return remoteLookup(named: remote.name) { remote in
 			remote.flatMap { pointer in
-				var opts = git_fetch_options()
-				let resultInit = git_fetch_init_options(&opts, UInt32(GIT_FETCH_OPTIONS_VERSION))
-				assert(resultInit == GIT_OK.rawValue)
+				var opts: git_fetch_options
+				if credentials != Credentials.default {
+					opts = fetchOptions(credentials: credentials)
+				} else {
+					opts = git_fetch_options()
+					let resultInit = git_fetch_init_options(&opts, UInt32(GIT_FETCH_OPTIONS_VERSION))
+					assert(resultInit == GIT_OK.rawValue)
+				}
 
 				let result = git_remote_fetch(pointer, nil, &opts, nil)
 				guard result == GIT_OK.rawValue else {
