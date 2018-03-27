@@ -68,6 +68,20 @@ private func fetchOptions(credentials: Credentials) -> git_fetch_options {
 	return options
 }
 
+private func pushOptions(credentials: Credentials) -> git_push_options {
+	let pointer = UnsafeMutablePointer<git_push_options>.allocate(capacity: 1)
+	git_push_init_options(pointer, UInt32(GIT_PUSH_OPTIONS_VERSION))
+	
+	var options = pointer.move()
+	
+	pointer.deallocate(capacity: 1)
+	
+	options.callbacks.payload = credentials.toPointer()
+	options.callbacks.credentials = credentialsCallback
+	
+	return options
+}
+
 private func cloneOptions(bare: Bool = false, localClone: Bool = false, fetchOptions: git_fetch_options? = nil,
                           checkoutOptions: git_checkout_options? = nil) -> git_clone_options {
 	let pointer = UnsafeMutablePointer<git_clone_options>.allocate(capacity: 1)
@@ -458,7 +472,7 @@ final public class Repository {
 			var signature: UnsafeMutablePointer<git_signature>? = nil
 			let time = git_time_t(NSDate().timeIntervalSince1970)	// Unix epoch time
 			let offset: Int32 = 0
-			let signature_result = git_signature_new(&signature, (author as NSString).utf8String, (email as NSString).utf8String, time, offset)
+			let signature_result = git_signature_new(&signature, author, email, time, offset)
 			guard signature_result == GIT_OK.rawValue else {
 				let err = NSError(gitError: signature_result, pointOfFailure: "git_signature_new")
 				return .failure(err)
@@ -471,17 +485,17 @@ final public class Repository {
 			}
 			
 			var msg_buf = git_buf()
-			git_message_prettify(&msg_buf, (message as NSString).utf8String, 0, /* ascii for # */ 35)
+			git_message_prettify(&msg_buf, message, 0, /* ascii for # */ 35)
 			
 			// use HEAD as parent
 			var parent_id = git_oid()
-			git_reference_name_to_id(&parent_id, self.pointer, ("HEAD" as NSString).utf8String)
+			git_reference_name_to_id(&parent_id, self.pointer, "HEAD")
 			var parent: OpaquePointer? = nil
 			git_commit_lookup(&parent, self.pointer, &parent_id)
 			
 			return withUnsafeMutablePointer(to: &parent) { p in
 				var commit_oid = git_oid()
-				let result = git_commit_create(&commit_oid, self.pointer, ("HEAD" as NSString).utf8String, signature, signature, nil, msg_buf.ptr, tree, 1, p)
+				let result = git_commit_create(&commit_oid, self.pointer, "HEAD", signature, signature, nil, msg_buf.ptr, tree, 1, p)
 				
 				git_buf_free(&msg_buf)
 				git_signature_free(signature)
@@ -498,8 +512,26 @@ final public class Repository {
 	}
 	
 	/// Push branch identified by name
-	public func push(branch: String) -> Result<(), NSError> {
-		return .success(())
+	public func push(remote remoteSwift: Remote, branch: String, credentials: Credentials? = nil) -> Result<(), NSError> {
+		return remoteLookup(named: remoteSwift.name) { result in
+			result.flatMap { remote in
+				let connect_result = git_remote_connect(remote, GIT_DIRECTION_PUSH, nil, nil)
+				guard connect_result == GIT_OK.rawValue else {
+					return Result.failure(NSError(gitError: connect_result, pointOfFailure: "git_remote_connect"))
+				}
+				git_remote_add_push(self.pointer, remoteSwift.name, "refs/heads/\(branch):refs/heads/\(branch)")
+				var options: git_push_options
+				if let credentials = credentials {
+					options = pushOptions(credentials: credentials)
+				} else {
+					options = git_push_options()
+					git_push_init_options(&options, UInt32(GIT_PUSH_OPTIONS_VERSION))
+				}
+				// do the push
+				git_remote_upload(remote, nil, &options)
+				return .success(())
+			}
+		}
 	}
 
 	// MARK: - Reference Lookups
