@@ -10,7 +10,7 @@ import Result
 import SwiftGit2
 import Nimble
 import Quick
-import Clibgit
+import libgit2
 
 private extension Repository {
 	func withGitRemote<T>(named name: String, transform: (OpaquePointer) -> T) -> T {
