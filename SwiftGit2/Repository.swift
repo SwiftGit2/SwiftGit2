@@ -515,11 +515,26 @@ final public class Repository {
 	public func push(remote remoteSwift: Remote, branch: String, credentials: Credentials? = nil) -> Result<(), NSError> {
 		return remoteLookup(named: remoteSwift.name) { result in
 			result.flatMap { remote in
-				let connect_result = git_remote_connect(remote, GIT_DIRECTION_PUSH, nil, nil)
+				let connect_result: Int32
+				if let credentials = credentials {
+					var callbacks = git_remote_callbacks()
+					let init_callbacks_result = git_remote_init_callbacks(&callbacks, UInt32(GIT_REMOTE_CALLBACKS_VERSION))
+					guard init_callbacks_result == GIT_OK.rawValue else {
+						return Result.failure(NSError(gitError: init_callbacks_result, pointOfFailure: "git_remote_init_callbacks"))
+					}
+					callbacks.payload = credentials.toPointer()
+					callbacks.credentials = credentialsCallback
+					connect_result = git_remote_connect(remote, GIT_DIRECTION_PUSH, &callbacks, nil)
+				} else {
+    				connect_result = git_remote_connect(remote, GIT_DIRECTION_PUSH, nil, nil)
+				}
 				guard connect_result == GIT_OK.rawValue else {
 					return Result.failure(NSError(gitError: connect_result, pointOfFailure: "git_remote_connect"))
 				}
-				git_remote_add_push(self.pointer, remoteSwift.name, "refs/heads/\(branch):refs/heads/\(branch)")
+				let add_push_result = git_remote_add_push(self.pointer, remoteSwift.name, "refs/heads/\(branch):refs/heads/\(branch)")
+				guard add_push_result == GIT_OK.rawValue else {
+					return Result.failure(NSError(gitError: add_push_result, pointOfFailure: "git_remote_add_push"))
+				}
 				var options: git_push_options
 				if let credentials = credentials {
 					options = pushOptions(credentials: credentials)
@@ -528,7 +543,10 @@ final public class Repository {
 					git_push_init_options(&options, UInt32(GIT_PUSH_OPTIONS_VERSION))
 				}
 				// do the push
-				git_remote_upload(remote, nil, &options)
+				let upload_result = git_remote_upload(remote, nil, &options)
+				guard upload_result == GIT_OK.rawValue else {
+					return Result.failure(NSError(gitError: upload_result, pointOfFailure: "git_remote_upload"))
+				}
 				return .success(())
 			}
 		}
