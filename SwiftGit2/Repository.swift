@@ -531,10 +531,6 @@ final public class Repository {
 				guard connect_result == GIT_OK.rawValue else {
 					return Result.failure(NSError(gitError: connect_result, pointOfFailure: "git_remote_connect"))
 				}
-				let add_push_result = git_remote_add_push(self.pointer, remoteSwift.name, "refs/heads/\(branch):refs/heads/\(branch)")
-				guard add_push_result == GIT_OK.rawValue else {
-					return Result.failure(NSError(gitError: add_push_result, pointOfFailure: "git_remote_add_push"))
-				}
 				var options: git_push_options
 				if let credentials = credentials {
 					options = pushOptions(credentials: credentials)
