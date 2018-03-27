@@ -413,7 +413,7 @@ final public class Repository {
 		}
 	}
 	
-	/// Gets the index for the repo.
+	/// Gets the index for the repo. Caller is responsible for freeing the index.
 	public func index() -> Result<OpaquePointer, NSError> {
 		var index: OpaquePointer? = nil
 		let result = git_repository_index(&index, self.pointer)
@@ -435,6 +435,12 @@ final public class Repository {
 				let err = NSError(gitError: add_result, pointOfFailure: "git_index_add_all")
 				return .failure(err)
 			}
+			let write_result = git_index_write(index)
+			guard write_result == GIT_OK.rawValue else {
+				let err = NSError(gitError: write_result, pointOfFailure: "git_index_write")
+				return .failure(err)
+			}
+			git_index_free(index)
 			return .success(())
 		}
 	}
@@ -475,7 +481,17 @@ final public class Repository {
 			
 			return withUnsafeMutablePointer(to: &parent) { p in
 				var commit_oid = git_oid()
-				git_commit_create(&commit_oid, self.pointer, ("HEAD" as NSString).utf8String, signature, signature, nil, msg_buf.ptr, tree, 1, p)
+				let result = git_commit_create(&commit_oid, self.pointer, ("HEAD" as NSString).utf8String, signature, signature, nil, msg_buf.ptr, tree, 1, p)
+				
+				git_buf_free(&msg_buf)
+				git_signature_free(signature)
+				git_tree_free(tree)
+				git_index_free(index)
+				
+				guard result == GIT_OK.rawValue else {
+					let err = NSError(gitError: result, pointOfFailure: "git_commit_create")
+					return .failure(err)
+				}
 				return .success(OID(commit_oid))
 			}
 		}
