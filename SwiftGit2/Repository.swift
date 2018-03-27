@@ -412,6 +412,79 @@ final public class Repository {
 			}
 		}
 	}
+	
+	/// Gets the index for the repo.
+	public func index() -> Result<OpaquePointer, NSError> {
+		var index: OpaquePointer? = nil
+		let result = git_repository_index(&index, self.pointer)
+		guard result == GIT_OK.rawValue && index != nil else {
+			let err = NSError(gitError: result, pointOfFailure: "git_repository_index")
+			return .failure(err)
+		}
+		return .success(index!)
+	}
+	
+	/// Stage the file(s) under the specified path
+	public func add(path: String) -> Result<(), NSError> {
+		let dir = String(path)
+		var dirPointer = UnsafeMutablePointer<Int8>(mutating: (dir as NSString).utf8String)
+		var paths = git_strarray(strings: &dirPointer, count: 1)
+		return index().flatMap { index in
+			let add_result = git_index_add_all(index, &paths, 0, nil, nil)
+			guard add_result == GIT_OK.rawValue else {
+				let err = NSError(gitError: add_result, pointOfFailure: "git_index_add_all")
+				return .failure(err)
+			}
+			return .success(())
+		}
+	}
+	
+	/// Performs a commit of the staged files with the specified message and author
+	public func commit(message: String, author: String, email: String) -> Result<OID, NSError> {
+		return index().flatMap { index in
+			var tree_oid = git_oid()
+			let tree_result = git_index_write_tree(&tree_oid, index)
+			guard tree_result == GIT_OK.rawValue else {
+				let err = NSError(gitError: tree_result, pointOfFailure: "git_index_write_tree")
+				return .failure(err)
+			}
+			// create commit signature
+			var signature: UnsafeMutablePointer<git_signature>? = nil
+			let time = git_time_t(NSDate().timeIntervalSince1970)	// Unix epoch time
+			let offset: Int32 = 0
+			let signature_result = git_signature_new(&signature, (author as NSString).utf8String, (email as NSString).utf8String, time, offset)
+			guard signature_result == GIT_OK.rawValue else {
+				let err = NSError(gitError: signature_result, pointOfFailure: "git_signature_new")
+				return .failure(err)
+			}
+			var tree: OpaquePointer? = nil
+			let lookup_result = git_tree_lookup(&tree, self.pointer, &tree_oid)
+			guard lookup_result == GIT_OK.rawValue else {
+				let err = NSError(gitError: lookup_result, pointOfFailure: "git_tree_lookup")
+				return .failure(err)
+			}
+			
+			var msg_buf = git_buf()
+			git_message_prettify(&msg_buf, (message as NSString).utf8String, 0, /* ascii for # */ 35)
+			
+			// use HEAD as parent
+			var parent_id = git_oid()
+			git_reference_name_to_id(&parent_id, self.pointer, ("HEAD" as NSString).utf8String)
+			var parent: OpaquePointer? = nil
+			git_commit_lookup(&parent, self.pointer, &parent_id)
+			
+			return withUnsafeMutablePointer(to: &parent) { p in
+				var commit_oid = git_oid()
+				git_commit_create(&commit_oid, self.pointer, ("HEAD" as NSString).utf8String, signature, signature, nil, msg_buf.ptr, tree, 1, p)
+				return .success(OID(commit_oid))
+			}
+		}
+	}
+	
+	/// Push branch identified by name
+	public func push(branch: String) -> Result<(), NSError> {
+		return .success(())
+	}
 
 	// MARK: - Reference Lookups
 
