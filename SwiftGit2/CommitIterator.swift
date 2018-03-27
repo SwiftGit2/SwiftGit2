@@ -3,8 +3,13 @@
 // Copyright (c) 2017 GitHub, Inc. All rights reserved.
 //
 
+import Foundation
 import Result
-import libgit2
+#if SWIFT_PACKAGE
+	import Clibgit
+#else
+	import libgit2
+#endif
 
 public class CommitIterator: IteratorProtocol, Sequence {
 	public typealias Iterator = CommitIterator

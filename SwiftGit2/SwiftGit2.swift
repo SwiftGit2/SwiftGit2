@@ -6,9 +6,13 @@
 //  MIT.
 //
 
-import libgit2
+#if SWIFT_PACKAGE
+	import Clibgit
+#else
+	import libgit2
+#endif
 
 // swiftlint:disable:next identifier_name
-static func SwiftGit2Init(_: Void) {
+let SwiftGit2Init: () = {
     git_libgit2_init()
-}
+}()

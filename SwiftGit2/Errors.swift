@@ -1,5 +1,9 @@
 import Foundation
-import libgit2
+#if SWIFT_PACKAGE
+	import Clibgit
+#else
+	import libgit2
+#endif
 
 public let libGit2ErrorDomain = "org.libgit2.libgit2"
 

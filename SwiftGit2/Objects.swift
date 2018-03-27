@@ -7,7 +7,11 @@
 //
 
 import Foundation
-import libgit2
+#if SWIFT_PACKAGE
+	import Clibgit
+#else
+	import libgit2
+#endif
 
 /// A git object.
 public protocol ObjectType {

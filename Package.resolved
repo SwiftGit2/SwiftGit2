@@ -2,6 +2,15 @@
   "object": {
     "pins": [
       {
+        "package": "Clibgit",
+        "repositoryURL": "git@github.com:stonehouse/Clibgit.git",
+        "state": {
+          "branch": null,
+          "revision": "5cc96d3222624a6b1e23dbaabaadbac284766643",
+          "version": "1.0.0"
+        }
+      },
+      {
         "package": "Result",
         "repositoryURL": "https://github.com/antitypical/Result.git",
         "state": {

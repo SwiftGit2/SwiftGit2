@@ -7,7 +7,11 @@
 //
 
 import Foundation
-import libgit2
+#if SWIFT_PACKAGE
+	import Clibgit
+#else
+	import libgit2
+#endif
 
 /// An identifier for a Git object.
 public struct OID {

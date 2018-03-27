@@ -6,7 +6,11 @@
 //  Copyright (c) 2015 GitHub, Inc. All rights reserved.
 //
 
-import libgit2
+#if SWIFT_PACKAGE
+	import Clibgit
+#else
+	import libgit2
+#endif
 
 /// A reference to a git object.
 public protocol ReferenceType {
