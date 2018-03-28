@@ -70,20 +70,20 @@ public struct Diff {
 		}
 		public let rawValue: UInt32
 
-		public static let current                = Status(rawValue: 0)
-		public static let indexNew               = Status(rawValue: 1 << 0)
-		public static let indexModified          = Status(rawValue: 1 << 1)
-		public static let indexDeleted           = Status(rawValue: 1 << 2)
-		public static let indexRenamed           = Status(rawValue: 1 << 3)
-		public static let indexTypeChange        = Status(rawValue: 1 << 4)
-		public static let workTreeNew            = Status(rawValue: 1 << 5)
-		public static let workTreeModified       = Status(rawValue: 1 << 6)
-		public static let workTreeDeleted        = Status(rawValue: 1 << 7)
-		public static let workTreeTypeChange     = Status(rawValue: 1 << 8)
-		public static let workTreeRenamed        = Status(rawValue: 1 << 9)
-		public static let workTreeUnreadable     = Status(rawValue: 1 << 10)
-		public static let ignored                = Status(rawValue: 1 << 11)
-		public static let conflicted             = Status(rawValue: 1 << 12)
+		public static let current                = Status(rawValue: GIT_STATUS_CURRENT.rawValue)
+		public static let indexNew               = Status(rawValue: GIT_STATUS_INDEX_NEW.rawValue)
+		public static let indexModified          = Status(rawValue: GIT_STATUS_INDEX_MODIFIED.rawValue)
+		public static let indexDeleted           = Status(rawValue: GIT_STATUS_INDEX_DELETED.rawValue)
+		public static let indexRenamed           = Status(rawValue: GIT_STATUS_INDEX_RENAMED.rawValue)
+		public static let indexTypeChange        = Status(rawValue: GIT_STATUS_INDEX_TYPECHANGE.rawValue)
+		public static let workTreeNew            = Status(rawValue: GIT_STATUS_WT_NEW.rawValue)
+		public static let workTreeModified       = Status(rawValue: GIT_STATUS_WT_MODIFIED.rawValue)
+		public static let workTreeDeleted        = Status(rawValue: GIT_STATUS_WT_DELETED.rawValue)
+		public static let workTreeTypeChange     = Status(rawValue: GIT_STATUS_WT_TYPECHANGE.rawValue)
+		public static let workTreeRenamed        = Status(rawValue: GIT_STATUS_WT_RENAMED.rawValue)
+		public static let workTreeUnreadable     = Status(rawValue: GIT_STATUS_WT_UNREADABLE.rawValue)
+		public static let ignored                = Status(rawValue: GIT_STATUS_IGNORED.rawValue)
+		public static let conflicted             = Status(rawValue: GIT_STATUS_CONFLICTED.rawValue)
 	}
 
 	public struct Flags: OptionSet {
