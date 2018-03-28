@@ -80,6 +80,7 @@
 		DA59146D1A94549A00AED74C /* Guanaco.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DA59146C1A94549A00AED74C /* Guanaco.framework */; };
 		DA5914761A94579000AED74C /* Errors.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA5914751A94579000AED74C /* Errors.swift */; };
 		DAC8143D1A99749D0063D88C /* Quick.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DAC8143C1A99749D0063D88C /* Quick.framework */; };
+		FA7983F2206B6F6D0074C69A /* SwiftGit2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 463607D81F9EC37F00704FEA /* SwiftGit2.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -746,6 +747,7 @@
 				621E66A51C72958800A0F352 /* References.swift in Sources */,
 				621E66A61C72958800A0F352 /* Libgit2.swift in Sources */,
 				621E66A71C72958800A0F352 /* Pointers.swift in Sources */,
+				FA7983F2206B6F6D0074C69A /* SwiftGit2.swift in Sources */,
 				621E66A81C72958800A0F352 /* Errors.swift in Sources */,
 				2549921B34FFC36AF8C9CD6D /* CommitIterator.swift in Sources */,
 			);
