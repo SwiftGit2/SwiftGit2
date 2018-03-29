@@ -10,7 +10,7 @@ import Result
 import SwiftGit2
 import Nimble
 import Quick
-import libgit2
+import Clibgit2
 
 private extension Repository {
 	func withGitReference<T>(named name: String, transform: (OpaquePointer) -> T) -> T {

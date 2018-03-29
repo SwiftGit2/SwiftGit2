@@ -6,11 +6,7 @@
 //  MIT.
 //
 
-#if SWIFT_PACKAGE
-	import Clibgit2
-#else
-	import libgit2
-#endif
+import Clibgit2
 
 // swiftlint:disable:next identifier_name
 let SwiftGit2Init: () = {
