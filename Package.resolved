@@ -11,6 +11,15 @@
         }
       },
       {
+        "package": "Clibgit2",
+        "repositoryURL": "git@github.com:stonehouse/Clibgit2.git",
+        "state": {
+          "branch": null,
+          "revision": "9b0b2aab6e1d4f1d0bfde9397dbf8562add374b7",
+          "version": "1.0.0"
+        }
+      },
+      {
         "package": "Result",
         "repositoryURL": "https://github.com/antitypical/Result.git",
         "state": {

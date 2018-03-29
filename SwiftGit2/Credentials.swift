@@ -7,7 +7,7 @@
 //
 
 #if SWIFT_PACKAGE
-	import Clibgit
+	import Clibgit2
 #else
 	import libgit2
 #endif

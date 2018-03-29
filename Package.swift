@@ -12,7 +12,7 @@ let package = Package(
     ],
     dependencies: [
 	  	.package(url: "https://github.com/antitypical/Result.git", "3.0.0" ..< "4.0.0"),
-	  	.package(url: "git@github.com:stonehouse/Clibgit.git", .exact("1.0.0"))
+	  	.package(url: "git@github.com:stonehouse/Clibgit2.git", .exact("1.0.0"))
     ],
     targets: [
         .target(
