@@ -6,7 +6,11 @@
 //  Copyright © 2017 GitHub, Inc. All rights reserved.
 //
 import Foundation
-import libgit2
+#if SWIFT_PACKAGE
+	import Clibgit
+#else
+	import libgit2
+#endif
 
 public struct StatusEntry {
 	public var status: Diff.Status
