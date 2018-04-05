@@ -930,7 +930,7 @@ final public class Repository {
 			return .failure(NSError(gitError: optionsResult, pointOfFailure: "git_status_init_options"))
 		}
 		var options = pointer.move()
-		pointer.deallocate(capacity: 1)
+		pointer.deallocate()
 
 		var unsafeStatus: OpaquePointer? = nil
 		defer { git_status_list_free(unsafeStatus) }
