@@ -931,4 +931,21 @@ final public class Repository {
 
 		return .success(returnArray)
 	}
+
+	// MARK: - Validity/Existence Check
+
+	/// - returns: `.success(true)` iff there is a git repository at `url`, `.success(false)` if there isn't, and a `.failure` if there's been an error.
+	public static func isValid(url: URL) -> Result<Bool, NSError> {
+		var pointer: OpaquePointer? = nil
+
+		let result = url.withUnsafeFileSystemRepresentation {
+			git_repository_open_ext(&pointer, $0, GIT_REPOSITORY_OPEN_NO_SEARCH.rawValue, nil)
+		}
+
+		switch result {
+		case GIT_ENOTFOUND.rawValue: return .success(false)
+		case GIT_OK.rawValue: return .success(true)
+		default: return .failure(NSError(gitError: result, pointOfFailure: "git_repository_open_ext"))
+		}
+	}
 }
