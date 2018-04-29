@@ -438,116 +438,6 @@ final public class Repository {
 		return .success(index!)
 	}
 	
-	/// Stage the file(s) under the specified path
-	public func add(path: String) -> Result<(), NSError> {
-		let dir = path
-		var dirPointer = UnsafeMutablePointer<Int8>(mutating: (dir as NSString).utf8String)
-		var paths = git_strarray(strings: &dirPointer, count: 1)
-		return index().flatMap { index in
-			let add_result = git_index_add_all(index, &paths, 0, nil, nil)
-			guard add_result == GIT_OK.rawValue else {
-				let err = NSError(gitError: add_result, pointOfFailure: "git_index_add_all")
-				return .failure(err)
-			}
-			let write_result = git_index_write(index)
-			guard write_result == GIT_OK.rawValue else {
-				let err = NSError(gitError: write_result, pointOfFailure: "git_index_write")
-				return .failure(err)
-			}
-			git_index_free(index)
-			return .success(())
-		}
-	}
-	
-	/// Performs a commit of the staged files with the specified message and author
-	public func commit(message: String, author: String, email: String) -> Result<OID, NSError> {
-		return index().flatMap { index in
-			var tree_oid = git_oid()
-			let tree_result = git_index_write_tree(&tree_oid, index)
-			guard tree_result == GIT_OK.rawValue else {
-				let err = NSError(gitError: tree_result, pointOfFailure: "git_index_write_tree")
-				return .failure(err)
-			}
-			// create commit signature
-			var signature: UnsafeMutablePointer<git_signature>? = nil
-			let time = git_time_t(NSDate().timeIntervalSince1970)	// Unix epoch time
-			let offset: Int32 = 0
-			let signature_result = git_signature_new(&signature, author, email, time, offset)
-			guard signature_result == GIT_OK.rawValue else {
-				let err = NSError(gitError: signature_result, pointOfFailure: "git_signature_new")
-				return .failure(err)
-			}
-			var tree: OpaquePointer? = nil
-			let lookup_result = git_tree_lookup(&tree, self.pointer, &tree_oid)
-			guard lookup_result == GIT_OK.rawValue else {
-				let err = NSError(gitError: lookup_result, pointOfFailure: "git_tree_lookup")
-				return .failure(err)
-			}
-			
-			var msg_buf = git_buf()
-			git_message_prettify(&msg_buf, message, 0, /* ascii for # */ 35)
-			
-			// use HEAD as parent
-			var parent_id = git_oid()
-			git_reference_name_to_id(&parent_id, self.pointer, "HEAD")
-			var parent: OpaquePointer? = nil
-			git_commit_lookup(&parent, self.pointer, &parent_id)
-			
-			return withUnsafeMutablePointer(to: &parent) { p in
-				var commit_oid = git_oid()
-				let result = git_commit_create(&commit_oid, self.pointer, "HEAD", signature, signature, nil, msg_buf.ptr, tree, 1, p)
-				
-				git_buf_free(&msg_buf)
-				git_signature_free(signature)
-				git_tree_free(tree)
-				git_index_free(index)
-				
-				guard result == GIT_OK.rawValue else {
-					let err = NSError(gitError: result, pointOfFailure: "git_commit_create")
-					return .failure(err)
-				}
-				return .success(OID(commit_oid))
-			}
-		}
-	}
-	
-	/// Push branch identified by name
-	public func push(remote remoteSwift: Remote, branch: String, credentials: Credentials? = nil) -> Result<(), NSError> {
-		return remoteLookup(named: remoteSwift.name) { result in
-			result.flatMap { remote in
-				let connect_result: Int32
-				if let credentials = credentials {
-					var callbacks = git_remote_callbacks()
-					let init_callbacks_result = git_remote_init_callbacks(&callbacks, UInt32(GIT_REMOTE_CALLBACKS_VERSION))
-					guard init_callbacks_result == GIT_OK.rawValue else {
-						return Result.failure(NSError(gitError: init_callbacks_result, pointOfFailure: "git_remote_init_callbacks"))
-					}
-					callbacks.payload = credentials.toPointer()
-					callbacks.credentials = credentialsCallback
-					connect_result = git_remote_connect(remote, GIT_DIRECTION_PUSH, &callbacks, nil)
-				} else {
-    				connect_result = git_remote_connect(remote, GIT_DIRECTION_PUSH, nil, nil)
-				}
-				guard connect_result == GIT_OK.rawValue else {
-					return Result.failure(NSError(gitError: connect_result, pointOfFailure: "git_remote_connect"))
-				}
-				var options: git_push_options
-				if let credentials = credentials {
-					options = pushOptions(credentials: credentials)
-				} else {
-					options = git_push_options()
-					git_push_init_options(&options, UInt32(GIT_PUSH_OPTIONS_VERSION))
-				}
-				// do the push
-				let upload_result = git_remote_upload(remote, nil, &options)
-				guard upload_result == GIT_OK.rawValue else {
-					return Result.failure(NSError(gitError: upload_result, pointOfFailure: "git_remote_upload"))
-				}
-				return .success(())
-			}
-		}
-	}
-
 	// MARK: - Reference Lookups
 
 	/// Load all the references with the given prefix (e.g. "refs/heads/")
@@ -713,6 +603,27 @@ final public class Repository {
 	                     progress: CheckoutProgressBlock? = nil) -> Result<(), NSError> {
 		return setHEAD(reference).flatMap { self.checkout(strategy: strategy, progress: progress) }
 	}
+	
+	/// Stage the file(s) under the specified path
+	public func add(path: String) -> Result<(), NSError> {
+		let dir = String(path)
+		var dirPointer = UnsafeMutablePointer<Int8>(mutating: (dir as NSString).utf8String)
+		var paths = git_strarray(strings: &dirPointer, count: 1)
+		return index().flatMap { index in
+			let add_result = git_index_add_all(index, &paths, 0, nil, nil)
+			guard add_result == GIT_OK.rawValue else {
+				let err = NSError(gitError: add_result, pointOfFailure: "git_index_add_all")
+				return .failure(err)
+			}
+			let write_result = git_index_write(index)
+			guard write_result == GIT_OK.rawValue else {
+				let err = NSError(gitError: write_result, pointOfFailure: "git_index_write")
+				return .failure(err)
+			}
+			git_index_free(index)
+			return .success(())
+		}
+	}
 
 	/// Load all commits in the specified branch in topological & time order descending
 	///
@@ -721,6 +632,101 @@ final public class Repository {
 	public func commits(in branch: Branch) -> CommitIterator {
 		let iterator = CommitIterator(repo: self, root: branch.oid.oid)
 		return iterator
+	}
+
+	/// Performs a commit of the staged files with the specified message and author
+	public func commit(message: String, author: String, email: String) -> Result<OID, NSError> {
+		return index().flatMap { index in
+			var tree_oid = git_oid()
+			let tree_result = git_index_write_tree(&tree_oid, index)
+			guard tree_result == GIT_OK.rawValue else {
+				let err = NSError(gitError: tree_result, pointOfFailure: "git_index_write_tree")
+				return .failure(err)
+			}
+			// create commit signature
+			var signature: UnsafeMutablePointer<git_signature>? = nil
+			let time = git_time_t(NSDate().timeIntervalSince1970)	// Unix epoch time
+			let offset: Int32 = 0
+			let signature_result = git_signature_new(&signature, author, email, time, offset)
+			guard signature_result == GIT_OK.rawValue else {
+				let err = NSError(gitError: signature_result, pointOfFailure: "git_signature_new")
+				return .failure(err)
+			}
+			var tree: OpaquePointer? = nil
+			let lookup_result = git_tree_lookup(&tree, self.pointer, &tree_oid)
+			guard lookup_result == GIT_OK.rawValue else {
+				let err = NSError(gitError: lookup_result, pointOfFailure: "git_tree_lookup")
+				return .failure(err)
+			}
+			
+			var msg_buf = git_buf()
+			git_message_prettify(&msg_buf, message, 0, /* ascii for # */ 35)
+			
+			// use HEAD as parent
+			var parent_id = git_oid()
+			git_reference_name_to_id(&parent_id, self.pointer, "HEAD")
+			var parent: OpaquePointer? = nil
+			git_commit_lookup(&parent, self.pointer, &parent_id)
+			
+			return withUnsafeMutablePointer(to: &parent) { p in
+				var commit_oid = git_oid()
+				let result = git_commit_create(&commit_oid, self.pointer, "HEAD", signature, signature, nil, msg_buf.ptr, tree, 1, p)
+				
+				git_buf_free(&msg_buf)
+				git_signature_free(signature)
+				git_tree_free(tree)
+				git_index_free(index)
+				
+				guard result == GIT_OK.rawValue else {
+					let err = NSError(gitError: result, pointOfFailure: "git_commit_create")
+					return .failure(err)
+				}
+				return .success(OID(commit_oid))
+			}
+		}
+	}
+	
+	// MARK: - Pushing / Pulling
+	
+	/// Push branch identified by name to the specified remote.
+	public func push(remote remoteSwift: Remote, branch: String, credentials: Credentials? = nil) -> Result<(), NSError> {
+		return remoteLookup(named: remoteSwift.name) { result in
+			result.flatMap { remote in
+				let connect_result: Int32
+				if let credentials = credentials {
+					var callbacks = git_remote_callbacks()
+					let init_callbacks_result = git_remote_init_callbacks(&callbacks, UInt32(GIT_REMOTE_CALLBACKS_VERSION))
+					guard init_callbacks_result == GIT_OK.rawValue else {
+						return Result.failure(NSError(gitError: init_callbacks_result, pointOfFailure: "git_remote_init_callbacks"))
+					}
+					callbacks.payload = credentials.toPointer()
+					callbacks.credentials = credentialsCallback
+					connect_result = git_remote_connect(remote, GIT_DIRECTION_PUSH, &callbacks, nil)
+				} else {
+					connect_result = git_remote_connect(remote, GIT_DIRECTION_PUSH, nil, nil)
+				}
+				guard connect_result == GIT_OK.rawValue else {
+					return Result.failure(NSError(gitError: connect_result, pointOfFailure: "git_remote_connect"))
+				}
+				var options: git_push_options
+				if let credentials = credentials {
+					options = pushOptions(credentials: credentials)
+				} else {
+					options = git_push_options()
+					git_push_init_options(&options, UInt32(GIT_PUSH_OPTIONS_VERSION))
+				}
+				// do the push
+				let upload_result = git_remote_upload(remote, nil, &options)
+				guard upload_result == GIT_OK.rawValue else {
+					return Result.failure(NSError(gitError: upload_result, pointOfFailure: "git_remote_upload"))
+				}
+				return .success(())
+			}
+		}
+	}
+	
+	public func pull() -> Result<Void, NSError> {
+		fatalError()
 	}
 
 	// MARK: - Diffs
