@@ -688,8 +688,9 @@ final public class Repository {
 	
 	// MARK: - Pushing / Pulling
 	
-	/// Push branch identified by name to the specified remote.
-	public func push(remote remoteSwift: Remote, branch: String, credentials: Credentials? = nil) -> Result<(), NSError> {
+	/// Push branch to the specified remote.
+	/// If branch is a local branch, will try to push to the corresponding remote branch with the same name.
+	public func push(remote remoteSwift: Remote, branch: Branch, credentials: Credentials? = nil) -> Result<(), NSError> {
 		return remoteLookup(named: remoteSwift.name) { result in
 			result.flatMap { remote in
 				let connect_result: Int32
@@ -715,18 +716,27 @@ final public class Repository {
 					options = git_push_options()
 					git_push_init_options(&options, UInt32(GIT_PUSH_OPTIONS_VERSION))
 				}
+				// lookup refspec
+				var refspec_array = git_strarray()
+				let get_refspecs_result = git_remote_get_push_refspecs(&refspec_array, remote)
+				guard get_refspecs_result == GIT_OK.rawValue else {
+					return Result.failure(NSError(gitError: get_refspecs_result, pointOfFailure: "git_remote_get_push_refspecs"))
+				}
+				defer { git_strarray_free(&refspec_array) }
+				guard let refspec = (refspec_array.filter { $0 == "\(branch.longName):\(branch.longName)" }).first else {
+					return Result.failure(NSError(domain: "SwiftGit2", code: -1, userInfo: nil))
+				}
+				let ptr_refspec = UnsafeMutablePointer<Int8>(mutating: (refspec as NSString).utf8String)
+				var selected_refspecs = [ptr_refspec]
+				var selected_refspec_array = git_strarray(strings: &selected_refspecs, count: 1)
 				// do the push
-				let upload_result = git_remote_upload(remote, nil, &options)
+				let upload_result = git_remote_upload(remote, &selected_refspec_array, &options)
 				guard upload_result == GIT_OK.rawValue else {
 					return Result.failure(NSError(gitError: upload_result, pointOfFailure: "git_remote_upload"))
 				}
 				return .success(())
 			}
 		}
-	}
-	
-	public func pull() -> Result<Void, NSError> {
-		fatalError()
 	}
 
 	// MARK: - Diffs
