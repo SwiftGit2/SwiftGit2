@@ -583,6 +583,33 @@ final public class Repository {
 		return iterator
 	}
 
+	/// Gets the index for the repo.
+	public func unsafeIndex() -> Result<OpaquePointer, NSError> {
+		var index: OpaquePointer? = nil
+		let result = git_repository_index(&index, self.pointer)
+		guard result == GIT_OK.rawValue && index != nil else {
+			let err = NSError(gitError: result, pointOfFailure: "git_repository_index")
+			return .failure(err)
+		}
+		return .success(index!)
+	}
+	
+	/// Stage the file(s) under the specified path
+	public func add(path: String) -> Result<(), NSError> {
+		let dir = path
+		var dirPointer = UnsafeMutablePointer<Int8>(mutating: (dir as NSString).utf8String)
+		var paths = git_strarray(strings: &dirPointer, count: 1)
+		return unsafeIndex().flatMap { index in
+			defer { git_index_free(index) }
+			let add_result = git_index_add_all(index, &paths, 0, nil, nil)
+			guard add_result == GIT_OK.rawValue else {
+				let err = NSError(gitError: add_result, pointOfFailure: "git_index_add_all")
+				return .failure(err)
+			}
+			return .success(())
+		}
+	}
+
 	// MARK: - Diffs
 
 	public func diff(for commit: Commit) -> Result<Diff, NSError> {
