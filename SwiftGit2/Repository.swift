@@ -812,7 +812,7 @@ final public class Repository {
 					|| analysis.rawValue & GIT_MERGE_ANALYSIS_FASTFORWARD.rawValue != 0 {
 					// fast-forward local branch
 					let message = "merge \(remote.name)/\(trackingBranch.name): Fast-forward"
-					return branch.referenceByUpdatingTarget(repo: self, newTarget: trackingBranch.oid, message: message).flatMap { newRef in
+					return localBranch.referenceByUpdatingTarget(repo: self, newTarget: trackingBranch.oid, message: message).flatMap { newRef in
 						self.checkout(newRef.oid, strategy: CheckoutStrategy.Force)
 					}
 				} else if analysis.rawValue & GIT_MERGE_ANALYSIS_NORMAL.rawValue != 0 {

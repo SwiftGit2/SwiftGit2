@@ -35,7 +35,7 @@ extension ReferenceType {
 				}
 				defer { git_reference_free(reference!) }
 				var newRef: OpaquePointer? = nil
-				var oid = self.oid.oid
+				var oid = newTarget.oid
 				let setTargetResult = git_reference_set_target(&newRef, reference!, &oid, messageCString)
 				guard setTargetResult == GIT_OK.rawValue else {
 					return .failure(NSError(gitError: setTargetResult, pointOfFailure: "git_reference_set_target"))
