@@ -633,55 +633,76 @@ final public class Repository {
 		let iterator = CommitIterator(repo: self, root: branch.oid.oid)
 		return iterator
 	}
+	
+	public func commit(
+		index: OpaquePointer!,
+		tree tree_oid: git_oid,
+		parents: [Commit],
+		message: String,
+		author: String,
+		email: String
+	) -> Result<Commit, NSError> {
+		// create commit signature
+		var signature: UnsafeMutablePointer<git_signature>? = nil
+		let time = git_time_t(NSDate().timeIntervalSince1970)	// Unix epoch time
+		let offset: Int32 = 0
+		let signature_result = git_signature_new(&signature, author, email, time, offset)
+		guard signature_result == GIT_OK.rawValue else {
+			let err = NSError(gitError: signature_result, pointOfFailure: "git_signature_new")
+			return .failure(err)
+		}
+		var tree: OpaquePointer? = nil
+		var tree_oid_var = tree_oid
+		let lookup_result = git_tree_lookup(&tree, self.pointer, &tree_oid_var)
+		guard lookup_result == GIT_OK.rawValue else {
+			let err = NSError(gitError: lookup_result, pointOfFailure: "git_tree_lookup")
+			return .failure(err)
+		}
+		
+		var msg_buf = git_buf()
+		git_message_prettify(&msg_buf, message, 0, /* ascii for # */ 35)
+		
+		// use HEAD as parent
+		var parent_c: [OpaquePointer?] = []
+		for parentCommit in parents {
+			var parent: OpaquePointer? = nil
+			var oid = parentCommit.oid.oid
+			git_commit_lookup(&parent, self.pointer, &oid)
+			parent_c.append(parent!)
+		}
+
+		let parents_contiguous = ContiguousArray(parent_c)
+		return parents_contiguous.withUnsafeBufferPointer { p in
+			var commit_oid = git_oid()
+			let parents_ptr = UnsafeMutablePointer(mutating: p.baseAddress)
+			let result = git_commit_create(&commit_oid, self.pointer, "HEAD", signature, signature, nil, msg_buf.ptr, tree, parents.count, parents_ptr)
+			
+			git_buf_free(&msg_buf)
+			git_signature_free(signature)
+			git_tree_free(tree)
+			
+			guard result == GIT_OK.rawValue else {
+				let err = NSError(gitError: result, pointOfFailure: "git_commit_create")
+				return .failure(err)
+			}
+			return commit(OID(commit_oid))
+		}
+	}
 
 	/// Performs a commit of the staged files with the specified message and author
-	public func commit(message: String, author: String, email: String) -> Result<OID, NSError> {
+	public func commit(message: String, author: String, email: String) -> Result<Commit, NSError> {
 		return index().flatMap { index in
+			defer { git_index_free(index) }
 			var tree_oid = git_oid()
 			let tree_result = git_index_write_tree(&tree_oid, index)
 			guard tree_result == GIT_OK.rawValue else {
 				let err = NSError(gitError: tree_result, pointOfFailure: "git_index_write_tree")
 				return .failure(err)
 			}
-			// create commit signature
-			var signature: UnsafeMutablePointer<git_signature>? = nil
-			let time = git_time_t(NSDate().timeIntervalSince1970)	// Unix epoch time
-			let offset: Int32 = 0
-			let signature_result = git_signature_new(&signature, author, email, time, offset)
-			guard signature_result == GIT_OK.rawValue else {
-				let err = NSError(gitError: signature_result, pointOfFailure: "git_signature_new")
-				return .failure(err)
-			}
-			var tree: OpaquePointer? = nil
-			let lookup_result = git_tree_lookup(&tree, self.pointer, &tree_oid)
-			guard lookup_result == GIT_OK.rawValue else {
-				let err = NSError(gitError: lookup_result, pointOfFailure: "git_tree_lookup")
-				return .failure(err)
-			}
-			
-			var msg_buf = git_buf()
-			git_message_prettify(&msg_buf, message, 0, /* ascii for # */ 35)
-			
-			// use HEAD as parent
 			var parent_id = git_oid()
 			git_reference_name_to_id(&parent_id, self.pointer, "HEAD")
-			var parent: OpaquePointer? = nil
-			git_commit_lookup(&parent, self.pointer, &parent_id)
-			
-			return withUnsafeMutablePointer(to: &parent) { p in
-				var commit_oid = git_oid()
-				let result = git_commit_create(&commit_oid, self.pointer, "HEAD", signature, signature, nil, msg_buf.ptr, tree, 1, p)
-				
-				git_buf_free(&msg_buf)
-				git_signature_free(signature)
-				git_tree_free(tree)
-				git_index_free(index)
-				
-				guard result == GIT_OK.rawValue else {
-					let err = NSError(gitError: result, pointOfFailure: "git_commit_create")
-					return .failure(err)
-				}
-				return .success(OID(commit_oid))
+			return commit(OID(parent_id)).flatMap { c in
+    			commit(index: index, tree: tree_oid, parents: [c], message: message, author: author, email: email)
 			}
 		}
 	}
@@ -735,6 +756,138 @@ final public class Repository {
 					return Result.failure(NSError(gitError: upload_result, pointOfFailure: "git_remote_upload"))
 				}
 				return .success(())
+			}
+		}
+	}
+	
+	public enum ConflictResolutionDecision {
+		case ours
+		case theirs
+		case merge(Data)
+	}
+	
+	/// Takes in "our" side and "their" side of the file respectively, and returns a decision
+	public typealias ConflictResolver = (Data, Data) -> ConflictResolutionDecision
+	
+	/// Pulls from the remote and updates our local branch.
+	public func pull(
+		remote: Remote,
+		branch: Branch,
+		author: String,
+		email: String,
+		credentials: Credentials = .default,
+		conflictResolver: ConflictResolver
+	) -> Result<Void, NSError> {
+		// first initiate a fetch
+		return fetch(remote, credentials: credentials).flatMap { _ in
+			let localBranchResult = self.localBranch(named: branch.name)
+			guard case .success(let localBranch) = localBranchResult else {
+				return localBranchResult.map { _ in () }
+			}
+			// determine if we need to perform a merge
+			// if local commit is the same as remote commit, no need
+			return branch.getTrackingBranch(repo: self).flatMap { trackingBranch in
+				// determine if the local branch can be fast-forwarded
+				guard localBranch.oid != trackingBranch.oid else {
+					return .success(())
+				}
+				// determine if a clean merge can be performed
+				var annotatedCommit: OpaquePointer? = nil
+				var oid = trackingBranch.oid.oid
+				let lookupResult = git_annotated_commit_lookup(&annotatedCommit, self.pointer, &oid)
+				guard lookupResult == GIT_OK.rawValue else {
+					return Result.failure(NSError(gitError: lookupResult, pointOfFailure: "git_annotated_commit_lookup"))
+				}
+				defer { git_annotated_commit_free(annotatedCommit) }
+				var analysis = GIT_MERGE_ANALYSIS_NONE
+				var preference = GIT_MERGE_PREFERENCE_NONE
+				let analysisResult = git_merge_analysis(&analysis, &preference, self.pointer, &annotatedCommit, 1)
+				guard analysisResult == GIT_OK.rawValue else {
+					return Result.failure(NSError(gitError: analysisResult, pointOfFailure: "git_merge_analysis"))
+				}
+				if analysis.rawValue & GIT_MERGE_ANALYSIS_UP_TO_DATE.rawValue != 0 {
+					// nothing needs to be done
+					return .success(())
+				} else if analysis.rawValue & GIT_MERGE_ANALYSIS_UNBORN.rawValue != 0
+					|| analysis.rawValue & GIT_MERGE_ANALYSIS_FASTFORWARD.rawValue != 0 {
+					// fast-forward local branch
+					let message = "merge \(remote.name)/\(trackingBranch.name): Fast-forward"
+					return branch.referenceByUpdatingTarget(repo: self, newTarget: trackingBranch.oid, message: message).flatMap { newRef in
+						self.checkout(newRef.oid, strategy: CheckoutStrategy.Force)
+					}
+				} else if analysis.rawValue & GIT_MERGE_ANALYSIS_NORMAL.rawValue != 0 {
+					// normal merge
+					return unsafeTreeForCommitId(localBranch.commit.oid).flatMap { localTree in
+    					defer { git_tree_free(localTree) }
+						return unsafeTreeForCommitId(trackingBranch.commit.oid).flatMap { remoteTree in
+        					defer { git_tree_free(remoteTree) }
+							// check conflicts
+							var index: OpaquePointer? = nil
+							var base_oid = git_oid()
+							var local_oid = localBranch.commit.oid.oid
+							var remote_oid = trackingBranch.commit.oid.oid
+							let findMergeBaseResult = git_merge_base(&base_oid, self.pointer, &local_oid, &remote_oid)
+							var base_tree: OpaquePointer? = nil
+							if findMergeBaseResult == GIT_OK.rawValue {
+								let result = commit(OID(base_oid)).flatMap { baseCommit -> Result<(), NSError> in
+									unsafeTreeForCommitId(baseCommit.oid).flatMap { baseTree -> Result<(), NSError> in
+										base_tree = baseTree
+										return .success(())
+									}
+								}
+								if case .failure = result {
+									return result
+								}
+							}
+							let mergeTreeResult = git_merge_trees(
+								&index,
+								self.pointer,
+								base_tree,
+								localTree,
+								remoteTree,
+								nil
+							)
+							if let base_tree = base_tree {
+								defer { git_tree_free(base_tree) }
+							}
+							guard mergeTreeResult == GIT_OK.rawValue else {
+								return Result.failure(NSError(gitError: mergeTreeResult, pointOfFailure: "git_merge_trees"))
+							}
+							// if a clean merge cannot be performed,
+							// call the user-supplied conflict resolver
+							if git_index_has_conflicts(index!) > 0 {
+								fatalError()
+							}
+							var tree_oid = git_oid()
+							let writeTreeResult = git_index_write_tree_to(&tree_oid, index!, self.pointer)
+							guard writeTreeResult == GIT_OK.rawValue else {
+								return Result.failure(NSError(gitError: writeTreeResult, pointOfFailure: "git_index_write_tree"))
+							}
+							// create merge commit
+							var parents: [Commit] = []
+							for p in [commit(localBranch.commit.oid), commit(trackingBranch.commit.oid)] {
+								if case .failure = p {
+									return p.map { _ in () }
+								} else if case .success(let c) = p {
+									parents.append(c)
+								}
+							}
+							let message = "Merge branch '\(localBranch.shortName ?? localBranch.name)'"
+							return commit(
+								index: index,
+								tree: tree_oid,
+								parents: parents,
+								message: message,
+								author: author,
+								email: email
+							).flatMap { commit in
+								checkout(commit.oid, strategy: CheckoutStrategy.Force)
+							}
+						}
+					}
+				} else {
+					return Result.failure(NSError(gitError: analysisResult, pointOfFailure: "decoding merge result"))
+				}
 			}
 		}
 	}
