@@ -619,7 +619,7 @@ final public class Repository {
 	) -> Result<Commit, NSError> {
 		return unsafeIndex().flatMap { index in
 			defer { git_index_free(index) }
-    		// create commit signature
+			// create commit signature
 			return signature.unsafeSignature.flatMap { signature in
 				defer { git_signature_free(signature) }
 				var tree: OpaquePointer? = nil
