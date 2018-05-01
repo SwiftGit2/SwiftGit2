@@ -645,6 +645,48 @@ class RepositorySpec: QuickSpec {
 				expect(commitMessages).to(equal(expectedMessages))
 			}
 		}
+		
+		describe("Repository.add") {
+			it("Should add the modification under a path") {
+				let repo = Fixtures.simpleRepository
+				let branch = repo.localBranch(named: "master").value!
+				expect(repo.checkout(branch, strategy: CheckoutStrategy.None).error).to(beNil())
+				
+				// make a change to README
+				let readmeURL = repo.directoryURL!.appendingPathComponent("README.md")
+				let readmeData = try! Data(contentsOf: readmeURL)
+				defer { try! readmeData.write(to: readmeURL) }
+				
+				try! "different".data(using: .utf8)?.write(to: readmeURL)
+				
+				let status = repo.status()
+				expect(status.value?.count).to(equal(1))
+				expect(status.value!.first!.status).to(equal(.workTreeModified))
+				
+				expect(repo.add(path: "README.md").error).to(beNil())
+				
+				let newStatus = repo.status()
+				expect(newStatus.value?.count).to(equal(1))
+				expect(newStatus.value!.first!.status).to(equal(.indexModified))
+			}
+			
+			it("Should add an untracked file under a path") {
+				let repo = Fixtures.simpleRepository
+				let branch = repo.localBranch(named: "master").value!
+				expect(repo.checkout(branch, strategy: CheckoutStrategy.None).error).to(beNil())
+				
+				// make a change to README
+				let untrackedURL = repo.directoryURL!.appendingPathComponent("untracked")
+				try! "different".data(using: .utf8)?.write(to: untrackedURL)
+				defer { try! FileManager.default.removeItem(at: untrackedURL) }
+				
+				expect(repo.add(path: ".").error).to(beNil())
+				
+				let newStatus = repo.status()
+				expect(newStatus.value?.count).to(equal(1))
+				expect(newStatus.value!.first!.status).to(equal(.indexNew))
+			}
+		}
 
 		describe("Repository.status") {
 			it("Should accurately report status for repositories with no status") {
