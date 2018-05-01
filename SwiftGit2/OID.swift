@@ -27,12 +27,12 @@ public struct OID {
 		let result = git_oid_fromstr(pointer, string)
 
 		if result < GIT_OK.rawValue {
-			pointer.deallocate(capacity: 1)
+			pointer.deallocate()
 			return nil
 		}
 
 		oid = pointer.pointee
-		pointer.deallocate(capacity: 1)
+		pointer.deallocate()
 	}
 
 	/// Create an instance from a libgit2 `git_oid`.
