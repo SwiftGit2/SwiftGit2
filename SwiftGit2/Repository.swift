@@ -584,7 +584,7 @@ final public class Repository {
 	}
 
 	/// Get the index for the repo. The caller is responsible for freeing the index.
-	public func unsafeIndex() -> Result<OpaquePointer, NSError> {
+	func unsafeIndex() -> Result<OpaquePointer, NSError> {
 		var index: OpaquePointer? = nil
 		let result = git_repository_index(&index, self.pointer)
 		guard result == GIT_OK.rawValue && index != nil else {
