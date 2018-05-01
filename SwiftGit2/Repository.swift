@@ -593,7 +593,7 @@ final public class Repository {
 		}
 		return .success(index!)
 	}
-	
+
 	/// Stage the file(s) under the specified path.
 	public func add(path: String) -> Result<(), NSError> {
 		let dir = path
@@ -601,12 +601,93 @@ final public class Repository {
 		var paths = git_strarray(strings: &dirPointer, count: 1)
 		return unsafeIndex().flatMap { index in
 			defer { git_index_free(index) }
-			let add_result = git_index_add_all(index, &paths, 0, nil, nil)
-			guard add_result == GIT_OK.rawValue else {
-				let err = NSError(gitError: add_result, pointOfFailure: "git_index_add_all")
+			let addResult = git_index_add_all(index, &paths, 0, nil, nil)
+			guard addResult == GIT_OK.rawValue else {
+				let err = NSError(gitError: addResult, pointOfFailure: "git_index_add_all")
 				return .failure(err)
 			}
 			return .success(())
+		}
+	}
+
+	/// Perform a commit with arbitrary numbers of parent commits.
+	public func commit(
+		tree treeOID: git_oid,
+		parents: [Commit],
+		message: String,
+		signature: Signature
+	) -> Result<Commit, NSError> {
+		return unsafeIndex().flatMap { index in
+			defer { git_index_free(index) }
+    		// create commit signature
+			return signature.unsafeSignature.flatMap { signature in
+				defer { git_signature_free(signature) }
+				var tree: OpaquePointer? = nil
+				var treeOIDCopy = treeOID
+				let lookupResult = git_tree_lookup(&tree, self.pointer, &treeOIDCopy)
+				guard lookupResult == GIT_OK.rawValue else {
+					let err = NSError(gitError: lookupResult, pointOfFailure: "git_tree_lookup")
+					return .failure(err)
+				}
+				defer { git_tree_free(tree) }
+
+				var msgBuf = git_buf()
+				git_message_prettify(&msgBuf, message, 0, /* ascii for # */ 35)
+				defer { git_buf_free(&msgBuf) }
+
+				// use HEAD as parent
+				var parentC: [OpaquePointer?] = []
+				for parentCommit in parents {
+					var parent: OpaquePointer? = nil
+					var oid = parentCommit.oid.oid
+					git_commit_lookup(&parent, self.pointer, &oid)
+					parentC.append(parent!)
+				}
+
+				let parentsContiguous = ContiguousArray(parentC)
+				return parentsContiguous.withUnsafeBufferPointer { unsafeBuffer in
+					var commitOID = git_oid()
+					let parentsPtr = UnsafeMutablePointer(mutating: unsafeBuffer.baseAddress)
+					let result = git_commit_create(
+						&commitOID,
+						self.pointer,
+						"HEAD",
+						signature,
+						signature,
+						nil,
+						msgBuf.ptr,
+						tree,
+						parents.count,
+						parentsPtr
+					)
+					guard result == GIT_OK.rawValue else {
+						return .failure(NSError(gitError: result, pointOfFailure: "git_commit_create"))
+					}
+					return commit(OID(commitOID))
+				}
+			}
+		}
+	}
+
+	/// Perform a commit of the staged files with the specified message and signature,
+	/// assuming we are not doing a merge and using the current tip as the parent.
+	public func commit(message: String, signature: Signature) -> Result<Commit, NSError> {
+		return unsafeIndex().flatMap { index in
+			defer { git_index_free(index) }
+			var treeOID = git_oid()
+			let treeResult = git_index_write_tree(&treeOID, index)
+			guard treeResult == GIT_OK.rawValue else {
+				let err = NSError(gitError: treeResult, pointOfFailure: "git_index_write_tree")
+				return .failure(err)
+			}
+			var parentID = git_oid()
+			let nameToIDResult = git_reference_name_to_id(&parentID, self.pointer, "HEAD")
+			guard nameToIDResult == GIT_OK.rawValue else {
+				return .failure(NSError(gitError: nameToIDResult, pointOfFailure: "git_reference_name_to_id"))
+			}
+			return commit(OID(parentID)).flatMap { parentCommit in
+				commit(tree: treeOID, parents: [parentCommit], message: message, signature: signature)
+			}
 		}
 	}
 
