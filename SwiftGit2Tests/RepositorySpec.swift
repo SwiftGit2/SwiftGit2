@@ -688,6 +688,38 @@ class RepositorySpec: QuickSpec {
 			}
 		}
 
+		describe("Repository.commit") {
+			it("Should perform a simple commit with specified signature") {
+				let repo = Fixtures.simpleRepository
+				let branch = repo.localBranch(named: "master").value!
+				expect(repo.checkout(branch, strategy: CheckoutStrategy.None).error).to(beNil())
+				
+				// make a change to README
+				let untrackedURL = repo.directoryURL!.appendingPathComponent("untrackedtest")
+				try! "different".data(using: .utf8)?.write(to: untrackedURL)
+				
+				expect(repo.add(path: ".").error).to(beNil())
+				
+				let signature = Signature(
+					name: "swiftgit2",
+					email: "foobar@example.com",
+					time: Date(timeIntervalSince1970: 1525200858),
+					timeZone: TimeZone(secondsFromGMT: 3600)!
+				)
+				let message = "Test Commit"
+				expect(repo.commit(message: message, signature: signature).error).to(beNil())
+				let updatedBranch = repo.localBranch(named: "master").value!
+				expect(repo.commits(in: updatedBranch).next()?.value?.author).to(equal(signature))
+				expect(repo.commits(in: updatedBranch).next()?.value?.committer).to(equal(signature))
+				expect(repo.commits(in: updatedBranch).next()?.value?.message).to(equal("\(message)\n"))
+				expect(repo.commits(in: updatedBranch).next()?.value?.oid.description).to(equal("4f86c54279e6c8bc2d46da30cf5ad5ad117adb1a"))
+				
+				// should be clean now
+				let newStatus = repo.status()
+				expect(newStatus.value?.count).to(equal(0))
+			}
+		}
+		
 		describe("Repository.status") {
 			it("Should accurately report status for repositories with no status") {
 				let expectedCount = 0
