@@ -7,6 +7,7 @@
 //
 
 import libgit2
+import Result
 
 /// A reference to a git object.
 public protocol ReferenceType {
@@ -18,6 +19,31 @@ public protocol ReferenceType {
 
 	/// The OID of the referenced object.
 	var oid: OID { get }
+	
+	/// Updates the on-disk reference to point to the target and returns the updated reference.
+	func referenceByUpdatingTarget(repo: Repository, newTarget: OID, message: String) -> Result<ReferenceType, NSError>
+}
+
+extension ReferenceType {
+	public func referenceByUpdatingTarget(repo: Repository, newTarget: OID, message: String) -> Result<ReferenceType, NSError> {
+		return message.withCString { messageCString in
+			return self.longName.withCString { refName in
+				var reference: OpaquePointer? = nil
+				let lookupResult = git_reference_lookup(&reference, repo.pointer, refName)
+				guard lookupResult == GIT_OK.rawValue else {
+					return .failure(NSError(gitError: lookupResult, pointOfFailure: "git_reference_lookup"))
+				}
+				defer { git_reference_free(reference!) }
+				var newRef: OpaquePointer? = nil
+				var oid = newTarget.oid
+				let setTargetResult = git_reference_set_target(&newRef, reference!, &oid, messageCString)
+				guard setTargetResult == GIT_OK.rawValue else {
+					return .failure(NSError(gitError: setTargetResult, pointOfFailure: "git_reference_set_target"))
+				}
+				return .success(Reference(newRef!))
+			}
+		}
+	}
 }
 
 public func ==<T: ReferenceType>(lhs: T, rhs: T) -> Bool {
@@ -118,6 +144,32 @@ public struct Branch: ReferenceType {
 			oid = OID(git_reference_target(pointer).pointee)
 		}
 		commit = PointerTo<Commit>(oid)
+	}
+	
+	public func getTrackingBranch(repo: Repository) -> Result<Branch, NSError> {
+		if self.isRemote {
+			return .success(self)
+		}
+		var branchReference: OpaquePointer? = nil
+		var trackingReference: OpaquePointer? = nil
+		return self.longName.withCString { branchName in
+			let lookupResult = git_reference_lookup(&branchReference, repo.pointer, branchName)
+			guard lookupResult == GIT_OK.rawValue else {
+				return .failure(NSError(gitError: lookupResult, pointOfFailure: "git_reference_lookup"))
+			}
+			defer { git_reference_free(branchReference) }
+			let upstreamResult = git_branch_upstream(&trackingReference, branchReference)
+			guard upstreamResult == GIT_OK.rawValue else {
+				return .failure(NSError(gitError: upstreamResult, pointOfFailure: "git_branch_upstream"))
+			}
+			guard let trackingReference = trackingReference else {
+				return .failure(NSError(gitError: upstreamResult, pointOfFailure: "dereference trackingReference"))
+			}
+			guard let branch = Branch(trackingReference) else {
+				return .failure(NSError(gitError: upstreamResult, pointOfFailure: "creating Branch from trackingReference"))
+			}
+			return .success(branch)
+		}
 	}
 }
 

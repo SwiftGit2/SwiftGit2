@@ -68,6 +68,20 @@ private func fetchOptions(credentials: Credentials) -> git_fetch_options {
 	return options
 }
 
+private func pushOptions(credentials: Credentials) -> git_push_options {
+	let pointer = UnsafeMutablePointer<git_push_options>.allocate(capacity: 1)
+	git_push_init_options(pointer, UInt32(GIT_PUSH_OPTIONS_VERSION))
+	
+	var options = pointer.move()
+	
+	pointer.deallocate()
+	
+	options.callbacks.payload = credentials.toPointer()
+	options.callbacks.credentials = credentialsCallback
+	
+	return options
+}
+
 private func cloneOptions(bare: Bool = false, localClone: Bool = false, fetchOptions: git_fetch_options? = nil,
                           checkoutOptions: git_checkout_options? = nil) -> git_clone_options {
 	let pointer = UnsafeMutablePointer<git_clone_options>.allocate(capacity: 1)
@@ -391,12 +405,17 @@ final public class Repository {
 	}
 
 	/// Download new data and update tips
-	public func fetch(_ remote: Remote) -> Result<(), NSError> {
+	public func fetch(_ remote: Remote, credentials: Credentials = .default) -> Result<(), NSError> {
 		return remoteLookup(named: remote.name) { remote in
 			remote.flatMap { pointer in
-				var opts = git_fetch_options()
-				let resultInit = git_fetch_init_options(&opts, UInt32(GIT_FETCH_OPTIONS_VERSION))
-				assert(resultInit == GIT_OK.rawValue)
+				var opts: git_fetch_options
+				if credentials != Credentials.default {
+					opts = fetchOptions(credentials: credentials)
+				} else {
+					opts = git_fetch_options()
+					let resultInit = git_fetch_init_options(&opts, UInt32(GIT_FETCH_OPTIONS_VERSION))
+					assert(resultInit == GIT_OK.rawValue)
+				}
 
 				let result = git_remote_fetch(pointer, nil, &opts, nil)
 				guard result == GIT_OK.rawValue else {
@@ -407,7 +426,18 @@ final public class Repository {
 			}
 		}
 	}
-
+	
+	/// Gets the index for the repo. Caller is responsible for freeing the index.
+	public func index() -> Result<OpaquePointer, NSError> {
+		var index: OpaquePointer? = nil
+		let result = git_repository_index(&index, self.pointer)
+		guard result == GIT_OK.rawValue && index != nil else {
+			let err = NSError(gitError: result, pointOfFailure: "git_repository_index")
+			return .failure(err)
+		}
+		return .success(index!)
+	}
+	
 	// MARK: - Reference Lookups
 
 	/// Load all the references with the given prefix (e.g. "refs/heads/")
@@ -573,6 +603,27 @@ final public class Repository {
 	                     progress: CheckoutProgressBlock? = nil) -> Result<(), NSError> {
 		return setHEAD(reference).flatMap { self.checkout(strategy: strategy, progress: progress) }
 	}
+	
+	/// Stage the file(s) under the specified path
+	public func add(path: String) -> Result<(), NSError> {
+		let dir = path
+		var dirPointer = UnsafeMutablePointer<Int8>(mutating: (dir as NSString).utf8String)
+		var paths = git_strarray(strings: &dirPointer, count: 1)
+		return index().flatMap { index in
+			let add_result = git_index_add_all(index, &paths, 0, nil, nil)
+			guard add_result == GIT_OK.rawValue else {
+				let err = NSError(gitError: add_result, pointOfFailure: "git_index_add_all")
+				return .failure(err)
+			}
+			let write_result = git_index_write(index)
+			guard write_result == GIT_OK.rawValue else {
+				let err = NSError(gitError: write_result, pointOfFailure: "git_index_write")
+				return .failure(err)
+			}
+			git_index_free(index)
+			return .success(())
+		}
+	}
 
 	/// Load all commits in the specified branch in topological & time order descending
 	///
@@ -581,6 +632,264 @@ final public class Repository {
 	public func commits(in branch: Branch) -> CommitIterator {
 		let iterator = CommitIterator(repo: self, root: branch.oid.oid)
 		return iterator
+	}
+	
+	public func commit(
+		index: OpaquePointer!,
+		tree tree_oid: git_oid,
+		parents: [Commit],
+		message: String,
+		author: String,
+		email: String
+	) -> Result<Commit, NSError> {
+		// create commit signature
+		var signature: UnsafeMutablePointer<git_signature>? = nil
+		let time = git_time_t(NSDate().timeIntervalSince1970)	// Unix epoch time
+		let offset: Int32 = 0
+		let signature_result = git_signature_new(&signature, author, email, time, offset)
+		guard signature_result == GIT_OK.rawValue else {
+			let err = NSError(gitError: signature_result, pointOfFailure: "git_signature_new")
+			return .failure(err)
+		}
+		var tree: OpaquePointer? = nil
+		var tree_oid_var = tree_oid
+		let lookup_result = git_tree_lookup(&tree, self.pointer, &tree_oid_var)
+		guard lookup_result == GIT_OK.rawValue else {
+			let err = NSError(gitError: lookup_result, pointOfFailure: "git_tree_lookup")
+			return .failure(err)
+		}
+		
+		var msg_buf = git_buf()
+		git_message_prettify(&msg_buf, message, 0, /* ascii for # */ 35)
+		
+		// use HEAD as parent
+		var parent_c: [OpaquePointer?] = []
+		for parentCommit in parents {
+			var parent: OpaquePointer? = nil
+			var oid = parentCommit.oid.oid
+			git_commit_lookup(&parent, self.pointer, &oid)
+			parent_c.append(parent!)
+		}
+
+		let parents_contiguous = ContiguousArray(parent_c)
+		return parents_contiguous.withUnsafeBufferPointer { p in
+			var commit_oid = git_oid()
+			let parents_ptr = UnsafeMutablePointer(mutating: p.baseAddress)
+			let result = git_commit_create(&commit_oid, self.pointer, "HEAD", signature, signature, nil, msg_buf.ptr, tree, parents.count, parents_ptr)
+			
+			git_buf_free(&msg_buf)
+			git_signature_free(signature)
+			git_tree_free(tree)
+			
+			guard result == GIT_OK.rawValue else {
+				let err = NSError(gitError: result, pointOfFailure: "git_commit_create")
+				return .failure(err)
+			}
+			return commit(OID(commit_oid))
+		}
+	}
+
+	/// Performs a commit of the staged files with the specified message and author
+	public func commit(message: String, author: String, email: String) -> Result<Commit, NSError> {
+		return index().flatMap { index in
+			defer { git_index_free(index) }
+			var tree_oid = git_oid()
+			let tree_result = git_index_write_tree(&tree_oid, index)
+			guard tree_result == GIT_OK.rawValue else {
+				let err = NSError(gitError: tree_result, pointOfFailure: "git_index_write_tree")
+				return .failure(err)
+			}
+			var parent_id = git_oid()
+			git_reference_name_to_id(&parent_id, self.pointer, "HEAD")
+			return commit(OID(parent_id)).flatMap { c in
+    			commit(index: index, tree: tree_oid, parents: [c], message: message, author: author, email: email)
+			}
+		}
+	}
+	
+	// MARK: - Pushing / Pulling
+	
+	/// Push branch to the specified remote.
+	/// If branch is a local branch, will try to push to the corresponding remote branch with the same name.
+	public func push(remote remoteSwift: Remote, branch: Branch, credentials: Credentials? = nil) -> Result<(), NSError> {
+		return remoteLookup(named: remoteSwift.name) { result in
+			result.flatMap { remote in
+				let connect_result: Int32
+				if let credentials = credentials {
+					var callbacks = git_remote_callbacks()
+					let init_callbacks_result = git_remote_init_callbacks(&callbacks, UInt32(GIT_REMOTE_CALLBACKS_VERSION))
+					guard init_callbacks_result == GIT_OK.rawValue else {
+						return Result.failure(NSError(gitError: init_callbacks_result, pointOfFailure: "git_remote_init_callbacks"))
+					}
+					callbacks.payload = credentials.toPointer()
+					callbacks.credentials = credentialsCallback
+					connect_result = git_remote_connect(remote, GIT_DIRECTION_PUSH, &callbacks, nil)
+				} else {
+					connect_result = git_remote_connect(remote, GIT_DIRECTION_PUSH, nil, nil)
+				}
+				guard connect_result == GIT_OK.rawValue else {
+					return Result.failure(NSError(gitError: connect_result, pointOfFailure: "git_remote_connect"))
+				}
+				var options: git_push_options
+				if let credentials = credentials {
+					options = pushOptions(credentials: credentials)
+				} else {
+					options = git_push_options()
+					git_push_init_options(&options, UInt32(GIT_PUSH_OPTIONS_VERSION))
+				}
+				// lookup refspec
+				var refspec_array = git_strarray()
+				let get_refspecs_result = git_remote_get_push_refspecs(&refspec_array, remote)
+				guard get_refspecs_result == GIT_OK.rawValue else {
+					return Result.failure(NSError(gitError: get_refspecs_result, pointOfFailure: "git_remote_get_push_refspecs"))
+				}
+				defer { git_strarray_free(&refspec_array) }
+				guard let refspec = (refspec_array.filter { $0 == "\(branch.longName):\(branch.longName)" }).first else {
+					return Result.failure(NSError(domain: "SwiftGit2", code: -1, userInfo: nil))
+				}
+				let ptr_refspec = UnsafeMutablePointer<Int8>(mutating: (refspec as NSString).utf8String)
+				var selected_refspecs = [ptr_refspec]
+				var selected_refspec_array = git_strarray(strings: &selected_refspecs, count: 1)
+				// do the push
+				let upload_result = git_remote_upload(remote, &selected_refspec_array, &options)
+				guard upload_result == GIT_OK.rawValue else {
+					return Result.failure(NSError(gitError: upload_result, pointOfFailure: "git_remote_upload"))
+				}
+				return .success(())
+			}
+		}
+	}
+	
+	public enum ConflictResolutionDecision {
+		case ours
+		case theirs
+		case merge(Data)
+	}
+	
+	/// Takes in "our" side and "their" side of the file respectively, and returns a decision
+	public typealias ConflictResolver = (Data, Data) -> ConflictResolutionDecision
+	
+	/// Pulls from the remote and updates our local branch.
+	public func pull(
+		remote: Remote,
+		branch: Branch,
+		author: String,
+		email: String,
+		credentials: Credentials = .default,
+		conflictResolver: ConflictResolver
+	) -> Result<Void, NSError> {
+		// first initiate a fetch
+		return fetch(remote, credentials: credentials).flatMap { _ in
+			let localBranchResult = self.localBranch(named: branch.name)
+			guard case .success(let localBranch) = localBranchResult else {
+				return localBranchResult.map { _ in () }
+			}
+			// determine if we need to perform a merge
+			// if local commit is the same as remote commit, no need
+			return branch.getTrackingBranch(repo: self).flatMap { trackingBranch in
+				// determine if the local branch can be fast-forwarded
+				guard localBranch.oid != trackingBranch.oid else {
+					return .success(())
+				}
+				// determine if a clean merge can be performed
+				var annotatedCommit: OpaquePointer? = nil
+				var oid = trackingBranch.oid.oid
+				let lookupResult = git_annotated_commit_lookup(&annotatedCommit, self.pointer, &oid)
+				guard lookupResult == GIT_OK.rawValue else {
+					return Result.failure(NSError(gitError: lookupResult, pointOfFailure: "git_annotated_commit_lookup"))
+				}
+				defer { git_annotated_commit_free(annotatedCommit) }
+				var analysis = GIT_MERGE_ANALYSIS_NONE
+				var preference = GIT_MERGE_PREFERENCE_NONE
+				let analysisResult = git_merge_analysis(&analysis, &preference, self.pointer, &annotatedCommit, 1)
+				guard analysisResult == GIT_OK.rawValue else {
+					return Result.failure(NSError(gitError: analysisResult, pointOfFailure: "git_merge_analysis"))
+				}
+				if analysis.rawValue & GIT_MERGE_ANALYSIS_UP_TO_DATE.rawValue != 0 {
+					// nothing needs to be done
+					return .success(())
+				} else if analysis.rawValue & GIT_MERGE_ANALYSIS_UNBORN.rawValue != 0
+					|| analysis.rawValue & GIT_MERGE_ANALYSIS_FASTFORWARD.rawValue != 0 {
+					// fast-forward local branch
+					let message = "merge \(remote.name)/\(trackingBranch.name): Fast-forward"
+					return localBranch.referenceByUpdatingTarget(repo: self, newTarget: trackingBranch.oid, message: message).flatMap { newRef in
+						self.checkout(newRef.oid, strategy: CheckoutStrategy.Force)
+					}
+				} else if analysis.rawValue & GIT_MERGE_ANALYSIS_NORMAL.rawValue != 0 {
+					// normal merge
+					return unsafeTreeForCommitId(localBranch.commit.oid).flatMap { localTree in
+    					defer { git_tree_free(localTree) }
+						return unsafeTreeForCommitId(trackingBranch.commit.oid).flatMap { remoteTree in
+        					defer { git_tree_free(remoteTree) }
+							// check conflicts
+							var index: OpaquePointer? = nil
+							var base_oid = git_oid()
+							var local_oid = localBranch.commit.oid.oid
+							var remote_oid = trackingBranch.commit.oid.oid
+							let findMergeBaseResult = git_merge_base(&base_oid, self.pointer, &local_oid, &remote_oid)
+							var base_tree: OpaquePointer? = nil
+							if findMergeBaseResult == GIT_OK.rawValue {
+								let result = commit(OID(base_oid)).flatMap { baseCommit -> Result<(), NSError> in
+									unsafeTreeForCommitId(baseCommit.oid).flatMap { baseTree -> Result<(), NSError> in
+										base_tree = baseTree
+										return .success(())
+									}
+								}
+								if case .failure = result {
+									return result
+								}
+							}
+							let mergeTreeResult = git_merge_trees(
+								&index,
+								self.pointer,
+								base_tree,
+								localTree,
+								remoteTree,
+								nil
+							)
+							if let base_tree = base_tree {
+								defer { git_tree_free(base_tree) }
+							}
+							guard mergeTreeResult == GIT_OK.rawValue else {
+								return Result.failure(NSError(gitError: mergeTreeResult, pointOfFailure: "git_merge_trees"))
+							}
+							// if a clean merge cannot be performed,
+							// call the user-supplied conflict resolver
+							if git_index_has_conflicts(index!) > 0 {
+								fatalError()
+							}
+							var tree_oid = git_oid()
+							let writeTreeResult = git_index_write_tree_to(&tree_oid, index!, self.pointer)
+							guard writeTreeResult == GIT_OK.rawValue else {
+								return Result.failure(NSError(gitError: writeTreeResult, pointOfFailure: "git_index_write_tree"))
+							}
+							// create merge commit
+							var parents: [Commit] = []
+							for p in [commit(localBranch.commit.oid), commit(trackingBranch.commit.oid)] {
+								if case .failure = p {
+									return p.map { _ in () }
+								} else if case .success(let c) = p {
+									parents.append(c)
+								}
+							}
+							let message = "Merge branch '\(localBranch.shortName ?? localBranch.name)'"
+							return commit(
+								index: index,
+								tree: tree_oid,
+								parents: parents,
+								message: message,
+								author: author,
+								email: email
+							).flatMap { commit in
+								checkout(commit.oid, strategy: CheckoutStrategy.Force)
+							}
+						}
+					}
+				} else {
+					return Result.failure(NSError(gitError: analysisResult, pointOfFailure: "decoding merge result"))
+				}
+			}
+		}
 	}
 
 	// MARK: - Diffs
