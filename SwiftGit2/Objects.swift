@@ -37,9 +37,9 @@ public struct Signature {
 
 	/// The time zone that `time` should be interpreted relative to.
 	public let timeZone: TimeZone
-	
+
 	/// Create an instance with custom name, email, dates, etc.
-	public init(name: String, email: String, time: Date = Date.init(), timeZone: TimeZone = TimeZone.autoupdatingCurrent) {
+	public init(name: String, email: String, time: Date = Date(), timeZone: TimeZone = TimeZone.autoupdatingCurrent) {
 		self.name = name
 		self.email = email
 		self.time = time
@@ -59,7 +59,7 @@ public struct Signature {
 	var unsafeSignature: Result<UnsafeMutablePointer<git_signature>, NSError> {
 		var signature: UnsafeMutablePointer<git_signature>? = nil
 		let time = git_time_t(self.time.timeIntervalSince1970)	// Unix epoch time
-		let offset: Int32 = 0
+		let offset: Int32 = Int32(timeZone.secondsFromGMT(for: self.time) / 60)
 		let signatureResult = git_signature_new(&signature, name, email, time, offset)
 		guard signatureResult == GIT_OK.rawValue, let signatureUnwrap = signature else {
 			let err = NSError(gitError: signatureResult, pointOfFailure: "git_signature_new")
