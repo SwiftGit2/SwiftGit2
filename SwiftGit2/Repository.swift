@@ -603,8 +603,12 @@ final public class Repository {
 			defer { git_index_free(index) }
 			let addResult = git_index_add_all(index, &paths, 0, nil, nil)
 			guard addResult == GIT_OK.rawValue else {
-				let err = NSError(gitError: addResult, pointOfFailure: "git_index_add_all")
-				return .failure(err)
+				return .failure(NSError(gitError: addResult, pointOfFailure: "git_index_add_all"))
+			}
+			// write index to disk
+			let writeResult = git_index_write(index)
+			guard writeResult == GIT_OK.rawValue else {
+				return .failure(NSError(gitError: writeResult, pointOfFailure: "git_index_write"))
 			}
 			return .success(())
 		}
@@ -617,58 +621,55 @@ final public class Repository {
 		message: String,
 		signature: Signature
 	) -> Result<Commit, NSError> {
-		return unsafeIndex().flatMap { index in
-			defer { git_index_free(index) }
-			// create commit signature
-			return signature.unsafeSignature.flatMap { signature in
-				defer { git_signature_free(signature) }
-				var tree: OpaquePointer? = nil
-				var treeOIDCopy = treeOID
-				let lookupResult = git_tree_lookup(&tree, self.pointer, &treeOIDCopy)
+		// create commit signature
+		return signature.unsafeSignature.flatMap { signature in
+			defer { git_signature_free(signature) }
+			var tree: OpaquePointer? = nil
+			var treeOIDCopy = treeOID
+			let lookupResult = git_tree_lookup(&tree, self.pointer, &treeOIDCopy)
+			guard lookupResult == GIT_OK.rawValue else {
+				let err = NSError(gitError: lookupResult, pointOfFailure: "git_tree_lookup")
+				return .failure(err)
+			}
+			defer { git_tree_free(tree) }
+
+			var msgBuf = git_buf()
+			git_message_prettify(&msgBuf, message, 0, /* ascii for # */ 35)
+			defer { git_buf_free(&msgBuf) }
+
+			// libgit2 expects a C-like array of parent git_commit pointer
+			var parentGitCommits: [OpaquePointer?] = []
+			for parentCommit in parents {
+				var parent: OpaquePointer? = nil
+				var oid = parentCommit.oid.oid
+				let lookupResult = git_commit_lookup(&parent, self.pointer, &oid)
 				guard lookupResult == GIT_OK.rawValue else {
-					let err = NSError(gitError: lookupResult, pointOfFailure: "git_tree_lookup")
+					let err = NSError(gitError: lookupResult, pointOfFailure: "git_commit_lookup")
 					return .failure(err)
 				}
-				defer { git_tree_free(tree) }
+				parentGitCommits.append(parent!)
+			}
 
-				var msgBuf = git_buf()
-				git_message_prettify(&msgBuf, message, 0, /* ascii for # */ 35)
-				defer { git_buf_free(&msgBuf) }
-
-				// libgit2 expects a C-like array of parent git_commit pointer
-				var parentGitCommits: [OpaquePointer?] = []
-				for parentCommit in parents {
-					var parent: OpaquePointer? = nil
-					var oid = parentCommit.oid.oid
-					let lookupResult = git_commit_lookup(&parent, self.pointer, &oid)
-					guard lookupResult == GIT_OK.rawValue else {
-						let err = NSError(gitError: lookupResult, pointOfFailure: "git_commit_lookup")
-						return .failure(err)
-					}
-					parentGitCommits.append(parent!)
+			let parentsContiguous = ContiguousArray(parentGitCommits)
+			return parentsContiguous.withUnsafeBufferPointer { unsafeBuffer in
+				var commitOID = git_oid()
+				let parentsPtr = UnsafeMutablePointer(mutating: unsafeBuffer.baseAddress)
+				let result = git_commit_create(
+					&commitOID,
+					self.pointer,
+					"HEAD",
+					signature,
+					signature,
+					"UTF-8",
+					msgBuf.ptr,
+					tree,
+					parents.count,
+					parentsPtr
+				)
+				guard result == GIT_OK.rawValue else {
+					return .failure(NSError(gitError: result, pointOfFailure: "git_commit_create"))
 				}
-
-				let parentsContiguous = ContiguousArray(parentGitCommits)
-				return parentsContiguous.withUnsafeBufferPointer { unsafeBuffer in
-					var commitOID = git_oid()
-					let parentsPtr = UnsafeMutablePointer(mutating: unsafeBuffer.baseAddress)
-					let result = git_commit_create(
-						&commitOID,
-						self.pointer,
-						"HEAD",
-						signature,
-						signature,
-						nil,
-						msgBuf.ptr,
-						tree,
-						parents.count,
-						parentsPtr
-					)
-					guard result == GIT_OK.rawValue else {
-						return .failure(NSError(gitError: result, pointOfFailure: "git_commit_create"))
-					}
-					return commit(OID(commitOID))
-				}
+				return commit(OID(commitOID))
 			}
 		}
 	}
