@@ -635,16 +635,20 @@ final public class Repository {
 				git_message_prettify(&msgBuf, message, 0, /* ascii for # */ 35)
 				defer { git_buf_free(&msgBuf) }
 
-				// use HEAD as parent
-				var parentC: [OpaquePointer?] = []
+				// libgit2 expects a C-like array of parent git_commit pointer
+				var parentGitCommits: [OpaquePointer?] = []
 				for parentCommit in parents {
 					var parent: OpaquePointer? = nil
 					var oid = parentCommit.oid.oid
-					git_commit_lookup(&parent, self.pointer, &oid)
-					parentC.append(parent!)
+					let lookupResult = git_commit_lookup(&parent, self.pointer, &oid)
+					guard lookupResult == GIT_OK.rawValue else {
+						let err = NSError(gitError: lookupResult, pointOfFailure: "git_commit_lookup")
+						return .failure(err)
+					}
+					parentGitCommits.append(parent!)
 				}
 
-				let parentsContiguous = ContiguousArray(parentC)
+				let parentsContiguous = ContiguousArray(parentGitCommits)
 				return parentsContiguous.withUnsafeBufferPointer { unsafeBuffer in
 					var commitOID = git_oid()
 					let parentsPtr = UnsafeMutablePointer(mutating: unsafeBuffer.baseAddress)
