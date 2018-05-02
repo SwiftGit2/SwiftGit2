@@ -492,8 +492,7 @@ final public class Repository {
 	public func pull(
 		remote: Remote,
 		branch: Branch,
-		author: String,
-		email: String,
+		signatureMaker: () -> Signature,
 		credentials: Credentials = .default,
 		conflictResolver: ConflictResolver,
 		progress: CheckoutProgressBlock? = nil
@@ -601,7 +600,7 @@ final public class Repository {
 								tree: treeOID,
 								parents: parents,
 								message: message,
-								signature: Signature(name: author, email: email)
+								signature: signatureMaker()
 							).flatMap { commit in
 								checkout(commit.oid, strategy: CheckoutStrategy.Force, progress: progress)
 							}
