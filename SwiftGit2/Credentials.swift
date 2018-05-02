@@ -16,7 +16,7 @@ private class Wrapper<T> {
 	}
 }
 
-public enum Credentials {
+public enum Credentials: Equatable {
 	case `default`
 	case sshAgent
 	case plaintext(username: String, password: String)
