@@ -150,7 +150,7 @@ public struct Branch: ReferenceType {
 		}
 		commit = PointerTo<Commit>(oid)
 	}
-	
+
 	/// Returns the corresponding remote tracking branch.
 	/// If this is already a remote branch, returns itself.
 	public func getTrackingBranch(repo: Repository) -> Result<Branch, NSError> {

@@ -416,7 +416,6 @@ final public class Repository {
 					let resultInit = git_fetch_init_options(&opts, UInt32(GIT_FETCH_OPTIONS_VERSION))
 					assert(resultInit == GIT_OK.rawValue)
 				}
-				
 				let result = git_remote_fetch(pointer, nil, &opts, nil)
 				guard result == GIT_OK.rawValue else {
 					let err = NSError(gitError: result, pointOfFailure: "git_remote_fetch")
@@ -426,29 +425,29 @@ final public class Repository {
 			}
 		}
 	}
-	
+
 	// MARK: - Pushing / Pulling
-	
+
 	/// Push branch to the specified remote.
 	/// If branch is a local branch, will try to push to the corresponding remote branch with the same name.
 	public func push(remote remoteSwift: Remote, branch: Branch, credentials: Credentials? = nil) -> Result<(), NSError> {
 		return remoteLookup(named: remoteSwift.name) { result in
 			result.flatMap { remote in
-				let connect_result: Int32
+				let connectResult: Int32
 				if let credentials = credentials {
 					var callbacks = git_remote_callbacks()
-					let init_callbacks_result = git_remote_init_callbacks(&callbacks, UInt32(GIT_REMOTE_CALLBACKS_VERSION))
-					guard init_callbacks_result == GIT_OK.rawValue else {
-						return Result.failure(NSError(gitError: init_callbacks_result, pointOfFailure: "git_remote_init_callbacks"))
+					let initCallbacksResult = git_remote_init_callbacks(&callbacks, UInt32(GIT_REMOTE_CALLBACKS_VERSION))
+					guard initCallbacksResult == GIT_OK.rawValue else {
+						return Result.failure(NSError(gitError: initCallbacksResult, pointOfFailure: "git_remote_init_callbacks"))
 					}
 					callbacks.payload = credentials.toPointer()
 					callbacks.credentials = credentialsCallback
-					connect_result = git_remote_connect(remote, GIT_DIRECTION_PUSH, &callbacks, nil)
+					connectResult = git_remote_connect(remote, GIT_DIRECTION_PUSH, &callbacks, nil)
 				} else {
-					connect_result = git_remote_connect(remote, GIT_DIRECTION_PUSH, nil, nil)
+					connectResult = git_remote_connect(remote, GIT_DIRECTION_PUSH, nil, nil)
 				}
-				guard connect_result == GIT_OK.rawValue else {
-					return Result.failure(NSError(gitError: connect_result, pointOfFailure: "git_remote_connect"))
+				guard connectResult == GIT_OK.rawValue else {
+					return Result.failure(NSError(gitError: connectResult, pointOfFailure: "git_remote_connect"))
 				}
 				var options: git_push_options
 				if let credentials = credentials {
@@ -458,37 +457,37 @@ final public class Repository {
 					git_push_init_options(&options, UInt32(GIT_PUSH_OPTIONS_VERSION))
 				}
 				// lookup refspec
-				var refspec_array = git_strarray()
-				let get_refspecs_result = git_remote_get_push_refspecs(&refspec_array, remote)
-				guard get_refspecs_result == GIT_OK.rawValue else {
-					return Result.failure(NSError(gitError: get_refspecs_result, pointOfFailure: "git_remote_get_push_refspecs"))
+				var refspecArray = git_strarray()
+				let getRefspecsResult = git_remote_get_push_refspecs(&refspecArray, remote)
+				guard getRefspecsResult == GIT_OK.rawValue else {
+					return Result.failure(NSError(gitError: getRefspecsResult, pointOfFailure: "git_remote_get_push_refspecs"))
 				}
-				defer { git_strarray_free(&refspec_array) }
-				guard let refspec = (refspec_array.filter { $0 == "\(branch.longName):\(branch.longName)" }).first else {
+				defer { git_strarray_free(&refspecArray) }
+				guard let refspec = (refspecArray.filter { $0 == "\(branch.longName):\(branch.longName)" }).first else {
 					return Result.failure(NSError(domain: "SwiftGit2", code: -1, userInfo: nil))
 				}
-				let ptr_refspec = UnsafeMutablePointer<Int8>(mutating: (refspec as NSString).utf8String)
-				var selected_refspecs = [ptr_refspec]
-				var selected_refspec_array = git_strarray(strings: &selected_refspecs, count: 1)
+				let ptrRefspec = UnsafeMutablePointer<Int8>(mutating: (refspec as NSString).utf8String)
+				var selectedRefspecs = [ptrRefspec]
+				var selectedRefspecArray = git_strarray(strings: &selectedRefspecs, count: 1)
 				// do the push
-				let upload_result = git_remote_upload(remote, &selected_refspec_array, &options)
-				guard upload_result == GIT_OK.rawValue else {
-					return Result.failure(NSError(gitError: upload_result, pointOfFailure: "git_remote_upload"))
+				let uploadResult = git_remote_upload(remote, &selectedRefspecArray, &options)
+				guard uploadResult == GIT_OK.rawValue else {
+					return Result.failure(NSError(gitError: uploadResult, pointOfFailure: "git_remote_upload"))
 				}
 				return .success(())
 			}
 		}
 	}
-	
+
 	public enum ConflictResolutionDecision {
 		case ours
 		case theirs
 		case merge(Data)
 	}
-	
+
 	/// Takes in "our" side and "their" side of the file respectively, and returns a decision
 	public typealias ConflictResolver = (Data, Data) -> ConflictResolutionDecision
-	
+
 	/// Pulls from the remote and updates our local branch.
 	public func pull(
 		remote: Remote,
@@ -533,7 +532,11 @@ final public class Repository {
 					|| analysis.rawValue & GIT_MERGE_ANALYSIS_FASTFORWARD.rawValue != 0 {
 					// fast-forward local branch
 					let message = "merge \(remote.name)/\(trackingBranch.name): Fast-forward"
-					return localBranch.referenceByUpdatingTarget(repo: self, newTarget: trackingBranch.oid, message: message).flatMap { newRef in
+					return localBranch.referenceByUpdatingTarget(
+						repo: self,
+						newTarget: trackingBranch.oid,
+						message: message
+					).flatMap { newRef in
 						self.checkout(newRef.oid, strategy: CheckoutStrategy.Force, progress: progress)
 					}
 				} else if analysis.rawValue & GIT_MERGE_ANALYSIS_NORMAL.rawValue != 0 {
@@ -544,15 +547,15 @@ final public class Repository {
 							defer { git_tree_free(remoteTree) }
 							// check conflicts
 							var index: OpaquePointer? = nil
-							var base_oid = git_oid()
-							var local_oid = localBranch.commit.oid.oid
-							var remote_oid = trackingBranch.commit.oid.oid
-							let findMergeBaseResult = git_merge_base(&base_oid, self.pointer, &local_oid, &remote_oid)
-							var base_tree: OpaquePointer? = nil
+							var baseOID = git_oid()
+							var localOID = localBranch.commit.oid.oid
+							var remoteOID = trackingBranch.commit.oid.oid
+							let findMergeBaseResult = git_merge_base(&baseOID, self.pointer, &localOID, &remoteOID)
+							var baseTree: OpaquePointer? = nil
 							if findMergeBaseResult == GIT_OK.rawValue {
-								let result = commit(OID(base_oid)).flatMap { baseCommit -> Result<(), NSError> in
-									unsafeTreeForCommitId(baseCommit.oid).flatMap { baseTree -> Result<(), NSError> in
-										base_tree = baseTree
+								let result = commit(OID(baseOID)).flatMap { baseCommit -> Result<(), NSError> in
+									unsafeTreeForCommitId(baseCommit.oid).flatMap { baseTreeUnsafe -> Result<(), NSError> in
+										baseTree = baseTreeUnsafe
 										return .success(())
 									}
 								}
@@ -563,13 +566,13 @@ final public class Repository {
 							let mergeTreeResult = git_merge_trees(
 								&index,
 								self.pointer,
-								base_tree,
+								baseTree,
 								localTree,
 								remoteTree,
 								nil
 							)
-							if let base_tree = base_tree {
-								defer { git_tree_free(base_tree) }
+							if let baseTree = baseTree {
+								defer { git_tree_free(baseTree) }
 							}
 							guard mergeTreeResult == GIT_OK.rawValue else {
 								return Result.failure(NSError(gitError: mergeTreeResult, pointOfFailure: "git_merge_trees"))
@@ -579,8 +582,8 @@ final public class Repository {
 							if git_index_has_conflicts(index!) > 0 {
 								fatalError()
 							}
-							var tree_oid = git_oid()
-							let writeTreeResult = git_index_write_tree_to(&tree_oid, index!, self.pointer)
+							var treeOID = git_oid()
+							let writeTreeResult = git_index_write_tree_to(&treeOID, index!, self.pointer)
 							guard writeTreeResult == GIT_OK.rawValue else {
 								return Result.failure(NSError(gitError: writeTreeResult, pointOfFailure: "git_index_write_tree"))
 							}
@@ -595,7 +598,7 @@ final public class Repository {
 							}
 							let message = "Merge branch '\(localBranch.shortName ?? localBranch.name)'"
 							return commit(
-								tree: tree_oid,
+								tree: treeOID,
 								parents: parents,
 								message: message,
 								signature: Signature(name: author, email: email)
