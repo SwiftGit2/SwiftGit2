@@ -622,7 +622,7 @@ final public class Repository {
 		signature: Signature
 	) -> Result<Commit, NSError> {
 		// create commit signature
-		return signature.unsafeSignature.flatMap { signature in
+		return signature.makeUnsafeSignature().flatMap { signature in
 			defer { git_signature_free(signature) }
 			var tree: OpaquePointer? = nil
 			var treeOIDCopy = treeOID
