@@ -639,6 +639,11 @@ final public class Repository {
 
 			// libgit2 expects a C-like array of parent git_commit pointer
 			var parentGitCommits: [OpaquePointer?] = []
+			defer {
+				for commit in parentGitCommits {
+					git_commit_free(commit)
+				}
+			}
 			for parentCommit in parents {
 				var parent: OpaquePointer? = nil
 				var oid = parentCommit.oid.oid
