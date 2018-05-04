@@ -597,7 +597,7 @@ final public class Repository {
 							}
 							let message = "Merge branch '\(localBranch.shortName ?? localBranch.name)'"
 							return commit(
-								tree: treeOID,
+								tree: OID(treeOID),
 								parents: parents,
 								message: message,
 								signature: signatureMaker()
@@ -821,16 +821,16 @@ final public class Repository {
 
 	/// Perform a commit with arbitrary numbers of parent commits.
 	public func commit(
-		tree treeOID: git_oid,
+		tree treeOID: OID,
 		parents: [Commit],
 		message: String,
 		signature: Signature
 	) -> Result<Commit, NSError> {
 		// create commit signature
-		return signature.unsafeSignature.flatMap { signature in
+		return signature.makeUnsafeSignature().flatMap { signature in
 			defer { git_signature_free(signature) }
 			var tree: OpaquePointer? = nil
-			var treeOIDCopy = treeOID
+			var treeOIDCopy = treeOID.oid
 			let lookupResult = git_tree_lookup(&tree, self.pointer, &treeOIDCopy)
 			guard lookupResult == GIT_OK.rawValue else {
 				let err = NSError(gitError: lookupResult, pointOfFailure: "git_tree_lookup")
@@ -844,6 +844,11 @@ final public class Repository {
 
 			// libgit2 expects a C-like array of parent git_commit pointer
 			var parentGitCommits: [OpaquePointer?] = []
+			defer {
+				for commit in parentGitCommits {
+					git_commit_free(commit)
+				}
+			}
 			for parentCommit in parents {
 				var parent: OpaquePointer? = nil
 				var oid = parentCommit.oid.oid
@@ -896,7 +901,7 @@ final public class Repository {
 				return .failure(NSError(gitError: nameToIDResult, pointOfFailure: "git_reference_name_to_id"))
 			}
 			return commit(OID(parentID)).flatMap { parentCommit in
-				commit(tree: treeOID, parents: [parentCommit], message: message, signature: signature)
+				commit(tree: OID(treeOID), parents: [parentCommit], message: message, signature: signature)
 			}
 		}
 	}
