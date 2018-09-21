@@ -752,7 +752,8 @@ class RepositorySpec: QuickSpec {
 				expect(repo.commits(in: updatedBranch).next()?.value?.author).to(equal(signature))
 				expect(repo.commits(in: updatedBranch).next()?.value?.committer).to(equal(signature))
 				expect(repo.commits(in: updatedBranch).next()?.value?.message).to(equal("\(message)\n"))
-				expect(repo.commits(in: updatedBranch).next()?.value?.oid.description).to(equal("7d6b2d7492f29aee48022387f96dbfe996d435fe"))
+				expect(repo.commits(in: updatedBranch).next()?.value?.oid.description)
+					.to(equal("7d6b2d7492f29aee48022387f96dbfe996d435fe"))
 
 				// should be clean now
 				let newStatus = repo.status()

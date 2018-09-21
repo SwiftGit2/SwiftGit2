@@ -25,6 +25,9 @@ excluded:
   - Carthage
   - External
 
+line_length:
+  ignores_function_declarations: true
+
 trailing_comma:
   mandatory_comma: true
 
