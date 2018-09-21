@@ -704,8 +704,6 @@ final public class Repository {
 	// MARK: - Diffs
 
 	public func diff(for commit: Commit) -> Result<Diff, NSError> {
-		typealias Delta = Diff.Delta
-
 		guard !commit.parents.isEmpty else {
 			// Initial commit in a repository
 			return self.diff(from: nil, to: commit.oid)
@@ -847,8 +845,7 @@ final public class Repository {
 	}
 
 	private func processDiffDeltas(_ diffResult: OpaquePointer) -> Result<[Diff.Delta], NSError> {
-		typealias Delta = Diff.Delta
-		var returnDict = [Delta]()
+		var returnDict = [Diff.Delta]()
 
 		let count = git_diff_num_deltas(diffResult)
 
