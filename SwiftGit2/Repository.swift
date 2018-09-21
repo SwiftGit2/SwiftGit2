@@ -151,24 +151,24 @@ public final class Repository {
 	public class func clone(from remoteURL: URL, to localURL: URL, localClone: Bool = false, bare: Bool = false,
 	                        credentials: Credentials = .default, checkoutStrategy: CheckoutStrategy = .Safe,
 	                        checkoutProgress: CheckoutProgressBlock? = nil) -> Result<Repository, NSError> {
-			var options = cloneOptions(
-				bare: bare,
-				localClone: localClone,
-				fetchOptions: fetchOptions(credentials: credentials),
-				checkoutOptions: checkoutOptions(strategy: checkoutStrategy, progress: checkoutProgress))
+		var options = cloneOptions(
+			bare: bare,
+			localClone: localClone,
+			fetchOptions: fetchOptions(credentials: credentials),
+			checkoutOptions: checkoutOptions(strategy: checkoutStrategy, progress: checkoutProgress))
 
-			var pointer: OpaquePointer? = nil
-			let remoteURLString = (remoteURL as NSURL).isFileReferenceURL() ? remoteURL.path : remoteURL.absoluteString
-			let result = localURL.withUnsafeFileSystemRepresentation { localPath in
-				git_clone(&pointer, remoteURLString, localPath, &options)
-			}
+		var pointer: OpaquePointer? = nil
+		let remoteURLString = (remoteURL as NSURL).isFileReferenceURL() ? remoteURL.path : remoteURL.absoluteString
+		let result = localURL.withUnsafeFileSystemRepresentation { localPath in
+			git_clone(&pointer, remoteURLString, localPath, &options)
+		}
 
-			guard result == GIT_OK.rawValue else {
-				return Result.failure(NSError(gitError: result, pointOfFailure: "git_clone"))
-			}
+		guard result == GIT_OK.rawValue else {
+			return Result.failure(NSError(gitError: result, pointOfFailure: "git_clone"))
+		}
 
-			let repository = Repository(pointer!)
-			return Result.success(repository)
+		let repository = Repository(pointer!)
+		return Result.success(repository)
 	}
 
 	// MARK: - Initializers
