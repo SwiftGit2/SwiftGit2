@@ -20,6 +20,7 @@ opt_in_rules:
   - prohibited_super_call
   - redundant_nil_coalescing
   - switch_case_on_newline
+  - vertical_parameter_alignment_on_call
 
 excluded:
   - Carthage

@@ -151,9 +151,9 @@ class RepositorySpec: QuickSpec {
 					let remoteRepoURL = URL(string: privateRepo)
 					let localURL = self.temporaryURL(forPurpose: "private-remote-clone")
 					let credentials = Credentials.sshMemory(username: gitUsername,
-						publicKey: publicKey,
-						privateKey: privateKey,
-						passphrase: passphrase)
+					                                        publicKey: publicKey,
+					                                        privateKey: privateKey,
+					                                        passphrase: passphrase)
 
 					let cloneResult = Repository.clone(from: remoteRepoURL!, to: localURL, credentials: credentials)
 
