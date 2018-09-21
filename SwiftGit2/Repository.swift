@@ -152,7 +152,8 @@ public final class Repository {
 	                        credentials: Credentials = .default, checkoutStrategy: CheckoutStrategy = .Safe,
 	                        checkoutProgress: CheckoutProgressBlock? = nil) -> Result<Repository, NSError> {
 			var options = cloneOptions(
-				bare: bare, localClone: localClone,
+				bare: bare,
+				localClone: localClone,
 				fetchOptions: fetchOptions(credentials: credentials),
 				checkoutOptions: checkoutOptions(strategy: checkoutStrategy, progress: checkoutProgress))
 

@@ -17,6 +17,7 @@ opt_in_rules:
   - first_where
   - implicitly_unwrapped_optional
   - modifier_order
+  - multiline_arguments
   - overridden_super_call
   - private_outlet
   - prohibited_super_call
