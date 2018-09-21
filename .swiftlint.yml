@@ -16,6 +16,7 @@ opt_in_rules:
   - fatal_error_message
   - first_where
   - implicitly_unwrapped_optional
+  - modifier_order
   - overridden_super_call
   - private_outlet
   - prohibited_super_call
