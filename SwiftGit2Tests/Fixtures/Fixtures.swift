@@ -15,7 +15,7 @@ final class Fixtures {
 	// MARK: Lifecycle
 
 	class var sharedInstance: Fixtures {
-		struct Singleton {
+		enum Singleton {
 			static let instance = Fixtures()
 		}
 		return Singleton.instance

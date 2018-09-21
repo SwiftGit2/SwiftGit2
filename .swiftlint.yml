@@ -10,6 +10,7 @@ opt_in_rules:
   - closure_end_indentation
   - closure_spacing
   - conditional_returns_on_newline
+  - convenience_type
   - empty_count
   - explicit_init
   - fatal_error_message
