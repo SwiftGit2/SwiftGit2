@@ -1,5 +1,5 @@
-github "Quick/Nimble" "v7.0.3"
-github "Quick/Quick" "v1.2.0"
+github "Quick/Nimble" "v7.3.1"
+github "Quick/Quick" "v1.3.2"
 github "ZipArchive/ZipArchive" "v1.8.1"
 github "antitypical/Result" "3.2.4"
-github "jspahrsummers/xcconfigs" "0.10"
+github "jspahrsummers/xcconfigs" "0.12"
