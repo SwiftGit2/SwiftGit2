@@ -27,6 +27,46 @@ class RepositorySpec: QuickSpec {
 			}
 		}
 
+		describe("Repository.Type.isValid(url:)") {
+			it("should return true if the repo exists") {
+				guard let repositoryURL = Fixtures.simpleRepository.directoryURL else {
+					fail("Fixture setup broken: Repository does not exist"); return
+				}
+
+				let result = Repository.isValid(url: repositoryURL)
+
+				expect(result.error).to(beNil())
+
+				if case .success(let isValid) = result {
+					expect(isValid).to(beTruthy())
+				}
+			}
+
+			it("should return false if the directory does not contain a repo") {
+				let tmpURL = URL(fileURLWithPath: "/dev/null")
+				let result = Repository.isValid(url: tmpURL)
+
+				expect(result.error).to(beNil())
+
+				if case .success(let isValid) = result {
+					expect(isValid).to(beFalsy())
+				}
+			}
+
+			it("should return error if .git is not readable") {
+				let localURL = self.temporaryURL(forPurpose: "git-isValid-unreadable").appendingPathComponent(".git")
+				let nonReadablePermissions: [String: Any] = [FileAttributeKey.posixPermissions.rawValue: 0o077]
+				try! FileManager.default.createDirectory(
+					at: localURL,
+					withIntermediateDirectories: true,
+					attributes: nonReadablePermissions)
+				let result = Repository.isValid(url: localURL)
+
+				expect(result.value).to(beNil())
+				expect(result.error).notTo(beNil())
+			}
+		}
+
 		describe("Repository.Type.create(at:)") {
 			it("should create a new repo at the specified location") {
 				let localURL = self.temporaryURL(forPurpose: "local-create")
