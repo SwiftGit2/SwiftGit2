@@ -22,3 +22,6 @@
 [submodule "External/openssl"]
 	path = External/openssl
 	url = https://github.com/openssl/openssl.git
+[submodule "Carthage/Checkouts/ZIPFoundation"]
+	path = Carthage/Checkouts/ZIPFoundation
+	url = https://github.com/weichsel/ZIPFoundation.git
