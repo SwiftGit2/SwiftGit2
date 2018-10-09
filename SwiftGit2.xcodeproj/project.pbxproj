@@ -21,6 +21,8 @@
 /* End PBXAggregateTarget section */
 
 /* Begin PBXBuildFile section */
+		1457DEAE216CF873001C8A01 /* ZIPFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1457DEAD216CF873001C8A01 /* ZIPFoundation.framework */; };
+		1457DEB0216CF88F001C8A01 /* ZIPFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1457DEAF216CF88F001C8A01 /* ZIPFoundation.framework */; };
 		232861431F4A3A2E00276D65 /* Diffs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 232861421F4A3A2E00276D65 /* Diffs.swift */; };
 		232861451F4A3A2E00276D65 /* Diffs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 232861421F4A3A2E00276D65 /* Diffs.swift */; };
 		237731C71F46542B0020A3FE /* repository-with-status.zip in Resources */ = {isa = PBXBuildFile; fileRef = 237731C61F46542B0020A3FE /* repository-with-status.zip */; };
@@ -131,6 +133,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		1457DEAD216CF873001C8A01 /* ZIPFoundation.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = ZIPFoundation.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		1457DEAF216CF88F001C8A01 /* ZIPFoundation.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = ZIPFoundation.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		232861421F4A3A2E00276D65 /* Diffs.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Diffs.swift; sourceTree = "<group>"; };
 		237731C61F46542B0020A3FE /* repository-with-status.zip */ = {isa = PBXFileReference; lastKnownFileType = archive.zip; path = "repository-with-status.zip"; sourceTree = "<group>"; };
 		25499A996CA7BD416620A397 /* CommitIterator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CommitIterator.swift; sourceTree = "<group>"; };
@@ -212,6 +216,7 @@
 			files = (
 				621E66E61C729D9600A0F352 /* SwiftGit2.framework in Frameworks */,
 				621E66C21C72958D00A0F352 /* ZipArchive.framework in Frameworks */,
+				1457DEB0216CF88F001C8A01 /* ZIPFoundation.framework in Frameworks */,
 				621E66C41C72958D00A0F352 /* Nimble.framework in Frameworks */,
 				621E66C51C72958D00A0F352 /* Quick.framework in Frameworks */,
 			);
@@ -232,6 +237,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				62E6FD8F1C727E9C00A312B0 /* ZipArchive.framework in Frameworks */,
+				1457DEAE216CF873001C8A01 /* ZIPFoundation.framework in Frameworks */,
 				DA5023A01A969F1A004175D7 /* Nimble.framework in Frameworks */,
 				DAC8143D1A99749D0063D88C /* Quick.framework in Frameworks */,
 				BEB31F2F1A0D6F7A00F525B9 /* SwiftGit2.framework in Frameworks */,
@@ -241,6 +247,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		1457DEAC216CF873001C8A01 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				1457DEAD216CF873001C8A01 /* ZIPFoundation.framework */,
+				1457DEAF216CF88F001C8A01 /* ZIPFoundation.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		621E66D41C72965C00A0F352 /* Mac */ = {
 			isa = PBXGroup;
 			children = (
@@ -283,6 +298,7 @@
 				BEB31FA11A0E63C100F525B9 /* Libraries */,
 				BEB31F411A0D75EE00F525B9 /* Configuration */,
 				BEB31F241A0D6F7A00F525B9 /* Products */,
+				1457DEAC216CF873001C8A01 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 			usesTabs = 1;
@@ -985,8 +1001,8 @@
 				INSTALL_GROUP = "";
 				INSTALL_MODE_FLAG = "";
 				INSTALL_OWNER = "";
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
-				MACOSX_DEPLOYMENT_TARGET = 10.9;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				SWIFT_VERSION = 3.0;
 			};
 			name = Debug;
@@ -1000,8 +1016,8 @@
 				INSTALL_GROUP = "";
 				INSTALL_MODE_FLAG = "";
 				INSTALL_OWNER = "";
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
-				MACOSX_DEPLOYMENT_TARGET = 10.9;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				SWIFT_VERSION = 3.0;
 			};
 			name = Release;
