@@ -147,7 +147,7 @@ public enum TagReference: ReferenceType {
 
 	/// The short human-readable name of the branch (e.g., `master`).
 	public var name: String {
-		return longName.substring(from: "refs/tags/".endIndex)
+		return String(longName["refs/tags/".endIndex...])
 	}
 
 	/// The OID of the target object.
