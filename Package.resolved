@@ -3,11 +3,11 @@
     "pins": [
       {
         "package": "Clibgit2",
-        "repositoryURL": "git@github.com:stonehouse/Clibgit2.git",
+        "repositoryURL": "https://github.com/fmccann/Clibgit2",
         "state": {
-          "branch": null,
-          "revision": "9b0b2aab6e1d4f1d0bfde9397dbf8562add374b7",
-          "version": "1.0.0"
+          "branch": "master",
+          "revision": "57ac1e181fff70d7716805c8713113fc37c173f2",
+          "version": null
         }
       },
       {

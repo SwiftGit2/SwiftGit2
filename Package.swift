@@ -12,7 +12,7 @@ let package = Package(
     ],
     dependencies: [
 		.package(url: "https://github.com/antitypical/Result.git", "3.0.0" ..< "4.0.0"),
-		.package(url: "git@github.com:stonehouse/Clibgit2.git", .exact("1.0.0")),
+		.package(url: "https://github.com/fmccann/Clibgit2", .branch("master")),
 		.package(url: "https://github.com/Quick/Quick", from: "1.3.2"),
 		.package(url: "https://github.com/Quick/Nimble", from: "7.3.1"),
 		.package(url: "https://github.com/weichsel/ZIPFoundation", .upToNextMajor(from: "0.9.0"))
