@@ -8,7 +8,7 @@
 
 import Foundation
 import SwiftGit2
-import ZipArchive
+import ZIPFoundation
 
 final class Fixtures {
 
@@ -32,19 +32,16 @@ final class Fixtures {
 	let directoryURL: URL
 
 	func setUp() {
-		try! FileManager.default.createDirectory(at: directoryURL, withIntermediateDirectories: true, attributes: nil)
-
-		#if os(OSX)
-			let platform = "OSX"
-		#else
-			let platform = "iOS"
-		#endif
-		let bundleIdentifier = String(format: "org.libgit2.SwiftGit2-%@Tests", arguments: [platform])
-		let bundle = Bundle(identifier: bundleIdentifier)!
+		let fileManager = FileManager.default
+		try! fileManager.createDirectory(at: directoryURL, withIntermediateDirectories: true, attributes: nil)
+		let bundle = Bundle(for: Fixtures.self)
 		let zipURLs = bundle.urls(forResourcesWithExtension: "zip", subdirectory: nil)!
-
 		for URL in zipURLs {
-			SSZipArchive.unzipFile(atPath: URL.path, toDestination: directoryURL.path)
+			do {
+				try fileManager.unzipItem(at: URL, to: directoryURL)
+			} catch {
+				print(error.localizedDescription)
+			}
 		}
 	}
 
