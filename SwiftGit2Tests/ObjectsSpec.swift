@@ -6,6 +6,7 @@
 //  Copyright (c) 2014 GitHub, Inc. All rights reserved.
 //
 
+import Foundation
 import Result
 import SwiftGit2
 import Nimble
