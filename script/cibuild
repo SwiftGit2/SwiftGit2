@@ -24,6 +24,7 @@ if [ -z "$SCHEME" ]; then
   echo "The SCHEME environment variable is empty. Please set this to one of:"
   echo "- SwiftGit2-OSX"
   echo "- SwiftGit2-iOS"
+  echo "- SwiftGit2-SPM"
   exit 1
 fi
 
@@ -82,5 +83,11 @@ elif [ "$SCHEME" == "SwiftGit2-iOS" ]; then
     -sdk iphonesimulator \
     ${XCODE_OPTIONS[*]} \
     build test \
+    2>&1 | xcpretty $XCPRETTY_FORMAT_OPTIONS
+elif [ "$SCHEME" == "SwiftGit2-SPM" ]; then
+  echo "*** Building and testing $SCHEME..."
+  echo
+
+  make test \
     2>&1 | xcpretty $XCPRETTY_FORMAT_OPTIONS
 fi

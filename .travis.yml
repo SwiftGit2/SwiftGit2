@@ -9,6 +9,7 @@ env:
   matrix:
     - SCHEME="SwiftGit2-OSX"
     - SCHEME="SwiftGit2-iOS"
+    - SCHEME="SwiftGit2-SPM"
 
 matrix:
   fast_finish: true
