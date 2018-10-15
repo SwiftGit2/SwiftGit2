@@ -18,6 +18,7 @@ before_install:
   - gem update bundler # https://github.com/bundler/bundler/pull/4981
   - gem install xcpretty
   - gem install xcpretty-travis-formatter
+  - brew update && brew bundle
 
 install: script/bootstrap
 
