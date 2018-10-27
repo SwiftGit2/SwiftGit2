@@ -23,7 +23,7 @@ class RepositorySpec: QuickSpec {
 				let url = URL(fileURLWithPath: "blah")
 				let result = Repository.at(url)
 				expect(result.error?.domain) == libGit2ErrorDomain
-				expect(result.error?.localizedDescription).to(match("Failed to resolve path"))
+				expect(result.error?.localizedDescription).to(match("failed to resolve path"))
 			}
 		}
 
