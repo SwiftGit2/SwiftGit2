@@ -124,7 +124,7 @@ final public class Repository {
 	///
 	/// Returns a `Result` with a `Repository` or an error.
 	class public func at(_ url: URL) -> Result<Repository, NSError> {
-		SwiftGit2Init
+		ensureGitInitialized()
 		
 		var pointer: OpaquePointer? = nil
 		let result = url.withUnsafeFileSystemRepresentation {
@@ -153,7 +153,7 @@ final public class Repository {
 	class public func clone(from remoteURL: URL, to localURL: URL, localClone: Bool = false, bare: Bool = false,
 	                        credentials: Credentials = .default, checkoutStrategy: CheckoutStrategy = .Safe,
 	                        checkoutProgress: CheckoutProgressBlock? = nil) -> Result<Repository, NSError> {
-			SwiftGit2Init
+			ensureGitInitialized()
 			var options = cloneOptions(
 				bare: bare, localClone: localClone,
 				fetchOptions: fetchOptions(credentials: credentials),
@@ -179,7 +179,7 @@ final public class Repository {
 	///
 	/// The Repository assumes ownership of the `git_repository` object.
 	public init(_ pointer: OpaquePointer) {
-		SwiftGit2Init
+		ensureGitInitialized()
 		
 		self.pointer = pointer
 

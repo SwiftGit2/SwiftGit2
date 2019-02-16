@@ -8,7 +8,10 @@
 
 import Clibgit2
 
-// swiftlint:disable:next identifier_name
-let SwiftGit2Init: () = {
-    git_libgit2_init()
-}()
+private var gitInitialized: Int = ({
+	return Int(git_libgit2_init())
+})()
+
+func ensureGitInitialized() {
+	precondition(gitInitialized >= 0)
+}
