@@ -21,7 +21,7 @@ let package = Package(
         .target(
             name: "SwiftGit2",
             dependencies: ["Result"],
-	    	path: "SwiftGit2"),
+			path: "SwiftGit2"),
 		.testTarget(
 			name: "SwiftGit2Tests",
 			dependencies: ["SwiftGit2", "Quick", "Nimble", "ZIPFoundation"],
