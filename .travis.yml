@@ -21,7 +21,10 @@ before_install:
 
 install: script/bootstrap
 
-script: script/cibuild
+script:
+  - script/cibuild
+  - make build 2>&1 | xcpretty -f `xcpretty-travis-formatter`
+  - make test 2>&1 | xcpretty -f `xcpretty-travis-formatter`
 
 branches:
   only: # whitelist
