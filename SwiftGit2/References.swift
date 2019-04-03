@@ -57,8 +57,9 @@ public struct Reference: ReferenceType {
 }
 
 extension Reference: Hashable {
-	public var hashValue: Int {
-		return longName.hashValue ^ oid.hashValue
+	public func hash(into hasher: inout Hasher) {
+		hasher.combine(longName)
+		hasher.combine(oid)
 	}
 }
 
@@ -122,8 +123,9 @@ public struct Branch: ReferenceType {
 }
 
 extension Branch: Hashable {
-	public var hashValue: Int {
-		return longName.hashValue ^ oid.hashValue
+	public func hash(into hasher: inout Hasher) {
+		hasher.combine(longName)
+		hasher.combine(oid)
 	}
 }
 
@@ -194,7 +196,8 @@ public enum TagReference: ReferenceType {
 }
 
 extension TagReference: Hashable {
-	public var hashValue: Int {
-		return longName.hashValue ^ oid.hashValue
+	public func hash(into hasher: inout Hasher) {
+		hasher.combine(longName)
+		hasher.combine(oid)
 	}
 }

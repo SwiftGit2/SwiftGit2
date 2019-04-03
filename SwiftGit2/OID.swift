@@ -57,7 +57,7 @@ extension OID: CustomStringConvertible {
 }
 
 extension OID: Hashable {
-	public var hashValue: Int {
+	public func hash(into hasher: inout Hasher) {
 		let bytes = [
 			self.oid.id.0,
 			self.oid.id.1,
@@ -67,10 +67,11 @@ extension OID: Hashable {
 			self.oid.id.5,
 			self.oid.id.6,
 			self.oid.id.7,
-		]
-		return bytes.reduce(0) { (hash, byte) in
+			]
+		let hashValue = bytes.reduce(0) { (hash, byte) in
 			return Int(hash << 8) | Int(byte)
 		}
+		hasher.combine(hashValue)
 	}
 }
 
