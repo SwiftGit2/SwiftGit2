@@ -625,11 +625,11 @@
 			};
 			buildConfigurationList = BEB31F1D1A0D6F7A00F525B9 /* Build configuration list for PBXProject "SwiftGit2" */;
 			compatibilityVersion = "Xcode 3.2";
-			developmentRegion = English;
+			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
-				English,
 				en,
+				Base,
 			);
 			mainGroup = BEB31F191A0D6F7A00F525B9;
 			productRefGroup = BEB31F241A0D6F7A00F525B9 /* Products */;
