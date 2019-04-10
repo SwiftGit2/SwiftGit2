@@ -3,7 +3,7 @@ import libgit2
 
 public let libGit2ErrorDomain = "org.libgit2.libgit2"
 
-internal extension NSError {
+extension NSError {
 	/// Returns an NSError with an error domain and message for libgit2 errors.
 	///
 	/// :param: errorCode An error code returned by a libgit2 function.
