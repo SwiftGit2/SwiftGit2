@@ -59,7 +59,7 @@ class RepositorySpec: QuickSpec {
 				try! FileManager.default.createDirectory(
 					at: localURL,
 					withIntermediateDirectories: true,
-					attributes: nonReadablePermissions)
+					attributes: convertToOptionalFileAttributeKeyDictionary(nonReadablePermissions))
 				let result = Repository.isValid(url: localURL)
 
 				expect(result.value).to(beNil())
@@ -968,4 +968,10 @@ class RepositorySpec: QuickSpec {
 		let path = "\(NSTemporaryDirectory())\(globallyUniqueString)_\(purpose)"
 		return URL(fileURLWithPath: path)
 	}
+}
+
+// Helper function inserted by Swift 4.2 migrator.
+fileprivate func convertToOptionalFileAttributeKeyDictionary(_ input: [String: Any]?) -> [FileAttributeKey: Any]? {
+	guard let input = input else { return nil }
+	return Dictionary(uniqueKeysWithValues: input.map { key, value in (FileAttributeKey(rawValue: key), value)})
 }
