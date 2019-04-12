@@ -21,6 +21,12 @@ public func == <P: PointerType>(lhs: P, rhs: P) -> Bool {
 	return lhs.oid == rhs.oid && lhs.type.rawValue == rhs.type.rawValue
 }
 
+public extension PointerType {
+	func hash(into hasher: inout Hasher) {
+		hasher.combine(oid)
+	}
+}
+
 /// A pointer to a git object.
 public enum Pointer: PointerType {
 	case commit(OID)
@@ -71,12 +77,6 @@ public enum Pointer: PointerType {
 	}
 }
 
-extension Pointer: Hashable {
-	public func hash(into hasher: inout Hasher) {
-		hasher.combine(oid)
-	}
-}
-
 extension Pointer: CustomStringConvertible {
 	public var description: String {
 		switch self {
@@ -101,11 +101,5 @@ public struct PointerTo<T: ObjectType>: PointerType {
 
 	public init(_ oid: OID) {
 		self.oid = oid
-	}
-}
-
-extension PointerTo: Hashable {
-	public func hash(into hasher: inout Hasher) {
-		hasher.combine(oid)
 	}
 }
