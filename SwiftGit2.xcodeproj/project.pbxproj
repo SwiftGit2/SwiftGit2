@@ -177,11 +177,11 @@
 		BEB31F4F1A0D75EE00F525B9 /* iOS-Base.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = "iOS-Base.xcconfig"; sourceTree = "<group>"; };
 		BEB31F501A0D75EE00F525B9 /* iOS-Framework.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = "iOS-Framework.xcconfig"; sourceTree = "<group>"; };
 		BEB31F511A0D75EE00F525B9 /* iOS-StaticLibrary.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = "iOS-StaticLibrary.xcconfig"; sourceTree = "<group>"; };
-		BEB31F531A0D75EE00F525B9 /* Mac-Application.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = "Mac-Application.xcconfig"; sourceTree = "<group>"; };
-		BEB31F541A0D75EE00F525B9 /* Mac-Base.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = "Mac-Base.xcconfig"; sourceTree = "<group>"; };
-		BEB31F551A0D75EE00F525B9 /* Mac-DynamicLibrary.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = "Mac-DynamicLibrary.xcconfig"; sourceTree = "<group>"; };
-		BEB31F561A0D75EE00F525B9 /* Mac-Framework.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = "Mac-Framework.xcconfig"; sourceTree = "<group>"; };
-		BEB31F571A0D75EE00F525B9 /* Mac-StaticLibrary.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = "Mac-StaticLibrary.xcconfig"; sourceTree = "<group>"; };
+		BEB31F531A0D75EE00F525B9 /* macOS-Application.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = "macOS-Application.xcconfig"; sourceTree = "<group>"; };
+		BEB31F541A0D75EE00F525B9 /* macOS-Base.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = "macOS-Base.xcconfig"; sourceTree = "<group>"; };
+		BEB31F551A0D75EE00F525B9 /* macOS-DynamicLibrary.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = "macOS-DynamicLibrary.xcconfig"; sourceTree = "<group>"; };
+		BEB31F561A0D75EE00F525B9 /* macOS-Framework.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = "macOS-Framework.xcconfig"; sourceTree = "<group>"; };
+		BEB31F571A0D75EE00F525B9 /* macOS-StaticLibrary.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = "macOS-StaticLibrary.xcconfig"; sourceTree = "<group>"; };
 		BEB31F581A0D75EE00F525B9 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		BEB31F6C1A0D78F300F525B9 /* Repository.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Repository.swift; sourceTree = "<group>"; };
 		BEB31F8F1A0E563900F525B9 /* libgit2.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libgit2.a; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -364,7 +364,7 @@
 			children = (
 				BEB31F421A0D75EE00F525B9 /* Base */,
 				BEB31F4D1A0D75EE00F525B9 /* iOS */,
-				BEB31F521A0D75EE00F525B9 /* Mac OS X */,
+				BEB31F521A0D75EE00F525B9 /* macOS */,
 				BEB31F581A0D75EE00F525B9 /* README.md */,
 			);
 			name = Configuration;
@@ -413,16 +413,16 @@
 			path = iOS;
 			sourceTree = "<group>";
 		};
-		BEB31F521A0D75EE00F525B9 /* Mac OS X */ = {
+		BEB31F521A0D75EE00F525B9 /* macOS */ = {
 			isa = PBXGroup;
 			children = (
-				BEB31F531A0D75EE00F525B9 /* Mac-Application.xcconfig */,
-				BEB31F541A0D75EE00F525B9 /* Mac-Base.xcconfig */,
-				BEB31F551A0D75EE00F525B9 /* Mac-DynamicLibrary.xcconfig */,
-				BEB31F561A0D75EE00F525B9 /* Mac-Framework.xcconfig */,
-				BEB31F571A0D75EE00F525B9 /* Mac-StaticLibrary.xcconfig */,
+				BEB31F531A0D75EE00F525B9 /* macOS-Application.xcconfig */,
+				BEB31F541A0D75EE00F525B9 /* macOS-Base.xcconfig */,
+				BEB31F551A0D75EE00F525B9 /* macOS-DynamicLibrary.xcconfig */,
+				BEB31F561A0D75EE00F525B9 /* macOS-Framework.xcconfig */,
+				BEB31F571A0D75EE00F525B9 /* macOS-StaticLibrary.xcconfig */,
 			);
-			path = "Mac OS X";
+			path = macOS;
 			sourceTree = "<group>";
 		};
 		BEB31FA11A0E63C100F525B9 /* Libraries */ = {
@@ -601,18 +601,18 @@
 				ORGANIZATIONNAME = "GitHub, Inc";
 				TargetAttributes = {
 					621E66611C72958800A0F352 = {
-						LastSwiftMigration = 1010;
+						LastSwiftMigration = 1020;
 					};
 					621E66B61C72958D00A0F352 = {
-						LastSwiftMigration = 1010;
+						LastSwiftMigration = 1020;
 					};
 					BEB31F221A0D6F7A00F525B9 = {
 						CreatedOnToolsVersion = 6.1;
-						LastSwiftMigration = 1010;
+						LastSwiftMigration = 1020;
 					};
 					BEB31F2D1A0D6F7A00F525B9 = {
 						CreatedOnToolsVersion = 6.1;
-						LastSwiftMigration = 1010;
+						LastSwiftMigration = 1020;
 					};
 					BEB31F8E1A0E563900F525B9 = {
 						CreatedOnToolsVersion = 6.1;
@@ -625,10 +625,11 @@
 			};
 			buildConfigurationList = BEB31F1D1A0D6F7A00F525B9 /* Build configuration list for PBXProject "SwiftGit2" */;
 			compatibilityVersion = "Xcode 3.2";
-			developmentRegion = English;
+			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				en,
+				Base,
 			);
 			mainGroup = BEB31F191A0D6F7A00F525B9;
 			productRefGroup = BEB31F241A0D6F7A00F525B9 /* Products */;
@@ -983,7 +984,7 @@
 				INSTALL_OWNER = "";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				MACOSX_DEPLOYMENT_TARGET = 10.9;
-				SWIFT_VERSION = 4.2;
+				SWIFT_VERSION = 5.0;
 			};
 			name = Debug;
 		};
@@ -998,13 +999,13 @@
 				INSTALL_OWNER = "";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				MACOSX_DEPLOYMENT_TARGET = 10.9;
-				SWIFT_VERSION = 4.2;
+				SWIFT_VERSION = 5.0;
 			};
 			name = Release;
 		};
 		BEB31F3A1A0D6F7A00F525B9 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = BEB31F561A0D75EE00F525B9 /* Mac-Framework.xcconfig */;
+			baseConfigurationReference = BEB31F561A0D75EE00F525B9 /* macOS-Framework.xcconfig */;
 			buildSettings = {
 				HEADER_SEARCH_PATHS = (
 					"$(SRCROOT)/External/libgit2/include",
@@ -1032,7 +1033,7 @@
 		};
 		BEB31F3B1A0D6F7A00F525B9 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = BEB31F561A0D75EE00F525B9 /* Mac-Framework.xcconfig */;
+			baseConfigurationReference = BEB31F561A0D75EE00F525B9 /* macOS-Framework.xcconfig */;
 			buildSettings = {
 				HEADER_SEARCH_PATHS = (
 					"$(SRCROOT)/External/libgit2/include",
@@ -1060,7 +1061,7 @@
 		};
 		BEB31F3D1A0D6F7A00F525B9 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = BEB31F531A0D75EE00F525B9 /* Mac-Application.xcconfig */;
+			baseConfigurationReference = BEB31F531A0D75EE00F525B9 /* macOS-Application.xcconfig */;
 			buildSettings = {
 				INFOPLIST_FILE = SwiftGit2Tests/Info.plist;
 				MACOSX_DEPLOYMENT_TARGET = 10.10;
@@ -1071,7 +1072,7 @@
 		};
 		BEB31F3E1A0D6F7A00F525B9 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = BEB31F531A0D75EE00F525B9 /* Mac-Application.xcconfig */;
+			baseConfigurationReference = BEB31F531A0D75EE00F525B9 /* macOS-Application.xcconfig */;
 			buildSettings = {
 				INFOPLIST_FILE = SwiftGit2Tests/Info.plist;
 				MACOSX_DEPLOYMENT_TARGET = 10.10;
@@ -1082,7 +1083,7 @@
 		};
 		BEB31F911A0E563900F525B9 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = BEB31F571A0D75EE00F525B9 /* Mac-StaticLibrary.xcconfig */;
+			baseConfigurationReference = BEB31F571A0D75EE00F525B9 /* macOS-StaticLibrary.xcconfig */;
 			buildSettings = {
 				PRODUCT_NAME = git2;
 			};
@@ -1090,7 +1091,7 @@
 		};
 		BEB31F921A0E563900F525B9 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = BEB31F571A0D75EE00F525B9 /* Mac-StaticLibrary.xcconfig */;
+			baseConfigurationReference = BEB31F571A0D75EE00F525B9 /* macOS-StaticLibrary.xcconfig */;
 			buildSettings = {
 				PRODUCT_NAME = git2;
 			};

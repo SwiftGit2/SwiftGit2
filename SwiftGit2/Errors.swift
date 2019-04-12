@@ -10,7 +10,7 @@ internal extension NSError {
 	/// :param: libGit2PointOfFailure The name of the libgit2 function that produced the
 	///         error code.
 	/// :returns: An NSError with a libgit2 error domain, code, and message.
-	internal convenience init(gitError errorCode: Int32, pointOfFailure: String? = nil) {
+	convenience init(gitError errorCode: Int32, pointOfFailure: String? = nil) {
 		let code = Int(errorCode)
 		var userInfo: [String: String] = [:]
 
