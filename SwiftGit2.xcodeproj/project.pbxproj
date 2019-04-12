@@ -601,18 +601,18 @@
 				ORGANIZATIONNAME = "GitHub, Inc";
 				TargetAttributes = {
 					621E66611C72958800A0F352 = {
-						LastSwiftMigration = 1010;
+						LastSwiftMigration = 1020;
 					};
 					621E66B61C72958D00A0F352 = {
-						LastSwiftMigration = 1010;
+						LastSwiftMigration = 1020;
 					};
 					BEB31F221A0D6F7A00F525B9 = {
 						CreatedOnToolsVersion = 6.1;
-						LastSwiftMigration = 1010;
+						LastSwiftMigration = 1020;
 					};
 					BEB31F2D1A0D6F7A00F525B9 = {
 						CreatedOnToolsVersion = 6.1;
-						LastSwiftMigration = 1010;
+						LastSwiftMigration = 1020;
 					};
 					BEB31F8E1A0E563900F525B9 = {
 						CreatedOnToolsVersion = 6.1;
@@ -984,7 +984,7 @@
 				INSTALL_OWNER = "";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				MACOSX_DEPLOYMENT_TARGET = 10.9;
-				SWIFT_VERSION = 4.2;
+				SWIFT_VERSION = 5.0;
 			};
 			name = Debug;
 		};
@@ -999,7 +999,7 @@
 				INSTALL_OWNER = "";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				MACOSX_DEPLOYMENT_TARGET = 10.9;
-				SWIFT_VERSION = 4.2;
+				SWIFT_VERSION = 5.0;
 			};
 			name = Release;
 		};
