@@ -21,8 +21,14 @@ public protocol ObjectType {
 	init(_ pointer: OpaquePointer)
 }
 
-public func == <O: ObjectType>(lhs: O, rhs: O) -> Bool {
-	return lhs.oid == rhs.oid
+public extension ObjectType {
+	static func == (lhs: Self, rhs: Self) -> Bool {
+		return lhs.oid == rhs.oid
+	}
+
+	func hash(into hasher: inout Hasher) {
+		hasher.combine(oid)
+	}
 }
 
 public struct Signature {
@@ -77,15 +83,8 @@ extension Signature: Hashable {
 	}
 }
 
-public func == (lhs: Signature, rhs: Signature) -> Bool {
-	return lhs.name == rhs.name
-		&& lhs.email == rhs.email
-		&& lhs.time == rhs.time
-		&& lhs.timeZone == rhs.timeZone
-}
-
 /// A git commit.
-public struct Commit: ObjectType {
+public struct Commit: ObjectType, Hashable {
 	public static let type = GIT_OBJ_COMMIT
 
 	/// The OID of the commit.
@@ -120,18 +119,12 @@ public struct Commit: ObjectType {
 	}
 }
 
-extension Commit: Hashable {
-	public func hash(into hasher: inout Hasher) {
-		hasher.combine(oid)
-	}
-}
-
 /// A git tree.
-public struct Tree: ObjectType {
+public struct Tree: ObjectType, Hashable {
 	public static let type = GIT_OBJ_TREE
 
 	/// An entry in a `Tree`.
-	public struct Entry {
+	public struct Entry: Hashable {
 		/// The entry's UNIX file attributes.
 		public let attributes: Int32
 
@@ -176,34 +169,14 @@ public struct Tree: ObjectType {
 	}
 }
 
-extension Tree.Entry: Hashable {
-	public func hash(into hasher: inout Hasher) {
-		hasher.combine(attributes)
-		hasher.combine(object)
-		hasher.combine(name)
-	}
-}
-
 extension Tree.Entry: CustomStringConvertible {
 	public var description: String {
 		return "\(attributes) \(object) \(name)"
 	}
 }
 
-public func == (lhs: Tree.Entry, rhs: Tree.Entry) -> Bool {
-	return lhs.attributes == rhs.attributes
-		&& lhs.object == rhs.object
-		&& lhs.name == rhs.name
-}
-
-extension Tree: Hashable {
-	public func hash(into hasher: inout Hasher) {
-		hasher.combine(oid)
-	}
-}
-
 /// A git blob.
-public struct Blob: ObjectType {
+public struct Blob: ObjectType, Hashable {
 	public static let type = GIT_OBJ_BLOB
 
 	/// The OID of the blob.
@@ -221,14 +194,8 @@ public struct Blob: ObjectType {
 	}
 }
 
-extension Blob: Hashable {
-	public func hash(into hasher: inout Hasher) {
-		hasher.combine(oid)
-	}
-}
-
 /// An annotated git tag.
-public struct Tag: ObjectType {
+public struct Tag: ObjectType, Hashable {
 	public static let type = GIT_OBJ_TAG
 
 	/// The OID of the tag.
@@ -254,11 +221,5 @@ public struct Tag: ObjectType {
 		name = String(validatingUTF8: git_tag_name(pointer))!
 		tagger = Signature(git_tag_tagger(pointer).pointee)
 		message = String(validatingUTF8: git_tag_message(pointer))!
-	}
-}
-
-extension Tag: Hashable {
-	public func hash(into hasher: inout Hasher) {
-		hasher.combine(oid)
 	}
 }

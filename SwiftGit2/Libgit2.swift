@@ -8,10 +8,6 @@
 
 import libgit2
 
-func == (lhs: git_otype, rhs: git_otype) -> Bool {
-	return lhs.rawValue == rhs.rawValue
-}
-
 extension git_strarray {
 	func filter(_ isIncluded: (String) -> Bool) -> [String] {
 		return map { $0 }.filter(isIncluded)
