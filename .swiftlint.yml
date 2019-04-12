@@ -3,6 +3,8 @@ disabled_rules:
   - force_cast
   - force_try
   - function_body_length
+  - identifier_name
+  - redundant_optional_initialization
   - type_body_length
 
 opt_in_rules:
