@@ -25,6 +25,13 @@ public func ==<T: ReferenceType>(lhs: T, rhs: T) -> Bool {
 		&& lhs.oid == rhs.oid
 }
 
+public extension ReferenceType {
+	func hash(into hasher: inout Hasher) {
+		hasher.combine(longName)
+		hasher.combine(oid)
+	}
+}
+
 /// Create a Reference, Branch, or TagReference from a libgit2 `git_reference`.
 internal func referenceWithLibGit2Reference(_ pointer: OpaquePointer) -> ReferenceType {
 	if git_reference_is_branch(pointer) != 0 || git_reference_is_remote(pointer) != 0 {
@@ -37,7 +44,7 @@ internal func referenceWithLibGit2Reference(_ pointer: OpaquePointer) -> Referen
 }
 
 /// A generic reference to a git object.
-public struct Reference: ReferenceType {
+public struct Reference: ReferenceType, Hashable {
 	/// The full name of the reference (e.g., `refs/heads/master`).
 	public let longName: String
 
@@ -56,15 +63,8 @@ public struct Reference: ReferenceType {
 	}
 }
 
-extension Reference: Hashable {
-	public func hash(into hasher: inout Hasher) {
-		hasher.combine(longName)
-		hasher.combine(oid)
-	}
-}
-
 /// A git branch.
-public struct Branch: ReferenceType {
+public struct Branch: ReferenceType, Hashable {
 	/// The full name of the reference (e.g., `refs/heads/master`).
 	public let longName: String
 
@@ -122,15 +122,8 @@ public struct Branch: ReferenceType {
 	}
 }
 
-extension Branch: Hashable {
-	public func hash(into hasher: inout Hasher) {
-		hasher.combine(longName)
-		hasher.combine(oid)
-	}
-}
-
 /// A git tag reference, which can be either a lightweight tag or a Tag object.
-public enum TagReference: ReferenceType {
+public enum TagReference: ReferenceType, Hashable {
 	/// A lightweight tag, which is just a name and an OID.
 	case lightweight(String, OID)
 
@@ -192,12 +185,5 @@ public enum TagReference: ReferenceType {
 			self = .lightweight(name, OID(oid))
 		}
 		git_object_free(pointer)
-	}
-}
-
-extension TagReference: Hashable {
-	public func hash(into hasher: inout Hasher) {
-		hasher.combine(longName)
-		hasher.combine(oid)
 	}
 }
