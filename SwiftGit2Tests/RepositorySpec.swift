@@ -55,7 +55,7 @@ class RepositorySpec: QuickSpec {
 
 			it("should return error if .git is not readable") {
 				let localURL = self.temporaryURL(forPurpose: "git-isValid-unreadable").appendingPathComponent(".git")
-				let nonReadablePermissions: [String: Any] = [FileAttributeKey.posixPermissions.rawValue: 0o077]
+				let nonReadablePermissions: [FileAttributeKey: Any] = [.posixPermissions: 0o077]
 				try! FileManager.default.createDirectory(
 					at: localURL,
 					withIntermediateDirectories: true,
