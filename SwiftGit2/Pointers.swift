@@ -72,8 +72,8 @@ public enum Pointer: PointerType {
 }
 
 extension Pointer: Hashable {
-	public var hashValue: Int {
-		return oid.hashValue
+	public func hash(into hasher: inout Hasher) {
+		hasher.combine(oid)
 	}
 }
 
@@ -105,7 +105,7 @@ public struct PointerTo<T: ObjectType>: PointerType {
 }
 
 extension PointerTo: Hashable {
-	public var hashValue: Int {
-		return oid.hashValue
+	public func hash(into hasher: inout Hasher) {
+		hasher.combine(oid)
 	}
 }

@@ -26,8 +26,9 @@ public struct Remote {
 }
 
 extension Remote: Hashable {
-	public var hashValue: Int {
-		return name.hashValue ^ URL.hashValue
+	public func hash(into hasher: inout Hasher) {
+		hasher.combine(name)
+		hasher.combine(URL)
 	}
 }
 

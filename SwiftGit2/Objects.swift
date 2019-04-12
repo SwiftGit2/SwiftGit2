@@ -70,8 +70,10 @@ public struct Signature {
 }
 
 extension Signature: Hashable {
-	public var hashValue: Int {
-		return name.hashValue ^ email.hashValue ^ time.timeIntervalSince1970.hashValue
+	public func hash(into hasher: inout Hasher) {
+		hasher.combine(name)
+		hasher.combine(email)
+		hasher.combine(time)
 	}
 }
 
@@ -119,8 +121,8 @@ public struct Commit: ObjectType {
 }
 
 extension Commit: Hashable {
-	public var hashValue: Int {
-		return self.oid.hashValue
+	public func hash(into hasher: inout Hasher) {
+		hasher.combine(oid)
 	}
 }
 
@@ -175,8 +177,10 @@ public struct Tree: ObjectType {
 }
 
 extension Tree.Entry: Hashable {
-	public var hashValue: Int {
-		return Int(attributes) ^ object.hashValue ^ name.hashValue
+	public func hash(into hasher: inout Hasher) {
+		hasher.combine(attributes)
+		hasher.combine(object)
+		hasher.combine(name)
 	}
 }
 
@@ -193,8 +197,8 @@ public func == (lhs: Tree.Entry, rhs: Tree.Entry) -> Bool {
 }
 
 extension Tree: Hashable {
-	public var hashValue: Int {
-		return oid.hashValue
+	public func hash(into hasher: inout Hasher) {
+		hasher.combine(oid)
 	}
 }
 
@@ -218,8 +222,8 @@ public struct Blob: ObjectType {
 }
 
 extension Blob: Hashable {
-	public var hashValue: Int {
-		return oid.hashValue
+	public func hash(into hasher: inout Hasher) {
+		hasher.combine(oid)
 	}
 }
 
@@ -254,7 +258,7 @@ public struct Tag: ObjectType {
 }
 
 extension Tag: Hashable {
-	public var hashValue: Int {
-		return oid.hashValue
+	public func hash(into hasher: inout Hasher) {
+		hasher.combine(oid)
 	}
 }
