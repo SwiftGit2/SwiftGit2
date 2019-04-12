@@ -21,11 +21,11 @@ public protocol ObjectType {
 	init(_ pointer: OpaquePointer)
 }
 
-public func == <O: ObjectType>(lhs: O, rhs: O) -> Bool {
-	return lhs.oid == rhs.oid
-}
-
 public extension ObjectType {
+	static func == (lhs: Self, rhs: Self) -> Bool {
+		return lhs.oid == rhs.oid
+	}
+
 	func hash(into hasher: inout Hasher) {
 		hasher.combine(oid)
 	}
