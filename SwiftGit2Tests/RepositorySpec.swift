@@ -11,6 +11,8 @@ import SwiftGit2
 import Nimble
 import Quick
 
+// swiftlint:disable cyclomatic_complexity
+
 class RepositorySpec: QuickSpec {
 	override func spec() {
 		describe("Repository.Type.at(_:)") {
