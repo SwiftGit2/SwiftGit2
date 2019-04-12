@@ -62,10 +62,10 @@ extension OID: Hashable {
 			hasher.combine(bytes: $0)
 		}
 	}
-}
 
-public func == (lhs: OID, rhs: OID) -> Bool {
-	var left = lhs.oid
-	var right = rhs.oid
-	return git_oid_cmp(&left, &right) == 0
+	public static func == (lhs: OID, rhs: OID) -> Bool {
+		var left = lhs.oid
+		var right = rhs.oid
+		return git_oid_cmp(&left, &right) == 0
+	}
 }
