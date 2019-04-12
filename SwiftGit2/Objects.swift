@@ -83,13 +83,6 @@ extension Signature: Hashable {
 	}
 }
 
-public func == (lhs: Signature, rhs: Signature) -> Bool {
-	return lhs.name == rhs.name
-		&& lhs.email == rhs.email
-		&& lhs.time == rhs.time
-		&& lhs.timeZone == rhs.timeZone
-}
-
 /// A git commit.
 public struct Commit: ObjectType, Hashable {
 	public static let type = GIT_OBJ_COMMIT
