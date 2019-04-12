@@ -131,7 +131,7 @@ public struct Tree: ObjectType {
 	public static let type = GIT_OBJ_TREE
 
 	/// An entry in a `Tree`.
-	public struct Entry {
+	public struct Entry: Hashable {
 		/// The entry's UNIX file attributes.
 		public let attributes: Int32
 
@@ -176,24 +176,10 @@ public struct Tree: ObjectType {
 	}
 }
 
-extension Tree.Entry: Hashable {
-	public func hash(into hasher: inout Hasher) {
-		hasher.combine(attributes)
-		hasher.combine(object)
-		hasher.combine(name)
-	}
-}
-
 extension Tree.Entry: CustomStringConvertible {
 	public var description: String {
 		return "\(attributes) \(object) \(name)"
 	}
-}
-
-public func == (lhs: Tree.Entry, rhs: Tree.Entry) -> Bool {
-	return lhs.attributes == rhs.attributes
-		&& lhs.object == rhs.object
-		&& lhs.name == rhs.name
 }
 
 extension Tree: Hashable {
