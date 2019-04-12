@@ -50,6 +50,7 @@ opt_in_rules:
   - quick_discouraged_focused_test
   - quick_discouraged_pending_test
   - redundant_nil_coalescing
+  - redundant_type_annotation
   - sorted_first_last
   - strict_fileprivate
   - switch_case_on_newline
