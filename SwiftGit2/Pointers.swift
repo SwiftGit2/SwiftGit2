@@ -17,11 +17,12 @@ public protocol PointerType: Hashable {
 	var type: git_otype { get }
 }
 
-public func == <P: PointerType>(lhs: P, rhs: P) -> Bool {
-	return lhs.oid == rhs.oid && lhs.type.rawValue == rhs.type.rawValue
-}
-
 public extension PointerType {
+	static func == (lhs: Self, rhs: Self) -> Bool {
+		return lhs.oid == rhs.oid
+			&& lhs.type == rhs.type
+	}
+
 	func hash(into hasher: inout Hasher) {
 		hasher.combine(oid)
 	}

@@ -20,12 +20,12 @@ public protocol ReferenceType {
 	var oid: OID { get }
 }
 
-public func ==<T: ReferenceType>(lhs: T, rhs: T) -> Bool {
-	return lhs.longName == rhs.longName
-		&& lhs.oid == rhs.oid
-}
-
 public extension ReferenceType {
+	static func == (lhs: Self, rhs: Self) -> Bool {
+		return lhs.longName == rhs.longName
+			&& lhs.oid == rhs.oid
+	}
+
 	func hash(into hasher: inout Hasher) {
 		hasher.combine(longName)
 		hasher.combine(oid)
