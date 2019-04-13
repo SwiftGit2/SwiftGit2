@@ -67,33 +67,4 @@ public class CommitIterator: IteratorProtocol, Sequence {
 			return result
 		}
 	}
-
-	public func makeIterator() -> CommitIterator {
-		return self
-	}
-
-	public private(set) var underestimatedCount: Int = 0
-	public func map<T>(_ transform: (Result<Commit, NSError>) throws -> T) rethrows -> [T] {
-		var new: [T] = []
-		for item in self {
-			new += [try transform(item)]
-		}
-		return new
-	}
-
-	public func filter(_ isIncluded: (Result<Commit, NSError>) throws -> Bool) rethrows -> [Result<Commit, NSError>] {
-		var new: [Result<Commit, NSError>] = []
-		for item in self {
-			if try isIncluded(item) {
-				new += [item]
-			}
-		}
-		return new
-	}
-
-	public func forEach(_ body: (Result<Commit, NSError>) throws -> Void) rethrows {
-		for item in self {
-			try body(item)
-		}
-	}
 }
