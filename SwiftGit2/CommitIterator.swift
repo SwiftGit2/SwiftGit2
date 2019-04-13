@@ -96,37 +96,4 @@ public class CommitIterator: IteratorProtocol, Sequence {
 			try body(item)
 		}
 	}
-
-	private func notImplemented(functionName: Any, file: StaticString = #file, line: UInt = #line) -> Never {
-		fatalError("CommitIterator does not implement \(functionName)", file: file, line: line)
-	}
-
-	public func dropFirst(_ num: Int) -> AnySequence<Iterator.Element> {
-		notImplemented(functionName: self.dropFirst)
-	}
-
-	public func dropLast(_ num: Int) -> AnySequence<Iterator.Element> {
-		notImplemented(functionName: self.dropLast)
-	}
-
-	public func drop(while predicate: (Result<Commit, NSError>) throws -> Bool) rethrows -> AnySequence<Iterator.Element> {
-		notImplemented(functionName: self.drop)
-	}
-
-	public func prefix(_ maxLength: Int) -> AnySequence<Iterator.Element> {
-		notImplemented(functionName: "prefix(_ maxLength:")
-	}
-
-	public func prefix(while predicate: (Result<Commit, NSError>) throws -> Bool) rethrows -> AnySequence<Iterator.Element> {
-		notImplemented(functionName: "prefix(with predicate:")
-	}
-
-	public func suffix(_ maxLength: Int) -> AnySequence<Iterator.Element> {
-		notImplemented(functionName: self.suffix)
-	}
-
-	public func split(maxSplits: Int, omittingEmptySubsequences: Bool, whereSeparator isSeparator: (Result<Commit, NSError>) throws -> Bool) rethrows -> [AnySequence<Iterator.Element>] {
-		notImplemented(functionName: self.split)
-	}
-
 }
