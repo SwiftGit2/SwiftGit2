@@ -97,8 +97,8 @@ public class CommitIterator: IteratorProtocol, Sequence {
 		}
 	}
 
-	private func notImplemented(functionName: Any) {
-		assert(false, "CommitIterator does not implement \(functionName)")
+	private func notImplemented(functionName: Any, file: StaticString = #file, line: UInt = #line) {
+		fatalError("CommitIterator does not implement \(functionName)", file: file, line: line)
 	}
 	private init(repo: Repository) {
 		self.repo = repo
