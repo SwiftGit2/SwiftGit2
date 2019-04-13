@@ -97,46 +97,36 @@ public class CommitIterator: IteratorProtocol, Sequence {
 		}
 	}
 
-	private func notImplemented(functionName: Any, file: StaticString = #file, line: UInt = #line) {
+	private func notImplemented(functionName: Any, file: StaticString = #file, line: UInt = #line) -> Never {
 		fatalError("CommitIterator does not implement \(functionName)", file: file, line: line)
-	}
-	private init(repo: Repository) {
-		self.repo = repo
 	}
 
 	public func dropFirst(_ num: Int) -> AnySequence<Iterator.Element> {
 		notImplemented(functionName: self.dropFirst)
-		return AnySequence<Iterator.Element> { return CommitIterator(repo: self.repo) }
 	}
 
 	public func dropLast(_ num: Int) -> AnySequence<Iterator.Element> {
 		notImplemented(functionName: self.dropLast)
-		return AnySequence<Iterator.Element> { return CommitIterator(repo: self.repo) }
 	}
 
 	public func drop(while predicate: (Result<Commit, NSError>) throws -> Bool) rethrows -> AnySequence<Iterator.Element> {
 		notImplemented(functionName: self.drop)
-		return AnySequence<Iterator.Element> { return CommitIterator(repo: self.repo) }
 	}
 
 	public func prefix(_ maxLength: Int) -> AnySequence<Iterator.Element> {
 		notImplemented(functionName: "prefix(_ maxLength:")
-		return AnySequence<Iterator.Element> { return CommitIterator(repo: self.repo) }
 	}
 
 	public func prefix(while predicate: (Result<Commit, NSError>) throws -> Bool) rethrows -> AnySequence<Iterator.Element> {
 		notImplemented(functionName: "prefix(with predicate:")
-		return AnySequence<Iterator.Element> { return CommitIterator(repo: self.repo) }
 	}
 
 	public func suffix(_ maxLength: Int) -> AnySequence<Iterator.Element> {
 		notImplemented(functionName: self.suffix)
-		return AnySequence<Iterator.Element> { return CommitIterator(repo: self.repo) }
 	}
 
 	public func split(maxSplits: Int, omittingEmptySubsequences: Bool, whereSeparator isSeparator: (Result<Commit, NSError>) throws -> Bool) rethrows -> [AnySequence<Iterator.Element>] {
 		notImplemented(functionName: self.split)
-		return [AnySequence<Iterator.Element> { return CommitIterator(repo: self.repo) }]
 	}
 
 }
