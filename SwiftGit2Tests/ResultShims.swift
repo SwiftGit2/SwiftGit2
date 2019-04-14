@@ -1,4 +1,5 @@
-public extension Result {
+// Once Nimble adds matchers for the Result type, remove these shims and refactor the tests that use them.
+extension Result {
 	var value: Success? {
 		guard case .success(let value) = self else {
 			return nil

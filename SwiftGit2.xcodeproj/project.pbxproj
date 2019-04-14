@@ -80,8 +80,8 @@
 		BECB5F6C1A56F1B400999413 /* ReferencesSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = BECB5F6B1A56F1B400999413 /* ReferencesSpec.swift */; };
 		BECB5F6E1A57284700999413 /* Remotes.swift in Sources */ = {isa = PBXBuildFile; fileRef = BECB5F6D1A57284700999413 /* Remotes.swift */; };
 		BECB5F701A57286200999413 /* RemotesSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = BECB5F6F1A57286200999413 /* RemotesSpec.swift */; };
-		C98A2BA02263E017007A4E3A /* ResultShims.swift in Sources */ = {isa = PBXBuildFile; fileRef = C98A2B9F2263E017007A4E3A /* ResultShims.swift */; };
-		C98A2BA12263E017007A4E3A /* ResultShims.swift in Sources */ = {isa = PBXBuildFile; fileRef = C98A2B9F2263E017007A4E3A /* ResultShims.swift */; };
+		C98A2BA22263FDB9007A4E3A /* ResultShims.swift in Sources */ = {isa = PBXBuildFile; fileRef = C98A2B9F2263E017007A4E3A /* ResultShims.swift */; };
+		C98A2BA32263FDBA007A4E3A /* ResultShims.swift in Sources */ = {isa = PBXBuildFile; fileRef = C98A2B9F2263E017007A4E3A /* ResultShims.swift */; };
 		DA5023A01A969F1A004175D7 /* Nimble.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DA50239F1A969F1A004175D7 /* Nimble.framework */; };
 		DA5914761A94579000AED74C /* Errors.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA5914751A94579000AED74C /* Errors.swift */; };
 		DAC8143D1A99749D0063D88C /* Quick.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DAC8143C1A99749D0063D88C /* Quick.framework */; };
@@ -315,7 +315,6 @@
 				BECB5F691A56F19900999413 /* References.swift */,
 				BECB5F6D1A57284700999413 /* Remotes.swift */,
 				25499A996CA7BD416620A397 /* CommitIterator.swift */,
-				C98A2B9F2263E017007A4E3A /* ResultShims.swift */,
 			);
 			path = SwiftGit2;
 			sourceTree = "<group>";
@@ -339,6 +338,7 @@
 				BECB5F6B1A56F1B400999413 /* ReferencesSpec.swift */,
 				BECB5F6F1A57286200999413 /* RemotesSpec.swift */,
 				BE14AA581A1996B70015B439 /* FixturesSpec.swift */,
+				C98A2B9F2263E017007A4E3A /* ResultShims.swift */,
 				BEB31F331A0D6F7A00F525B9 /* Supporting Files */,
 			);
 			path = SwiftGit2Tests;
@@ -753,7 +753,6 @@
 				232861451F4A3A2E00276D65 /* Diffs.swift in Sources */,
 				621E66A51C72958800A0F352 /* References.swift in Sources */,
 				621E66A61C72958800A0F352 /* Libgit2.swift in Sources */,
-				C98A2BA12263E017007A4E3A /* ResultShims.swift in Sources */,
 				621E66A71C72958800A0F352 /* Pointers.swift in Sources */,
 				621E66A81C72958800A0F352 /* Errors.swift in Sources */,
 				621E66A91C72958800A0F352 /* SwiftGit2.m in Sources */,
@@ -772,6 +771,7 @@
 				621E66BE1C72958D00A0F352 /* Fixtures.swift in Sources */,
 				621E66BF1C72958D00A0F352 /* ReferencesSpec.swift in Sources */,
 				621E66C01C72958D00A0F352 /* OIDSpec.swift in Sources */,
+				C98A2BA32263FDBA007A4E3A /* ResultShims.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -788,7 +788,6 @@
 				232861431F4A3A2E00276D65 /* Diffs.swift in Sources */,
 				BECB5F6A1A56F19900999413 /* References.swift in Sources */,
 				BE36354C1A632C9700D37EC8 /* Libgit2.swift in Sources */,
-				C98A2BA02263E017007A4E3A /* ResultShims.swift in Sources */,
 				BE7A753F1A4A2BCC002DA7E3 /* Pointers.swift in Sources */,
 				DA5914761A94579000AED74C /* Errors.swift in Sources */,
 				BE14AA501A1974010015B439 /* SwiftGit2.m in Sources */,
@@ -807,6 +806,7 @@
 				BE14AA551A1984550015B439 /* Fixtures.swift in Sources */,
 				BECB5F6C1A56F1B400999413 /* ReferencesSpec.swift in Sources */,
 				BE70B3E71A1ACB37002C3F4E /* OIDSpec.swift in Sources */,
+				C98A2BA22263FDB9007A4E3A /* ResultShims.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
