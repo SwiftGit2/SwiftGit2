@@ -867,11 +867,7 @@ public final class Repository {
 	private func safeTreeForCommitId(_ oid: OID) -> Result<Tree, NSError> {
 		return withGitObject(oid, type: GIT_OBJ_COMMIT) { commit in
 			let treeId = git_commit_tree_id(commit)
-			let tree = self.tree(OID(treeId!.pointee))
-			guard tree.error == nil else {
-				return .failure(tree.error!)
-			}
-			return tree
+			return tree(OID(treeId!.pointee))
 		}
 	}
 
