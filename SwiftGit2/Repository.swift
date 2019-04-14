@@ -361,11 +361,7 @@ public final class Repository {
 		git_strarray_free(pointer)
 		pointer.deallocate()
 
-		let error = remotes.reduce(nil) { $0 == nil ? $0 : $1.error }
-		if let error = error {
-			return Result.failure(error)
-		}
-		return Result.success(remotes.map { $0.value! })
+		return remotes.aggregateResult()
 	}
 
 	private func remoteLookup<A>(named name: String, _ callback: (Result<OpaquePointer, NSError>) -> A) -> A {
@@ -431,11 +427,7 @@ public final class Repository {
 		git_strarray_free(pointer)
 		pointer.deallocate()
 
-		let error = references.reduce(nil) { $0 == nil ? $0 : $1.error }
-		if let error = error {
-			return Result.failure(error)
-		}
-		return Result.success(references.map { $0.value! })
+		return references.aggregateResult()
 	}
 
 	/// Load the reference with the given long name (e.g. "refs/heads/master")
@@ -949,5 +941,20 @@ public final class Repository {
 		default:
 			return .failure(NSError(gitError: result, pointOfFailure: "git_repository_open_ext"))
 		}
+	}
+}
+
+private extension Array {
+	func aggregateResult<Value, Error>() -> Result<[Value], Error> where Element == Result<Value, Error> {
+		var values: [Value] = []
+		for result in self {
+			switch result {
+			case .success(let value):
+				values.append(value)
+			case .failure(let error):
+				return .failure(error)
+			}
+		}
+		return .success(values)
 	}
 }
