@@ -8,7 +8,6 @@
 
 import Foundation
 import libgit2
-import Result
 
 /// A git object.
 public protocol ObjectType {

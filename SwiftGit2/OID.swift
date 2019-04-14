@@ -6,7 +6,6 @@
 //  Copyright (c) 2014 GitHub, Inc. All rights reserved.
 //
 
-import Foundation
 import libgit2
 
 /// An identifier for a Git object.
