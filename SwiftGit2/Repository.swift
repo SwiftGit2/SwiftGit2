@@ -744,23 +744,23 @@ public final class Repository {
 		var oldTree: OpaquePointer? = nil
 		defer { git_object_free(oldTree) }
 		if let oid = oldCommitOid {
-			let result = unsafeTreeForCommitId(oid)
-			guard result.error == nil else {
-				return transform(Result.failure(result.error!))
+			switch unsafeTreeForCommitId(oid) {
+			case .failure(let error):
+				return transform(.failure(error))
+			case .success(let value):
+				oldTree = value
 			}
-
-			oldTree = result.value
 		}
 
 		var newTree: OpaquePointer? = nil
 		defer { git_object_free(newTree) }
 		if let oid = newCommitOid {
-			let result = unsafeTreeForCommitId(oid)
-			guard result.error == nil else {
-				return transform(Result.failure(result.error!))
+			switch unsafeTreeForCommitId(oid) {
+			case .failure(let error):
+				return transform(.failure(error))
+			case .success(let value):
+				newTree = value
 			}
-
-			newTree = result.value
 		}
 
 		var diff: OpaquePointer? = nil
@@ -783,21 +783,23 @@ public final class Repository {
 		assert(oldCommitOid != nil || newCommitOid != nil, "It is an error to pass nil for both the oldOid and newOid")
 
 		var oldTree: Tree? = nil
-		if oldCommitOid != nil {
-			let result = safeTreeForCommitId(oldCommitOid!)
-			guard result.error == nil else {
-				return Result<Diff, NSError>.failure(result.error!)
+		if let oldCommitOid = oldCommitOid {
+			switch safeTreeForCommitId(oldCommitOid) {
+			case .failure(let error):
+				return .failure(error)
+			case .success(let value):
+				oldTree = value
 			}
-			oldTree = result.value
 		}
 
 		var newTree: Tree? = nil
-		if newCommitOid != nil {
-			let result = self.safeTreeForCommitId(newCommitOid!)
-			guard result.error == nil else {
-				return Result<Diff, NSError>.failure(result.error!)
+		if let newCommitOid = newCommitOid {
+			switch safeTreeForCommitId(newCommitOid) {
+			case .failure(let error):
+				return .failure(error)
+			case .success(let value):
+				newTree = value
 			}
-			newTree = result.value!
 		}
 
 		if oldTree != nil && newTree != nil {
