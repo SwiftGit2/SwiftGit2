@@ -712,20 +712,22 @@ public final class Repository {
 		var mergeDiff: OpaquePointer? = nil
 		defer { git_object_free(mergeDiff) }
 		for parent in commit.parents {
-			let error = self.diff(from: parent.oid, to: commit.oid) { (diff: Result<OpaquePointer, NSError>) -> NSError? in
-				guard diff.error == nil else {
-					return diff.error!
-				}
+			let error = self.diff(from: parent.oid, to: commit.oid) {
+				switch $0 {
+				case .failure(let error):
+					return error
 
-				if mergeDiff == nil {
-					mergeDiff = diff.value!
-				} else {
-					let mergeResult = git_diff_merge(mergeDiff, diff.value)
-					guard mergeResult == GIT_OK.rawValue else {
-						return NSError(gitError: mergeResult, pointOfFailure: "git_diff_merge")
+				case .success(let newDiff):
+					if mergeDiff == nil {
+						mergeDiff = newDiff
+					} else {
+						let mergeResult = git_diff_merge(mergeDiff, newDiff)
+						guard mergeResult == GIT_OK.rawValue else {
+							return NSError(gitError: mergeResult, pointOfFailure: "git_diff_merge")
+						}
 					}
+					return nil
 				}
-				return nil
 			}
 
 			if error != nil {
