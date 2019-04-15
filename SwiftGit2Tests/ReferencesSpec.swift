@@ -6,7 +6,6 @@
 //  Copyright (c) 2015 GitHub, Inc. All rights reserved.
 //
 
-import Result
 import SwiftGit2
 import Nimble
 import Quick

@@ -3,7 +3,7 @@
 // Copyright (c) 2017 GitHub, Inc. All rights reserved.
 //
 
-import Result
+import Foundation
 import libgit2
 
 public class CommitIterator: IteratorProtocol, Sequence {

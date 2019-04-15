@@ -7,7 +7,6 @@
 //
 
 import Foundation
-import Result
 import libgit2
 
 public typealias CheckoutProgressBlock = (String?, Int, Int) -> Void
@@ -362,11 +361,7 @@ public final class Repository {
 		git_strarray_free(pointer)
 		pointer.deallocate()
 
-		let error = remotes.reduce(nil) { $0 == nil ? $0 : $1.error }
-		if let error = error {
-			return Result.failure(error)
-		}
-		return Result.success(remotes.map { $0.value! })
+		return remotes.aggregateResult()
 	}
 
 	private func remoteLookup<A>(named name: String, _ callback: (Result<OpaquePointer, NSError>) -> A) -> A {
@@ -432,11 +427,7 @@ public final class Repository {
 		git_strarray_free(pointer)
 		pointer.deallocate()
 
-		let error = references.reduce(nil) { $0 == nil ? $0 : $1.error }
-		if let error = error {
-			return Result.failure(error)
-		}
-		return Result.success(references.map { $0.value! })
+		return references.aggregateResult()
 	}
 
 	/// Load the reference with the given long name (e.g. "refs/heads/master")
@@ -713,20 +704,22 @@ public final class Repository {
 		var mergeDiff: OpaquePointer? = nil
 		defer { git_object_free(mergeDiff) }
 		for parent in commit.parents {
-			let error = self.diff(from: parent.oid, to: commit.oid) { (diff: Result<OpaquePointer, NSError>) -> NSError? in
-				guard diff.error == nil else {
-					return diff.error!
-				}
+			let error = self.diff(from: parent.oid, to: commit.oid) {
+				switch $0 {
+				case .failure(let error):
+					return error
 
-				if mergeDiff == nil {
-					mergeDiff = diff.value!
-				} else {
-					let mergeResult = git_diff_merge(mergeDiff, diff.value)
-					guard mergeResult == GIT_OK.rawValue else {
-						return NSError(gitError: mergeResult, pointOfFailure: "git_diff_merge")
+				case .success(let newDiff):
+					if mergeDiff == nil {
+						mergeDiff = newDiff
+					} else {
+						let mergeResult = git_diff_merge(mergeDiff, newDiff)
+						guard mergeResult == GIT_OK.rawValue else {
+							return NSError(gitError: mergeResult, pointOfFailure: "git_diff_merge")
+						}
 					}
+					return nil
 				}
-				return nil
 			}
 
 			if error != nil {
@@ -743,23 +736,23 @@ public final class Repository {
 		var oldTree: OpaquePointer? = nil
 		defer { git_object_free(oldTree) }
 		if let oid = oldCommitOid {
-			let result = unsafeTreeForCommitId(oid)
-			guard result.error == nil else {
-				return transform(Result.failure(result.error!))
+			switch unsafeTreeForCommitId(oid) {
+			case .failure(let error):
+				return transform(.failure(error))
+			case .success(let value):
+				oldTree = value
 			}
-
-			oldTree = result.value
 		}
 
 		var newTree: OpaquePointer? = nil
 		defer { git_object_free(newTree) }
 		if let oid = newCommitOid {
-			let result = unsafeTreeForCommitId(oid)
-			guard result.error == nil else {
-				return transform(Result.failure(result.error!))
+			switch unsafeTreeForCommitId(oid) {
+			case .failure(let error):
+				return transform(.failure(error))
+			case .success(let value):
+				newTree = value
 			}
-
-			newTree = result.value
 		}
 
 		var diff: OpaquePointer? = nil
@@ -782,21 +775,23 @@ public final class Repository {
 		assert(oldCommitOid != nil || newCommitOid != nil, "It is an error to pass nil for both the oldOid and newOid")
 
 		var oldTree: Tree? = nil
-		if oldCommitOid != nil {
-			let result = safeTreeForCommitId(oldCommitOid!)
-			guard result.error == nil else {
-				return Result<Diff, NSError>.failure(result.error!)
+		if let oldCommitOid = oldCommitOid {
+			switch safeTreeForCommitId(oldCommitOid) {
+			case .failure(let error):
+				return .failure(error)
+			case .success(let value):
+				oldTree = value
 			}
-			oldTree = result.value
 		}
 
 		var newTree: Tree? = nil
-		if newCommitOid != nil {
-			let result = self.safeTreeForCommitId(newCommitOid!)
-			guard result.error == nil else {
-				return Result<Diff, NSError>.failure(result.error!)
+		if let newCommitOid = newCommitOid {
+			switch safeTreeForCommitId(newCommitOid) {
+			case .failure(let error):
+				return .failure(error)
+			case .success(let value):
+				newTree = value
 			}
-			newTree = result.value!
 		}
 
 		if oldTree != nil && newTree != nil {
@@ -864,11 +859,7 @@ public final class Repository {
 	private func safeTreeForCommitId(_ oid: OID) -> Result<Tree, NSError> {
 		return withGitObject(oid, type: GIT_OBJ_COMMIT) { commit in
 			let treeId = git_commit_tree_id(commit)
-			let tree = self.tree(OID(treeId!.pointee))
-			guard tree.error == nil else {
-				return .failure(tree.error!)
-			}
-			return tree
+			return tree(OID(treeId!.pointee))
 		}
 	}
 
@@ -950,5 +941,20 @@ public final class Repository {
 		default:
 			return .failure(NSError(gitError: result, pointOfFailure: "git_repository_open_ext"))
 		}
+	}
+}
+
+private extension Array {
+	func aggregateResult<Value, Error>() -> Result<[Value], Error> where Element == Result<Value, Error> {
+		var values: [Value] = []
+		for result in self {
+			switch result {
+			case .success(let value):
+				values.append(value)
+			case .failure(let error):
+				return .failure(error)
+			}
+		}
+		return .success(values)
 	}
 }
