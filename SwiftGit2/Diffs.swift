@@ -41,6 +41,7 @@ public struct Diff {
 		public var flags: Flags
 		public var oldFile: File?
 		public var newFile: File?
+		public var hunks = [Hunk]()
 
 		public init(_ delta: git_diff_delta) {
 			self.status = Status(rawValue: UInt32(git_diff_status_char(delta.status)))
@@ -70,7 +71,9 @@ public struct Diff {
 		public let oldLines : Int
 		public let newStart : Int
 		public let newLines : Int
-		public let header   : String
+		public let header   : String?
+		
+		public var lines = [Line]()
 		
 		public init(_ hunk: git_diff_hunk) {
 			oldStart = Int(hunk.old_start)
@@ -83,9 +86,37 @@ public struct Diff {
 				.map { UInt8($0.value as! Int8) }
 				.filter { $0 > 0 }
 			
-			header = String(bytes: bytes, encoding: String.Encoding.utf8)!
+			header = String(bytes: bytes, encoding: String.Encoding.utf8)
 		}
 	}
+	
+	public struct Line {
+		public let origin 		: Int8
+		public let old_lineno 	: Int
+		public let new_lineno 	: Int
+		public let num_lines 	: Int
+		public let content 		: String?
+		
+		public init(_ line: git_diff_line) {
+			origin 		= line.origin
+			old_lineno 	= Int(line.old_lineno)
+			new_lineno 	= Int(line.new_lineno)
+			num_lines  	= Int(line.num_lines)
+			content 	= String(validatingUTF8: line.content)
+		}
+	}
+	
+	/*
+	typedef struct {
+		char   origin;       /**< A git_diff_line_t value */
+		int    old_lineno;   /**< Line number in old file or -1 for added line */
+		int    new_lineno;   /**< Line number in new file or -1 for deleted line */
+		int    num_lines;    /**< Number of newline characters in content */
+		size_t content_len;  /**< Number of bytes of data */
+		git_off_t content_offset; /**< Offset in the original file to the content */
+		const char *content; /**< Pointer to diff text, not NUL-byte terminated */
+	} git_diff_line;
+*/
 
 	public struct Status: OptionSet {
 		// This appears to be necessary due to bug in Swift
@@ -162,16 +193,50 @@ public struct Diff {
 	}
 	
 	private class DiffEachCallbacks {
-		var fileBlock: ((Delta, Float32)->())?
-		var hunkBlock: ((Delta, Hunk)->())?
+		var nextDelta: (Delta)->()
+		
+		init(nextDelta: @escaping (Delta)->()) {
+			self.nextDelta = nextDelta
+		}
+		
+		deinit {
+			guard let lastDelta = lastFileDelta else { return }
+			
+			if let hunk = lastHunk {
+				lastFileDelta?.hunks.append(hunk)
+			}
+			
+			nextDelta(lastDelta)
+		}
+		
+		var lastFileDelta : Delta?
+		var lastHunk : Hunk?
+		
+		func file(delta: Delta, progress: Float32) {
+			if let last = lastFileDelta {
+				nextDelta(last)
+			}
+			lastFileDelta = delta
+		}
+		
+		func hunk(hunk: Hunk) {
+			if let last = lastHunk {
+				lastFileDelta?.hunks.append(last)
+			}
+			lastHunk = hunk
+		}
+		
+		func line(line: Line) {
+			lastHunk?.lines.append(line)
+		}
 	}
 	
-	public func forEach(file: ((Delta,Float32)->())?, hunk: ((Delta,Hunk)->())?) -> Result<Void,NSError> {
+	public func forEach(file: @escaping (Delta)->()) -> Result<Void,NSError> {
 		let each_file_cb : git_diff_file_cb = { delta, progress, callbacks in
-			let callbacks = callbacks.unsafelyUnwrapped.bindMemory(to: DiffEachCallbacks.self, capacity: 1)
-			
-			callbacks.pointee
-				.fileBlock?(Delta(delta.unsafelyUnwrapped.pointee), progress)
+			callbacks.unsafelyUnwrapped
+				.bindMemory(to: DiffEachCallbacks.self, capacity: 1)
+				.pointee
+				.file(delta: Delta(delta.unsafelyUnwrapped.pointee), progress: progress)
 			
 			return 0
 		}
@@ -182,25 +247,32 @@ public struct Diff {
 		}
 		
 		let each_hunk_cb : git_diff_hunk_cb = { delta, hunk, callbacks in
-			let callbacks = callbacks.unsafelyUnwrapped.bindMemory(to: DiffEachCallbacks.self, capacity: 1)
-			
-			callbacks.pointee
-				.hunkBlock?(Delta(delta.unsafelyUnwrapped.pointee), Hunk(hunk.unsafelyUnwrapped.pointee))
+			callbacks.unsafelyUnwrapped
+				.bindMemory(to: DiffEachCallbacks.self, capacity: 1)
+				.pointee
+				.hunk(hunk: Hunk(hunk.unsafelyUnwrapped.pointee))
 
 			return 0
 		}
 		
 		let each_line_cb : git_diff_line_cb = { delta, hunk, line, callbacks in
+			callbacks.unsafelyUnwrapped
+				.bindMemory(to: DiffEachCallbacks.self, capacity: 1)
+				.pointee
+				.line(line: Line(line.unsafelyUnwrapped.pointee))
+			
 			return 0
 		}
 		
-		var callbacks = DiffEachCallbacks()
-		callbacks.fileBlock = file
-		callbacks.hunkBlock = hunk
+		var callbacks = DiffEachCallbacks(nextDelta: file)
 		
 		let result = git_diff_foreach(pointer, each_file_cb, git_diff_binary_cb, each_hunk_cb, each_line_cb, &callbacks)
 		
-		return Result.failure(NSError(gitError: result, pointOfFailure: "git_diff_index_to_workdir"))
+		if result == GIT_OK.rawValue {
+			return .success(())
+		} else {
+			return Result.failure(NSError(gitError: result, pointOfFailure: "git_diff_foreach"))
+		}
 	}
 
 	/// Create an instance with a libgit2 `git_diff`.
