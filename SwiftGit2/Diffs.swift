@@ -199,11 +199,11 @@ public struct Diff {
 			self.nextDelta = nextDelta
 		}
 		
-		deinit {
-			guard let lastDelta = lastFileDelta else { return }
+		func finalize()  {
+			guard var lastDelta = lastFileDelta else { return }
 			
 			if let hunk = lastHunk {
-				lastFileDelta?.hunks.append(hunk)
+				lastDelta.hunks.append(hunk)
 			}
 			
 			nextDelta(lastDelta)
@@ -213,10 +213,15 @@ public struct Diff {
 		var lastHunk : Hunk?
 		
 		func file(delta: Delta, progress: Float32) {
+			if let last = lastHunk {
+				lastFileDelta?.hunks.append(last)
+			}
+			
 			if let last = lastFileDelta {
 				nextDelta(last)
 			}
 			lastFileDelta = delta
+			lastHunk = nil
 		}
 		
 		func hunk(hunk: Hunk) {
@@ -267,6 +272,8 @@ public struct Diff {
 		var callbacks = DiffEachCallbacks(nextDelta: file)
 		
 		let result = git_diff_foreach(pointer, each_file_cb, git_diff_binary_cb, each_hunk_cb, each_line_cb, &callbacks)
+		
+		callbacks.finalize()
 		
 		if result == GIT_OK.rawValue {
 			return .success(())
