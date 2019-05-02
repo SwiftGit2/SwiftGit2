@@ -6,6 +6,7 @@
 //  Copyright © 2017 GitHub, Inc. All rights reserved.
 //
 
+import Foundation
 import libgit2
 
 //git_diff_find_options
@@ -63,6 +64,28 @@ public struct Diff {
 			self.flags = Flags(rawValue: diffFile.flags)
 		}
 	}
+	
+	public struct Hunk {
+		public let oldStart : Int
+		public let oldLines : Int
+		public let newStart : Int
+		public let newLines : Int
+		public let header   : String
+		
+		public init(_ hunk: git_diff_hunk) {
+			oldStart = Int(hunk.old_start)
+			oldLines = Int(hunk.old_lines)
+			newStart = Int(hunk.new_start)
+			newLines = Int(hunk.new_lines)
+
+			let bytes = Mirror(reflecting: hunk.header)
+				.children
+				.map { UInt8($0.value as! Int8) }
+				.filter { $0 > 0 }
+			
+			header = String(bytes: bytes, encoding: String.Encoding.utf8)!
+		}
+	}
 
 	public struct Status: OptionSet {
 		// This appears to be necessary due to bug in Swift
@@ -96,10 +119,10 @@ public struct Diff {
 		}
 		public let rawValue: UInt32
 
-		public static let binary     = Flags(rawValue: 0)
-		public static let notBinary  = Flags(rawValue: 1 << 0)
-		public static let validId    = Flags(rawValue: 1 << 1)
-		public static let exists     = Flags(rawValue: 1 << 2)
+		public static let binary     = Flags(rawValue: GIT_DIFF_FLAG_BINARY.rawValue)
+		public static let notBinary  = Flags(rawValue: GIT_DIFF_FLAG_NOT_BINARY.rawValue)
+		public static let validId    = Flags(rawValue: GIT_DIFF_FLAG_VALID_ID.rawValue)
+		public static let exists     = Flags(rawValue: GIT_DIFF_FLAG_EXISTS.rawValue)
 	}
 	
 	public struct FindOptions: OptionSet {
@@ -136,6 +159,48 @@ public struct Diff {
 		git_diff_find_similar(pointer, &opt)
 		
 		refreshDeltas()
+	}
+	
+	private class DiffEachCallbacks {
+		var fileBlock: ((Delta, Float32)->())?
+		var hunkBlock: ((Delta, Hunk)->())?
+	}
+	
+	public func forEach(file: ((Delta,Float32)->())?, hunk: ((Delta,Hunk)->())?) -> Result<Void,NSError> {
+		let each_file_cb : git_diff_file_cb = { delta, progress, callbacks in
+			let callbacks = callbacks.unsafelyUnwrapped.bindMemory(to: DiffEachCallbacks.self, capacity: 1)
+			
+			callbacks.pointee
+				.fileBlock?(Delta(delta.unsafelyUnwrapped.pointee), progress)
+			
+			return 0
+		}
+		
+		let git_diff_binary_cb : git_diff_binary_cb = { delta, binary, callbacks in
+			
+			return 0
+		}
+		
+		let each_hunk_cb : git_diff_hunk_cb = { delta, hunk, callbacks in
+			let callbacks = callbacks.unsafelyUnwrapped.bindMemory(to: DiffEachCallbacks.self, capacity: 1)
+			
+			callbacks.pointee
+				.hunkBlock?(Delta(delta.unsafelyUnwrapped.pointee), Hunk(hunk.unsafelyUnwrapped.pointee))
+
+			return 0
+		}
+		
+		let each_line_cb : git_diff_line_cb = { delta, hunk, line, callbacks in
+			return 0
+		}
+		
+		var callbacks = DiffEachCallbacks()
+		callbacks.fileBlock = file
+		callbacks.hunkBlock = hunk
+		
+		let result = git_diff_foreach(pointer, each_file_cb, git_diff_binary_cb, each_hunk_cb, each_line_cb, &callbacks)
+		
+		return Result.failure(NSError(gitError: result, pointOfFailure: "git_diff_index_to_workdir"))
 	}
 
 	/// Create an instance with a libgit2 `git_diff`.
