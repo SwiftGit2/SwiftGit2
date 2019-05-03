@@ -9,8 +9,6 @@
 import Foundation
 import libgit2
 
-//git_diff_find_options
-
 public struct StatusEntry {
 	public var status: Diff.Status
 	public var headToIndex: Diff.Delta?
@@ -86,7 +84,7 @@ public struct Diff {
 				.map { UInt8($0.value as! Int8) }
 				.filter { $0 > 0 }
 			
-			header = String(bytes: bytes, encoding: String.Encoding.utf8)
+			header = String(bytes: bytes, encoding: .utf8)
 		}
 	}
 	
@@ -95,29 +93,40 @@ public struct Diff {
 		public let old_lineno 	: Int
 		public let new_lineno 	: Int
 		public let num_lines 	: Int
+		public let contentOffset: Int64
 		public let content 		: String?
-		
+
 		public init(_ line: git_diff_line) {
-			origin 		= line.origin
-			old_lineno 	= Int(line.old_lineno)
-			new_lineno 	= Int(line.new_lineno)
-			num_lines  	= Int(line.num_lines)
-			content 	= String(validatingUTF8: line.content)
+			origin 			= line.origin
+			old_lineno 		= Int(line.old_lineno)
+			new_lineno 		= Int(line.new_lineno)
+			num_lines  		= Int(line.num_lines)
+			contentOffset   = line.content_offset
+
+			
+			var bytes = [UInt8]()
+			bytes.reserveCapacity(line.content_len)
+			for i in 0..<line.content_len {
+				bytes.append(UInt8(line.content[i]))
+			}
+			
+			content = String(bytes: bytes, encoding: .utf8)
 		}
 	}
-	
-	/*
-	typedef struct {
-		char   origin;       /**< A git_diff_line_t value */
-		int    old_lineno;   /**< Line number in old file or -1 for added line */
-		int    new_lineno;   /**< Line number in new file or -1 for deleted line */
-		int    num_lines;    /**< Number of newline characters in content */
-		size_t content_len;  /**< Number of bytes of data */
-		git_off_t content_offset; /**< Offset in the original file to the content */
-		const char *content; /**< Pointer to diff text, not NUL-byte terminated */
-	} git_diff_line;
-*/
 
+	public struct BinaryType : OptionSet {
+		// This appears to be necessary due to bug in Swift
+		// https://bugs.swift.org/browse/SR-3003
+		public init(rawValue: UInt32) {
+			self.rawValue = rawValue
+		}
+		public let rawValue: UInt32
+		
+		public static let none 		= BinaryType(rawValue: GIT_DIFF_BINARY_NONE.rawValue)
+		public static let literal	= BinaryType(rawValue: GIT_DIFF_BINARY_LITERAL.rawValue)
+		public static let delta		= BinaryType(rawValue: GIT_DIFF_BINARY_DELTA.rawValue)
+	}
+	
 	public struct Status: OptionSet {
 		// This appears to be necessary due to bug in Swift
 		// https://bugs.swift.org/browse/SR-3003
@@ -202,11 +211,6 @@ public struct Diff {
 			return 0
 		}
 		
-		let git_diff_binary_cb : git_diff_binary_cb = { delta, binary, callbacks in
-			
-			return 0
-		}
-		
 		let each_hunk_cb : git_diff_hunk_cb = { delta, hunk, callbacks in
 			callbacks.unsafelyUnwrapped
 				.bindMemory(to: DiffEachCallbacks.self, capacity: 1)
@@ -227,7 +231,7 @@ public struct Diff {
 		
 		var callbacks = DiffEachCallbacks(nextDelta: file)
 		
-		let result = git_diff_foreach(pointer, each_file_cb, git_diff_binary_cb, each_hunk_cb, each_line_cb, &callbacks)
+		let result = git_diff_foreach(pointer, each_file_cb, nil, each_hunk_cb, each_line_cb, &callbacks)
 		
 		callbacks.finalize()
 		
