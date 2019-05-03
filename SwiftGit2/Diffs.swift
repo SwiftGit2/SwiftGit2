@@ -192,50 +192,6 @@ public struct Diff {
 		refreshDeltas()
 	}
 	
-	private class DiffEachCallbacks {
-		var nextDelta: (Delta)->()
-		
-		init(nextDelta: @escaping (Delta)->()) {
-			self.nextDelta = nextDelta
-		}
-		
-		func finalize()  {
-			guard var lastDelta = lastFileDelta else { return }
-			
-			if let hunk = lastHunk {
-				lastDelta.hunks.append(hunk)
-			}
-			
-			nextDelta(lastDelta)
-		}
-		
-		var lastFileDelta : Delta?
-		var lastHunk : Hunk?
-		
-		func file(delta: Delta, progress: Float32) {
-			if let last = lastHunk {
-				lastFileDelta?.hunks.append(last)
-			}
-			
-			if let last = lastFileDelta {
-				nextDelta(last)
-			}
-			lastFileDelta = delta
-			lastHunk = nil
-		}
-		
-		func hunk(hunk: Hunk) {
-			if let last = lastHunk {
-				lastFileDelta?.hunks.append(last)
-			}
-			lastHunk = hunk
-		}
-		
-		func line(line: Line) {
-			lastHunk?.lines.append(line)
-		}
-	}
-	
 	public func forEach(file: @escaping (Delta)->()) -> Result<Void,NSError> {
 		let each_file_cb : git_diff_file_cb = { delta, progress, callbacks in
 			callbacks.unsafelyUnwrapped
@@ -295,5 +251,46 @@ public struct Diff {
 				deltas.append(Diff.Delta(delta.pointee))
 			}
 		}
+	}
+}
+
+////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////
+
+private class DiffEachCallbacks {
+	private var nextDelta: (Diff.Delta)->()
+	private var deltas = [Diff.Delta]()
+	
+	init(nextDelta: @escaping (Diff.Delta)->()) {
+		self.nextDelta = nextDelta
+	}
+	
+	func finalize()  {
+		if let last = deltas.last {
+			nextDelta(last)
+		}
+	}
+	
+	func file(delta: Diff.Delta, progress: Float32) {
+		if let last = deltas.last {
+			nextDelta(last)
+		}
+		deltas.append(delta)
+	}
+	
+	func hunk(hunk: Diff.Hunk) {
+		guard let _ = deltas.last 				else { assert(false, "can't add hunk before adding delta"); return }
+		
+		deltas[deltas.count - 1].hunks.append(hunk)
+	}
+	
+	func line(line: Diff.Line) {
+		guard let _ = deltas.last 				else { assert(false, "can't add line before adding delta"); return }
+		guard let _ = deltas.last?.hunks.last 	else { assert(false, "can't add line before adding hunk"); return }
+		
+		let deltaIdx = deltas.count - 1
+		let hunkIdx = deltas[deltaIdx].hunks.count - 1
+		
+		deltas[deltaIdx].hunks[hunkIdx].lines.append(line)
 	}
 }
