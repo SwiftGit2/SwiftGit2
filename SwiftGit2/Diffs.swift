@@ -81,7 +81,7 @@ public struct Diff {
 
 			let bytes = Mirror(reflecting: hunk.header)
 				.children
-				.map { UInt8($0.value as! Int8) }
+				.map { UInt8(bitPattern: $0.value as! Int8) }
 				.filter { $0 > 0 }
 			
 			header = String(bytes: bytes, encoding: .utf8)
@@ -107,7 +107,7 @@ public struct Diff {
 			var bytes = [UInt8]()
 			bytes.reserveCapacity(line.content_len)
 			for i in 0..<line.content_len {
-				bytes.append(UInt8(line.content[i]))
+				bytes.append(UInt8(bitPattern: line.content[i]))
 			}
 			
 			content = String(bytes: bytes, encoding: .utf8)
