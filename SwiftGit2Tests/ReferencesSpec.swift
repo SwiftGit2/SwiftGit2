@@ -24,7 +24,7 @@ private extension Repository {
 	}
 }
 
-class ReferenceSpec: QuickSpec {
+class ReferenceSpec: FixturesSpec {
 	override func spec() {
 		describe("Reference(pointer)") {
 			it("should initialize its properties") {

@@ -12,7 +12,7 @@ import Quick
 
 // swiftlint:disable cyclomatic_complexity
 
-class RepositorySpec: QuickSpec {
+class RepositorySpec: FixturesSpec {
 	override func spec() {
 		describe("Repository.Type.at(_:)") {
 			it("should work if the repo exists") {

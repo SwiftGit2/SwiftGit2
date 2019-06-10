@@ -25,7 +25,7 @@ private extension Repository {
 	}
 }
 
-class SignatureSpec: QuickSpec {
+class SignatureSpec: FixturesSpec {
 	override func spec() {
 		describe("Signature(signature)") {
 			it("should initialize its properties") {

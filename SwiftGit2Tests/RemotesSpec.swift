@@ -24,7 +24,7 @@ private extension Repository {
 	}
 }
 
-class RemoteSpec: QuickSpec {
+class RemoteSpec: FixturesSpec {
 	override func spec() {
 		describe("Remote(pointer)") {
 			it("should initialize its properties") {
