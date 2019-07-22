@@ -6,7 +6,7 @@
 //  Copyright (c) 2015 GitHub, Inc. All rights reserved.
 //
 
-import libgit2
+import Clibgit2
 
 /// A remote in a git repository.
 public struct Remote: Hashable {

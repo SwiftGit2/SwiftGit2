@@ -9,7 +9,7 @@
 import SwiftGit2
 import Nimble
 import Quick
-import libgit2
+import Clibgit2
 
 private extension Repository {
 	func withGitObject<T>(_ oid: OID, transform: (OpaquePointer) -> T) -> T {

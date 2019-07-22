@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import libgit2
+import Clibgit2
 
 public typealias CheckoutProgressBlock = (String?, Int, Int) -> Void
 
