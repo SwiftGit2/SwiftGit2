@@ -303,18 +303,7 @@
 			children = (
 				BEB31F281A0D6F7A00F525B9 /* SwiftGit2.h */,
 				BE14AA4F1A1974010015B439 /* SwiftGit2.m */,
-				BE276B281ACCD3CF00D6DAD7 /* CheckoutStrategy.swift */,
-				622726331C84E52500C53D17 /* Credentials.swift */,
-				DA5914751A94579000AED74C /* Errors.swift */,
-				BE36354B1A632C9700D37EC8 /* Libgit2.swift */,
-				BE2E3BE51A31261300C67092 /* Objects.swift */,
-				232861421F4A3A2E00276D65 /* Diffs.swift */,
-				BE70B3E41A1ACB1A002C3F4E /* OID.swift */,
-				BE7A753E1A4A2BCC002DA7E3 /* Pointers.swift */,
-				BEB31F6C1A0D78F300F525B9 /* Repository.swift */,
-				BECB5F691A56F19900999413 /* References.swift */,
-				BECB5F6D1A57284700999413 /* Remotes.swift */,
-				25499A996CA7BD416620A397 /* CommitIterator.swift */,
+				EF1BA5D522E7C9BC001AB761 /* Swift */,
 			);
 			path = SwiftGit2;
 			sourceTree = "<group>";
@@ -428,6 +417,25 @@
 				621E66D41C72965C00A0F352 /* Mac */,
 			);
 			name = Libraries;
+			sourceTree = "<group>";
+		};
+		EF1BA5D522E7C9BC001AB761 /* Swift */ = {
+			isa = PBXGroup;
+			children = (
+				BE276B281ACCD3CF00D6DAD7 /* CheckoutStrategy.swift */,
+				622726331C84E52500C53D17 /* Credentials.swift */,
+				DA5914751A94579000AED74C /* Errors.swift */,
+				BE36354B1A632C9700D37EC8 /* Libgit2.swift */,
+				BE2E3BE51A31261300C67092 /* Objects.swift */,
+				232861421F4A3A2E00276D65 /* Diffs.swift */,
+				BE70B3E41A1ACB1A002C3F4E /* OID.swift */,
+				BE7A753E1A4A2BCC002DA7E3 /* Pointers.swift */,
+				BEB31F6C1A0D78F300F525B9 /* Repository.swift */,
+				BECB5F691A56F19900999413 /* References.swift */,
+				BECB5F6D1A57284700999413 /* Remotes.swift */,
+				25499A996CA7BD416620A397 /* CommitIterator.swift */,
+			);
+			path = Swift;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -851,7 +859,7 @@
 			baseConfigurationReference = BEB31F501A0D75EE00F525B9 /* iOS-Framework.xcconfig */;
 			buildSettings = {
 				HEADER_SEARCH_PATHS = (
-					"$(SRCROOT)/External/libgit2/include",
+					"$(SRCROOT)/Clibgit2/include",
 					"$(inherited)",
 				);
 				INFOPLIST_FILE = SwiftGit2/Info.plist;
@@ -871,7 +879,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = org.libgit2.SwiftGit2;
 				PRODUCT_NAME = SwiftGit2;
-				SWIFT_INCLUDE_PATHS = "$(SRCROOT)/libgit2";
+				SWIFT_INCLUDE_PATHS = "$(SRCROOT)/Clibgit2/include";
 			};
 			name = Debug;
 		};
@@ -880,7 +888,7 @@
 			baseConfigurationReference = BEB31F501A0D75EE00F525B9 /* iOS-Framework.xcconfig */;
 			buildSettings = {
 				HEADER_SEARCH_PATHS = (
-					"$(SRCROOT)/External/libgit2/include",
+					"$(SRCROOT)/Clibgit2/include",
 					"$(inherited)",
 				);
 				INFOPLIST_FILE = SwiftGit2/Info.plist;
@@ -900,7 +908,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = org.libgit2.SwiftGit2;
 				PRODUCT_NAME = SwiftGit2;
-				SWIFT_INCLUDE_PATHS = "$(SRCROOT)/libgit2";
+				SWIFT_INCLUDE_PATHS = "$(SRCROOT)/Clibgit2/include";
 			};
 			name = Release;
 		};
@@ -1006,7 +1014,7 @@
 			baseConfigurationReference = BEB31F561A0D75EE00F525B9 /* macOS-Framework.xcconfig */;
 			buildSettings = {
 				HEADER_SEARCH_PATHS = (
-					"$(SRCROOT)/External/libgit2/include",
+					"$(SRCROOT)/Clibgit2/include",
 					"$(inherited)",
 				);
 				INFOPLIST_FILE = SwiftGit2/Info.plist;
@@ -1025,7 +1033,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "org.libgit2.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = SwiftGit2;
-				SWIFT_INCLUDE_PATHS = "$(SRCROOT)/libgit2";
+				SWIFT_INCLUDE_PATHS = "$(SRCROOT)/Clibgit2/include";
 			};
 			name = Debug;
 		};
@@ -1034,7 +1042,7 @@
 			baseConfigurationReference = BEB31F561A0D75EE00F525B9 /* macOS-Framework.xcconfig */;
 			buildSettings = {
 				HEADER_SEARCH_PATHS = (
-					"$(SRCROOT)/External/libgit2/include",
+					"$(SRCROOT)/Clibgit2/include",
 					"$(inherited)",
 				);
 				INFOPLIST_FILE = SwiftGit2/Info.plist;
@@ -1053,7 +1061,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "org.libgit2.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = SwiftGit2;
-				SWIFT_INCLUDE_PATHS = "$(SRCROOT)/libgit2";
+				SWIFT_INCLUDE_PATHS = "$(SRCROOT)/Clibgit2/include";
 			};
 			name = Release;
 		};
