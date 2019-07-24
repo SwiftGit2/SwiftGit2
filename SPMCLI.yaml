@@ -1,0 +1,13 @@
+mac:
+  build:
+    -Xlinker:
+      - ${PWD}/External/libgit2.a
+      - ${PWD}/External/libssl.a
+      - ${PWD}/External/libcrypto.a
+      - /usr/lib/libcurl.dylib
+
+xcconfig:
+  name: MacOS.xcconfig
+  keys:
+    OTHER_LDFLAGS: -Xlinker
+    OTHER_CFLAGS: -Xcc

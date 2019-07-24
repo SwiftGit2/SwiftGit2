@@ -62,6 +62,13 @@ If you want to build a copy of SwiftGit2 without Carthage, possibly for developm
 2. Run `git submodule update --init --recursive` to clone the submodules
 3. Build in Xcode
 
+## Swift Package Manager
+To incorporate SwiftGit2 to your project, you may want to use [SPMCLI](https://github.com/pondok-programmer/spmcli) to automate tedious tasks including linking and passing flags.
+
+We encourage you to check [SPMCLI.resolved](SPMCLI.resolved) file.
+
+To generate Xcodeproj using SPMCLI, you need to use it's `xcproj` branch. It will automate set up OTHER_CFLAGS and OTHER_LDFLAGS.
+
 ## Contributions
 We :heart: to receive pull requests! GitHub makes it easy:
 
