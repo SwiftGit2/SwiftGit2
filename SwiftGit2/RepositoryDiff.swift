@@ -12,7 +12,18 @@ import Clibgit2
 public extension Repository {
 	func diffIndexToWorkDir() -> Result<Diff,NSError> {
 		var diff: OpaquePointer? = nil
-		let result = git_diff_index_to_workdir(&diff, self.pointer, nil, nil)
+		let result = git_diff_index_to_workdir(&diff, self.pointer, nil /* git_index */, nil /* git_diff_options */)
+		
+		guard result == GIT_OK.rawValue else {
+			return Result.failure(NSError(gitError: result, pointOfFailure: "git_diff_index_to_workdir"))
+		}
+		
+		return .success(Diff(diff!))
+	}
+	
+	func diffTreeToWorkdir(tree: Tree) -> Result<Diff,NSError> {
+		var diff: OpaquePointer? = nil
+		let result = git_diff_tree_to_workdir(&diff, self.pointer, tree.pointer, nil)
 		
 		guard result == GIT_OK.rawValue else {
 			return Result.failure(NSError(gitError: result, pointOfFailure: "git_diff_index_to_workdir"))

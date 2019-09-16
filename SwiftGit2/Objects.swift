@@ -120,6 +120,7 @@ public struct Commit: ObjectType, Hashable {
 
 /// A git tree.
 public struct Tree: ObjectType, Hashable {
+	public let pointer: OpaquePointer
 	public static let type = GIT_OBJ_TREE
 
 	/// An entry in a `Tree`.
@@ -157,6 +158,7 @@ public struct Tree: ObjectType, Hashable {
 
 	/// Create an instance with a libgit2 `git_tree`.
 	public init(_ pointer: OpaquePointer) {
+		self.pointer = pointer
 		oid = OID(git_object_id(pointer).pointee)
 
 		var entries: [String: Entry] = [:]
