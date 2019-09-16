@@ -9,7 +9,7 @@
 import SwiftGit2
 import Nimble
 import Quick
-import libgit2
+import Clibgit2
 
 private extension Repository {
 	func withGitObject<T>(_ oid: OID, transform: (OpaquePointer) -> T) -> T {
@@ -25,7 +25,7 @@ private extension Repository {
 	}
 }
 
-class SignatureSpec: QuickSpec {
+class SignatureSpec: FixturesSpec {
 	override func spec() {
 		describe("Signature(signature)") {
 			it("should initialize its properties") {

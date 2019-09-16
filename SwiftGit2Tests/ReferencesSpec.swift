@@ -9,7 +9,7 @@
 import SwiftGit2
 import Nimble
 import Quick
-import libgit2
+import Clibgit2
 
 private extension Repository {
 	func withGitReference<T>(named name: String, transform: (OpaquePointer) -> T) -> T {
@@ -24,7 +24,7 @@ private extension Repository {
 	}
 }
 
-class ReferenceSpec: QuickSpec {
+class ReferenceSpec: FixturesSpec {
 	override func spec() {
 		describe("Reference(pointer)") {
 			it("should initialize its properties") {

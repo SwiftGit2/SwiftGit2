@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import libgit2
+import Clibgit2
 
 public extension Repository {
 	func diffIndexToWorkDir() -> Result<Diff,NSError> {
