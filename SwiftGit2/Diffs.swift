@@ -7,6 +7,7 @@
 //
 
 import Clibgit2
+import Foundation
 
 public struct StatusEntry {
 	public var status: Diff.Status
@@ -34,14 +35,30 @@ public struct Diff {
 	public struct Delta {
 		public static let type = GIT_OBJ_REF_DELTA
 
-		public var status: Status
+		public var status: Diff.Delta.Status
+		public var statusChar : Character
 		public var flags: Flags
 		public var oldFile: File?
 		public var newFile: File?
 		public var hunks = [Hunk]()
+		
+		public enum Status : UInt32 {
+			case unmodified			= 0
+			case added				= 1
+			case deleted			= 2
+			case modified			= 3
+			case renamed			= 4
+			case copied				= 5
+			case ignored			= 6
+			case untracked			= 7
+			case typechange			= 8
+			case unreadable			= 9
+			case conflicted			= 10
+		}
 
 		public init(_ delta: git_diff_delta) {
-			self.status = Status(rawValue: UInt32(git_diff_status_char(delta.status)))
+			self.status = Diff.Delta.Status(rawValue: delta.status.rawValue) ?? .unmodified
+			self.statusChar = Character(UnicodeScalar(UInt8(git_diff_status_char(delta.status))))
 			self.flags = Flags(rawValue: delta.flags)
 			self.oldFile = File(delta.old_file)
 			self.newFile = File(delta.new_file)
