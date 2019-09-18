@@ -605,6 +605,26 @@ public final class Repository {
 			return .success(())
 		}
 	}
+	
+	public func remove(path: String) -> Result<(), NSError> {
+		let dir = path
+		var dirPointer = UnsafeMutablePointer<Int8>(mutating: (dir as NSString).utf8String)
+		var paths = git_strarray(strings: &dirPointer, count: 1)
+		return unsafeIndex().flatMap { index in
+			defer { git_index_free(index) }
+			let addResult = git_index_remove_all(index, &paths, nil, nil)
+			guard addResult == GIT_OK.rawValue else {
+				return .failure(NSError(gitError: addResult, pointOfFailure: "git_index_remove_all"))
+			}
+			// write index to disk
+			let writeResult = git_index_write(index)
+			guard writeResult == GIT_OK.rawValue else {
+				return .failure(NSError(gitError: writeResult, pointOfFailure: "git_index_write"))
+			}
+			return .success(())
+		}
+		
+	}
 
 	/// Perform a commit with arbitrary numbers of parent commits.
 	public func commit(
