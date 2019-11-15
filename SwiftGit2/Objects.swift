@@ -84,6 +84,8 @@ extension Signature: Hashable {
 
 /// A git commit.
 public struct Commit: ObjectType, Hashable {
+	public let pointer: OpaquePointer
+	
 	public static let type = GIT_OBJ_COMMIT
 
 	/// The OID of the commit.
@@ -106,6 +108,7 @@ public struct Commit: ObjectType, Hashable {
 
 	/// Create an instance with a libgit2 `git_commit` object.
 	public init(_ pointer: OpaquePointer) {
+		self.pointer = pointer
 		oid = OID(git_object_id(pointer).pointee)
 		message = String(validatingUTF8: git_commit_message(pointer))!
 		author = Signature(git_commit_author(pointer).pointee)

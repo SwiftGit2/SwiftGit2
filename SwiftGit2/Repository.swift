@@ -625,6 +625,23 @@ public final class Repository {
 		}
 		
 	}
+	
+	public func unstage(path: String) -> Result<(), NSError> {
+		let dir = path
+		var dirPointer = UnsafeMutablePointer<Int8>(mutating: (dir as NSString).utf8String)
+		var paths = git_strarray(strings: &dirPointer, count: 1)
+		
+		return HEAD().flatMap { self.commit($0.oid) }.flatMap { comit in
+				
+			let result = git_reset_default(self.pointer, comit.pointer, &paths)
+			guard result == GIT_OK.rawValue else {
+				return .failure(NSError(gitError: result, pointOfFailure: "git_reset_default"))
+			}
+				
+			return .success(())
+		}
+
+	}
 
 	/// Perform a commit with arbitrary numbers of parent commits.
 	public func commit(
