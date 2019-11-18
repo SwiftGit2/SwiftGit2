@@ -626,7 +626,7 @@ public final class Repository {
 		
 	}
 	
-	public func unstage(path: String) -> Result<(), NSError> {
+	public func reset(path: String) -> Result<(), NSError> {
 		let dir = path
 		var dirPointer = UnsafeMutablePointer<Int8>(mutating: (dir as NSString).utf8String)
 		var paths = git_strarray(strings: &dirPointer, count: 1)
