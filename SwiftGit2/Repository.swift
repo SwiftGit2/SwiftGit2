@@ -924,21 +924,14 @@ public final class Repository {
 
 	// MARK: - Status
 
-	public func status() -> Result<[StatusEntry], NSError> {
+	public func status(options: StatusOptions = StatusOptions()) -> Result<[StatusEntry], NSError> {
 		var returnArray = [StatusEntry]()
-
-		// Do this because GIT_STATUS_OPTIONS_INIT is unavailable in swift
-		let pointer = UnsafeMutablePointer<git_status_options>.allocate(capacity: 1)
-		let optionsResult = git_status_init_options(pointer, UInt32(GIT_STATUS_OPTIONS_VERSION))
-		guard optionsResult == GIT_OK.rawValue else {
-			return .failure(NSError(gitError: optionsResult, pointOfFailure: "git_status_init_options"))
-		}
-		var options = pointer.move()
-		pointer.deallocate()
+		
+		var git_options = options.git_options
 
 		var unsafeStatus: OpaquePointer? = nil
 		defer { git_status_list_free(unsafeStatus) }
-		let statusResult = git_status_list_new(&unsafeStatus, self.pointer, &options)
+		let statusResult = git_status_list_new(&unsafeStatus, self.pointer, &git_options)
 		guard statusResult == GIT_OK.rawValue, let unwrapStatusResult = unsafeStatus else {
 			return .failure(NSError(gitError: statusResult, pointOfFailure: "git_status_list_new"))
 		}
