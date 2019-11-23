@@ -61,7 +61,7 @@ public struct StatusOptions {
 	let show		: StatusOptions.Show
 	let flags		: StatusOptions.Flags
 	let pathspec	: [String]
-	var baseline	: Tree?
+	let baseline	: Tree?
 	
 	public init(options: git_status_options) {
 		git_options = options
@@ -72,18 +72,26 @@ public struct StatusOptions {
 		pathspec	= options.pathspec.map { $0 }
 		if let baseline = options.baseline {
 			self.baseline	= Tree(baseline)
+		} else {
+			self.baseline	= nil
 		}
 	}
 	
-	public init() {
+	public init(flags: StatusOptions.Flags? = nil) {
 		let pointer = UnsafeMutablePointer<git_status_options>.allocate(capacity: 1)
 		let optionsResult = git_status_init_options(pointer, UInt32(GIT_STATUS_OPTIONS_VERSION))
 		guard optionsResult == GIT_OK.rawValue else {
 			fatalError("git_status_init_options")
 		}
 		
-		self.init(options: pointer.move())
+		var options = pointer.move()
 		pointer.deallocate()
+		
+		if let flags = flags {
+			options.flags = flags.rawValue
+		}
+		self.init(options: options)
+		
 	}
 }
 
