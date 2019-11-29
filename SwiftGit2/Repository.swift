@@ -67,6 +67,20 @@ private func fetchOptions(credentials: Credentials) -> git_fetch_options {
 	return options
 }
 
+private func pushOptions(credentials: Credentials) -> git_push_options {
+	let pointer = UnsafeMutablePointer<git_push_options>.allocate(capacity: 1)
+	git_push_init_options(pointer, UInt32(GIT_PUSH_OPTIONS_VERSION))
+	
+	var options = pointer.move()
+	
+	pointer.deallocate()
+	
+	options.callbacks.payload = credentials.toPointer()
+	options.callbacks.credentials = credentialsCallback
+	
+	return options
+}
+
 private func cloneOptions(bare: Bool = false, localClone: Bool = false, fetchOptions: git_fetch_options? = nil,
                           checkoutOptions: git_checkout_options? = nil) -> git_clone_options {
 	let pointer = UnsafeMutablePointer<git_clone_options>.allocate(capacity: 1)
@@ -397,6 +411,26 @@ public final class Repository {
 				let result = git_remote_fetch(pointer, nil, &opts, nil)
 				guard result == GIT_OK.rawValue else {
 					let err = NSError(gitError: result, pointOfFailure: "git_remote_fetch")
+					return .failure(err)
+				}
+				return .success(())
+			}
+		}
+	}
+	
+	/// Push local branch changes to remote branch
+	public func push(branch: Branch, to remote: Remote, credentials: Credentials = .default) -> Result<(), NSError> {
+		return remoteLookup(named: remote.name) { remote in
+			remote.flatMap { pointer in
+				var opts = pushOptions(credentials: credentials)
+
+				let branchName = branch.longName
+				var dirPointer = UnsafeMutablePointer<Int8>(mutating: (branchName as NSString).utf8String)
+				var refs = git_strarray(strings: &dirPointer, count: 1)
+
+				let result = git_remote_push(pointer, &refs, &opts)
+				guard result == GIT_OK.rawValue else {
+					let err = NSError(gitError: result, pointOfFailure: "git_remote_push")
 					return .failure(err)
 				}
 				return .success(())

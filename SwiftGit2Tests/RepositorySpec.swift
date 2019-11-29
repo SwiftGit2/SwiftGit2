@@ -170,6 +170,44 @@ class RepositorySpec: FixturesSpec {
 					}
 				}
 			}
+
+			if let privateRepo = env["SG2PrivateRepo"],
+				let username = env["SG2TestUsername"],
+				let password = env["SG2TestPassword"] {
+
+				it("should be able to push to a remote repository") {
+					let remoteRepoURL = URL(string: privateRepo)!
+					let localURL = self.temporaryURL(forPurpose: "private-remote-push")
+					let credentials = Credentials.plaintext(
+						username: username,
+						password: password)
+
+					let cloneResult = Repository.clone(from: remoteRepoURL, to: localURL, localClone: true)
+					expect(cloneResult.error).to(beNil())
+
+					if case .success(let clonedRepo) = cloneResult {
+						let repo = try! cloneResult.get()
+
+						let branch = repo.localBranch(named: "master").value!
+						let untrackedURL = repo.directoryURL!.appendingPathComponent("push-test.txt")
+						try! "push test: \(Date())".data(using: .utf8)?.write(to: untrackedURL)
+						expect(repo.add(path: ".").error).to(beNil())
+
+						let signature = Signature(
+							name: "swiftgit2",
+							email: "foobar@example.com",
+							time: Date(),
+							timeZone: TimeZone.current
+						)
+						let message = "Test Commit"
+						expect(repo.commit(message: message, signature: signature).error).to(beNil())
+
+						let remote = try! repo.remote(named: "origin").get()
+						let res = repo.push(branch: branch, to: remote, credentials: credentials)
+						expect(res.error).to(beNil())
+					}
+				}
+			}
 		}
 
 		describe("Repository.blob(_:)") {
