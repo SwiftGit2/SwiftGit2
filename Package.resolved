@@ -3,10 +3,10 @@
     "pins": [
       {
         "package": "Clibgit2",
-        "repositoryURL": "/Users/danielmarriner/Desktop/Xcode/Clibgit2",
+        "repositoryURL": "https://github.com/AnachronisticTech/Clibgit2.git",
         "state": {
           "branch": null,
-          "revision": "eb865ff87f961b23f95650ad26c5f0515b7845ec",
+          "revision": "2972c72928895bd166e412a7d768cffacde287e8",
           "version": "0.0.2"
         }
       }
