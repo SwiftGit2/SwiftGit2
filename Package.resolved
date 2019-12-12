@@ -1,0 +1,16 @@
+{
+  "object": {
+    "pins": [
+      {
+        "package": "Clibgit2",
+        "repositoryURL": "/Users/danielmarriner/Desktop/Xcode/Clibgit2",
+        "state": {
+          "branch": null,
+          "revision": "eb865ff87f961b23f95650ad26c5f0515b7845ec",
+          "version": "0.0.2"
+        }
+      }
+    ]
+  },
+  "version": 1
+}
