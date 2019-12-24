@@ -7,7 +7,7 @@
 Swift bindings to [libgit2](https://github.com/libgit2/libgit2).
 
 ```swift
-  let url = URL(fileURLWithPath: "path/to/folder"
+  let url = URL(fileURLWithPath: "path/to/folder")
   let result = Repository.at(url)
   
   switch result {
