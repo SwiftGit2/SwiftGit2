@@ -7,20 +7,28 @@
 Swift bindings to [libgit2](https://github.com/libgit2/libgit2).
 
 ```swift
-let URL: NSURL = ...
-let repo = Repository.at(URL)
-if let repo = repo.value {
-    let latestCommit: Result<Commit, NSError> = repo
+  let url = URL(fileURLWithPath: "path/to/folder"
+  let result = Repository.at(url)
+  
+  switch result {
+    case let .success(repo):
+      let latestCommit: Result<Commit, NSError> = repo
         .HEAD()
         .flatMap { repo.commit($0.oid) }
-    if let commit = latestCommit.value {
-        print("Latest Commit: \(commit.message) by \(commit.author.name)")
-    } else {
-        print("Could not get commit: \(latestCommit.error)")
+            
+        switch latestCommit {
+                
+        case let .success(commit):
+            print("Latest Commit: \(commit.message) by \(commit.author.name)")
+                
+        case let .failure(error):
+            print("Could not get commit: \(error)")
+                
+        }
+            
+    case let .failure(error):
+        print("Could not open repository: \(error)")
     }
-} else {
-    println("Could not open repository: \(repo.error)")
-}
 ```
 
 ## Design
