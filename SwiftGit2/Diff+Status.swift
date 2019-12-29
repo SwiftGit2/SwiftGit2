@@ -35,6 +35,20 @@ public extension Diff {
 	}
 }
 
+public extension Diff.Delta {
+//	func diff() -> Result<Diff, NSError> {
+//		var diff: OpaquePointer? = nil
+//		
+//		let result = git_diff_blobs(self.oldFile
+//		
+//		guard result == GIT_OK.rawValue else {
+//			return Result.failure(NSError(gitError: result, pointOfFailure: "git_diff_tree_to_tree"))
+//		}
+//		
+//		return .success(Diff(diff!))
+//	}
+}
+
 public struct StatusEntry {
 	public var status: Diff.Status
 	public var headToIndex: Diff.Delta?
@@ -51,6 +65,19 @@ public struct StatusEntry {
 			self.indexToWorkDir = Diff.Delta(itow.pointee)
 		}
 	}
+	
+	/*
+	func diffTreeToTree(oldTree: Tree, newTree: Tree) -> Result<Diff, NSError> {
+		var diff: OpaquePointer? = nil
+		let result = git_diff_tree_to_tree(&diff, self.pointer, oldTree.pointer, newTree.pointer, nil)
+		
+		guard result == GIT_OK.rawValue else {
+			return Result.failure(NSError(gitError: result, pointOfFailure: "git_diff_tree_to_tree"))
+		}
+		
+		return .success(Diff(diff!))
+	}
+	*/
 }
 
 
