@@ -35,19 +35,37 @@ public extension Diff {
 	}
 }
 
-public extension Diff.Delta {
-//	func diff() -> Result<Diff, NSError> {
-//		var diff: OpaquePointer? = nil
-//		
-//		let result = git_diff_blobs(self.oldFile
-//		
-//		guard result == GIT_OK.rawValue else {
-//			return Result.failure(NSError(gitError: result, pointOfFailure: "git_diff_tree_to_tree"))
+public extension Repository {
+	func diffFor(delta: Diff.Delta) -> Result<Diff, NSError> {
+		let diff: OpaquePointer? = nil
+		
+		if let oldFileOid = delta.oldFile?.oid {
+			let obj = self.object(oldFileOid)
+			
+			print(obj)
+		}
+		
+		return .success(Diff(diff!))
+	}
+}
+
+//public extension Diff.Delta {
+//	func diff(repo: Repository) -> Result<Diff, NSError> {
+//		let diff: OpaquePointer? = nil
+//
+//		if let oldFileOid = self.oldFile?.oid {
+//			irepo.object(oldFileOid)
 //		}
-//		
+//
+//		//let result = git_diff_blobs(self.oldFile
+//
+//		//guard result == GIT_OK.rawValue else {
+//		//	return Result.failure(NSError(gitError: result, pointOfFailure: "git_diff_tree_to_tree"))
+//		//}
+//
 //		return .success(Diff(diff!))
 //	}
-}
+//}
 
 public struct StatusEntry {
 	public var status: Diff.Status
