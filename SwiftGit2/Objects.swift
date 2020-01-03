@@ -183,6 +183,8 @@ extension Tree.Entry: CustomStringConvertible {
 public struct Blob: ObjectType, Hashable {
 	public static let type = GIT_OBJ_BLOB
 
+	public let pointer: OpaquePointer
+	
 	/// The OID of the blob.
 	public let oid: OID
 
@@ -191,6 +193,8 @@ public struct Blob: ObjectType, Hashable {
 
 	/// Create an instance with a libgit2 `git_blob`.
 	public init(_ pointer: OpaquePointer) {
+		self.pointer = pointer
+		
 		oid = OID(git_object_id(pointer).pointee)
 
 		let length = Int(git_blob_rawsize(pointer))

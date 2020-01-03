@@ -175,7 +175,14 @@ public struct Diff {
 		refreshDeltas()
 	}
 	
-	public func forEach(file: @escaping (Delta)->()) -> Result<Void,NSError> {
+	public func asDeltas() -> Result<[Delta],NSError> {
+		var deltas = [Diff.Delta]()
+		
+		return forEach() { deltas.append($0)}
+			.map { _ in deltas }
+	}
+	
+	func forEach(file: @escaping (Delta)->()) -> Result<Void,NSError> {
 		let each_file_cb : git_diff_file_cb = { delta, progress, callbacks in
 			callbacks.unsafelyUnwrapped
 				.bindMemory(to: DiffEachCallbacks.self, capacity: 1)
