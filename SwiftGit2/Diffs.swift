@@ -214,20 +214,26 @@ extension Diff {
 }
 
 extension Blob {
-	func diffWith(blob other: Blob, block: @escaping (Diff.Delta)->()) -> Result<Void,NSError> {
+	func hunksDiffWith(blob other: Blob) -> Result<[Diff.Hunk],NSError> {
 		let optionsPointer = UnsafeMutablePointer<git_diff_options>.allocate(capacity: 1)
+		defer {
+			optionsPointer.deallocate()
+		}
+		
 		let optionsResult = git_diff_init_options(optionsPointer, UInt32(GIT_STATUS_OPTIONS_VERSION))
 		guard optionsResult == GIT_OK.rawValue else {
 			fatalError("git_status_init_options")
 		}
 		
-		var cb = DiffEachCallbacks(nextDelta: block)
-		
+		var hunks = [Diff.Hunk]()
+		var cb = DiffEachCallbacks() { delta in
+			assert(hunks.isEmpty, "can't be more than one delta")
+			hunks.append(contentsOf: delta.hunks)
+		}
 		
 		let result = git_diff_blobs(self.pointer, nil, other.pointer, nil, optionsPointer, cb.each_file_cb, nil, cb.each_hunk_cb, cb.each_line_cb, &cb)
-		
 		if result == GIT_OK.rawValue {
-			return .success(())
+			return .success(hunks)
 		} else {
 			return Result.failure(NSError(gitError: result, pointOfFailure: "git_diff_foreach"))
 		}
