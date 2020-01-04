@@ -174,54 +174,6 @@ public struct Diff {
 		
 		refreshDeltas()
 	}
-	
-	public func asDeltas() -> Result<[Delta],NSError> {
-		var deltas = [Diff.Delta]()
-		
-		return forEach() { deltas.append($0)}
-			.map { _ in deltas }
-	}
-	
-	func forEach(file: @escaping (Delta)->()) -> Result<Void,NSError> {
-		let each_file_cb : git_diff_file_cb = { delta, progress, callbacks in
-			callbacks.unsafelyUnwrapped
-				.bindMemory(to: DiffEachCallbacks.self, capacity: 1)
-				.pointee
-				.file(delta: Delta(delta.unsafelyUnwrapped.pointee), progress: progress)
-			
-			return 0
-		}
-		
-		let each_hunk_cb : git_diff_hunk_cb = { delta, hunk, callbacks in
-			callbacks.unsafelyUnwrapped
-				.bindMemory(to: DiffEachCallbacks.self, capacity: 1)
-				.pointee
-				.hunk(hunk: Hunk(hunk.unsafelyUnwrapped.pointee))
-
-			return 0
-		}
-		
-		let each_line_cb : git_diff_line_cb = { delta, hunk, line, callbacks in
-			callbacks.unsafelyUnwrapped
-				.bindMemory(to: DiffEachCallbacks.self, capacity: 1)
-				.pointee
-				.line(line: Line(line.unsafelyUnwrapped.pointee))
-			
-			return 0
-		}
-		
-		var callbacks = DiffEachCallbacks(nextDelta: file)
-		
-		let result = git_diff_foreach(pointer, each_file_cb, nil, each_hunk_cb, each_line_cb, &callbacks)
-		
-		callbacks.finalize()
-		
-		if result == GIT_OK.rawValue {
-			return .success(())
-		} else {
-			return Result.failure(NSError(gitError: result, pointOfFailure: "git_diff_foreach"))
-		}
-	}
 
 	/// Create an instance with a libgit2 `git_diff`.
 	public init(_ pointer: OpaquePointer) {
@@ -239,12 +191,83 @@ public struct Diff {
 	}
 }
 
+
+extension Diff {
+	public func asDeltas() -> Result<[Delta],NSError> {
+		var deltas = [Diff.Delta]()
+		
+		return eachDelta { deltas.append($0) }
+			.map { _ in deltas }
+	}
+	
+	func eachDelta(block: @escaping (Delta)->()) -> Result<Void,NSError> {
+		var cb = DiffEachCallbacks(nextDelta: block)
+		
+		let result = git_diff_foreach(self.pointer, cb.each_file_cb, nil, cb.each_hunk_cb, cb.each_line_cb, &cb)
+		
+		if result == GIT_OK.rawValue {
+			return .success(())
+		} else {
+			return Result.failure(NSError(gitError: result, pointOfFailure: "git_diff_foreach"))
+		}
+	}
+}
+
+extension Blob {
+	func diffWith(blob other: Blob, block: @escaping (Diff.Delta)->()) -> Result<Void,NSError> {
+		let optionsPointer = UnsafeMutablePointer<git_diff_options>.allocate(capacity: 1)
+		let optionsResult = git_diff_init_options(optionsPointer, UInt32(GIT_STATUS_OPTIONS_VERSION))
+		guard optionsResult == GIT_OK.rawValue else {
+			fatalError("git_status_init_options")
+		}
+		
+		var cb = DiffEachCallbacks(nextDelta: block)
+		
+		
+		let result = git_diff_blobs(self.pointer, nil, other.pointer, nil, optionsPointer, cb.each_file_cb, nil, cb.each_hunk_cb, cb.each_line_cb, &cb)
+		
+		if result == GIT_OK.rawValue {
+			return .success(())
+		} else {
+			return Result.failure(NSError(gitError: result, pointOfFailure: "git_diff_foreach"))
+		}
+	}
+}
+
+
 ////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////
 
 private class DiffEachCallbacks {
 	private var nextDelta: (Diff.Delta)->()
 	private var deltas = [Diff.Delta]()
+	
+	let each_file_cb : git_diff_file_cb = { delta, progress, callbacks in
+		callbacks.unsafelyUnwrapped
+			.bindMemory(to: DiffEachCallbacks.self, capacity: 1)
+			.pointee
+			.file(delta: Diff.Delta(delta.unsafelyUnwrapped.pointee), progress: progress)
+		
+		return 0
+	}
+	
+	let each_line_cb : git_diff_line_cb = { delta, hunk, line, callbacks in
+		callbacks.unsafelyUnwrapped
+			.bindMemory(to: DiffEachCallbacks.self, capacity: 1)
+			.pointee
+			.line(line: Diff.Line(line.unsafelyUnwrapped.pointee))
+		
+		return 0
+	}
+	
+	let each_hunk_cb : git_diff_hunk_cb = { delta, hunk, callbacks in
+		callbacks.unsafelyUnwrapped
+			.bindMemory(to: DiffEachCallbacks.self, capacity: 1)
+			.pointee
+			.hunk(hunk: Diff.Hunk(hunk.unsafelyUnwrapped.pointee))
+
+		return 0
+	}
 	
 	init(nextDelta: @escaping (Diff.Delta)->()) {
 		self.nextDelta = nextDelta
@@ -256,20 +279,20 @@ private class DiffEachCallbacks {
 		}
 	}
 	
-	func file(delta: Diff.Delta, progress: Float32) {
+	private func file(delta: Diff.Delta, progress: Float32) {
 		if let last = deltas.last {
 			nextDelta(last)
 		}
 		deltas.append(delta)
 	}
 	
-	func hunk(hunk: Diff.Hunk) {
+	private func hunk(hunk: Diff.Hunk) {
 		guard let _ = deltas.last 				else { assert(false, "can't add hunk before adding delta"); return }
 		
 		deltas[deltas.count - 1].hunks.append(hunk)
 	}
 	
-	func line(line: Diff.Line) {
+	private func line(line: Diff.Line) {
 		guard let _ = deltas.last 				else { assert(false, "can't add line before adding delta"); return }
 		guard let _ = deltas.last?.hunks.last 	else { assert(false, "can't add line before adding hunk"); return }
 		
