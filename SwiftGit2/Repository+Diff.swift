@@ -66,6 +66,14 @@ public extension Repository {
 	}
 	
 	func hunksFrom(delta: Diff.Delta) -> Result<[Diff.Hunk], NSError> {
+		if delta.oldFile == nil {
+			fatalError()
+		}
+		
+		if delta.newFile == nil {
+			fatalError()
+		}
+		
 		guard let oldFile = delta.oldFile else { return .failure(NSError(gitError: 0, pointOfFailure: "no old file")) }
 		guard let newFile = delta.newFile else { return .failure(NSError(gitError: 0, pointOfFailure: "no new file")) }
 		guard case let .success(OldBlob) = self.object(oldFile.oid).map({ $0 as? Blob })  else { return .failure(NSError(gitError: 0, pointOfFailure: "no object for old file")) }
