@@ -66,14 +66,6 @@ public extension Repository {
 	}
 	
 	func hunksFrom(delta: Diff.Delta) -> Result<[Diff.Hunk], NSError> {
-		if delta.oldFile == nil {
-			fatalError()
-		}
-		
-		if delta.newFile == nil {
-			fatalError()
-		}
-		
 		guard let oldFile = delta.oldFile else { return .failure(NSError(gitError: 0, pointOfFailure: "no old file")) }
 		guard let newFile = delta.newFile else { return .failure(NSError(gitError: 0, pointOfFailure: "no new file")) }
 		
@@ -87,16 +79,14 @@ extension Repository {
 		var blob1_pointer: OpaquePointer? = nil
 		var oid = oid.oid
 		guard GIT_OK.rawValue == git_object_lookup(&blob1_pointer, self.pointer, &oid, GIT_OBJ_BLOB) else {
-			let err = giterr_last()
-			let message = String(cString: err!.pointee.message)
-			fatalError(message)
+			return Result.failure(NSError(gitError: 0, pointOfFailure: "git_diff_blobs"))
 		}
 		defer { git_object_free(blob1_pointer) }
 		
 		var blob2_pointer: OpaquePointer? = nil
 		var oid2 = oid2.oid
 		guard GIT_OK.rawValue == git_object_lookup(&blob2_pointer, self.pointer, &oid2, GIT_OBJ_BLOB) else {
-			fatalError()
+			return Result.failure(NSError(gitError: 0, pointOfFailure: "git_diff_blobs"))
 		}
 		defer { git_object_free(blob2_pointer) }
 		
@@ -112,7 +102,7 @@ extension Repository {
 			}
 			return .success([])
 		} else {
-			return Result.failure(NSError(gitError: result, pointOfFailure: "git_diff_foreach"))
+			return Result.failure(NSError(gitError: result, pointOfFailure: "git_diff_blobs"))
 		}
 		
 	}
