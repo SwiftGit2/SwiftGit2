@@ -215,15 +215,15 @@ extension Diff {
 
 extension Blob {
 	func hunksDiffWith(blob other: Blob) -> Result<[Diff.Hunk],NSError> {
-		let optionsPointer = UnsafeMutablePointer<git_diff_options>.allocate(capacity: 1)
-		defer {
-			optionsPointer.deallocate()
-		}
-		
-		let optionsResult = git_diff_init_options(optionsPointer, UInt32(GIT_STATUS_OPTIONS_VERSION))
-		guard optionsResult == GIT_OK.rawValue else {
-			fatalError("git_status_init_options")
-		}
+//		let optionsPointer = UnsafeMutablePointer<git_diff_options>.allocate(capacity: 1)
+//		defer {
+//			optionsPointer.deallocate()
+//		}
+//		
+//		let optionsResult = git_diff_init_options(optionsPointer, UInt32(GIT_STATUS_OPTIONS_VERSION))
+//		guard optionsResult == GIT_OK.rawValue else {
+//			fatalError("git_status_init_options")
+//		}
 		
 		var hunks = [Diff.Hunk]()
 		var cb = DiffEachCallbacks() { delta in
@@ -231,7 +231,9 @@ extension Blob {
 			hunks.append(contentsOf: delta.hunks)
 		}
 		
-		let result = git_diff_blobs(self.pointer, nil, other.pointer, nil, optionsPointer, cb.each_file_cb, nil, cb.each_hunk_cb, cb.each_line_cb, &cb)
+		let result = git_diff_blobs(self.pointer /*old_blob*/, nil /*old_as_path*/, other.pointer /*new_blob*/, nil /*new_as_path*/, nil /*options*/,
+			cb.each_file_cb /*file_cb*/, nil /*binary_cb*/, cb.each_hunk_cb /*hunk_cb*/, cb.each_line_cb /*line_cb*/, &cb /*payload*/)
+		
 		if result == GIT_OK.rawValue {
 			return .success(hunks)
 		} else {
@@ -244,7 +246,7 @@ extension Blob {
 ////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////
 
-private class DiffEachCallbacks {
+class DiffEachCallbacks {
 	private var nextDelta: (Diff.Delta)->()
 	private var deltas = [Diff.Delta]()
 	
