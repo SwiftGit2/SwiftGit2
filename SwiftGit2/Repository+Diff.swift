@@ -76,15 +76,8 @@ public extension Repository {
 		
 		guard let oldFile = delta.oldFile else { return .failure(NSError(gitError: 0, pointOfFailure: "no old file")) }
 		guard let newFile = delta.newFile else { return .failure(NSError(gitError: 0, pointOfFailure: "no new file")) }
-		//guard case let .success(OldBlob) = self.object(oldFile.oid).map({ $0 as? Blob })  else { return .failure(NSError(gitError: 0, pointOfFailure: "no object for old file")) }
-		//guard case let .success(NewBlob) = self.object(newFile.oid).map({ $0 as? Blob })  else { return .failure(NSError(gitError: 0, pointOfFailure: "no object for new file")) }
-		
-		//guard let oldBlob = OldBlob else { return .failure(NSError(gitError: 0, pointOfFailure: "old blob not blob")) }
-		//guard let newBlob = NewBlob else { return .failure(NSError(gitError: 0, pointOfFailure: "new blob not blob")) }
 		
 		return hunksBetweenBlobs(oid: oldFile.oid, oid2: newFile.oid)
-		
-		//return hunksBetween(blob: oldBlob, other: newBlob)
 	}
 	
 }
