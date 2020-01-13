@@ -108,66 +108,20 @@ extension Repository {
 		defer { git_object_free(blob2_pointer) }
 		
 		
-		var hunks = [Diff.Hunk]()
-		var cb = DiffEachCallbacks() { delta in
-			assert(hunks.isEmpty, "can't be more than one delta")
-			hunks.append(contentsOf: delta.hunks)
-		}
+		var cb = DiffEachCallbacks()
 		
 		let result = git_diff_blobs(blob1_pointer /*old_blob*/, nil /*old_as_path*/, blob2_pointer /*new_blob*/, nil /*new_as_path*/, nil /*options*/,
 		cb.each_file_cb /*file_cb*/, nil /*binary_cb*/, cb.each_hunk_cb /*hunk_cb*/, cb.each_line_cb /*line_cb*/, &cb /*payload*/)
 		
 		if result == GIT_OK.rawValue {
-			return .success(hunks)
-		} else {
-			return Result.failure(NSError(gitError: result, pointOfFailure: "git_diff_foreach"))
-		}
-		
-	}
-	func hunksBetween(blob: Blob, other: Blob) -> Result<[Diff.Hunk],NSError> {
-		
-		
-		//let blob1 = self.oid
-//		let optionsPointer = UnsafeMutablePointer<git_diff_options>.allocate(capacity: 1)
-//		defer {
-//			optionsPointer.deallocate()
-//		}
-//
-//		let optionsResult = git_diff_init_options(optionsPointer, UInt32(GIT_STATUS_OPTIONS_VERSION))
-//		guard optionsResult == GIT_OK.rawValue else {
-//			fatalError("git_status_init_options")
-//		}
-		
-		var hunks = [Diff.Hunk]()
-		var cb = DiffEachCallbacks() { delta in
-			assert(hunks.isEmpty, "can't be more than one delta")
-			hunks.append(contentsOf: delta.hunks)
-		}
-		
-		_ = blob.data.withUnsafeBytes { blobData in
-			_ = other.data.withUnsafeBytes { otherData in
-				guard let blob1 = blobData.baseAddress else { return }
-				guard let blob2 = otherData.baseAddress else { return }
-				//let result = git_diff_blobs(blob1 /*old_blob*/, nil /*old_as_path*/, blob2 /*new_blob*/, nil /*new_as_path*/, nil /*options*/,
-				//	cb.each_file_cb /*file_cb*/, nil /*binary_cb*/, cb.each_hunk_cb /*hunk_cb*/, cb.each_line_cb /*line_cb*/, &cb /*payload*/)
-//
-				print(blob1, blob2)
-//				if result == GIT_OK.rawValue {
-//					return .success(hunks)
-//				} else {
-//					return Result.failure(NSError(gitError: result, pointOfFailure: "git_diff_foreach"))
-//				}
+			if let delta = cb.deltas.first {
+				return .success(delta.hunks)
 			}
-			
-		}
-		
-		let result = git_diff_blobs(blob.pointer /*old_blob*/, nil /*old_as_path*/, other.pointer /*new_blob*/, nil /*new_as_path*/, nil /*options*/,
-			cb.each_file_cb /*file_cb*/, nil /*binary_cb*/, cb.each_hunk_cb /*hunk_cb*/, cb.each_line_cb /*line_cb*/, &cb /*payload*/)
-		
-		if result == GIT_OK.rawValue {
-			return .success(hunks)
+			return .success([])
 		} else {
 			return Result.failure(NSError(gitError: result, pointOfFailure: "git_diff_foreach"))
 		}
+		
 	}
+
 }

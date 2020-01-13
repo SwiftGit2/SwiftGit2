@@ -194,61 +194,23 @@ public struct Diff {
 
 extension Diff {
 	public func asDeltas() -> Result<[Delta],NSError> {
-		var deltas = [Diff.Delta]()
-		
-		return eachDelta { deltas.append($0) }
-			.map { _ in deltas }
-	}
-	
-	func eachDelta(block: @escaping (Delta)->()) -> Result<Void,NSError> {
-		var cb = DiffEachCallbacks(nextDelta: block)
+		var cb = DiffEachCallbacks()
 		
 		let result = git_diff_foreach(self.pointer, cb.each_file_cb, nil, cb.each_hunk_cb, cb.each_line_cb, &cb)
 		
 		if result == GIT_OK.rawValue {
-			return .success(())
+			return .success(cb.deltas)
 		} else {
 			return Result.failure(NSError(gitError: result, pointOfFailure: "git_diff_foreach"))
 		}
 	}
 }
-
-extension Blob {
-	func hunksDiffWith(blob other: Blob) -> Result<[Diff.Hunk],NSError> {
-//		let optionsPointer = UnsafeMutablePointer<git_diff_options>.allocate(capacity: 1)
-//		defer {
-//			optionsPointer.deallocate()
-//		}
-//		
-//		let optionsResult = git_diff_init_options(optionsPointer, UInt32(GIT_STATUS_OPTIONS_VERSION))
-//		guard optionsResult == GIT_OK.rawValue else {
-//			fatalError("git_status_init_options")
-//		}
-		
-		var hunks = [Diff.Hunk]()
-		var cb = DiffEachCallbacks() { delta in
-			assert(hunks.isEmpty, "can't be more than one delta")
-			hunks.append(contentsOf: delta.hunks)
-		}
-		
-		let result = git_diff_blobs(self.pointer /*old_blob*/, nil /*old_as_path*/, other.pointer /*new_blob*/, nil /*new_as_path*/, nil /*options*/,
-			cb.each_file_cb /*file_cb*/, nil /*binary_cb*/, cb.each_hunk_cb /*hunk_cb*/, cb.each_line_cb /*line_cb*/, &cb /*payload*/)
-		
-		if result == GIT_OK.rawValue {
-			return .success(hunks)
-		} else {
-			return Result.failure(NSError(gitError: result, pointOfFailure: "git_diff_foreach"))
-		}
-	}
-}
-
 
 ////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////
 
 class DiffEachCallbacks {
-	private var nextDelta: (Diff.Delta)->()
-	private var deltas = [Diff.Delta]()
+	var deltas = [Diff.Delta]()
 	
 	let each_file_cb : git_diff_file_cb = { delta, progress, callbacks in
 		callbacks.unsafelyUnwrapped
@@ -276,21 +238,8 @@ class DiffEachCallbacks {
 
 		return 0
 	}
-	
-	init(nextDelta: @escaping (Diff.Delta)->()) {
-		self.nextDelta = nextDelta
-	}
-	
-	func finalize()  {
-		if let last = deltas.last {
-			nextDelta(last)
-		}
-	}
-	
+		
 	private func file(delta: Diff.Delta, progress: Float32) {
-		if let last = deltas.last {
-			nextDelta(last)
-		}
 		deltas.append(delta)
 	}
 	
