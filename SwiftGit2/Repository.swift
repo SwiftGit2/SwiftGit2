@@ -967,7 +967,11 @@ public final class Repository {
 
 		var unsafeStatus: OpaquePointer? = nil
 		defer { git_status_list_free(unsafeStatus) }
+		log(title: "SwiftGit2", msg: "**************************")
+		log(title: "SwiftGit2", msg: "git_status_list_new BEFORE")
 		let statusResult = git_status_list_new(&unsafeStatus, self.pointer, &git_options)
+		log(title: "SwiftGit2", msg: "git_status_list_new AFTER")
+		log(title: "SwiftGit2", msg: "**************************")
 		guard statusResult == GIT_OK.rawValue, let unwrapStatusResult = unsafeStatus else {
 			return .failure(NSError(gitError: statusResult, pointOfFailure: "git_status_list_new"))
 		}
