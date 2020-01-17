@@ -81,3 +81,37 @@ public final class Submodule {
 		}
 	}
 }
+
+public extension Thread {
+    
+    var dbgName: String {
+		if #available(OSXApplicationExtension 10.10, *) {
+			if let currentOperationQueue = OperationQueue.current?.name {
+				
+				if currentOperationQueue.contains("OperationQueue") {
+					return currentOperationQueue
+				} else {
+					return "OperationQueue: \(currentOperationQueue)"
+				}
+				
+			} else if let underlyingDispatchQueue = OperationQueue.current?.underlyingQueue?.label {
+				
+				if underlyingDispatchQueue.contains("DispatchQueue") {
+					return underlyingDispatchQueue
+				} else {
+					return "DispatchQueue: \(underlyingDispatchQueue)"
+				}
+				
+			} else {
+				let name = __dispatch_queue_get_label(nil)
+				return String(cString: name, encoding: .utf8) ?? Thread.current.description
+			}
+		} else {
+			return ""
+		}
+    }
+}
+
+func log(title: String, msg: String) {
+	print("[\(title)] (\(Thread.current.dbgName)) \(msg)")
+}
