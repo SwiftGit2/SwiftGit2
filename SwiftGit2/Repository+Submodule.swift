@@ -113,5 +113,14 @@ public extension Thread {
 }
 
 func log(title: String, msg: String) {
-	print("[\(title)] (\(Thread.current.dbgName)) \(msg)")
+	print("\(time) [\(title)] (\(Thread.current.dbgName)) \(msg)")
 }
+
+
+fileprivate var time : String { return debugDateFormatter.string(from: Date()) }
+
+private let debugDateFormatter: DateFormatter = { () -> DateFormatter in
+	let dateFormatter = DateFormatter()
+	dateFormatter.dateFormat = "HH:mm:ss.SSS"
+	return dateFormatter
+}()

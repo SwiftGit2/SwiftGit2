@@ -959,7 +959,7 @@ public final class Repository {
 	// MARK: - Status
 
 	public func status(options: StatusOptions = StatusOptions()) -> Result<[StatusEntry], NSError> {
-		log(title: "[SwiftGit2]", msg: "status begin")
+		log(title: "SwiftGit2", msg: "status begin")
 		
 		var returnArray = [StatusEntry]()
 		
@@ -975,7 +975,7 @@ public final class Repository {
 		let count = git_status_list_entrycount(unwrapStatusResult)
 
 		for i in 0..<count {
-			log(title: "[SwiftGit2]", msg: "status by index \(i) begin")
+			log(title: "SwiftGit2", msg: "status by index \(i) begin")
 			let s = git_status_byindex(unwrapStatusResult, i)
 			if s?.pointee.status.rawValue == GIT_STATUS_CURRENT.rawValue {
 				continue
@@ -983,10 +983,10 @@ public final class Repository {
 
 			let statusEntry = StatusEntry(from: s!.pointee)
 			returnArray.append(statusEntry)
-			log(title: "[SwiftGit2]", msg: "status by index \(i) end")
+			log(title: "SwiftGit2", msg: "status by index \(i) end")
 		}
 
-		log(title: "[SwiftGit2]", msg: "status success")
+		log(title: "SwiftGit2", msg: "status success")
 		return .success(returnArray)
 	}
 
