@@ -15,7 +15,7 @@ public struct Diff {
 	public var deltas = [Delta]()
 
 	public struct Delta {
-		public static let type = GIT_OBJ_REF_DELTA
+		public static let type = GIT_OBJECT_REF_DELTA
 
 		public var status: Diff.Delta.Status
 		public var statusChar : Character
@@ -50,7 +50,7 @@ public struct Diff {
 	public struct File {
 		public var oid: OID
 		public var path: String
-		public var size: Int64
+		public var size: UInt64
 		public var flags: Flags
 
 		public init(_ diffFile: git_diff_file) {

@@ -78,14 +78,14 @@ extension Repository {
 	func hunksBetweenBlobs(oid: OID, oid2: OID) -> Result<[Diff.Hunk],NSError>{
 		var blob1_pointer: OpaquePointer? = nil
 		var oid = oid.oid
-		guard GIT_OK.rawValue == git_object_lookup(&blob1_pointer, self.pointer, &oid, GIT_OBJ_BLOB) else {
+		guard GIT_OK.rawValue == git_object_lookup(&blob1_pointer, self.pointer, &oid, GIT_OBJECT_BLOB) else {
 			return Result.failure(NSError(gitError: 0, pointOfFailure: "git_diff_blobs"))
 		}
 		defer { git_object_free(blob1_pointer) }
 		
 		var blob2_pointer: OpaquePointer? = nil
 		var oid2 = oid2.oid
-		guard GIT_OK.rawValue == git_object_lookup(&blob2_pointer, self.pointer, &oid2, GIT_OBJ_BLOB) else {
+		guard GIT_OK.rawValue == git_object_lookup(&blob2_pointer, self.pointer, &oid2, GIT_OBJECT_BLOB) else {
 			return Result.failure(NSError(gitError: 0, pointOfFailure: "git_diff_blobs"))
 		}
 		defer { git_object_free(blob2_pointer) }

@@ -11,7 +11,7 @@ import Clibgit2
 
 /// A git object.
 public protocol ObjectType {
-	static var type: git_otype { get }
+	static var type: git_object_t { get }
 
 	/// The OID of the object.
 	var oid: OID { get }
@@ -86,7 +86,7 @@ extension Signature: Hashable {
 public struct Commit: ObjectType, Hashable {
 	public let pointer: OpaquePointer
 	
-	public static let type = GIT_OBJ_COMMIT
+	public static let type = GIT_OBJECT_COMMIT
 
 	/// The OID of the commit.
 	public let oid: OID
@@ -124,7 +124,7 @@ public struct Commit: ObjectType, Hashable {
 /// A git tree.
 public struct Tree: ObjectType, Hashable {
 	public let pointer: OpaquePointer
-	public static let type = GIT_OBJ_TREE
+	public static let type = GIT_OBJECT_TREE
 
 	/// An entry in a `Tree`.
 	public struct Entry: Hashable {
@@ -181,7 +181,7 @@ extension Tree.Entry: CustomStringConvertible {
 
 /// A git blob.
 public struct Blob: ObjectType, Hashable {
-	public static let type = GIT_OBJ_BLOB
+	public static let type = GIT_OBJECT_BLOB
 
 	public let pointer: OpaquePointer
 	
@@ -204,7 +204,7 @@ public struct Blob: ObjectType, Hashable {
 
 /// An annotated git tag.
 public struct Tag: ObjectType, Hashable {
-	public static let type = GIT_OBJ_TAG
+	public static let type = GIT_OBJECT_TAG
 
 	/// The OID of the tag.
 	public let oid: OID
