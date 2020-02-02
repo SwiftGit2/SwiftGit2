@@ -19,4 +19,16 @@ public class Patch {
 	deinit {
 		git_patch_free(pointer)
 	}
+	
+	func asBuffer() -> Result<OpaquePointer, NSError> {
+		let buff = UnsafeMutablePointer<git_buf>.allocate(capacity: 1)
+		
+		return _result(pointer, pointOfFailure: "git_patch_to_buf") {
+			git_patch_to_buf(buff, pointer)
+		}
+	}
+	
+	func size() -> Int {
+		return git_patch_size(pointer, 0, 0, 0)
+	}
 }
