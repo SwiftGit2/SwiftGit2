@@ -11,8 +11,33 @@ import Foundation
 
 public struct Diff {
 	let pointer: OpaquePointer
+
+
+	/// Create an instance with a libgit2 `git_diff`.
+	public init(_ pointer: OpaquePointer) {
+		self.pointer = pointer
+	}
 	
-	public struct BinaryType : OptionSet {
+	public func findSimilar(options: FindOptions) -> Result<(), NSError> {
+		var opt = git_diff_find_options(version: 1, flags: options.rawValue, rename_threshold: 50, rename_from_rewrite_threshold: 50, copy_threshold: 50, break_rewrite_threshold: 60, rename_limit: 200, metric: nil)
+		
+		return _result((), pointOfFailure: "git_diff_find_options") {
+			git_diff_find_similar(pointer, &opt)
+		}
+	}
+
+	public func patch() -> Result<Patch, NSError> {
+		var pointer: OpaquePointer? = nil
+
+		return _result( { Patch(pointer!) }, pointOfFailure: "git_patch_from_diff") {
+			git_patch_from_diff(&pointer, self.pointer, 0)
+		}
+
+	}
+}
+
+public extension Diff {
+	struct BinaryType : OptionSet {
 		// This appears to be necessary due to bug in Swift
 		// https://bugs.swift.org/browse/SR-3003
 		public init(rawValue: UInt32) {
@@ -25,7 +50,7 @@ public struct Diff {
 		public static let delta		= BinaryType(rawValue: GIT_DIFF_BINARY_DELTA.rawValue)
 	}
 
-	public struct Flags: OptionSet {
+	struct Flags: OptionSet {
 		// This appears to be necessary due to bug in Swift
 		// https://bugs.swift.org/browse/SR-3003
 		public init(rawValue: UInt32) {
@@ -39,7 +64,7 @@ public struct Diff {
 		public static let exists     = Flags(rawValue: GIT_DIFF_FLAG_EXISTS.rawValue)
 	}
 	
-	public struct FindOptions: OptionSet {
+	struct FindOptions: OptionSet {
 		// This appears to be necessary due to bug in Swift
 		// https://bugs.swift.org/browse/SR-3003
 		public init(rawValue: UInt32) {
@@ -64,72 +89,5 @@ public struct Diff {
 		public static let exactMatchOnly				= FindOptions(rawValue: GIT_DIFF_FIND_EXACT_MATCH_ONLY.rawValue)
 		public static let breakRewritesForRenamesOnly	= FindOptions(rawValue: GIT_DIFF_BREAK_REWRITES_FOR_RENAMES_ONLY.rawValue)
 		public static let removeUnmodified				= FindOptions(rawValue: GIT_DIFF_FIND_REMOVE_UNMODIFIED.rawValue)
-	}
-	
-	public func findSimilar(options: FindOptions) -> Result<(), NSError> {
-		var opt = git_diff_find_options(version: 1, flags: options.rawValue, rename_threshold: 50, rename_from_rewrite_threshold: 50, copy_threshold: 50, break_rewrite_threshold: 60, rename_limit: 200, metric: nil)
-		
-		return _result((), pointOfFailure: "git_diff_find_options") {
-			git_diff_find_similar(pointer, &opt)
-		}
-	}
-
-	/// Create an instance with a libgit2 `git_diff`.
-	public init(_ pointer: OpaquePointer) {
-		self.pointer = pointer
-	}
-}
-
-////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////
-
-class DiffEachCallbacks {
-	var deltas = [Diff.Delta]()
-	
-	let each_file_cb : git_diff_file_cb = { delta, progress, callbacks in
-		callbacks.unsafelyUnwrapped
-			.bindMemory(to: DiffEachCallbacks.self, capacity: 1)
-			.pointee
-			.file(delta: Diff.Delta(delta.unsafelyUnwrapped.pointee), progress: progress)
-		
-		return 0
-	}
-	
-	let each_line_cb : git_diff_line_cb = { delta, hunk, line, callbacks in
-		callbacks.unsafelyUnwrapped
-			.bindMemory(to: DiffEachCallbacks.self, capacity: 1)
-			.pointee
-			.line(line: Diff.Line(line.unsafelyUnwrapped.pointee))
-		
-		return 0
-	}
-	
-	let each_hunk_cb : git_diff_hunk_cb = { delta, hunk, callbacks in
-		callbacks.unsafelyUnwrapped
-			.bindMemory(to: DiffEachCallbacks.self, capacity: 1)
-			.pointee
-			.hunk(hunk: Diff.Hunk(hunk.unsafelyUnwrapped.pointee))
-
-		return 0
-	}
-		
-	private func file(delta: Diff.Delta, progress: Float32) {
-		deltas.append(delta)
-	}
-	
-	private func hunk(hunk: Diff.Hunk) {
-		guard let _ = deltas.last 				else { assert(false, "can't add hunk before adding delta"); return }
-		
-		deltas[deltas.count - 1].hunks.append(hunk)
-	}
-	
-	private func line(line: Diff.Line) {
-		guard let _ = deltas.last 				else { assert(false, "can't add line before adding delta"); return }
-		guard let _ = deltas.last?.hunks.last 	else { assert(false, "can't add line before adding hunk"); return }
-		
-		let deltaIdx = deltas.count - 1
-		let hunkIdx = deltas[deltaIdx].hunks.count - 1
-		
-		deltas[deltaIdx].hunks[hunkIdx].lines.append(line)
 	}
 }
