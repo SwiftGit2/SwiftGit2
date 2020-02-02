@@ -608,57 +608,6 @@ public final class Repository {
 		let iterator = CommitIterator(repo: self, root: branch.oid.oid)
 		return iterator
 	}
-
-	/// Get the index for the repo. The caller is responsible for freeing the index.
-	func unsafeIndex() -> Result<OpaquePointer, NSError> {
-		var index: OpaquePointer? = nil
-		let result = git_repository_index(&index, self.pointer)
-		guard result == GIT_OK.rawValue && index != nil else {
-			let err = NSError(gitError: result, pointOfFailure: "git_repository_index")
-			return .failure(err)
-		}
-		return .success(index!)
-	}
-
-	/// Stage the file(s) under the specified path.
-	public func add(path: String) -> Result<(), NSError> {
-		let dir = path
-		var dirPointer = UnsafeMutablePointer<Int8>(mutating: (dir as NSString).utf8String)
-		var paths = git_strarray(strings: &dirPointer, count: 1)
-		return unsafeIndex().flatMap { index in
-			defer { git_index_free(index) }
-			let addResult = git_index_add_all(index, &paths, 0, nil, nil)
-			guard addResult == GIT_OK.rawValue else {
-				return .failure(NSError(gitError: addResult, pointOfFailure: "git_index_add_all"))
-			}
-			// write index to disk
-			let writeResult = git_index_write(index)
-			guard writeResult == GIT_OK.rawValue else {
-				return .failure(NSError(gitError: writeResult, pointOfFailure: "git_index_write"))
-			}
-			return .success(())
-		}
-	}
-	
-	public func remove(path: String) -> Result<(), NSError> {
-		let dir = path
-		var dirPointer = UnsafeMutablePointer<Int8>(mutating: (dir as NSString).utf8String)
-		var paths = git_strarray(strings: &dirPointer, count: 1)
-		return unsafeIndex().flatMap { index in
-			defer { git_index_free(index) }
-			let addResult = git_index_remove_all(index, &paths, nil, nil)
-			guard addResult == GIT_OK.rawValue else {
-				return .failure(NSError(gitError: addResult, pointOfFailure: "git_index_remove_all"))
-			}
-			// write index to disk
-			let writeResult = git_index_write(index)
-			guard writeResult == GIT_OK.rawValue else {
-				return .failure(NSError(gitError: writeResult, pointOfFailure: "git_index_write"))
-			}
-			return .success(())
-		}
-		
-	}
 	
 	public func reset(path: String) -> Result<(), NSError> {
 		let dir = path
@@ -745,10 +694,9 @@ public final class Repository {
 	/// Perform a commit of the staged files with the specified message and signature,
 	/// assuming we are not doing a merge and using the current tip as the parent.
 	public func commit(message: String, signature: Signature) -> Result<Commit, NSError> {
-		return unsafeIndex().flatMap { index in
-			defer { git_index_free(index) }
+		return index().flatMap { index in
 			var treeOID = git_oid()
-			let treeResult = git_index_write_tree(&treeOID, index)
+			let treeResult = git_index_write_tree(&treeOID, index.pointer)
 			guard treeResult == GIT_OK.rawValue else {
 				let err = NSError(gitError: treeResult, pointOfFailure: "git_index_write_tree")
 				return .failure(err)

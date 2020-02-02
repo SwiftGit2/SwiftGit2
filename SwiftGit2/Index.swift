@@ -9,7 +9,7 @@
 import Foundation
 import Clibgit2
 
-extension Repository  {
+public extension Repository  {
 	func index() -> Result<Index, NSError> {
 		var index_pointer: OpaquePointer? = nil
 		
@@ -23,12 +23,12 @@ extension Repository  {
 	}
 }
 
-class Index {
+public final class Index {
 	public let pointer: OpaquePointer
 	
-	var entrycount : Int { git_index_entrycount(pointer) }
+	public var entrycount : Int { git_index_entrycount(pointer) }
 	
-	init(pointer: OpaquePointer) {
+	public init(pointer: OpaquePointer) {
 		self.pointer = pointer
 	}
 	
@@ -36,7 +36,7 @@ class Index {
 		git_index_free(pointer)
 	}
 	
-	func entries() -> Result<[Index.Entry], NSError> {
+	public func entries() -> Result<[Index.Entry], NSError> {
 		var entries = [Index.Entry]()
 		for i in 0..<entrycount {
 			if let entry = git_index_get_byindex(pointer, i) {
@@ -45,9 +45,42 @@ class Index {
 		}
 		return .success(entries)
 	}
+	
+	public func add(path: String) -> Result<(), NSError> {
+		let dir = path
+		var dirPointer = UnsafeMutablePointer<Int8>(mutating: (dir as NSString).utf8String)
+		var paths = git_strarray(strings: &dirPointer, count: 1)
+		
+		let addResult = git_index_add_all(pointer, &paths, 0, nil, nil)
+		guard addResult == GIT_OK.rawValue else {
+			return .failure(NSError(gitError: addResult, pointOfFailure: "git_index_add_all"))
+		}
+		// write index to disk
+		let writeResult = git_index_write(pointer)
+		guard writeResult == GIT_OK.rawValue else {
+			return .failure(NSError(gitError: writeResult, pointOfFailure: "git_index_write"))
+		}
+		return .success(())
+	}
+	
+	public func remove(path: String) -> Result<(), NSError> {
+		let dir = path
+		var dirPointer = UnsafeMutablePointer<Int8>(mutating: (dir as NSString).utf8String)
+		var paths = git_strarray(strings: &dirPointer, count: 1)
+		let addResult = git_index_remove_all(pointer, &paths, nil, nil)
+		guard addResult == GIT_OK.rawValue else {
+			return .failure(NSError(gitError: addResult, pointOfFailure: "git_index_remove_all"))
+		}
+		// write index to disk
+		let writeResult = git_index_write(pointer)
+		guard writeResult == GIT_OK.rawValue else {
+			return .failure(NSError(gitError: writeResult, pointOfFailure: "git_index_write"))
+		}
+		return .success(())
+	}
 }
 
-extension Index {
+public extension Index {
 	struct Time {
 		let seconds : Int32
 		let nanoseconds : UInt32
@@ -93,8 +126,8 @@ extension Index {
 	}
 }
 
-extension Index.Entry {
-	public struct Flags: OptionSet {
+public extension Index.Entry {
+	struct Flags: OptionSet {
 
 		public let rawValue: UInt32
 		public init(rawValue: UInt32) {
@@ -105,7 +138,7 @@ extension Index.Entry {
 		public static let valid		= Flags(rawValue: GIT_INDEX_ENTRY_VALID.rawValue)
 	}
 	
-	public struct FlagsExtended: OptionSet {
+	struct FlagsExtended: OptionSet {
 		public let rawValue: UInt32
 		public init(rawValue: UInt32) {
 			self.rawValue = rawValue
