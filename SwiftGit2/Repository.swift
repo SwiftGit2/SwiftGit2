@@ -703,12 +703,14 @@ public final class Repository {
 			}
 			var parentID = git_oid()
 			let nameToIDResult = git_reference_name_to_id(&parentID, self.pointer, "HEAD")
-			guard nameToIDResult == GIT_OK.rawValue else {
-				return .failure(NSError(gitError: nameToIDResult, pointOfFailure: "git_reference_name_to_id"))
+			if nameToIDResult == GIT_OK.rawValue {
+				return commit(OID(parentID)).flatMap { parentCommit in
+					commit(tree: OID(treeOID), parents: [parentCommit], message: message, signature: signature)
+				}
 			}
-			return commit(OID(parentID)).flatMap { parentCommit in
-				commit(tree: OID(treeOID), parents: [parentCommit], message: message, signature: signature)
-			}
+			
+			// if there are no parents: initial commit
+			return commit(tree: OID(treeOID), parents: [], message: message, signature: signature)
 		}
 	}
 
