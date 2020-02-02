@@ -88,6 +88,7 @@
 		E60E36D2238960B8008A691E /* Diff+Status.swift in Sources */ = {isa = PBXBuildFile; fileRef = E60E36D1238960B8008A691E /* Diff+Status.swift */; };
 		E60E36D3238960B8008A691E /* Diff+Status.swift in Sources */ = {isa = PBXBuildFile; fileRef = E60E36D1238960B8008A691E /* Diff+Status.swift */; };
 		E61B443423CE4D670059650A /* Repository+Submodule.swift in Sources */ = {isa = PBXBuildFile; fileRef = E61B443323CE4D670059650A /* Repository+Submodule.swift */; };
+		E65C767A23E6F4FF00FD14BE /* Index.swift in Sources */ = {isa = PBXBuildFile; fileRef = E65C767923E6F4FF00FD14BE /* Index.swift */; };
 		E6914C77227A2D6B00F8039C /* Repository+Diff.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6914C76227A2D6B00F8039C /* Repository+Diff.swift */; };
 		E6914C78227A2D6B00F8039C /* Repository+Diff.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6914C76227A2D6B00F8039C /* Repository+Diff.swift */; };
 /* End PBXBuildFile section */
@@ -201,6 +202,7 @@
 		DAC8143C1A99749D0063D88C /* Quick.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Quick.framework; path = "../../../../Library/Developer/Xcode/DerivedData/SwiftGit2-ezqqkevntxbroughwcioyxqriijk/Build/Products/Debug/Quick.framework"; sourceTree = "<group>"; };
 		E60E36D1238960B8008A691E /* Diff+Status.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Diff+Status.swift"; sourceTree = "<group>"; };
 		E61B443323CE4D670059650A /* Repository+Submodule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Repository+Submodule.swift"; sourceTree = "<group>"; };
+		E65C767923E6F4FF00FD14BE /* Index.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Index.swift; sourceTree = "<group>"; };
 		E6914C76227A2D6B00F8039C /* Repository+Diff.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Repository+Diff.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -326,6 +328,7 @@
 				BECB5F691A56F19900999413 /* References.swift */,
 				BECB5F6D1A57284700999413 /* Remotes.swift */,
 				25499A996CA7BD416620A397 /* CommitIterator.swift */,
+				E65C767923E6F4FF00FD14BE /* Index.swift */,
 			);
 			path = SwiftGit2;
 			sourceTree = "<group>";
@@ -807,6 +810,7 @@
 				E60E36D2238960B8008A691E /* Diff+Status.swift in Sources */,
 				DA5914761A94579000AED74C /* Errors.swift in Sources */,
 				BE14AA501A1974010015B439 /* SwiftGit2.m in Sources */,
+				E65C767A23E6F4FF00FD14BE /* Index.swift in Sources */,
 				25499D325997CAB9BEFFCA4D /* CommitIterator.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
