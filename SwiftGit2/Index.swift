@@ -13,12 +13,8 @@ public extension Repository  {
 	func index() -> Result<Index, NSError> {
 		var index_pointer: OpaquePointer? = nil
 		
-		let result = git_repository_index(&index_pointer, pointer)
-		
-		if result == GIT_OK.rawValue {
-			return .success(Index(pointer: index_pointer!))
-		} else {
-			return .failure(NSError(gitError: result, pointOfFailure: "git_repository_index"))
+		return _result( { Index(pointer: index_pointer!) }, pointOfFailure: "git_repository_index") {
+			git_repository_index(&index_pointer, pointer)
 		}
 	}
 }
@@ -75,11 +71,9 @@ public final class Index {
 	}
 	
 	func write() -> Result<(),NSError> {
-		let result = git_index_write(pointer)
-		guard result == GIT_OK.rawValue else {
-			return .failure(NSError(gitError: result, pointOfFailure: "git_index_write"))
+		return _result((), pointOfFailure: "git_index_write") {
+			git_index_write(pointer)
 		}
-		return .success(())
 	}
 }
 
