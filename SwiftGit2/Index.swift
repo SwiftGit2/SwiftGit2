@@ -51,30 +51,33 @@ public final class Index {
 		var dirPointer = UnsafeMutablePointer<Int8>(mutating: (dir as NSString).utf8String)
 		var paths = git_strarray(strings: &dirPointer, count: 1)
 		
-		let addResult = git_index_add_all(pointer, &paths, 0, nil, nil)
-		guard addResult == GIT_OK.rawValue else {
-			return .failure(NSError(gitError: addResult, pointOfFailure: "git_index_add_all"))
+		return _result((), pointOfFailure: "git_index_add_all") {
+			git_index_add_all(pointer, &paths, 0, nil, nil)
 		}
-		// write index to disk
-		let writeResult = git_index_write(pointer)
-		guard writeResult == GIT_OK.rawValue else {
-			return .failure(NSError(gitError: writeResult, pointOfFailure: "git_index_write"))
-		}
-		return .success(())
+		.flatMap { self.write() }
 	}
 	
 	public func remove(path: String) -> Result<(), NSError> {
 		let dir = path
 		var dirPointer = UnsafeMutablePointer<Int8>(mutating: (dir as NSString).utf8String)
 		var paths = git_strarray(strings: &dirPointer, count: 1)
-		let addResult = git_index_remove_all(pointer, &paths, nil, nil)
-		guard addResult == GIT_OK.rawValue else {
-			return .failure(NSError(gitError: addResult, pointOfFailure: "git_index_remove_all"))
+		
+		return _result((), pointOfFailure: "git_index_add_all") {
+			git_index_remove_all(pointer, &paths, nil, nil)
 		}
-		// write index to disk
-		let writeResult = git_index_write(pointer)
-		guard writeResult == GIT_OK.rawValue else {
-			return .failure(NSError(gitError: writeResult, pointOfFailure: "git_index_write"))
+		.flatMap { self.write() }
+	}
+	
+	public func clear() -> Result<(), NSError> {
+		return _result((), pointOfFailure: "git_index_clear") {
+			git_index_clear(pointer)
+		}
+	}
+	
+	func write() -> Result<(),NSError> {
+		let result = git_index_write(pointer)
+		guard result == GIT_OK.rawValue else {
+			return .failure(NSError(gitError: result, pointOfFailure: "git_index_write"))
 		}
 		return .success(())
 	}
@@ -92,22 +95,25 @@ public extension Index {
 	}
 	
 	struct Entry {
-		let ctime		: Time
-		let mtime		: Time
-		let dev			: UInt32
-		let ino			: UInt32
-		let mode 		: UInt32
-		let uid 		: UInt32
-		let gid 		: UInt32
-		let fileSize 	: UInt32
-		let oid			: OID
+		public let ctime		: Time
+		public let mtime		: Time
+		public let dev			: UInt32
+		public let ino			: UInt32
+		public let mode 		: UInt32
+		public let uid			: UInt32
+		public let gid			: UInt32
+		public let fileSize 	: UInt32
+		public let oid			: OID
 		
-		let flags			: Flags
-		let flagsExtended 	: FlagsExtended
+		public let flags			: Flags
+		public let flagsExtended 	: FlagsExtended
 		
-		let path : String
+		public let path : String
+		
+		public let stage 		: Int32
 		
 		init(entry: git_index_entry) {
+			
 			ctime		= Time(entry.ctime)
 			mtime		= Time(entry.mtime)
 			dev 		= entry.dev
@@ -122,6 +128,9 @@ public extension Index {
 			flagsExtended 	= FlagsExtended(rawValue: UInt32(entry.flags_extended))
 			
 			path 		= String(cString: entry.path)
+			
+			var mutableEntry = entry
+			stage = git_index_entry_stage(&mutableEntry)
 		}
 	}
 }
