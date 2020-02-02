@@ -12,11 +12,6 @@ import Foundation
 public struct Diff {
 	let pointer: OpaquePointer
 	
-	/// The set of deltas.
-	public var deltas = [Delta]()
-
-	
-
 	public struct BinaryType : OptionSet {
 		// This appears to be necessary due to bug in Swift
 		// https://bugs.swift.org/browse/SR-3003
@@ -71,26 +66,17 @@ public struct Diff {
 		public static let removeUnmodified				= FindOptions(rawValue: GIT_DIFF_FIND_REMOVE_UNMODIFIED.rawValue)
 	}
 	
-	mutating public func findSimilar(options: FindOptions) {
+	public func findSimilar(options: FindOptions) -> Result<(), NSError> {
 		var opt = git_diff_find_options(version: 1, flags: options.rawValue, rename_threshold: 50, rename_from_rewrite_threshold: 50, copy_threshold: 50, break_rewrite_threshold: 60, rename_limit: 200, metric: nil)
-		git_diff_find_similar(pointer, &opt)
 		
-		refreshDeltas()
+		return _result((), pointOfFailure: "git_diff_find_options") {
+			git_diff_find_similar(pointer, &opt)
+		}
 	}
 
 	/// Create an instance with a libgit2 `git_diff`.
 	public init(_ pointer: OpaquePointer) {
 		self.pointer = pointer
-		refreshDeltas()
-	}
-	
-	mutating private func refreshDeltas() {
-		deltas.removeAll()
-		for i in 0..<git_diff_num_deltas(pointer) {
-			if let delta = git_diff_get_delta(pointer, i) {
-				deltas.append(Diff.Delta(delta.pointee))
-			}
-		}
 	}
 }
 

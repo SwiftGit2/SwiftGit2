@@ -30,11 +30,10 @@ func _result<T>(_ value: () -> T, pointOfFailure: String, block: () -> Int32) ->
 extension Diff {	
 	public func asDeltas() -> Result<[Delta],NSError> {
 		var cb = DiffEachCallbacks()
-		
+
 		return _result(cb.deltas, pointOfFailure: "git_diff_foreach") {
 			git_diff_foreach(self.pointer, cb.each_file_cb, nil, cb.each_hunk_cb, cb.each_line_cb, &cb)
 		}
-
 	}
 }
 
