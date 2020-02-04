@@ -179,8 +179,22 @@ extension Tree.Entry: CustomStringConvertible {
 	}
 }
 
+public class Blob {
+	public let pointer: OpaquePointer
+	public let oid: OID
+	
+	public init(_ pointer: OpaquePointer) {
+		self.pointer = pointer
+		oid = OID(git_object_id(pointer).pointee)
+	}
+	
+	deinit {
+		git_object_free(pointer)
+	}
+}
+
 /// A git blob.
-public struct Blob: ObjectType, Hashable {
+public struct BlobOLD: ObjectType, Hashable {
 	public static let type = GIT_OBJECT_BLOB
 
 	public let pointer: OpaquePointer

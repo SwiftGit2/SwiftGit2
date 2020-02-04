@@ -270,8 +270,8 @@ public final class Repository {
 	public func object(_ oid: OID) -> Result<ObjectType, NSError> {
 		return withGitObject(oid, type: GIT_OBJECT_ANY) { object in
 			let type = git_object_type(object)
-			if type == Blob.type {
-				return Result.success(Blob(object))
+			if type == BlobOLD.type {
+				return Result.success(BlobOLD(object))
 			} else if type == Commit.type {
 				return Result.success(Commit(object))
 			} else if type == Tag.type {
@@ -290,14 +290,23 @@ public final class Repository {
 			return Result.failure(error)
 		}
 	}
+	
+	public func blob(oid: OID) -> Result<Blob, NSError> {
+		var oid = oid.oid
+		var blob_pointer: OpaquePointer? = nil
+		
+		return _result({ Blob(blob_pointer!) }, pointOfFailure: "git_object_lookup") {
+			git_object_lookup(&blob_pointer, self.pointer, &oid, GIT_OBJECT_BLOB)
+		}
+	}
 
 	/// Loads the blob with the given OID.
 	///
 	/// oid - The OID of the blob to look up.
 	///
 	/// Returns the blob if it exists, or an error.
-	public func blob(_ oid: OID) -> Result<Blob, NSError> {
-		return withGitObject(oid, type: GIT_OBJECT_BLOB) { Blob($0) }
+	public func blobOld(_ oid: OID) -> Result<BlobOLD, NSError> {
+		return withGitObject(oid, type: GIT_OBJECT_BLOB) { BlobOLD($0) }
 	}
 
 	/// Loads the commit with the given OID.
@@ -344,7 +353,7 @@ public final class Repository {
 	public func object(from pointer: Pointer) -> Result<ObjectType, NSError> {
 		switch pointer {
 		case let .blob(oid):
-			return blob(oid).map { $0 as ObjectType }
+			return blobOld(oid).map { $0 as ObjectType }
 		case let .commit(oid):
 			return commit(oid).map { $0 as ObjectType }
 		case let .tag(oid):

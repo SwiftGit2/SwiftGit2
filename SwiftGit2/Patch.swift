@@ -16,9 +16,28 @@ public class Patch {
 		self.pointer = pointer
 	}
 	
+	static func fromBlobs(old: Blob?, new: Blob?) -> Result<Patch, NSError> {
+		var patchPointer: OpaquePointer? = nil
+		
+		return _result({ Patch(patchPointer!) }, pointOfFailure: "git_patch_from_blobs") {
+			git_patch_from_blobs(&patchPointer, old?.pointer, nil, new?.pointer, nil, nil)
+		}
+	}
+	
 	deinit {
 		git_patch_free(pointer)
 	}
+	
+	func asDelta() -> Diff.Delta {
+		return Diff.Delta(git_patch_get_delta(pointer).pointee)
+	}
+	
+//	func asHunk() { //}-> Result<Diff.Hunk, NSError> {
+//		var hunkPointer: UnsafeMutablePointer<git_diff_hunk>? = nil
+//		var linesCount : Int32 = 0
+//
+//		git_patch_get_hunk(&hunkPointer, nil, nil, 0)
+//	}
 	
 	func asBuffer() -> Result<OpaquePointer, NSError> {
 		let buff = UnsafeMutablePointer<git_buf>.allocate(capacity: 1)

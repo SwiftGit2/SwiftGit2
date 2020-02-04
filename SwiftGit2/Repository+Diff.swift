@@ -66,45 +66,21 @@ public extension Repository {
 	}
 	
 	func hunksFrom(delta: Diff.Delta) -> Result<[Diff.Hunk], NSError> {
-		guard let oldFile = delta.oldFile else { return .failure(NSError(gitError: 0, pointOfFailure: "no old file")) }
-		guard let newFile = delta.newFile else { return .failure(NSError(gitError: 0, pointOfFailure: "no new file")) }
+		let old = delta.oldFile != nil ? (try? blob(oid: delta.oldFile!.oid).get()) : nil
+		let new = delta.newFile != nil ? (try? blob(oid: delta.newFile!.oid).get()) : nil
 		
-		return hunksBetweenBlobs(oid: oldFile.oid, oid2: newFile.oid)
+		return hunksBetweenBlobs(old, and: new)
 	}
 	
 }
 
 extension Repository {
-	func hunksBetweenBlobs(oid: OID, oid2: OID) -> Result<[Diff.Hunk],NSError>{
-		var blob1_pointer: OpaquePointer? = nil
-		var oid = oid.oid
-		guard GIT_OK.rawValue == git_object_lookup(&blob1_pointer, self.pointer, &oid, GIT_OBJECT_BLOB) else {
-			return Result.failure(NSError(gitError: 0, pointOfFailure: "git_diff_blobs"))
-		}
-		defer { git_object_free(blob1_pointer) }
-		
-		var blob2_pointer: OpaquePointer? = nil
-		var oid2 = oid2.oid
-		guard GIT_OK.rawValue == git_object_lookup(&blob2_pointer, self.pointer, &oid2, GIT_OBJECT_BLOB) else {
-			return Result.failure(NSError(gitError: 0, pointOfFailure: "git_diff_blobs"))
-		}
-		defer { git_object_free(blob2_pointer) }
-		
-		
+	func hunksBetweenBlobs(_ blob: Blob?, and blob2: Blob?) -> Result<[Diff.Hunk],NSError>{
 		var cb = DiffEachCallbacks()
 		
-		let result = git_diff_blobs(blob1_pointer /*old_blob*/, nil /*old_as_path*/, blob2_pointer /*new_blob*/, nil /*new_as_path*/, nil /*options*/,
-		cb.each_file_cb /*file_cb*/, nil /*binary_cb*/, cb.each_hunk_cb /*hunk_cb*/, cb.each_line_cb /*line_cb*/, &cb /*payload*/)
-		
-		if result == GIT_OK.rawValue {
-			if let delta = cb.deltas.first {
-				return .success(delta.hunks)
-			}
-			return .success([])
-		} else {
-			return Result.failure(NSError(gitError: result, pointOfFailure: "git_diff_blobs"))
+		return _result( { cb.deltas.first?.hunks ?? [] }, pointOfFailure: "git_diff_blobs") {
+			git_diff_blobs(blob?.pointer, nil, blob2?.pointer, nil, nil, cb.each_file_cb, nil, cb.each_hunk_cb, cb.each_line_cb, &cb)
 		}
-		
 	}
 
 }
