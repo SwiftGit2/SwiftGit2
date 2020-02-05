@@ -50,4 +50,8 @@ public class Patch {
 	func size() -> Int {
 		return git_patch_size(pointer, 0, 0, 0)
 	}
+	
+	func numNunks() -> Int {
+		return git_patch_num_hunks(pointer)
+	}
 }
