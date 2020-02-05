@@ -91,3 +91,141 @@ public extension Diff {
 		public static let removeUnmodified				= FindOptions(rawValue: GIT_DIFF_FIND_REMOVE_UNMODIFIED.rawValue)
 	}
 }
+
+public class DiffOptions {
+	let pointer = UnsafeMutablePointer<git_diff_options>.allocate(capacity: 1)
+	
+	public var version 	: UInt32 				{ pointer.pointee.version }
+	public var flags 	: DiffOptions.Flags 	{ get { DiffOptions.Flags(rawValue: pointer.pointee.flags) } set { pointer.pointee.flags = newValue.rawValue } }
+	// git_submodule_ignore_t ignore_submodules;
+	
+	
+	init() {
+		
+		let result = git_diff_options_init(pointer, UInt32(GIT_DIFF_OPTIONS_VERSION))
+		assert(result == GIT_OK.rawValue)
+	}
+	
+	deinit {
+		pointer.deallocate()
+	}
+}
+
+public extension DiffOptions {
+	struct Flags : OptionSet {
+		public let rawValue: UInt32
+		public init(rawValue: UInt32) {
+			self.rawValue = rawValue
+		}
+		public static let normal						= Flags(rawValue: GIT_DIFF_NORMAL.rawValue)	/** Normal diff, the default */
+		
+		/*  Options controlling which files will be in the diff  */
+		public static let reverse						= Flags(rawValue: GIT_DIFF_REVERSE.rawValue)	/** Reverse the sides of the diff */
+		public static let includeIgnored				= Flags(rawValue: GIT_DIFF_INCLUDE_IGNORED.rawValue)		/** Include ignored files in the diff */
+		public static let recurseIgnored				= Flags(rawValue: GIT_DIFF_RECURSE_IGNORED_DIRS.rawValue)	/** Even with GIT_DIFF_INCLUDE_IGNORED, an entire ignored directory will be marked with only a single entry in the diff; this flag  adds all files under the directory as IGNORED entries, too. */
+		public static let includeUntracked				= Flags(rawValue: GIT_DIFF_INCLUDE_UNTRACKED.rawValue)			/** Include untracked files in the diff */
+		public static let recurseUntracked				= Flags(rawValue: GIT_DIFF_RECURSE_UNTRACKED_DIRS.rawValue)		/** Even with GIT_DIFF_INCLUDE_UNTRACKED, an entire untracked directory will be marked with only a single entry in the diff (a la what core Git does in `git status`); this flag adds *all* files under untracked directories as UNTRACKED entries, too. */
+		public static let includeUnmodified				= Flags(rawValue: GIT_DIFF_INCLUDE_UNMODIFIED.rawValue)
+		public static let includeTypechange				= Flags(rawValue: GIT_DIFF_INCLUDE_TYPECHANGE.rawValue)
+		public static let includeTypechangeTrees		= Flags(rawValue: GIT_DIFF_INCLUDE_TYPECHANGE_TREES.rawValue)
+		public static let ignoreFilemode				= Flags(rawValue: GIT_DIFF_IGNORE_FILEMODE.rawValue)
+		public static let ignoreSubmodules				= Flags(rawValue: GIT_DIFF_IGNORE_SUBMODULES.rawValue)
+		public static let ignoreCase					= Flags(rawValue: GIT_DIFF_IGNORE_CASE.rawValue)
+		public static let includeCaseChange				= Flags(rawValue: GIT_DIFF_INCLUDE_CASECHANGE.rawValue)
+		public static let disablePathspecMatch			= Flags(rawValue: GIT_DIFF_DISABLE_PATHSPEC_MATCH.rawValue)
+		public static let skipBinaryCheck				= Flags(rawValue: GIT_DIFF_SKIP_BINARY_CHECK.rawValue)
+		public static let enableFastUntrackedDirs		= Flags(rawValue: GIT_DIFF_ENABLE_FAST_UNTRACKED_DIRS.rawValue)
+		public static let updateIndex					= Flags(rawValue: GIT_DIFF_UPDATE_INDEX.rawValue)
+		public static let includeUnreadable				= Flags(rawValue: GIT_DIFF_INCLUDE_UNREADABLE.rawValue)
+		public static let includeUnreadableAsUntracked	= Flags(rawValue: GIT_DIFF_INCLUDE_UNREADABLE_AS_UNTRACKED.rawValue)
+		
+		/*  Options controlling how output will be generated  */
+		public static let indentHeuristic				= Flags(rawValue: GIT_DIFF_INDENT_HEURISTIC.rawValue)	/** Use a heuristic that takes indentation and whitespace into account which generally can produce better diffs when dealing with ambiguous diff hunks. */
+		public static let forceText						= Flags(rawValue: GIT_DIFF_FORCE_TEXT.rawValue)		/** Treat all files as text, disabling binary attributes & detection */
+		public static let forceBinary					= Flags(rawValue: GIT_DIFF_FORCE_BINARY.rawValue)	/** Treat all files as binary, disabling text diffs */
+		public static let ignoreWhitespace				= Flags(rawValue: GIT_DIFF_IGNORE_WHITESPACE.rawValue)			/** Ignore all whitespace */
+		public static let ignoreWhitespaceChange		= Flags(rawValue: GIT_DIFF_IGNORE_WHITESPACE_CHANGE.rawValue)	/** Ignore changes in amount of whitespace */
+		public static let ingoreWhitespaceEOL			= Flags(rawValue: GIT_DIFF_IGNORE_WHITESPACE_EOL.rawValue) 		/** Ignore whitespace at end of line */
+		public static let showUntrackedContent			= Flags(rawValue: GIT_DIFF_SHOW_UNTRACKED_CONTENT.rawValue)	/** When generating patch text, include the content of untracked files.  This automatically turns on GIT_DIFF_INCLUDE_UNTRACKED but it does not turn on GIT_DIFF_RECURSE_UNTRACKED_DIRS.  Add that flag if you want the content of every single UNTRACKED file. */
+		public static let showUnmodified				= Flags(rawValue: GIT_DIFF_SHOW_UNMODIFIED.rawValue)	/** When generating output, include the names of unmodified files if they are included in the git_diff.  Normally these are skipped in the formats that list files (e.g. name-only, name-status, raw). Even with this, these will not be included in patch format. */
+		public static let patience						= Flags(rawValue: GIT_DIFF_PATIENCE.rawValue) /** Use the "patience diff" algorithm */
+		public static let minimal						= Flags(rawValue: GIT_DIFF_MINIMAL.rawValue) /** Take extra time to find minimal diff */
+		public static let binary						= Flags(rawValue: GIT_DIFF_SHOW_BINARY.rawValue) /** 	Include the necessary deflate / delta information so that `git-apply` can apply given diff information to binary files. */
+	}
+}
+
+/*
+typedef struct {
+	unsigned int version;      /**< version for the struct */
+
+	/**
+	 * A combination of `git_diff_option_t` values above.
+	 * Defaults to GIT_DIFF_NORMAL
+	 */
+	uint32_t flags;
+
+	/* options controlling which files are in the diff */
+
+	/** Overrides the submodule ignore setting for all submodules in the diff. */
+	git_submodule_ignore_t ignore_submodules;
+
+	/**
+	 * An array of paths / fnmatch patterns to constrain diff.
+	 * All paths are included by default.
+	 */
+	git_strarray       pathspec;
+
+	/**
+	 * An optional callback function, notifying the consumer of changes to
+	 * the diff as new deltas are added.
+	 */
+	git_diff_notify_cb   notify_cb;
+
+	/**
+	 * An optional callback function, notifying the consumer of which files
+	 * are being examined as the diff is generated.
+	 */
+	git_diff_progress_cb progress_cb;
+
+	/** The payload to pass to the callback functions. */
+	void                *payload;
+
+	/* options controlling how to diff text is generated */
+
+	/**
+	 * The number of unchanged lines that define the boundary of a hunk
+	 * (and to display before and after). Defaults to 3.
+	 */
+	uint32_t    context_lines;
+	/**
+	 * The maximum number of unchanged lines between hunk boundaries before
+	 * the hunks will be merged into one. Defaults to 0.
+	 */
+	uint32_t    interhunk_lines;
+
+	/**
+	 * The abbreviation length to use when formatting object ids.
+	 * Defaults to the value of 'core.abbrev' from the config, or 7 if unset.
+	 */
+	uint16_t    id_abbrev;
+
+	/**
+	 * A size (in bytes) above which a blob will be marked as binary
+	 * automatically; pass a negative value to disable.
+	 * Defaults to 512MB.
+	 */
+	git_off_t   max_size;
+
+	/**
+	 * The virtual "directory" prefix for old file names in hunk headers.
+	 * Default is "a".
+	 */
+	const char *old_prefix;
+
+	/**
+	 * The virtual "directory" prefix for new file names in hunk headers.
+	 * Defaults to "b".
+	 */
+	const char *new_prefix;
+} git_diff_options;
+*/
