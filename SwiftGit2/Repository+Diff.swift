@@ -69,17 +69,17 @@ public extension Repository {
 		let old = delta.oldFile != nil ? (try? blob(oid: delta.oldFile!.oid).get()) : nil
 		let new = delta.newFile != nil ? (try? blob(oid: delta.newFile!.oid).get()) : nil
 		
-		return hunksBetweenBlobs(old, and: new)
+		return hunksBetweenBlobs(old: old, new: new)
 	}
 	
 }
 
 extension Repository {
-	func hunksBetweenBlobs(_ blob: Blob?, and blob2: Blob?) -> Result<[Diff.Hunk],NSError>{
+	func hunksBetweenBlobs(old: Blob?, new: Blob?) -> Result<[Diff.Hunk],NSError>{
 		var cb = DiffEachCallbacks()
 		
 		return _result( { cb.deltas.first?.hunks ?? [] }, pointOfFailure: "git_diff_blobs") {
-			git_diff_blobs(blob?.pointer, nil, blob2?.pointer, nil, nil, cb.each_file_cb, nil, cb.each_hunk_cb, cb.each_line_cb, &cb)
+			git_diff_blobs(old?.pointer, nil, new?.pointer, nil, nil, cb.each_file_cb, nil, cb.each_hunk_cb, cb.each_line_cb, &cb)
 		}
 	}
 
