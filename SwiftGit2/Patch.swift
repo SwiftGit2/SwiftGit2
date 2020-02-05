@@ -37,6 +37,7 @@ public class Patch {
 //		//let hunkPointer = UnsafeMutablePointer<git_diff_hunk>.allocate(capacity: 1)
 //		var linesCount : Int32 = 0
 //
+//		That is a (non-const) pointer to a (non-const) pointer to a const MyStructure. In both C and C++.
 //		git_patch_get_hunk(&hunkPointer, nil, nil, 0)
 //	}
 	
