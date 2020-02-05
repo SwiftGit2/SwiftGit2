@@ -92,13 +92,32 @@ public extension Diff {
 	}
 }
 
+public enum SubmoduleIgnore : Int32 {
+	case unspecified = -1 	//GIT_SUBMODULE_IGNORE_UNSPECIFIED  = -1, /**< use the submodule's configuration */
+	case none        = 1	//GIT_SUBMODULE_IGNORE_NONE      = 1,  /**< any change or untracked == dirty */
+	case untracked   = 2	//GIT_SUBMODULE_IGNORE_UNTRACKED = 2,  /**< dirty if tracked files change */
+	case ignoreDirty = 3	//GIT_SUBMODULE_IGNORE_DIRTY     = 3,  /**< only dirty if HEAD moved */
+	case ignoreAll   = 4	//GIT_SUBMODULE_IGNORE_ALL       = 4,  /**< never dirty */
+}
+
 public class DiffOptions {
 	let pointer = UnsafeMutablePointer<git_diff_options>.allocate(capacity: 1)
 	
-	public var version 	: UInt32 				{ pointer.pointee.version }
-	public var flags 	: DiffOptions.Flags 	{ get { DiffOptions.Flags(rawValue: pointer.pointee.flags) } set { pointer.pointee.flags = newValue.rawValue } }
-	// git_submodule_ignore_t ignore_submodules;
+	public var version 			: UInt32 			{ pointer.pointee.version }
+	public var flags 			: DiffOptions.Flags { get { DiffOptions.Flags(rawValue: pointer.pointee.flags) } set { pointer.pointee.flags = newValue.rawValue } }
+	public var ignoreSubmodules : SubmoduleIgnore 	{ get { SubmoduleIgnore(rawValue: pointer.pointee.ignore_submodules.rawValue)! } set { pointer.pointee.ignore_submodules = git_submodule_ignore_t(rawValue: newValue.rawValue)} }
 	
+	public var notify_cb		: git_diff_notify_cb?		{ get { pointer.pointee.notify_cb } 	set { pointer.pointee.notify_cb = newValue } }
+	public var progress_cb 		: git_diff_progress_cb?		{ get { pointer.pointee.progress_cb} 	set { pointer.pointee.progress_cb = newValue } }
+	public var payload			: UnsafeMutableRawPointer?  { get { pointer.pointee.payload}		set { pointer.pointee.payload = newValue } }
+	
+	public var contextLines		: UInt32 { get { pointer.pointee.context_lines }	set { pointer.pointee.context_lines = newValue } }
+	public var interhunkLines	: UInt32 { get { pointer.pointee.interhunk_lines }	set { pointer.pointee.interhunk_lines = newValue } }
+	public var idAbbrev			: UInt16 { get { pointer.pointee.id_abbrev }		set { pointer.pointee.id_abbrev = newValue } }
+	public var maxSize			: Int64  { get { pointer.pointee.max_size }			set { pointer.pointee.max_size = newValue } }
+	
+	public var oldPrefix		: String { get { String(cString: pointer.pointee.old_prefix) } } //TODO: implement setter
+	public var newPrefix		: String { get { String(cString: pointer.pointee.new_prefix) } } //TODO: implement setter
 	
 	init() {
 		

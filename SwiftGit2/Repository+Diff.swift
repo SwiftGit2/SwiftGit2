@@ -10,9 +10,9 @@ import Foundation
 import Clibgit2
 
 public extension Repository {
-	func diffTreeToTree(oldTree: Tree, newTree: Tree) -> Result<Diff, NSError> {
+	func diffTreeToTree(oldTree: Tree, newTree: Tree, options: DiffOptions? = nil) -> Result<Diff, NSError> {
 		var diff: OpaquePointer? = nil
-		let result = git_diff_tree_to_tree(&diff, self.pointer, oldTree.pointer, newTree.pointer, nil)
+		let result = git_diff_tree_to_tree(&diff, self.pointer, oldTree.pointer, newTree.pointer, options?.pointer)
 		
 		guard result == GIT_OK.rawValue else {
 			return Result.failure(NSError(gitError: result, pointOfFailure: "git_diff_tree_to_tree"))
@@ -21,9 +21,9 @@ public extension Repository {
 		return .success(Diff(diff!))
 	}
 	
-	func diffTreeToIndex(tree: Tree) -> Result<Diff, NSError> {
+	func diffTreeToIndex(tree: Tree, options: DiffOptions? = nil) -> Result<Diff, NSError> {
 		var diff: OpaquePointer? = nil
-		let result = git_diff_tree_to_index(&diff, self.pointer, tree.pointer, nil /*index*/, nil /*options*/)
+		let result = git_diff_tree_to_index(&diff, self.pointer, tree.pointer, nil /*index*/, options?.pointer)
 		
 		guard result == GIT_OK.rawValue else {
 			return Result.failure(NSError(gitError: result, pointOfFailure: "git_diff_tree_to_index"))
@@ -32,9 +32,9 @@ public extension Repository {
 		return .success(Diff(diff!))
 	}
 	
-	func diffIndexToWorkDir() -> Result<Diff, NSError> {
+	func diffIndexToWorkDir(options: DiffOptions? = nil) -> Result<Diff, NSError> {
 		var diff: OpaquePointer? = nil
-		let result = git_diff_index_to_workdir(&diff, self.pointer, nil /* git_index */, nil /* git_diff_options */)
+		let result = git_diff_index_to_workdir(&diff, self.pointer, nil /* git_index */, options?.pointer)
 		
 		guard result == GIT_OK.rawValue else {
 			return Result.failure(NSError(gitError: result, pointOfFailure: "git_diff_index_to_workdir"))
@@ -43,9 +43,9 @@ public extension Repository {
 		return .success(Diff(diff!))
 	}
 	
-	func diffTreeToWorkdir(tree: Tree) -> Result<Diff, NSError> {
+	func diffTreeToWorkdir(tree: Tree, options: DiffOptions? = nil) -> Result<Diff, NSError> {
 		var diff: OpaquePointer? = nil
-		let result = git_diff_tree_to_workdir(&diff, self.pointer, tree.pointer, nil)
+		let result = git_diff_tree_to_workdir(&diff, self.pointer, tree.pointer, options?.pointer)
 		
 		guard result == GIT_OK.rawValue else {
 			return Result.failure(NSError(gitError: result, pointOfFailure: "git_diff_tree_to_workdir"))
@@ -54,9 +54,9 @@ public extension Repository {
 		return .success(Diff(diff!))
 	}
 	
-	func diffTreeToWorkdirWithIndex(tree: Tree) -> Result<Diff, NSError> {
+	func diffTreeToWorkdirWithIndex(tree: Tree, options: DiffOptions? = nil) -> Result<Diff, NSError> {
 		var diff: OpaquePointer? = nil
-		let result = git_diff_tree_to_workdir_with_index(&diff, self.pointer, tree.pointer, nil)
+		let result = git_diff_tree_to_workdir_with_index(&diff, self.pointer, tree.pointer, options?.pointer)
 		
 		guard result == GIT_OK.rawValue else {
 			return Result.failure(NSError(gitError: result, pointOfFailure: "git_diff_tree_to_workdir_with_index"))
@@ -65,21 +65,21 @@ public extension Repository {
 		return .success(Diff(diff!))
 	}
 	
-	func hunksFrom(delta: Diff.Delta) -> Result<[Diff.Hunk], NSError> {
+	func hunksFrom(delta: Diff.Delta, options: DiffOptions? = nil) -> Result<[Diff.Hunk], NSError> {
 		let old = delta.oldFile != nil ? (try? blob(oid: delta.oldFile!.oid).get()) : nil
 		let new = delta.newFile != nil ? (try? blob(oid: delta.newFile!.oid).get()) : nil
 		
-		return hunksBetweenBlobs(old: old, new: new)
+		return hunksBetweenBlobs(old: old, new: new, options: options)
 	}
 	
 }
 
-extension Repository {
-	func hunksBetweenBlobs(old: Blob?, new: Blob?) -> Result<[Diff.Hunk],NSError>{
+private extension Repository {
+	func hunksBetweenBlobs(old: Blob?, new: Blob?, options: DiffOptions?) -> Result<[Diff.Hunk],NSError>{
 		var cb = DiffEachCallbacks()
 		
 		return _result( { cb.deltas.first?.hunks ?? [] }, pointOfFailure: "git_diff_blobs") {
-			git_diff_blobs(old?.pointer, nil, new?.pointer, nil, nil, cb.each_file_cb, nil, cb.each_hunk_cb, cb.each_line_cb, &cb)
+			git_diff_blobs(old?.pointer, nil, new?.pointer, nil, options?.pointer, cb.each_file_cb, nil, cb.each_hunk_cb, cb.each_line_cb, &cb)
 		}
 	}
 

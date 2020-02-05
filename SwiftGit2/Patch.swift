@@ -16,11 +16,11 @@ public class Patch {
 		self.pointer = pointer
 	}
 	
-	static func fromBlobs(old: Blob?, new: Blob?) -> Result<Patch, NSError> {
+	static func fromBlobs(old: Blob?, new: Blob?, options: DiffOptions? = nil) -> Result<Patch, NSError> {
 		var patchPointer: OpaquePointer? = nil
 		
 		return _result({ Patch(patchPointer!) }, pointOfFailure: "git_patch_from_blobs") {
-			git_patch_from_blobs(&patchPointer, old?.pointer, nil, new?.pointer, nil, nil)
+			git_patch_from_blobs(&patchPointer, old?.pointer, nil, new?.pointer, nil, options?.pointer)
 		}
 	}
 	
