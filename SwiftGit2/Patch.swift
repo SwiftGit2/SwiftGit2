@@ -34,6 +34,7 @@ public class Patch {
 	
 //	func asHunk() { //}-> Result<Diff.Hunk, NSError> {
 //		var hunkPointer: UnsafeMutablePointer<git_diff_hunk>? = nil
+//		//let hunkPointer = UnsafeMutablePointer<git_diff_hunk>.allocate(capacity: 1)
 //		var linesCount : Int32 = 0
 //
 //		git_patch_get_hunk(&hunkPointer, nil, nil, 0)
