@@ -32,14 +32,14 @@ public class Patch {
 		return Diff.Delta(git_patch_get_delta(pointer).pointee)
 	}
 	
-//	func asHunk() { //}-> Result<Diff.Hunk, NSError> {
-//		var hunkPointer: UnsafeMutablePointer<git_diff_hunk>? = nil
-//		//let hunkPointer = UnsafeMutablePointer<git_diff_hunk>.allocate(capacity: 1)
-//		var linesCount : Int32 = 0
-//
-//		That is a (non-const) pointer to a (non-const) pointer to a const MyStructure. In both C and C++.
-//		git_patch_get_hunk(&hunkPointer, nil, nil, 0)
-//	}
+	func asHunk(idx: Int = 0) -> Result<Diff.Hunk, NSError> {
+		var hunkPointer: UnsafePointer<git_diff_hunk>? = nil
+		var linesCount : Int = 0
+
+		return _result( { Diff.Hunk(hunkPointer!.pointee) }, pointOfFailure: "git_patch_get_hunk") {
+			git_patch_get_hunk(&hunkPointer, &linesCount, nil, idx)
+		}
+	}
 	
 	func asBuffer() -> Result<OpaquePointer, NSError> {
 		let buff = UnsafeMutablePointer<git_buf>.allocate(capacity: 1)
