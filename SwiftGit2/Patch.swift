@@ -67,8 +67,8 @@ public extension Patch {
 	}
 }
 
-private extension Patch {
-	func hunkBy(idx: Int = 0) -> Result<Diff.Hunk, NSError> { // TODO: initialize lines
+extension Patch {
+	func hunkBy(idx: Int) -> Result<Diff.Hunk, NSError> { // TODO: initialize lines
 		var hunkPointer: UnsafePointer<git_diff_hunk>? = nil
 		var linesCount : Int = 0
 
@@ -87,13 +87,13 @@ private extension Patch {
 		for i in 0..<count {
 			var linePointer: UnsafePointer<git_diff_line>? = nil
 			
-			let result = _result(Diff.Line(linePointer!.pointee), pointOfFailure: "git_patch_get_line_in_hunk") {
+			let result = _result((), pointOfFailure: "git_patch_get_line_in_hunk") {
 				git_patch_get_line_in_hunk(&linePointer, pointer, inHunkIdx, i)
 			}
 			
 			switch result {
-			case .success(let line):
-				lines.append(line)
+			case .success(_):
+				lines.append(Diff.Line(linePointer!.pointee))
 			case .failure(let error):
 				return .failure(error)
 			}
