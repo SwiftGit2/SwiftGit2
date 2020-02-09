@@ -27,22 +27,31 @@ public class Patch {
 	deinit {
 		git_patch_free(pointer)
 	}
-	
+}
+
+public extension Patch {
 	func asDelta() -> Diff.Delta {
 		return Diff.Delta(git_patch_get_delta(pointer).pointee)
 	}
 	
-	func asHunk(idx: Int = 0) -> Result<Diff.Hunk, NSError> {
-		var hunkPointer: UnsafePointer<git_diff_hunk>? = nil
-		var linesCount : Int = 0
-
-		return _result( { Diff.Hunk(hunkPointer!.pointee) }, pointOfFailure: "git_patch_get_hunk") {
-			git_patch_get_hunk(&hunkPointer, &linesCount, nil, idx)
+	func asHunks() -> Result<[Diff.Hunk],NSError> {
+		var hunks = [Diff.Hunk]()
+		
+		for i in 0..<numHunks() {
+			switch hunkBy(idx: i) {
+			case .success(let hunk):
+				hunks.append(hunk)
+			case .failure(let error):
+				return .failure(error)
+			}
 		}
+		
+		return .success(hunks)
 	}
 	
 	func asBuffer() -> Result<OpaquePointer, NSError> {
 		let buff = UnsafeMutablePointer<git_buf>.allocate(capacity: 1)
+		defer { buff.deallocate() }
 		
 		return _result(pointer, pointOfFailure: "git_patch_to_buf") {
 			git_patch_to_buf(buff, pointer)
@@ -53,7 +62,43 @@ public class Patch {
 		return git_patch_size(pointer, 0, 0, 0)
 	}
 	
-	func numNunks() -> Int {
+	func numHunks() -> Int {
 		return git_patch_num_hunks(pointer)
+	}
+}
+
+private extension Patch {
+	func hunkBy(idx: Int = 0) -> Result<Diff.Hunk, NSError> { // TODO: initialize lines
+		var hunkPointer: UnsafePointer<git_diff_hunk>? = nil
+		var linesCount : Int = 0
+
+		let result = git_patch_get_hunk(&hunkPointer, &linesCount, pointer, idx)
+		if GIT_OK.rawValue != result {
+			return .failure(NSError(gitError: result, pointOfFailure: "git_patch_get_hunk"))
+		}
+		
+		return getLines(count: linesCount, inHunkIdx: idx)
+			.map { Diff.Hunk(hunkPointer!.pointee, lines: $0) }
+	}
+	
+	func getLines(count: Int, inHunkIdx: Int) -> Result<[Diff.Line], NSError> {
+		var lines = [Diff.Line]()
+		
+		for i in 0..<count {
+			var linePointer: UnsafePointer<git_diff_line>? = nil
+			
+			let result = _result(Diff.Line(linePointer!.pointee), pointOfFailure: "git_patch_get_line_in_hunk") {
+				git_patch_get_line_in_hunk(&linePointer, pointer, inHunkIdx, i)
+			}
+			
+			switch result {
+			case .success(let line):
+				lines.append(line)
+			case .failure(let error):
+				return .failure(error)
+			}
+		}
+		
+		return .success(lines)
 	}
 }

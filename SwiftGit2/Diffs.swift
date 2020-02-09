@@ -9,13 +9,16 @@
 import Clibgit2
 import Foundation
 
-public struct Diff {
+public class Diff {
 	let pointer: OpaquePointer
-
 
 	/// Create an instance with a libgit2 `git_diff`.
 	public init(_ pointer: OpaquePointer) {
 		self.pointer = pointer
+	}
+	
+	deinit {
+		git_diff_free(pointer)
 	}
 	
 	public func findSimilar(options: FindOptions) -> Result<(), NSError> {

@@ -9,24 +9,6 @@
 import Foundation
 import Clibgit2
 
-func _result<T>(_ value: T, pointOfFailure: String, block: () -> Int32) -> Result<T, NSError> {
-	let result = block()
-	if result == GIT_OK.rawValue {
-		return .success(value)
-	} else {
-		return Result.failure(NSError(gitError: result, pointOfFailure: pointOfFailure))
-	}
-}
-
-func _result<T>(_ value: () -> T, pointOfFailure: String, block: () -> Int32) -> Result<T, NSError> {
-	let result = block()
-	if result == GIT_OK.rawValue {
-		return .success(value())
-	} else {
-		return Result.failure(NSError(gitError: result, pointOfFailure: pointOfFailure))
-	}
-}
-
 extension Diff {	
 	public func asDeltas() -> Result<[Delta],NSError> {
 		var cb = DiffEachCallbacks()
@@ -48,20 +30,6 @@ public extension Diff {
 		public var newFile: File?
 		public var hunks = [Hunk]()
 		
-		public enum Status : UInt32 {
-			case unmodified			= 0
-			case added				= 1
-			case deleted			= 2
-			case modified			= 3
-			case renamed			= 4
-			case copied				= 5
-			case ignored			= 6
-			case untracked			= 7
-			case typechange			= 8
-			case unreadable			= 9
-			case conflicted			= 10
-		}
-
 		public init(_ delta: git_diff_delta) {
 			self.status = Diff.Delta.Status(rawValue: delta.status.rawValue) ?? .unmodified
 			self.statusChar = Character(UnicodeScalar(UInt8(git_diff_status_char(delta.status))))
@@ -70,7 +38,26 @@ public extension Diff {
 			self.newFile = File(delta.new_file)
 		}
 	}
+}
 
+
+public extension Diff.Delta {
+	enum Status : UInt32 {
+		case unmodified		= 0		/**< no changes */
+		case added			= 1		/**< entry does not exist in old version */
+		case deleted		= 2		/**< entry does not exist in new version */
+		case modified		= 3		/**< entry content changed between old and new */
+		case renamed		= 4		/**< entry was renamed between old and new */
+		case copied			= 5		/**< entry was copied from another old entry */
+		case ignored		= 6		/**< entry is ignored item in workdir */
+		case untracked		= 7 	/**< entry is untracked item in workdir */
+		case typechange		= 8		/**< type of entry changed between old and new */
+		case unreadable		= 9		/**< entry is unreadable */
+		case conflicted		= 10	/**< entry in the index is conflicted */
+	} // git_delta_t
+}
+
+public extension Diff {
 	struct File {
 		public var oid: OID
 		public var path: String
@@ -93,9 +80,9 @@ public extension Diff {
 		public let newLines : Int
 		public let header   : String?
 		
-		public var lines = [Line]()
+		public var lines : [Line]
 		
-		public init(_ hunk: git_diff_hunk) {
+		public init(_ hunk: git_diff_hunk, lines: [Line] = [Line]()) {
 			oldStart = Int(hunk.old_start)
 			oldLines = Int(hunk.old_lines)
 			newStart = Int(hunk.new_start)
@@ -107,6 +94,7 @@ public extension Diff {
 				.filter { $0 > 0 }
 			
 			header = String(bytes: bytes, encoding: .utf8)
+			self.lines = lines
 		}
 	}
 	
@@ -124,7 +112,6 @@ public extension Diff {
 			new_lineno 		= Int(line.new_lineno)
 			num_lines  		= Int(line.num_lines)
 			contentOffset   = line.content_offset
-
 			
 			var bytes = [UInt8]()
 			bytes.reserveCapacity(line.content_len)

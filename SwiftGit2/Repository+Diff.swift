@@ -72,6 +72,13 @@ public extension Repository {
 		return hunksBetweenBlobs(old: old, new: new, options: options)
 	}
 	
+	func patchFrom(delta: Diff.Delta, options: DiffOptions? = nil) -> Result<Patch, NSError> {
+		let old = delta.oldFile != nil ? (try? blob(oid: delta.oldFile!.oid).get()) : nil
+		let new = delta.newFile != nil ? (try? blob(oid: delta.newFile!.oid).get()) : nil
+		
+		return Patch.fromBlobs(old: old, new: new)
+	}
+	
 }
 
 private extension Repository {
