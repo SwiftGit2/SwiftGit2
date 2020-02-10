@@ -124,11 +124,15 @@ public extension Diff {
 	}
 }
 
-
-func ==(lhs: Diff.Hunk, rhs: Diff.Hunk) -> Bool {
-	return lhs.oldLines == rhs.oldLines &&
-		lhs.oldStart == rhs.oldStart &&
-		lhs.newStart == rhs.newStart &&
-		lhs.newLines == rhs.newLines &&
-		lhs.header == rhs.header
+extension Diff.Hunk : Equatable {
+	static public func ==(lhs: Diff.Hunk, rhs: Diff.Hunk) -> Bool {
+		return lhs.oldLines == rhs.oldLines &&
+			lhs.oldStart == rhs.oldStart &&
+			lhs.newStart == rhs.newStart &&
+			lhs.newLines == rhs.newLines &&
+			lhs.header == rhs.header &&
+			lhs.lines.count == rhs.lines.count
+	}
 }
+
+
