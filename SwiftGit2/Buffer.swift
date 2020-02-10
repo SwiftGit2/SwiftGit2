@@ -35,6 +35,5 @@ public final class Buffer {
 	public func dispose() {
 		git_buf_dispose(pointer)
 	}
-	
-	
+	// \n@@\s*-(\d+),(\d+)\s+\+(\d+),(\d+)\s*@@(?:[^\n]|\n(?!@@))+
 }
