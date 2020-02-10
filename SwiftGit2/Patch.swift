@@ -16,16 +16,16 @@ public class Patch {
 		self.pointer = pointer
 	}
 	
+	deinit {
+		git_patch_free(pointer)
+	}
+	
 	static func fromBlobs(old: Blob?, new: Blob?, options: DiffOptions? = nil) -> Result<Patch, NSError> {
 		var patchPointer: OpaquePointer? = nil
 		
 		return _result({ Patch(patchPointer!) }, pointOfFailure: "git_patch_from_blobs") {
 			git_patch_from_blobs(&patchPointer, old?.pointer, nil, new?.pointer, nil, options?.pointer)
 		}
-	}
-	
-	deinit {
-		git_patch_free(pointer)
 	}
 }
 
@@ -49,11 +49,13 @@ public extension Patch {
 		return .success(hunks)
 	}
 	
-	func asBuffer() -> Result<OpaquePointer, NSError> {
+	func asBuffer() -> Result<Buffer, NSError> {
 		let buff = UnsafeMutablePointer<git_buf>.allocate(capacity: 1)
-		defer { buff.deallocate() }
+		buff.pointee.asize = 0
+		buff.pointee.size = 0
+		buff.pointee.ptr = nil
 		
-		return _result(pointer, pointOfFailure: "git_patch_to_buf") {
+		return _result({ Buffer(pointer: buff) }, pointOfFailure: "git_patch_to_buf") {
 			git_patch_to_buf(buff, pointer)
 		}
 	}
