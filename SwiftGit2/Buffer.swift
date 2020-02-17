@@ -14,7 +14,8 @@ public final class Buffer {
 	
 	public var isBinary 	: Bool { 1 == git_buf_is_binary(pointer) }
 	public var containsNul 	: Bool { 1 == git_buf_contains_nul(pointer) }
-	
+	public var size			: Int  { pointer.pointee.size }
+	public var ptr			: UnsafeMutablePointer<Int8> { pointer.pointee.ptr }
 	
 	public init(pointer: UnsafeMutablePointer<git_buf>) {
 		self.pointer = pointer
@@ -32,8 +33,14 @@ public final class Buffer {
 		return String(data: data, encoding: .utf8)
 	}
 	
+	func asDiff() -> Result<Diff, NSError> {
+		var diff: OpaquePointer? = nil
+		return _result( { Diff(diff!) }, pointOfFailure: "") {
+			git_diff_from_buffer(&diff, ptr, size)
+		}
+	}
+	
 	public func dispose() {
 		git_buf_dispose(pointer)
 	}
-	// 
 }
