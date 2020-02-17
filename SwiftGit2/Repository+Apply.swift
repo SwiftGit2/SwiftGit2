@@ -51,6 +51,12 @@ public extension GitApplyOptions {
 		}
 		public let rawValue: UInt32
 		
-		public static let None = Flags(rawValue: GIT_APPLY_CHECK.rawValue)
+		public static let check = Flags(rawValue: GIT_APPLY_CHECK.rawValue)
+	}
+	
+	static var checkOnly : GitApplyOptions {
+		let opt = GitApplyOptions()
+		opt.flags = [.check]
+		return opt
 	}
 }
