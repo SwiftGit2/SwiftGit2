@@ -15,30 +15,32 @@ public enum GitApplyLocation : UInt32 {
 	case both = 2
 }
 
-public class GitApplyOptions {
-	var options : git_apply_options
-	
-	public var version  : UInt32 { get { options.version } }
-	
-	public var flags 	: Flags { get { Flags(rawValue: options.flags) } set { options.flags = newValue.rawValue } }
-	
-	public var payload	: UnsafeMutableRawPointer?  { get { options.payload} set { options.payload = newValue } }
-	public var delta_cb :  git_apply_delta_cb { get { options.delta_cb } set { options.delta_cb = newValue }}
-	public var hunk_cb : git_apply_hunk_cb { get { options.hunk_cb } set { options.hunk_cb = newValue } }
-	
-	public init() {
-		let pointer = UnsafeMutablePointer<git_apply_options>.allocate(capacity: 1)
-		git_apply_options_init(pointer, UInt32(GIT_APPLY_OPTIONS_VERSION))
-		options = pointer.move()
-		pointer.deallocate()
+public extension Repository {
+	func apply(diff: Diff, location: GitApplyLocation, options: GitApplyOptions?) -> Result<(), NSError> {
+		return _result((), pointOfFailure: "git_apply") {
+			git_apply(pointer, diff.pointer, git_apply_location_t(rawValue: location.rawValue), options?.pointer)
+		}
 	}
 }
 
-public extension Repository {
-	func apply(diff: Diff, location: GitApplyLocation) -> Result<(), NSError> {
-		return _result((), pointOfFailure: "git_apply") {
-			git_apply(pointer, diff.pointer, git_apply_location_t(rawValue: location.rawValue), nil)
-		}
+public class GitApplyOptions {
+	var pointer = UnsafeMutablePointer<git_apply_options>.allocate(capacity: 1)
+	
+	public var version  : UInt32 { get { pointer.pointee.version } }
+	
+	public var flags 	: Flags { get { Flags(rawValue: pointer.pointee.flags) } set { pointer.pointee.flags = newValue.rawValue } }
+	
+	public var payload	: UnsafeMutableRawPointer?  { get { pointer.pointee.payload}	set { pointer.pointee.payload = newValue } }
+	public var delta_cb : git_apply_delta_cb 		{ get { pointer.pointee.delta_cb }	set { pointer.pointee.delta_cb = newValue }}
+	public var hunk_cb  : git_apply_hunk_cb 		{ get { pointer.pointee.hunk_cb }	set { pointer.pointee.hunk_cb = newValue } }
+	
+	public init() {
+		let result = git_apply_options_init(pointer, UInt32(GIT_APPLY_OPTIONS_VERSION))
+		assert(result == GIT_OK.rawValue)
+	}
+	
+	deinit {
+		pointer.deallocate()
 	}
 }
 
