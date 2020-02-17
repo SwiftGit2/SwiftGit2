@@ -82,7 +82,6 @@ public extension Repository {
 		}
 		return Patch.fromBlobs(old: old, new: new)
 	}
-	
 }
 
 private extension Repository {

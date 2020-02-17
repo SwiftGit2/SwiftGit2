@@ -35,7 +35,7 @@ public final class Buffer {
 	
 	func asDiff() -> Result<Diff, NSError> {
 		var diff: OpaquePointer? = nil
-		return _result( { Diff(diff!) }, pointOfFailure: "") {
+		return _result( { Diff(diff!) }, pointOfFailure: "git_diff_from_buffer") {
 			git_diff_from_buffer(&diff, ptr, size)
 		}
 	}
