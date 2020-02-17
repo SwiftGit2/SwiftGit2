@@ -39,7 +39,7 @@ func _result<T>(_ value: () -> T, pointOfFailure: String, block: () -> Int32) ->
 	}
 }
 
-func _resultOf<T>(_ block: () -> Int32, value: () -> T) -> Result<T, NSError> {
+func _resultOf<T>(_ block: () -> Int32, pointOfFailure: String, value: () -> T) -> Result<T, NSError> {
 	let result = block()
 	if result == GIT_OK.rawValue {
 		return .success(value())

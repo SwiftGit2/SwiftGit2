@@ -27,13 +27,16 @@ public final class Buffer {
 	}
 	
 	func set(string: String) -> Result<(),NSError> {
-		return set(data: string.data(using: .utf8))
+		guard let data = string.data(using: .utf8) else {
+			return .failure(NSError(gitError: 0, pointOfFailure: "string.data(using: .utf8)"))
+		}
+		return set(data: data)
 	}
 	
 	func set(data: Data) -> Result<(),NSError> {
 		let nsData = data as NSData
 		
-		return _resultOf({git_buf_set(pointer, nsData.bytes, nsData.length)}) { () }
+		return _resultOf({git_buf_set(pointer, nsData.bytes, nsData.length)}, pointOfFailure: "git_buf_set") { () }
 	}
 	
 	public func asString() -> String? {
