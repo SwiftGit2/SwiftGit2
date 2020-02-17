@@ -26,6 +26,16 @@ public final class Buffer {
 		pointer.deallocate()
 	}
 	
+	func set(string: String) -> Result<(),NSError> {
+		return set(data: string.data(using: .utf8))
+	}
+	
+	func set(data: Data) -> Result<(),NSError> {
+		let nsData = data as NSData
+		
+		return _resultOf({git_buf_set(pointer, nsData.bytes, nsData.length)}) { () }
+	}
+	
 	public func asString() -> String? {
 		guard !isBinary else { return nil }
 		
