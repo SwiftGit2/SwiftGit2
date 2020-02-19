@@ -23,11 +23,11 @@ public extension Diff {
 	struct Delta {
 		public static let type = GIT_OBJECT_REF_DELTA
 
-		public var status: Diff.Delta.Status
-		public var statusChar : Character
-		public var flags: Flags
-		public var oldFile: File?
-		public var newFile: File?
+		public let status: Diff.Delta.Status
+		public let statusChar : Character
+		public let flags: Flags
+		public let oldFile: File?
+		public let newFile: File?
 		public var hunks = [Hunk]()
 		
 		public init(_ delta: git_diff_delta) {

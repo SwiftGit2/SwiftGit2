@@ -51,34 +51,25 @@ public extension Repository {
 
 
 public struct StatusEntry {
-	public var status: Diff.Status
-	public var headToIndex: Diff.Delta?
-	public var indexToWorkDir: Diff.Delta?
+	public let status: Diff.Status
+	public let headToIndex: Diff.Delta?
+	public let indexToWorkDir: Diff.Delta?
 
 	public init(from statusEntry: git_status_entry) {
 		self.status = Diff.Status(rawValue: statusEntry.status.rawValue)
 
 		if let htoi = statusEntry.head_to_index {
 			self.headToIndex = Diff.Delta(htoi.pointee)
+		} else {
+			self.headToIndex = nil
 		}
 
 		if let itow = statusEntry.index_to_workdir {
 			self.indexToWorkDir = Diff.Delta(itow.pointee)
+		} else {
+			self.indexToWorkDir = nil
 		}
 	}
-	
-	/*
-	func diffTreeToTree(oldTree: Tree, newTree: Tree) -> Result<Diff, NSError> {
-		var diff: OpaquePointer? = nil
-		let result = git_diff_tree_to_tree(&diff, self.pointer, oldTree.pointer, newTree.pointer, nil)
-		
-		guard result == GIT_OK.rawValue else {
-			return Result.failure(NSError(gitError: result, pointOfFailure: "git_diff_tree_to_tree"))
-		}
-		
-		return .success(Diff(diff!))
-	}
-	*/
 }
 
 
