@@ -74,13 +74,16 @@ public extension Repository {
 	
 	func patchFrom(delta: Diff.Delta, options: DiffOptions? = nil, reverse: Bool = false) -> Result<Patch, NSError> {
 		
-		let old = delta.oldFile != nil ? (try? blob(oid: delta.oldFile!.oid).get()) : nil
-		let new = delta.newFile != nil ? (try? blob(oid: delta.newFile!.oid).get()) : nil
+		var oldFile = delta.oldFile
+		var newFile = delta.newFile
+		
+		loadBlobFor(file: &oldFile)
+		loadBlobFor(file: &newFile)
 		
 		if reverse {
-			return Patch.fromBlobs(old: new, new: old)
+			return Patch.fromFiles(old: newFile, new: oldFile)
 		}
-		return Patch.fromBlobs(old: old, new: new)
+		return Patch.fromFiles(old: oldFile, new: newFile)
 	}
 }
 
@@ -92,7 +95,12 @@ private extension Repository {
 			git_diff_blobs(old?.pointer, nil, new?.pointer, nil, options?.pointer, cb.each_file_cb, nil, cb.each_hunk_cb, cb.each_line_cb, &cb)
 		}
 	}
-
+	
+	func loadBlobFor(file: inout Diff.File?) {
+		if let oid = file?.oid {
+			file?.blob = try? blob(oid: oid).get()
+		}
+	}
 }
 
 ////////////////////////////////////////////////////////////

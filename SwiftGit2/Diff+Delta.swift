@@ -59,10 +59,11 @@ public extension Diff.Delta {
 
 public extension Diff {
 	struct File {
-		public var oid: OID
-		public var path: String
-		public var size: UInt64
-		public var flags: Flags
+		public let oid: OID
+		public let path: String
+		public let size: UInt64
+		public let flags: Flags
+		public var blob: Blob?
 
 		public init(_ diffFile: git_diff_file) {
 			self.oid = OID(diffFile.id)
