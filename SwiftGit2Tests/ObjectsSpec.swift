@@ -6,8 +6,6 @@
 //  Copyright (c) 2014 GitHub, Inc. All rights reserved.
 //
 
-import Foundation
-import Result
 import SwiftGit2
 import Nimble
 import Quick
@@ -27,7 +25,7 @@ private extension Repository {
 	}
 }
 
-class SignatureSpec: QuickSpec {
+class SignatureSpec: FixturesSpec {
 	override func spec() {
 		describe("Signature(signature)") {
 			it("should initialize its properties") {

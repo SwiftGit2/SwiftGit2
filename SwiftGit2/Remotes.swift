@@ -9,7 +9,7 @@
 import Clibgit2
 
 /// A remote in a git repository.
-public struct Remote {
+public struct Remote: Hashable {
 	/// The name of the remote.
 	public let name: String
 
@@ -23,14 +23,4 @@ public struct Remote {
 		name = String(validatingUTF8: git_remote_name(pointer))!
 		URL = String(validatingUTF8: git_remote_url(pointer))!
 	}
-}
-
-extension Remote: Hashable {
-	public var hashValue: Int {
-		return name.hashValue ^ URL.hashValue
-	}
-}
-
-public func == (lhs: Remote, rhs: Remote) -> Bool {
-	return lhs.name == rhs.name && lhs.URL == rhs.URL
 }

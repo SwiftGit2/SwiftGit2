@@ -6,7 +6,6 @@
 //  Copyright (c) 2015 GitHub, Inc. All rights reserved.
 //
 
-import Result
 import SwiftGit2
 import Nimble
 import Quick
@@ -25,7 +24,7 @@ private extension Repository {
 	}
 }
 
-class ReferenceSpec: QuickSpec {
+class ReferenceSpec: FixturesSpec {
 	override func spec() {
 		describe("Reference(pointer)") {
 			it("should initialize its properties") {

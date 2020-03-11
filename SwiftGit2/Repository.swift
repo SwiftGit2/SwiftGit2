@@ -7,7 +7,6 @@
 //
 
 import Foundation
-import Result
 import Clibgit2
 
 public typealias CheckoutProgressBlock = (String?, Int, Int) -> Void
@@ -95,7 +94,7 @@ private func cloneOptions(bare: Bool = false, localClone: Bool = false, fetchOpt
 }
 
 /// A git repository.
-final public class Repository {
+public final class Repository {
 
 	// MARK: - Creating Repositories
 
@@ -104,7 +103,7 @@ final public class Repository {
 	/// URL - The URL of the repository.
 	///
 	/// Returns a `Result` with a `Repository` or an error.
-	class public func create(at url: URL) -> Result<Repository, NSError> {
+	public class func create(at url: URL) -> Result<Repository, NSError> {
 		var pointer: OpaquePointer? = nil
 		let result = url.withUnsafeFileSystemRepresentation {
 			git_repository_init(&pointer, $0, 0)
@@ -123,7 +122,7 @@ final public class Repository {
 	/// URL - The URL of the repository.
 	///
 	/// Returns a `Result` with a `Repository` or an error.
-	class public func at(_ url: URL) -> Result<Repository, NSError> {
+	public class func at(_ url: URL) -> Result<Repository, NSError> {
 		ensureGitInitialized()
 		
 		var pointer: OpaquePointer? = nil
@@ -150,27 +149,28 @@ final public class Repository {
 	/// checkoutProgress - A block that's called with the progress of the checkout.
 	///
 	/// Returns a `Result` with a `Repository` or an error.
-	class public func clone(from remoteURL: URL, to localURL: URL, localClone: Bool = false, bare: Bool = false,
+	public class func clone(from remoteURL: URL, to localURL: URL, localClone: Bool = false, bare: Bool = false,
 	                        credentials: Credentials = .default, checkoutStrategy: CheckoutStrategy = .Safe,
 	                        checkoutProgress: CheckoutProgressBlock? = nil) -> Result<Repository, NSError> {
-			ensureGitInitialized()
-			var options = cloneOptions(
-				bare: bare, localClone: localClone,
-				fetchOptions: fetchOptions(credentials: credentials),
-				checkoutOptions: checkoutOptions(strategy: checkoutStrategy, progress: checkoutProgress))
+        ensureGitInitialized()
+		var options = cloneOptions(
+			bare: bare,
+			localClone: localClone,
+			fetchOptions: fetchOptions(credentials: credentials),
+			checkoutOptions: checkoutOptions(strategy: checkoutStrategy, progress: checkoutProgress))
 
-			var pointer: OpaquePointer? = nil
-			let remoteURLString = (remoteURL as NSURL).isFileReferenceURL() ? remoteURL.path : remoteURL.absoluteString
-			let result = localURL.withUnsafeFileSystemRepresentation { localPath in
-				git_clone(&pointer, remoteURLString, localPath, &options)
-			}
+		var pointer: OpaquePointer? = nil
+		let remoteURLString = (remoteURL as NSURL).isFileReferenceURL() ? remoteURL.path : remoteURL.absoluteString
+		let result = localURL.withUnsafeFileSystemRepresentation { localPath in
+			git_clone(&pointer, remoteURLString, localPath, &options)
+		}
 
-			guard result == GIT_OK.rawValue else {
-				return Result.failure(NSError(gitError: result, pointOfFailure: "git_clone"))
-			}
+		guard result == GIT_OK.rawValue else {
+			return Result.failure(NSError(gitError: result, pointOfFailure: "git_clone"))
+		}
 
-			let repository = Repository(pointer!)
-			return Result.success(repository)
+		let repository = Repository(pointer!)
+		return Result.success(repository)
 	}
 
 	// MARK: - Initializers
@@ -366,11 +366,7 @@ final public class Repository {
 		git_strarray_free(pointer)
 		pointer.deallocate()
 
-		let error = remotes.reduce(nil) { $0 == nil ? $0 : $1.error }
-		if let error = error {
-			return Result.failure(error)
-		}
-		return Result.success(remotes.map { $0.value! })
+		return remotes.aggregateResult()
 	}
 
 	private func remoteLookup<A>(named name: String, _ callback: (Result<OpaquePointer, NSError>) -> A) -> A {
@@ -436,11 +432,7 @@ final public class Repository {
 		git_strarray_free(pointer)
 		pointer.deallocate()
 
-		let error = references.reduce(nil) { $0 == nil ? $0 : $1.error }
-		if let error = error {
-			return Result.failure(error)
-		}
-		return Result.success(references.map { $0.value! })
+		return references.aggregateResult()
 	}
 
 	/// Load the reference with the given long name (e.g. "refs/heads/master")
@@ -709,8 +701,6 @@ final public class Repository {
 	// MARK: - Diffs
 
 	public func diff(for commit: Commit) -> Result<Diff, NSError> {
-		typealias Delta = Diff.Delta
-
 		guard !commit.parents.isEmpty else {
 			// Initial commit in a repository
 			return self.diff(from: nil, to: commit.oid)
@@ -719,20 +709,22 @@ final public class Repository {
 		var mergeDiff: OpaquePointer? = nil
 		defer { git_object_free(mergeDiff) }
 		for parent in commit.parents {
-			let error = self.diff(from: parent.oid, to: commit.oid) { (diff: Result<OpaquePointer, NSError>) -> NSError? in
-				guard diff.error == nil else {
-					return diff.error!
-				}
+			let error = self.diff(from: parent.oid, to: commit.oid) {
+				switch $0 {
+				case .failure(let error):
+					return error
 
-				if mergeDiff == nil {
-					mergeDiff = diff.value!
-				} else {
-					let mergeResult = git_diff_merge(mergeDiff, diff.value)
-					guard mergeResult == GIT_OK.rawValue else {
-						return NSError(gitError: mergeResult, pointOfFailure: "git_diff_merge")
+				case .success(let newDiff):
+					if mergeDiff == nil {
+						mergeDiff = newDiff
+					} else {
+						let mergeResult = git_diff_merge(mergeDiff, newDiff)
+						guard mergeResult == GIT_OK.rawValue else {
+							return NSError(gitError: mergeResult, pointOfFailure: "git_diff_merge")
+						}
 					}
+					return nil
 				}
-				return nil
 			}
 
 			if error != nil {
@@ -749,35 +741,35 @@ final public class Repository {
 		var oldTree: OpaquePointer? = nil
 		defer { git_object_free(oldTree) }
 		if let oid = oldCommitOid {
-			let result = unsafeTreeForCommitId(oid)
-			guard result.error == nil else {
-				return transform(Result.failure(result.error!))
+			switch unsafeTreeForCommitId(oid) {
+			case .failure(let error):
+				return transform(.failure(error))
+			case .success(let value):
+				oldTree = value
 			}
-
-			oldTree = result.value
 		}
 
 		var newTree: OpaquePointer? = nil
 		defer { git_object_free(newTree) }
 		if let oid = newCommitOid {
-			let result = unsafeTreeForCommitId(oid)
-			guard result.error == nil else {
-				return transform(Result.failure(result.error!))
+			switch unsafeTreeForCommitId(oid) {
+			case .failure(let error):
+				return transform(.failure(error))
+			case .success(let value):
+				newTree = value
 			}
-
-			newTree = result.value
 		}
 
 		var diff: OpaquePointer? = nil
 		let diffResult = git_diff_tree_to_tree(&diff,
-																					 self.pointer,
-																					 oldTree,
-																					 newTree,
-																					 nil)
+		                                       self.pointer,
+		                                       oldTree,
+		                                       newTree,
+		                                       nil)
 
 		guard diffResult == GIT_OK.rawValue else {
 			return transform(.failure(NSError(gitError: diffResult,
-															pointOfFailure: "git_diff_tree_to_tree")))
+			                                  pointOfFailure: "git_diff_tree_to_tree")))
 		}
 
 		return transform(Result<OpaquePointer, NSError>.success(diff!))
@@ -788,51 +780,53 @@ final public class Repository {
 		assert(oldCommitOid != nil || newCommitOid != nil, "It is an error to pass nil for both the oldOid and newOid")
 
 		var oldTree: Tree? = nil
-		if oldCommitOid != nil {
-			let result = safeTreeForCommitId(oldCommitOid!)
-			guard result.error == nil else {
-				return Result<Diff, NSError>.failure(result.error!)
+		if let oldCommitOid = oldCommitOid {
+			switch safeTreeForCommitId(oldCommitOid) {
+			case .failure(let error):
+				return .failure(error)
+			case .success(let value):
+				oldTree = value
 			}
-			oldTree = result.value
 		}
 
 		var newTree: Tree? = nil
-		if newCommitOid != nil {
-			let result = self.safeTreeForCommitId(newCommitOid!)
-			guard result.error == nil else {
-				return Result<Diff, NSError>.failure(result.error!)
+		if let newCommitOid = newCommitOid {
+			switch safeTreeForCommitId(newCommitOid) {
+			case .failure(let error):
+				return .failure(error)
+			case .success(let value):
+				newTree = value
 			}
-			newTree = result.value!
 		}
 
 		if oldTree != nil && newTree != nil {
 			return withGitObjects([oldTree!.oid, newTree!.oid], type: GIT_OBJ_TREE) { objects in
 				var diff: OpaquePointer? = nil
 				let diffResult = git_diff_tree_to_tree(&diff,
-																							 self.pointer,
-																							 objects[0],
-																							 objects[1],
-																							 nil)
+				                                       self.pointer,
+				                                       objects[0],
+				                                       objects[1],
+				                                       nil)
 				return processTreeToTreeDiff(diffResult, diff: diff)
 			}
 		} else if let tree = oldTree {
 			return withGitObject(tree.oid, type: GIT_OBJ_TREE, transform: { tree in
 				var diff: OpaquePointer? = nil
 				let diffResult = git_diff_tree_to_tree(&diff,
-																							 self.pointer,
-																							 tree,
-																							 nil,
-																							 nil)
+				                                       self.pointer,
+				                                       tree,
+				                                       nil,
+				                                       nil)
 				return processTreeToTreeDiff(diffResult, diff: diff)
 			})
 		} else if let tree = newTree {
 			return withGitObject(tree.oid, type: GIT_OBJ_TREE, transform: { tree in
 				var diff: OpaquePointer? = nil
 				let diffResult = git_diff_tree_to_tree(&diff,
-																							 self.pointer,
-																							 nil,
-																							 tree,
-																							 nil)
+				                                       self.pointer,
+				                                       nil,
+				                                       tree,
+				                                       nil)
 				return processTreeToTreeDiff(diffResult, diff: diff)
 			})
 		}
@@ -843,7 +837,7 @@ final public class Repository {
 	private func processTreeToTreeDiff(_ diffResult: Int32, diff: OpaquePointer?) -> Result<Diff, NSError> {
 		guard diffResult == GIT_OK.rawValue else {
 			return .failure(NSError(gitError: diffResult,
-															pointOfFailure: "git_diff_tree_to_tree"))
+			                        pointOfFailure: "git_diff_tree_to_tree"))
 		}
 
 		let diffObj = Diff(diff!)
@@ -852,8 +846,7 @@ final public class Repository {
 	}
 
 	private func processDiffDeltas(_ diffResult: OpaquePointer) -> Result<[Diff.Delta], NSError> {
-		typealias Delta = Diff.Delta
-		var returnDict = [Delta]()
+		var returnDict = [Diff.Delta]()
 
 		let count = git_diff_num_deltas(diffResult)
 
@@ -871,11 +864,7 @@ final public class Repository {
 	private func safeTreeForCommitId(_ oid: OID) -> Result<Tree, NSError> {
 		return withGitObject(oid, type: GIT_OBJ_COMMIT) { commit in
 			let treeId = git_commit_tree_id(commit)
-			let tree = self.tree(OID(treeId!.pointee))
-			guard tree.error == nil else {
-				return .failure(tree.error!)
-			}
-			return tree
+			return tree(OID(treeId!.pointee))
 		}
 	}
 
@@ -957,5 +946,20 @@ final public class Repository {
 		default:
 			return .failure(NSError(gitError: result, pointOfFailure: "git_repository_open_ext"))
 		}
+	}
+}
+
+private extension Array {
+	func aggregateResult<Value, Error>() -> Result<[Value], Error> where Element == Result<Value, Error> {
+		var values: [Value] = []
+		for result in self {
+			switch result {
+			case .success(let value):
+				values.append(value)
+			case .failure(let error):
+				return .failure(error)
+			}
+		}
+		return .success(values)
 	}
 }

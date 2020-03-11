@@ -1,3 +1,6 @@
+.vscode/
+.build/
+
 # Xcode
 #
 build/

@@ -6,7 +6,6 @@
 //  Copyright (c) 2014 GitHub, Inc. All rights reserved.
 //
 
-import Foundation
 import SwiftGit2
 import ZIPFoundation
 
@@ -15,7 +14,7 @@ final class Fixtures {
 	// MARK: Lifecycle
 
 	class var sharedInstance: Fixtures {
-		struct Singleton {
+		enum Singleton {
 			static let instance = Fixtures()
 		}
 		return Singleton.instance

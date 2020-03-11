@@ -17,8 +17,15 @@ public protocol PointerType: Hashable {
 	var type: git_otype { get }
 }
 
-public func == <P: PointerType>(lhs: P, rhs: P) -> Bool {
-	return lhs.oid == rhs.oid && lhs.type.rawValue == rhs.type.rawValue
+public extension PointerType {
+	static func == (lhs: Self, rhs: Self) -> Bool {
+		return lhs.oid == rhs.oid
+			&& lhs.type == rhs.type
+	}
+
+	func hash(into hasher: inout Hasher) {
+		hasher.combine(oid)
+	}
 }
 
 /// A pointer to a git object.
@@ -71,12 +78,6 @@ public enum Pointer: PointerType {
 	}
 }
 
-extension Pointer: Hashable {
-	public var hashValue: Int {
-		return oid.hashValue
-	}
-}
-
 extension Pointer: CustomStringConvertible {
 	public var description: String {
 		switch self {
@@ -101,11 +102,5 @@ public struct PointerTo<T: ObjectType>: PointerType {
 
 	public init(_ oid: OID) {
 		self.oid = oid
-	}
-}
-
-extension PointerTo: Hashable {
-	public var hashValue: Int {
-		return oid.hashValue
 	}
 }

@@ -5,7 +5,7 @@
 //  Created by Jake Van Alstyne on 8/20/17.
 //  Copyright © 2017 GitHub, Inc. All rights reserved.
 //
-import Foundation
+
 import Clibgit2
 
 public struct StatusEntry {
