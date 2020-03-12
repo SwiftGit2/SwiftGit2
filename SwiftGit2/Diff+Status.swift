@@ -9,7 +9,7 @@
 import Clibgit2
 import Foundation
 
-public extension Diff {
+public extension StatusEntry {
 	struct Status: OptionSet {
 		// This appears to be necessary due to bug in Swift
 		// https://bugs.swift.org/browse/SR-3003
@@ -51,12 +51,12 @@ public extension Repository {
 
 
 public struct StatusEntry {
-	public let status: Diff.Status
+	public let status: Status
 	public let headToIndex: Diff.Delta?
 	public let indexToWorkDir: Diff.Delta?
 
 	public init(from statusEntry: git_status_entry) {
-		self.status = Diff.Status(rawValue: statusEntry.status.rawValue)
+		self.status = Status(rawValue: statusEntry.status.rawValue)
 
 		if let htoi = statusEntry.head_to_index {
 			self.headToIndex = Diff.Delta(htoi.pointee)
