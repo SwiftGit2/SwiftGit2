@@ -588,7 +588,7 @@ public final class Repository {
 
 	/// Stage the file(s) under the specified path.
 	public func add(path: String) -> Result<(), NSError> {
-                var dirPointer = UnsafeMutablePointer<Int8>(mutating: (path as NSString).utf8String)
+		var dirPointer = UnsafeMutablePointer<Int8>(mutating: (path as NSString).utf8String)
  		var paths = withExtendedLifetime(&dirPointer) {
 			git_strarray(strings: $0, count: 1)
 		}
