@@ -918,19 +918,15 @@ public final class Repository {
 	// MARK: - Status
 
 	public func status(options: StatusOptions = StatusOptions()) -> Result<[StatusEntry], NSError> {
-		log(title: "SwiftGit2", msg: "status begin")
-		
 		var returnArray = [StatusEntry]()
 		
 		var git_options = options.git_options
 
 		var unsafeStatus: OpaquePointer? = nil
 		defer { git_status_list_free(unsafeStatus) }
-		log(title: "SwiftGit2", msg: "**************************")
 		log(title: "SwiftGit2", msg: "git_status_list_new BEFORE")
 		let statusResult = git_status_list_new(&unsafeStatus, self.pointer, &git_options)
 		log(title: "SwiftGit2", msg: "git_status_list_new AFTER")
-		log(title: "SwiftGit2", msg: "**************************")
 		guard statusResult == GIT_OK.rawValue, let unwrapStatusResult = unsafeStatus else {
 			return .failure(NSError(gitError: statusResult, pointOfFailure: "git_status_list_new"))
 		}
@@ -938,7 +934,6 @@ public final class Repository {
 		let count = git_status_list_entrycount(unwrapStatusResult)
 
 		for i in 0..<count {
-			log(title: "SwiftGit2", msg: "status by index \(i) begin")
 			let s = git_status_byindex(unwrapStatusResult, i)
 			if s?.pointee.status.rawValue == GIT_STATUS_CURRENT.rawValue {
 				continue
@@ -946,10 +941,7 @@ public final class Repository {
 
 			let statusEntry = StatusEntry(from: s!.pointee)
 			returnArray.append(statusEntry)
-			log(title: "SwiftGit2", msg: "status by index \(i) end")
 		}
-
-		log(title: "SwiftGit2", msg: "status success")
 		return .success(returnArray)
 	}
 
