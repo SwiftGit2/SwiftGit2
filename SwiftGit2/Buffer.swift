@@ -21,19 +21,28 @@ public final class Buffer {
 		self.pointer = pointer
 	}
 	
+	public init?(_ str : String) {
+		self.pointer = UnsafeMutablePointer.allocate(capacity: 1)
+		self.pointer.pointee = git_buf(ptr: nil, asize: 0, size: 0)
+		
+		guard let _ = try? set(string: str).get() else {
+			return nil
+		}
+	}
+	
 	deinit {
 		dispose()
 		pointer.deallocate()
 	}
 	
-	func set(string: String) -> Result<(),NSError> {
+	public func set(string: String) -> Result<(),NSError> {
 		guard let data = string.data(using: .utf8) else {
 			return .failure(NSError(gitError: 0, pointOfFailure: "string.data(using: .utf8)"))
 		}
 		return set(data: data)
 	}
 	
-	func set(data: Data) -> Result<(),NSError> {
+	public func set(data: Data) -> Result<(),NSError> {
 		let nsData = data as NSData
 		
 		return _resultOf({git_buf_set(pointer, nsData.bytes, nsData.length)}, pointOfFailure: "git_buf_set") { () }
@@ -46,7 +55,7 @@ public final class Buffer {
 		return String(data: data, encoding: .utf8)
 	}
 	
-	func asDiff() -> Result<Diff, NSError> {
+	public func asDiff() -> Result<Diff, NSError> {
 		var diff: OpaquePointer? = nil
 		return _result( { Diff(diff!) }, pointOfFailure: "git_diff_from_buffer") {
 			git_diff_from_buffer(&diff, ptr, size)
