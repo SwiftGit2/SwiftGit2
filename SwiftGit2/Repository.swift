@@ -588,9 +588,10 @@ public final class Repository {
 
 	/// Stage the file(s) under the specified path.
 	public func add(path: String) -> Result<(), NSError> {
-		let dir = path
-		var dirPointer = UnsafeMutablePointer<Int8>(mutating: (dir as NSString).utf8String)
-		var paths = git_strarray(strings: &dirPointer, count: 1)
+		var dirPointer = UnsafeMutablePointer<Int8>(mutating: (path as NSString).utf8String)
+		var paths = withExtendedLifetime(&dirPointer) {
+			git_strarray(strings: $0, count: 1)
+		}
 		return unsafeIndex().flatMap { index in
 			defer { git_index_free(index) }
 			let addResult = git_index_add_all(index, &paths, 0, nil, nil)
