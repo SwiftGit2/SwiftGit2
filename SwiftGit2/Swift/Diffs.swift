@@ -94,7 +94,7 @@ public struct Diff {
 		}
 		public let rawValue: UInt32
 
-		public static let binary     = Flags(rawValue: 0)
+		public static let binary     = Flags([])
 		public static let notBinary  = Flags(rawValue: 1 << 0)
 		public static let validId    = Flags(rawValue: 1 << 1)
 		public static let exists     = Flags(rawValue: 1 << 2)
