@@ -2,24 +2,31 @@
 [![Build Status](https://travis-ci.org/SwiftGit2/SwiftGit2.svg)](https://travis-ci.org/SwiftGit2/SwiftGit2)
 [![Carthage compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)](#carthage)
 [![GitHub release](https://img.shields.io/github/release/SwiftGit2/SwiftGit2.svg)](https://github.com/SwiftGit2/SwiftGit2/releases)
-![Swift 3.0.x](https://img.shields.io/badge/Swift-3.0.x-orange.svg)
+![Swift 5.2.x](https://img.shields.io/badge/Swift-5.2.x-orange.svg)
 
 Swift bindings to [libgit2](https://github.com/libgit2/libgit2).
 
 ```swift
-let URL: NSURL = ...
-let repo = Repository.at(URL)
-if let repo = repo.value {
-    let latestCommit: Result<Commit, NSError> = repo
+let URL: URL = ...
+let result = Repository.at(URL)
+
+switch result {
+case .success(let repo):
+
+    let latestCommit = repo
         .HEAD()
         .flatMap { repo.commit($0.oid) }
-    if let commit = latestCommit.value {
-        print("Latest Commit: \(commit.message) by \(commit.author.name)")
-    } else {
-        print("Could not get commit: \(latestCommit.error)")
-    }
-} else {
-    println("Could not open repository: \(repo.error)")
+	
+	switch latestCommit {
+	 case .success(let commit):
+		 print("Latest Commit: \(commit.message) by \(commit.author.name)")
+			 
+	 case .failure(let error):
+		 print("Could not get commit: \(error)")
+	 }
+	
+case .failure(let error):
+	print("Could not open repository: \(error)")
 }
 ```
 
@@ -43,6 +50,10 @@ To build SwiftGit2, you'll need the following tools installed locally:
 * autoconf
 * automake
 * pkg-config
+
+```
+brew install cmake libssh2 libtool autoconf automake pkg-config
+```
 
 ## Adding SwiftGit2 to your Project
 The easiest way to add SwiftGit2 to your project is to use [Carthage](https://github.com/Carthage/Carthage). Simply add `github "SwiftGit2/SwiftGit2"` to your `Cartfile` and run `carthage update`.
