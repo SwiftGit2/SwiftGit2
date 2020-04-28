@@ -69,8 +69,8 @@ elif [ "$SCHEME" == "SwiftGit2-iOS" ]; then
   #   "The requested device could not be found because no available devices matched the request."
   #   "The requested device could not be found because multiple devices matched the request."
   SIMULATOR_NAME="Custom Simulator"
-  DEVICE_ID=com.apple.CoreSimulator.SimDeviceType.iPhone-5
-  RUNTIME_ID=com.apple.CoreSimulator.SimRuntime.iOS-10-2
+  DEVICE_ID=com.apple.CoreSimulator.SimDeviceType.iPhone-X
+  RUNTIME_ID=com.apple.CoreSimulator.SimRuntime.iOS-11-4
   DESTINATION_ID=$(xcrun simctl create "$SIMULATOR_NAME" $DEVICE_ID $RUNTIME_ID)
 
   echo "*** Building and testing $SCHEME..."
