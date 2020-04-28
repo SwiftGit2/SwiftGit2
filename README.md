@@ -9,24 +9,24 @@ Swift bindings to [libgit2](https://github.com/libgit2/libgit2).
 ```swift
 let URL: URL = ...
 let result = Repository.at(URL)
-
 switch result {
-case .success(let repo):
-
+case let .success(repo):
     let latestCommit = repo
         .HEAD()
-        .flatMap { repo.commit($0.oid) }
-	
-	switch latestCommit {
-	 case .success(let commit):
-		 print("Latest Commit: \(commit.message) by \(commit.author.name)")
-			 
-	 case .failure(let error):
-		 print("Could not get commit: \(error)")
-	 }
-	
-case .failure(let error):
-	print("Could not open repository: \(error)")
+        .flatMap {
+            repo.commit($0.oid)
+        }
+
+    switch latestCommit {
+    case let .success(commit):
+        print("Latest Commit: \(commit.message) by \(commit.author.name)")
+
+    case let .failure(error):
+        print("Could not get commit: \(error)")
+    }
+
+case let .failure(error):
+    print("Could not open repository: \(error)")
 }
 ```
 
