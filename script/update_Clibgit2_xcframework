@@ -1,0 +1,12 @@
+#!/bin/bash
+
+set -e
+
+echo Updating libgit2.a
+./script/update_libgit2
+
+echo 
+echo Updating Clibgit2.xcframework
+rm -rf External/Clibgit2.xcframework/
+xcodebuild -create-xcframework -library External/libgit2.a -headers External/libgit2/include/ -output External/Clibgit2.xcframework
+cp libgit2/module.modulemap External/Clibgit2.xcframework/macos-x86_64/Headers/
