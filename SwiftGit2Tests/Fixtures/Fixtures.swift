@@ -48,7 +48,7 @@ final class Fixtures {
 	}
 
 	func tearDown() {
-		try! FileManager.default.removeItem(at: directoryURL)
+		try? FileManager.default.removeItem(at: directoryURL)
 	}
 
 	// MARK: - Helpers
