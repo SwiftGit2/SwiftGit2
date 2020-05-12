@@ -28,13 +28,21 @@ let package = Package(
 		.binaryTarget(
 			name: "Clibgit2",
 			path: "External/Clibgit2.xcframework"
-		),/*
+		),
 		.testTarget(
 			name: "SwiftGit2Tests",
 			dependencies: ["SwiftGit2", "Quick", "Nimble", "ZipArchive"],
 			path: "SwiftGit2Tests",
 			exclude: ["Info.plist"],
-			resources: [.copy("Fixtures/")]
-		),*/
+			resources: [
+				.copy("Fixtures/repository-with-status.zip"),
+				.copy("Fixtures/Mantle.zip"),
+				.copy("Fixtures/simple-repository.zip"),
+				.copy("Fixtures/detached-head.zip"),
+			],
+			linkerSettings: [ // needed for ZipArchive
+                .linkedLibrary("c++")
+            ]
+		),
 	]
 )
