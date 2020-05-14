@@ -23,7 +23,7 @@ let package = Package(
 			name: "SwiftGit2",
 			dependencies: ["Clibgit2"],
 			path: "SwiftGit2",
-			exclude: ["SwiftGit2.h", "SwiftGit2.m", "Info.plist"]
+			exclude: ["Info.plist"]
 		),
 		.binaryTarget(
 			name: "Clibgit2",

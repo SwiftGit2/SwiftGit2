@@ -95,6 +95,8 @@ private func cloneOptions(bare: Bool = false, localClone: Bool = false, fetchOpt
 
 /// A git repository.
 public final class Repository {
+	/// Only used for running `git_libgit2_init()` exactly once.
+	private static var gitInit: Void = { git_libgit2_init(); return }()
 
 	// MARK: - Creating Repositories
 
@@ -104,6 +106,7 @@ public final class Repository {
 	///
 	/// Returns a `Result` with a `Repository` or an error.
 	public class func create(at url: URL) -> Result<Repository, NSError> {
+		_ = Self.gitInit
 		var pointer: OpaquePointer? = nil
 		let result = url.withUnsafeFileSystemRepresentation {
 			git_repository_init(&pointer, $0, 0)
@@ -123,6 +126,7 @@ public final class Repository {
 	///
 	/// Returns a `Result` with a `Repository` or an error.
 	public class func at(_ url: URL) -> Result<Repository, NSError> {
+		_ = Self.gitInit
 		var pointer: OpaquePointer? = nil
 		let result = url.withUnsafeFileSystemRepresentation {
 			git_repository_open(&pointer, $0)
@@ -150,6 +154,7 @@ public final class Repository {
 	public class func clone(from remoteURL: URL, to localURL: URL, localClone: Bool = false, bare: Bool = false,
 	                        credentials: Credentials = .default, checkoutStrategy: CheckoutStrategy = .Safe,
 	                        checkoutProgress: CheckoutProgressBlock? = nil) -> Result<Repository, NSError> {
+		_ = Self.gitInit
 		var options = cloneOptions(
 			bare: bare,
 			localClone: localClone,
