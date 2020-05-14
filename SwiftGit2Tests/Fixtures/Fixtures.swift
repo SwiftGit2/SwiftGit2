@@ -8,7 +8,7 @@
 
 import Foundation
 import SwiftGit2
-import ZipArchive
+import Zip
 
 final class Fixtures {
 
@@ -51,8 +51,9 @@ final class Fixtures {
 
 		let zipURLs = bundle.urls(forResourcesWithExtension: "zip", subdirectory: nil)!
 		assert(!zipURLs.isEmpty, "No zip-files for testing found.")
-		for URL in zipURLs {
-			SSZipArchive.unzipFile(atPath: URL.path, toDestination: directoryURL.path)
+		for url in zipURLs {
+			// Will throw error but everything will be fine. Does not happen when using SwiftPM.
+			try? Zip.unzipFile(url, destination: directoryURL, overwrite: true, password: nil)
 		}
 	}
 
@@ -64,7 +65,12 @@ final class Fixtures {
 
 	func repository(named name: String) -> Repository {
 		let url = directoryURL.appendingPathComponent(name, isDirectory: true)
-		return Repository.at(url).value!
+		switch Repository.at(url) {
+		case .success(let repo):
+			return repo
+		case .failure(let error):
+			fatalError(error.localizedDescription)
+		}
 	}
 
 	// MARK: - The Fixtures

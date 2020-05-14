@@ -15,8 +15,8 @@ let package = Package(
 	],
 	dependencies: [
 		.package(url: "https://github.com/Quick/Quick", from: "2.2.0"),
-		.package(url: "https://github.com/Quick/Nimble", from: "8.0.7"),
-		.package(url: "https://github.com/muizidn/ZipArchive", .branch("master")),
+		.package(url: "https://github.com/Quick/Nimble", from: "8.0.8"),
+		.package(url: "https://github.com/marmelroy/Zip.git", from: "2.0.0"),
 	],
 	targets: [
 		.target(
@@ -31,7 +31,7 @@ let package = Package(
 		),
 		.testTarget(
 			name: "SwiftGit2Tests",
-			dependencies: ["SwiftGit2", "Quick", "Nimble", "ZipArchive"],
+			dependencies: ["SwiftGit2", "Quick", "Nimble", "Zip"],
 			path: "SwiftGit2Tests",
 			exclude: ["Info.plist"],
 			resources: [
@@ -39,10 +39,7 @@ let package = Package(
 				.copy("Fixtures/Mantle.zip"),
 				.copy("Fixtures/simple-repository.zip"),
 				.copy("Fixtures/detached-head.zip"),
-			],
-			linkerSettings: [ // needed for ZipArchive
-                .linkedLibrary("c++")
-            ]
+			]
 		),
 	]
 )
