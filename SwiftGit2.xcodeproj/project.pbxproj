@@ -857,6 +857,7 @@
 					"$(inherited)",
 				);
 				INFOPLIST_FILE = SwiftGit2/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.2;
 				LIBRARY_SEARCH_PATHS = (
 					"External/libgit2-ios",
 					"External/libssh2-ios/lib",
@@ -886,6 +887,7 @@
 					"$(inherited)",
 				);
 				INFOPLIST_FILE = SwiftGit2/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.2;
 				LIBRARY_SEARCH_PATHS = (
 					"External/libgit2-ios",
 					"External/libssh2-ios/lib",
@@ -982,7 +984,7 @@
 				INSTALL_GROUP = "";
 				INSTALL_MODE_FLAG = "";
 				INSTALL_OWNER = "";
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.2;
 				MACOSX_DEPLOYMENT_TARGET = 10.9;
 				SWIFT_VERSION = 5.0;
 			};
@@ -997,7 +999,7 @@
 				INSTALL_GROUP = "";
 				INSTALL_MODE_FLAG = "";
 				INSTALL_OWNER = "";
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.2;
 				MACOSX_DEPLOYMENT_TARGET = 10.9;
 				SWIFT_VERSION = 5.0;
 			};
