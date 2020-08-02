@@ -105,6 +105,9 @@ public struct Commit: ObjectType, Hashable {
 
 	/// The full message of the commit.
 	public let message: String
+	
+	/// time value as Date
+	public let time: Date
 
 	/// Create an instance with a libgit2 `git_commit` object.
 	public init(_ pointer: OpaquePointer) {
@@ -114,6 +117,7 @@ public struct Commit: ObjectType, Hashable {
 		author = Signature(git_commit_author(pointer).pointee)
 		committer = Signature(git_commit_committer(pointer).pointee)
 		tree = PointerTo(OID(git_commit_tree_id(pointer).pointee))
+		time = Date(timeIntervalSince1970: Double(git_commit_time(pointer)))
 
 		self.parents = (0..<git_commit_parentcount(pointer)).map {
 			return PointerTo(OID(git_commit_parent_id(pointer, $0).pointee))
