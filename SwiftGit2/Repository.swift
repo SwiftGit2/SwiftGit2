@@ -197,7 +197,7 @@ public final class Repository {
 	}
 
 	deinit {
-		git_repository_free(pointer)
+		//git_repository_free(pointer)
 	}
 
 	// MARK: - Properties

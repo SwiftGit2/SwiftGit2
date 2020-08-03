@@ -9,7 +9,7 @@
 import Clibgit2
 
 extension Index : InstanceType {
-	public func free(pointer: OpaquePointer) {
+	public static func free(pointer: OpaquePointer) {
 		git_index_free(pointer)
 	}
 }

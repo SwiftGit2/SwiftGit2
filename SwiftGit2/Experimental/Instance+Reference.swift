@@ -9,7 +9,7 @@
 import Clibgit2
 
 extension Reference : InstanceType {
-	public func free(pointer: OpaquePointer) {
+	public static func free(pointer: OpaquePointer) {
 		git_reference_free(pointer)
 	}
 }

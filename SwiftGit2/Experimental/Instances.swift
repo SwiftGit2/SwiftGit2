@@ -9,7 +9,7 @@
 import Clibgit2
 
 public protocol InstanceType {
-	func free(pointer: OpaquePointer) 
+	static func free(pointer: OpaquePointer) 
 }
 
 public final class Instance<Type> where Type : InstanceType {
@@ -18,7 +18,7 @@ public final class Instance<Type> where Type : InstanceType {
 		self.pointer = pointer
 	}
 	deinit {
-		git_diff_free(pointer)
+		Type.free(pointer: pointer)
 	}
 }
 
