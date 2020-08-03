@@ -13,13 +13,30 @@ public enum BranchLocation {
 	case remote
 }
 
-extension Branch : InstanceType {
-	public func free(pointer: OpaquePointer) {
-		git_reference_free(pointer)
+public struct InstanceBranch {
+	let instance : Instance<Reference>
+	
+	var name 		: String { instance.name }
+	var longName 	: String { instance.longName }
+	var oid			: OID?	 { instance.oid }
+	
+	init?(instance : Instance<Reference>) {
+		guard instance.isBranch || instance.isRemote
+			else { return nil }
+		self.instance = instance
 	}
 }
 
-public extension Instance where Type == Branch {
+
+//extension Branch : InstanceType {
+//	public func free(pointer: OpaquePointer) {
+//		git_reference_free(pointer)
+//	}
+//}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+private extension Instance where Type == Reference {
 	var name		: String {
 		var namePointer: UnsafePointer<Int8>? = nil
 		let success = git_branch_name(&namePointer, pointer)
@@ -49,3 +66,4 @@ public extension Instance where Type == Branch {
 		}
 	}
 }
+

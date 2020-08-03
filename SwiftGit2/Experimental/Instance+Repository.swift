@@ -30,21 +30,19 @@ public extension Repository {
 }
 
 public extension Instance where Type == Repository {
-	
-	
 	/// Load and return a list of all local branches.
-	func localBranches() -> Result<[Branch], NSError> {
-		return references(withPrefix: "refs/heads/")
-			.map { (refs: [ReferenceType]) in
-				return refs.map { $0 as! Branch }
-			}
+	func branches( _ location: BranchLocation) -> Result<[InstanceBranch], NSError> {
+		switch location {
+		case .local:		return references(withPrefix: "refs/heads/")
+		case .remote: 		return references(withPrefix: "refs/remotes/")
+		}
 	}
 }
 	
 
 public extension Instance where Type == Repository {
 	/// Load all the references with the given prefix (e.g. "refs/heads/")
-	func references(withPrefix prefix: String) -> Result<[ReferenceType], NSError> {
+	func references(withPrefix prefix: String) -> Result<[InstanceBranch], NSError> {
 		let pointer = UnsafeMutablePointer<git_strarray>.allocate(capacity: 1)
 		defer {
 			git_strarray_free(pointer)
@@ -60,12 +58,11 @@ public extension Instance where Type == Repository {
 		let strarray = pointer.pointee
 		let references = strarray
 			.filter { $0.hasPrefix(prefix) }
-			.map {
-				self.__reference(named: $0)
-			}
+			.map { self.reference(name: $0) }
 		
 
 		return references.aggregateResult()
+			.map { $0.compactMap { InstanceBranch(instance: $0) } }
 	}
 	
 	///
