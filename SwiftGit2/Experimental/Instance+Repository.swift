@@ -56,6 +56,23 @@ public extension Instance where Type == Repository {
 			git_repository_index(&pointer, pointer)
 		}
 	}
+	
+	func reset(path: String) -> Result<(), NSError> {
+		let dir = path
+		var dirPointer = UnsafeMutablePointer<Int8>(mutating: (dir as NSString).utf8String)
+		var paths = git_strarray(strings: &dirPointer, count: 1)
+		
+		return HEAD().flatMap { self.commit($0.oid) }.flatMap { comit in
+				
+			let result = git_reset_default(self.pointer, comit.pointer, &paths)
+			guard result == GIT_OK.rawValue else {
+				return .failure(NSError(gitError: result, pointOfFailure: "git_reset_default"))
+			}
+				
+			return .success(())
+		}
+	}
+
 }
 	
 
@@ -91,4 +108,39 @@ public extension Instance where Type == Repository {
 			git_reference_lookup(&pointer, self.pointer, name)
 		}
 	}
+	
+	func HEAD() -> Result<ReferenceType, NSError> {
+		var pointer: OpaquePointer? = nil
+		let result = git_repository_head(&pointer, self.pointer)
+		guard result == GIT_OK.rawValue else {
+			return Result.failure(NSError(gitError: result, pointOfFailure: "git_repository_head"))
+		}
+		let value = referenceWithLibGit2Reference(pointer!)
+		git_reference_free(pointer)
+		return Result.success(value)
+	}
+	
+	func commit(_ oid: OID) -> Result<Commit, NSError> {
+		return withGitObject(oid, type: GIT_OBJECT_COMMIT) { Commit($0) }
+	}
+	
+	private func withGitObject<T>(_ oid: OID, type: git_object_t,
+								  transform: (OpaquePointer) -> Result<T, NSError>) -> Result<T, NSError> {
+		var pointer: OpaquePointer? = nil
+		var oid = oid.oid
+		let result = git_object_lookup(&pointer, self.pointer, &oid, type)
+
+		guard result == GIT_OK.rawValue else {
+			return Result.failure(NSError(gitError: result, pointOfFailure: "git_object_lookup"))
+		}
+
+		let value = transform(pointer!)
+		git_object_free(pointer)
+		return value
+	}
+	
+	private func withGitObject<T>(_ oid: OID, type: git_object_t, transform: (OpaquePointer) -> T) -> Result<T, NSError> {
+		return withGitObject(oid, type: type) { Result.success(transform($0)) }
+	}
+
 }

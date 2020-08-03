@@ -636,7 +636,6 @@ public final class Repository {
 				
 			return .success(())
 		}
-
 	}
 
 	/// Perform a commit with arbitrary numbers of parent commits.

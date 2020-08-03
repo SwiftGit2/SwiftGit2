@@ -56,7 +56,7 @@ public extension Instance where Type == Index {
 		}
 	}
 	
-	func write() -> Result<(),NSError> {
+	private func write() -> Result<(),NSError> {
 		return _result((), pointOfFailure: "git_index_write") {
 			git_index_write(pointer)
 		}
