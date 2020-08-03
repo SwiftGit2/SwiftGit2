@@ -19,11 +19,4 @@ public extension Instance where Type == Reference {
 	var isBranch : Bool { git_reference_is_branch(pointer) 	!= 0 }
 	var isRemote : Bool { git_reference_is_remote(pointer) 	!= 0 }
 	var isTag    : Bool { git_reference_is_tag(pointer) 	!= 0 }
-	
-//	func asBranch() -> Instance<Branch>? {
-//		if isBranch || isRemote {
-//			return self as? Instance<Branch>
-//		}
-//		return nil
-//	}
 }

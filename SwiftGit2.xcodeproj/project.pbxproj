@@ -100,6 +100,7 @@
 		E6AFA2D824D7F72B0090086A /* Instance+Branch.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6AFA2D724D7F72B0090086A /* Instance+Branch.swift */; };
 		E6AFA2DA24D7F7570090086A /* Instance+Repository.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6AFA2D924D7F7570090086A /* Instance+Repository.swift */; };
 		E6AFA2DC24D8174B0090086A /* Instance+Reference.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6AFA2DB24D8174B0090086A /* Instance+Reference.swift */; };
+		E6AFA2DE24D8A01B0090086A /* Instance+Index.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6AFA2DD24D8A01B0090086A /* Instance+Index.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -222,6 +223,7 @@
 		E6AFA2D724D7F72B0090086A /* Instance+Branch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Instance+Branch.swift"; sourceTree = "<group>"; };
 		E6AFA2D924D7F7570090086A /* Instance+Repository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Instance+Repository.swift"; sourceTree = "<group>"; };
 		E6AFA2DB24D8174B0090086A /* Instance+Reference.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Instance+Reference.swift"; sourceTree = "<group>"; };
+		E6AFA2DD24D8A01B0090086A /* Instance+Index.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Instance+Index.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -475,6 +477,7 @@
 				E6AFA2D724D7F72B0090086A /* Instance+Branch.swift */,
 				E6AFA2D924D7F7570090086A /* Instance+Repository.swift */,
 				E6AFA2DB24D8174B0090086A /* Instance+Reference.swift */,
+				E6AFA2DD24D8A01B0090086A /* Instance+Index.swift */,
 			);
 			path = Experimental;
 			sourceTree = "<group>";
@@ -838,6 +841,7 @@
 				AA89482F23F1671A0074288B /* Buffer.swift in Sources */,
 				E6AFA2D824D7F72B0090086A /* Instance+Branch.swift in Sources */,
 				E6AFA2D624D7F6EB0090086A /* Instance+Commit.swift in Sources */,
+				E6AFA2DE24D8A01B0090086A /* Instance+Index.swift in Sources */,
 				BEB31F6D1A0D78F300F525B9 /* Repository.swift in Sources */,
 				BE2E3BE61A31261300C67092 /* Objects.swift in Sources */,
 				E64A9DB324D78C78005B643E /* Instances.swift in Sources */,

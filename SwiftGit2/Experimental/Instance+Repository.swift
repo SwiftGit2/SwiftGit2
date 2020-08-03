@@ -15,7 +15,7 @@ extension Repository : InstanceType {
 }
 
 public extension Repository {
-	class func instance(at url: URL) -> Result<Instance<Repository>, NSError> {
+	class func at(url: URL) -> Result<Instance<Repository>, NSError> {
 		var pointer: OpaquePointer? = nil
 		let result = url.withUnsafeFileSystemRepresentation {
 			git_repository_open(&pointer, $0)
@@ -27,6 +27,17 @@ public extension Repository {
 		
 		return Result.success(Instance<Repository>(pointer!))
 	}
+	
+	class func create(url: URL) -> Result<Instance<Repository>, NSError> {
+		var pointer: OpaquePointer? = nil
+		
+		
+		return _result( { Instance<Repository>(pointer!) }, pointOfFailure: "git_object_lookup") {
+			url.withUnsafeFileSystemRepresentation {
+				git_repository_init(&pointer, $0, 0)
+			}
+		}
+	}
 }
 
 public extension Instance where Type == Repository {
@@ -35,6 +46,14 @@ public extension Instance where Type == Repository {
 		switch location {
 		case .local:		return references(withPrefix: "refs/heads/")
 		case .remote: 		return references(withPrefix: "refs/remotes/")
+		}
+	}
+	
+	func index() -> Result<Instance<Index>, NSError> {
+		var pointer: OpaquePointer? = nil
+		
+		return _result( { Instance<Index>(pointer!) }, pointOfFailure: "git_repository_index") {
+			git_repository_index(&pointer, pointer)
 		}
 	}
 }
@@ -63,23 +82,6 @@ public extension Instance where Type == Repository {
 
 		return references.aggregateResult()
 			.map { $0.compactMap { InstanceBranch(instance: $0) } }
-	}
-	
-	///
-	/// If the reference is a branch, a `Branch` will be returned. If the
-	/// reference is a tag, a `TagReference` will be returned. Otherwise, a
-	/// `Reference` will be returned.
-	func __reference(named name: String) -> Result<ReferenceType, NSError> {
-		var pointer: OpaquePointer? = nil
-		let result = git_reference_lookup(&pointer, self.pointer, name)
-
-		guard result == GIT_OK.rawValue else {
-			return Result.failure(NSError(gitError: result, pointOfFailure: "git_reference_lookup"))
-		}
-
-		let value = referenceWithLibGit2Reference(pointer!)
-		git_reference_free(pointer)
-		return Result.success(value)
 	}
 	
 	func reference(name: String) -> Result<Instance<Reference>, NSError> {
