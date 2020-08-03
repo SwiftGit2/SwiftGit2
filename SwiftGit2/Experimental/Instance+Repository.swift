@@ -17,24 +17,20 @@ extension Repository : InstanceType {
 public extension Repository {
 	class func at(url: URL) -> Result<Instance<Repository>, NSError> {
 		var pointer: OpaquePointer? = nil
-		let result = url.withUnsafeFileSystemRepresentation {
-			git_repository_open(&pointer, $0)
-		}
-
-		guard result == GIT_OK.rawValue else {
-			return Result.failure(NSError(gitError: result, pointOfFailure: "git_repository_open"))
-		}
 		
-		return Result.success(Instance<Repository>(pointer!))
+		return _result( { Instance<Repository>(pointer!) }, pointOfFailure: "git_repository_open") {
+			url.withUnsafeFileSystemRepresentation {
+				git_repository_open(&pointer, $0)
+			}
+		}
 	}
 	
 	class func create(url: URL) -> Result<Instance<Repository>, NSError> {
 		var pointer: OpaquePointer? = nil
 		
-		
 		return _result( { Instance<Repository>(pointer!) }, pointOfFailure: "git_object_lookup") {
 			url.withUnsafeFileSystemRepresentation {
-				git_repository_init(&pointer, $0, 0)
+				git_repository_init(&pointer, $0, 1)
 			}
 		}
 	}
@@ -62,14 +58,12 @@ public extension Instance where Type == Repository {
 		var dirPointer = UnsafeMutablePointer<Int8>(mutating: (dir as NSString).utf8String)
 		var paths = git_strarray(strings: &dirPointer, count: 1)
 		
-		return HEAD().flatMap { self.commit($0.oid) }.flatMap { comit in
-				
-			let result = git_reset_default(self.pointer, comit.pointer, &paths)
-			guard result == GIT_OK.rawValue else {
-				return .failure(NSError(gitError: result, pointOfFailure: "git_reset_default"))
-			}
-				
-			return .success(())
+		return HEAD()
+			.flatMap { self.commit($0.oid) }
+			.flatMap { commit in
+				_result((), pointOfFailure: "git_reset_default") {
+					git_reset_default(self.pointer, commit.pointer, &paths)
+				}
 		}
 	}
 
@@ -109,38 +103,20 @@ public extension Instance where Type == Repository {
 		}
 	}
 	
-	func HEAD() -> Result<ReferenceType, NSError> {
+	func HEAD() -> Result<Instance<Reference>, NSError> {
 		var pointer: OpaquePointer? = nil
-		let result = git_repository_head(&pointer, self.pointer)
-		guard result == GIT_OK.rawValue else {
-			return Result.failure(NSError(gitError: result, pointOfFailure: "git_repository_head"))
+		
+		return _result({ Instance<Reference>(pointer!) }, pointOfFailure: "git_repository_head") {
+			git_repository_head(&pointer, self.pointer)
 		}
-		let value = referenceWithLibGit2Reference(pointer!)
-		git_reference_free(pointer)
-		return Result.success(value)
 	}
 	
-	func commit(_ oid: OID) -> Result<Commit, NSError> {
-		return withGitObject(oid, type: GIT_OBJECT_COMMIT) { Commit($0) }
-	}
-	
-	private func withGitObject<T>(_ oid: OID, type: git_object_t,
-								  transform: (OpaquePointer) -> Result<T, NSError>) -> Result<T, NSError> {
+	func commit(_ oid: OID) -> Result<Instance<Commit>, NSError> {
 		var pointer: OpaquePointer? = nil
 		var oid = oid.oid
-		let result = git_object_lookup(&pointer, self.pointer, &oid, type)
-
-		guard result == GIT_OK.rawValue else {
-			return Result.failure(NSError(gitError: result, pointOfFailure: "git_object_lookup"))
+		
+		return _result({ Instance<Commit>(pointer!) }, pointOfFailure: "git_object_lookup") {
+			git_object_lookup(&pointer, self.pointer, &oid, GIT_OBJECT_COMMIT)
 		}
-
-		let value = transform(pointer!)
-		git_object_free(pointer)
-		return value
 	}
-	
-	private func withGitObject<T>(_ oid: OID, type: git_object_t, transform: (OpaquePointer) -> T) -> Result<T, NSError> {
-		return withGitObject(oid, type: type) { Result.success(transform($0)) }
-	}
-
 }

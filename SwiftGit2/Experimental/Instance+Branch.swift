@@ -18,7 +18,7 @@ public struct InstanceBranch {
 	
 	var name 		: String { instance.name }
 	var longName 	: String { instance.longName }
-	var oid			: OID?	 { instance.oid }
+	var oid			: OID?	 { instance._oid }
 	
 	init?(instance : Instance<Reference>) {
 		guard instance.isBranch || instance.isRemote
@@ -48,7 +48,7 @@ private extension Instance where Type == Reference {
 	
 	var longName : String { String(validatingUTF8: git_reference_name(pointer)) ?? "" }
 	
-	var oid : OID? {
+	var _oid : OID? {
 		if git_reference_type(pointer).rawValue == GIT_REFERENCE_SYMBOLIC.rawValue {
 			var resolved: OpaquePointer? = nil
 			defer {

@@ -16,6 +16,7 @@ extension Reference : InstanceType {
 
 
 public extension Instance where Type == Reference {
+	var oid 	 : OID  { OID(git_reference_target(pointer).pointee) }
 	var isBranch : Bool { git_reference_is_branch(pointer) 	!= 0 }
 	var isRemote : Bool { git_reference_is_remote(pointer) 	!= 0 }
 	var isTag    : Bool { git_reference_is_tag(pointer) 	!= 0 }
