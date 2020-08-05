@@ -112,11 +112,29 @@ public extension Instance where Type == Repository {
 	}
 	
 	func commit(_ oid: OID) -> Result<Instance<Commit>, NSError> {
+		return instanciate(oid)
+	}
+	
+	func instanciate<Type>(_ oid: OID) -> Result<Instance<Type>, NSError> {
 		var pointer: OpaquePointer? = nil
 		var oid = oid.oid
 		
-		return _result({ Instance<Commit>(pointer!) }, pointOfFailure: "git_object_lookup") {
-			git_object_lookup(&pointer, self.pointer, &oid, GIT_OBJECT_COMMIT)
+		return _result({ Instance<Type>(pointer!) }, pointOfFailure: "git_object_lookup") {
+			git_object_lookup(&pointer, self.pointer, &oid, gitType(for: Type.self))
 		}
 	}
+	
+
 }
+
+func gitType<T>(for type: T.Type) -> git_object_t {
+	switch type {
+	case is Commit.Type: 	return GIT_OBJECT_COMMIT
+	case is Tree.Type:		return GIT_OBJECT_TREE
+	case is Blob.Type:		return GIT_OBJECT_BLOB
+	case is Tag.Type:		return GIT_OBJECT_TAG
+	
+	default:				return GIT_OBJECT_ANY
+	}
+}
+	

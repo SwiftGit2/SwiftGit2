@@ -308,10 +308,6 @@ public final class Repository {
 	public func blobOld(_ oid: OID) -> Result<BlobOLD, NSError> {
 		return withGitObject(oid, type: GIT_OBJECT_BLOB) { BlobOLD($0) }
 	}
-	
-	public func instanciate<Type>(_ oid: OID) -> Result<Instance<Type>, NSError> {
-		return withGitObject(oid, type: GIT_OBJECT_COMMIT) { Instance<Type>($0) }
-	}
 
 	/// Loads the commit with the given OID.
 	///

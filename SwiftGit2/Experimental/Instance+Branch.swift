@@ -14,11 +14,11 @@ public enum BranchLocation {
 }
 
 public struct InstanceBranch {
-	let instance : Instance<Reference>
+	public let instance : Instance<Reference>
 	
-	var name 		: String { instance.name }
-	var longName 	: String { instance.longName }
-	var oid			: OID?	 { instance._oid }
+	public var name 		: String { instance.name }
+	public var longName 	: String { instance.longName }
+	public var oid			: OID?	 { instance._oid }
 	
 	init?(instance : Instance<Reference>) {
 		guard instance.isBranch || instance.isRemote
