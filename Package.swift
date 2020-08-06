@@ -7,6 +7,7 @@ let package = Package(
 	name: "SwiftGit2",
 	platforms: [
 		.macOS(.v10_11),
+		.iOS("9.2")
 	],
 	products: [
 		.library(

@@ -1023,8 +1023,6 @@
 					"-force_load",
 					External/libgit2.a,
 					/usr/local/lib/libssh2.a,
-					"-lcrypto",
-					"-lssl",
 					"-lcurl",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "org.libgit2.$(PRODUCT_NAME:rfc1034identifier)";
@@ -1051,8 +1049,6 @@
 					"-force_load",
 					External/libgit2.a,
 					/usr/local/lib/libssh2.a,
-					"-lcrypto",
-					"-lssl",
 					"-lcurl",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "org.libgit2.$(PRODUCT_NAME:rfc1034identifier)";
