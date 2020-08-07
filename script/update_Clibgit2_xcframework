@@ -2,11 +2,29 @@
 
 set -e
 
-echo Updating libgit2.a
+SCRIPT_DIR=$(dirname "$0")
+source "${SCRIPT_DIR}/xcode_functions.sh"
+cd ${SCRIPT_DIR}/..
+
+echo Compiling libgit2
 ./script/update_libgit2
+# If we just run ./script/update_libgit2_ios directly, we can't combine the simulator and macOS builds in one framework. Have no idea why. 
+xcodebuild -scheme libgit2-iOS -configuration Release
+
+SDKVERSION=$(ios_sdk_version)
 
 echo 
-echo Updating Clibgit2.xcframework
+echo Creating Clibgit2.xcframework
 rm -rf External/Clibgit2.xcframework/
-xcodebuild -create-xcframework -library External/libgit2.a -headers External/libgit2/include/ -output External/Clibgit2.xcframework
+xcodebuild -create-xcframework \
+	-output External/Clibgit2.xcframework \
+	-library External/libgit2.a \
+	-headers External/libgit2/include/ \
+	-library External/libgit2-ios/iphoneos${SDKVERSION}-arm64.sdk/lib/libgit2.a \
+	-headers External/libgit2-ios/iphoneos${SDKVERSION}-arm64.sdk/include/ \
+	-library External/libgit2-ios/iphonesimulator${SDKVERSION}-x86_64.sdk/lib/libgit2.a \
+	-headers External/libgit2-ios/iphonesimulator${SDKVERSION}-x86_64.sdk/include/ \
+
 cp libgit2/module.modulemap External/Clibgit2.xcframework/macos-x86_64/Headers/
+cp libgit2/module.modulemap External/Clibgit2.xcframework/ios-arm64/Headers/
+cp libgit2/module.modulemap External/Clibgit2.xcframework/ios-x86_64-simulator/Headers/
