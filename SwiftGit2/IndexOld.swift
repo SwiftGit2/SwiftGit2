@@ -9,7 +9,7 @@
 import Foundation
 import Clibgit2
 
-public extension Repository  {
+public extension RepositoryOLD  {
 	func index() -> Result<IndexOld, NSError> {
 		var index_pointer: OpaquePointer? = nil
 		

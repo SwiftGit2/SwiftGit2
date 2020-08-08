@@ -20,7 +20,7 @@ public final class Index : InstanceProtocol {
 	}
 }
 
-public extension RepositoryInstance {
+public extension Repository {
 	func index() -> Result<Index, NSError> {
 		var pointer: OpaquePointer? = nil
 		

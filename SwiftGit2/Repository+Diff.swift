@@ -9,7 +9,7 @@
 import Foundation
 import Clibgit2
 
-public extension Repository {
+public extension RepositoryOLD {
 	func diffTreeToTree(oldTree: Tree, newTree: Tree, options: DiffOptions? = nil) -> Result<Diff, NSError> {
 		var diff: OpaquePointer? = nil
 		let result = git_diff_tree_to_tree(&diff, self.pointer, oldTree.pointer, newTree.pointer, options?.pointer)
@@ -87,7 +87,7 @@ public extension Repository {
 	}
 }
 
-private extension Repository {
+private extension RepositoryOLD {
 	func hunksBetweenBlobs(old: Blob?, new: Blob?, options: DiffOptions?) -> Result<[Diff.Hunk],NSError>{
 		var cb = DiffEachCallbacks()
 		

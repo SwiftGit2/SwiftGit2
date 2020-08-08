@@ -11,7 +11,7 @@ import Nimble
 import Quick
 import Clibgit2
 
-private extension Repository {
+private extension RepositoryOLD {
 	func withGitRemote<T>(named name: String, transform: (OpaquePointer) -> T) -> T {
 		let repository = self.pointer
 

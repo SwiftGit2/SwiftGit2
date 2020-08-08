@@ -83,7 +83,7 @@ extension Signature: Hashable {
 }
 
 /// A git commit.
-public struct Commit: ObjectType, Hashable {
+public struct CommitOLD: ObjectType, Hashable {
 	public let pointer: OpaquePointer
 	
 	public static let type = GIT_OBJECT_COMMIT
@@ -95,7 +95,7 @@ public struct Commit: ObjectType, Hashable {
 	public let tree: PointerTo<Tree>
 
 	/// The OIDs of the commit's parents.
-	public let parents: [PointerTo<Commit>]
+	public let parents: [PointerTo<CommitOLD>]
 
 	/// The author of the commit.
 	public let author: Signature

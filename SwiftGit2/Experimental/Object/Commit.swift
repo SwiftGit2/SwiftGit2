@@ -9,7 +9,7 @@
 import Clibgit2
 
 
-public class CommitInstance : ObjectProtocol {
+public class Commit : ObjectProtocol {
 	public var pointer: OpaquePointer
 	
 	public required init(_ pointer: OpaquePointer) {

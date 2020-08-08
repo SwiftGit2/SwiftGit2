@@ -14,7 +14,7 @@ public extension ObjectProtocol {
 	var oid : OID { OID(git_object_id(pointer).pointee) }
 }
 
-public extension RepositoryInstance {
+public extension Repository {
 	func instanciate<ObjectType>(_ oid: OID) -> Result<ObjectType, NSError> where ObjectType : ObjectProtocol {
 		var pointer: OpaquePointer? = nil
 		var oid = oid.oid
@@ -26,7 +26,7 @@ public extension RepositoryInstance {
 
 	private func gitType<ObjectType>(for type: ObjectType.Type) -> git_object_t where ObjectType : ObjectProtocol {
 		switch type {
-		case is CommitInstance.Type: 	return GIT_OBJECT_COMMIT
+		case is Commit.Type: 	return GIT_OBJECT_COMMIT
 		case is Tree.Type:		return GIT_OBJECT_TREE
 		case is Blob.Type:		return GIT_OBJECT_BLOB
 		case is Tag.Type:		return GIT_OBJECT_TAG

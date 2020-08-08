@@ -15,7 +15,7 @@ public enum GitApplyLocation : UInt32 {
 	case both = 2
 }
 
-public extension Repository {
+public extension RepositoryOLD {
 	func apply(diff: Diff, location: GitApplyLocation, options: GitApplyOptions? = nil) -> Result<(), NSError> {
 		return _result((), pointOfFailure: "git_apply") {
 			git_apply(pointer, diff.pointer, git_apply_location_t(rawValue: location.rawValue), options?.pointer)

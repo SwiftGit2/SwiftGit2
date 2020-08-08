@@ -11,7 +11,7 @@ import Nimble
 import Quick
 import Clibgit2
 
-private extension Repository {
+private extension RepositoryOLD {
 	func withGitObject<T>(_ oid: OID, transform: (OpaquePointer) -> T) -> T {
 		let repository = self.pointer
 		var oid = oid.oid

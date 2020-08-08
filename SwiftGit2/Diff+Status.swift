@@ -35,7 +35,7 @@ public extension StatusEntry {
 	}
 }
 
-public extension Repository {
+public extension RepositoryOLD {
 	func diffFor(delta: Diff.Delta) -> Result<Diff, NSError> {
 		let diff: OpaquePointer? = nil
 		

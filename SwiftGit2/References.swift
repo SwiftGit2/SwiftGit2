@@ -35,16 +35,16 @@ public extension ReferenceType {
 /// Create a Reference, Branch, or TagReference from a libgit2 `git_reference`.
 internal func referenceWithLibGit2Reference(_ pointer: OpaquePointer) -> ReferenceType {
 	if git_reference_is_branch(pointer) != 0 || git_reference_is_remote(pointer) != 0 {
-		return Branch(pointer)!
+		return BranchOLD(pointer)!
 	} else if git_reference_is_tag(pointer) != 0 {
 		return TagReference(pointer)!
 	} else {
-		return Reference(pointer)
+		return ReferenceOLD(pointer)
 	}
 }
 
 /// A generic reference to a git object.
-public struct Reference: ReferenceType, Hashable {
+public struct ReferenceOLD: ReferenceType, Hashable {
 	/// The full name of the reference (e.g., `refs/heads/master`).
 	public let longName: String
 
@@ -64,7 +64,7 @@ public struct Reference: ReferenceType, Hashable {
 }
 
 /// A git branch.
-public struct Branch: ReferenceType, Hashable {
+public struct BranchOLD: ReferenceType, Hashable {
 	/// The full name of the reference (e.g., `refs/heads/master`).
 	public let longName: String
 
@@ -72,7 +72,7 @@ public struct Branch: ReferenceType, Hashable {
 	public let name: String
 
 	/// A pointer to the referenced commit.
-	public let commit: PointerTo<Commit>
+	public let commit: PointerTo<CommitOLD>
 
 	// MARK: Derived Properties
 
@@ -118,7 +118,7 @@ public struct Branch: ReferenceType, Hashable {
 		} else {
 			oid = OID(git_reference_target(pointer).pointee)
 		}
-		commit = PointerTo<Commit>(oid)
+		commit = PointerTo<CommitOLD>(oid)
 	}
 }
 

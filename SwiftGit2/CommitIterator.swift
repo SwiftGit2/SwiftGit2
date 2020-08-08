@@ -8,8 +8,8 @@ import Clibgit2
 
 public class CommitIterator: IteratorProtocol, Sequence {
 	public typealias Iterator = CommitIterator
-	public typealias Element = Result<Commit, NSError>
-	let repo: Repository
+	public typealias Element = Result<CommitOLD, NSError>
+	let repo: RepositoryOLD
 	private var revisionWalker: OpaquePointer?
 
 	private enum Next {
@@ -29,7 +29,7 @@ public class CommitIterator: IteratorProtocol, Sequence {
 		}
 	}
 
-	init(repo: Repository, root: git_oid) {
+	init(repo: RepositoryOLD, root: git_oid) {
 		self.repo = repo
 		setupRevisionWalker(root: root)
 	}
@@ -62,7 +62,7 @@ public class CommitIterator: IteratorProtocol, Sequence {
 				let unwrapCommit = unsafeCommit else {
 					return Result.failure(NSError(gitError: lookupGitResult, pointOfFailure: "git_commit_lookup"))
 			}
-			let result: Element = Result.success(Commit(unwrapCommit))
+			let result: Element = Result.success(CommitOLD(unwrapCommit))
 			git_commit_free(unsafeCommit)
 			return result
 		}

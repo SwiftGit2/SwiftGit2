@@ -13,20 +13,20 @@ public enum BranchLocation {
 	case remote
 }
 
-public protocol BranchProtocol {
+public protocol Branch {
 	var name 	 	: String 	{ get }
 	var longName 	: String 	{ get }
 	var commitOID	: OID? 		{ get }
 }
 
-extension ReferenceInstance : BranchProtocol {
+extension Reference : Branch {
 	public var name 	 	: String 	{ getName() }
 	public var longName 	: String 	{ getLongName() }
 	public var commitOID	: OID? 		{ getCommitOID() }
 }
 
-public extension RepositoryInstance {
-	func branches( _ location: BranchLocation) -> Result<[BranchProtocol], NSError> {
+public extension Repository {
+	func branches( _ location: BranchLocation) -> Result<[Branch], NSError> {
 		switch location {
 		case .local:		return references(withPrefix: "refs/heads/")
 										.map { $0.compactMap { $0.asBranch } }
@@ -36,7 +36,7 @@ public extension RepositoryInstance {
 	}
 }
 
-private extension ReferenceInstance {
+private extension Reference {
 	func getName() -> String {
 		var namePointer: UnsafePointer<Int8>? = nil
 		let success = git_branch_name(&namePointer, pointer)
