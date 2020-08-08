@@ -8,6 +8,8 @@
 
 import Clibgit2
 
+
+
 public protocol InstanceType {
 	static func free(pointer: OpaquePointer) 
 }

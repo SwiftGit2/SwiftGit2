@@ -28,7 +28,7 @@ public extension Repository {
 	class func create(url: URL) -> Result<Instance<Repository>, NSError> {
 		var pointer: OpaquePointer? = nil
 		
-		return _result( { Instance<Repository>(pointer!) }, pointOfFailure: "git_object_lookup") {
+		return _result( { Instance<Repository>(pointer!) }, pointOfFailure: "git_repository_init") {
 			url.withUnsafeFileSystemRepresentation {
 				git_repository_init(&pointer, $0, 1)
 			}
@@ -127,7 +127,7 @@ public extension Instance where Type == Repository {
 
 }
 
-func gitType<T>(for type: T.Type) -> git_object_t {
+private func gitType<T>(for type: T.Type) -> git_object_t {
 	switch type {
 	case is Commit.Type: 	return GIT_OBJECT_COMMIT
 	case is Tree.Type:		return GIT_OBJECT_TREE

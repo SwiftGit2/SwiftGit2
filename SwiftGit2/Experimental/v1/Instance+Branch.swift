@@ -8,11 +8,6 @@
 
 import Clibgit2
 
-public enum BranchLocation {
-	case local
-	case remote
-}
-
 public struct InstanceBranch {
 	public let instance : Instance<Reference>
 	
