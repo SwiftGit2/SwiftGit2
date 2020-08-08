@@ -8,14 +8,14 @@
 
 import Clibgit2
 
-public protocol ObjectProtocol : InstanceProtocol { }
+public protocol Object : InstanceProtocol { }
 
-public extension ObjectProtocol {
+public extension Object {
 	var oid : OID { OID(git_object_id(pointer).pointee) }
 }
 
 public extension Repository {
-	func instanciate<ObjectType>(_ oid: OID) -> Result<ObjectType, NSError> where ObjectType : ObjectProtocol {
+	func instanciate<ObjectType>(_ oid: OID) -> Result<ObjectType, NSError> where ObjectType : Object {
 		var pointer: OpaquePointer? = nil
 		var oid = oid.oid
 		
@@ -24,7 +24,7 @@ public extension Repository {
 		}
 	}
 
-	private func gitType<ObjectType>(for type: ObjectType.Type) -> git_object_t where ObjectType : ObjectProtocol {
+	private func gitType<ObjectType>(for type: ObjectType.Type) -> git_object_t where ObjectType : Object {
 		switch type {
 		case is Commit.Type: 	return GIT_OBJECT_COMMIT
 		case is Tree.Type:		return GIT_OBJECT_TREE
