@@ -10,16 +10,16 @@ import Foundation
 import Clibgit2
 
 public extension Repository  {
-	func index() -> Result<Index, NSError> {
+	func index() -> Result<IndexOld, NSError> {
 		var index_pointer: OpaquePointer? = nil
 		
-		return _result( { Index(pointer: index_pointer!) }, pointOfFailure: "git_repository_index") {
+		return _result( { IndexOld(pointer: index_pointer!) }, pointOfFailure: "git_repository_index") {
 			git_repository_index(&index_pointer, pointer)
 		}
 	}
 }
 
-public final class Index {
+public final class IndexOld {
 	public let pointer: OpaquePointer
 	
 	public var entrycount : Int { git_index_entrycount(pointer) }
@@ -32,11 +32,11 @@ public final class Index {
 		git_index_free(pointer)
 	}
 	
-	public func entries() -> Result<[Index.Entry], NSError> {
-		var entries = [Index.Entry]()
+	public func entries() -> Result<[IndexOld.Entry], NSError> {
+		var entries = [IndexOld.Entry]()
 		for i in 0..<entrycount {
 			if let entry = git_index_get_byindex(pointer, i) {
-				entries.append(Index.Entry(entry: entry.pointee))
+				entries.append(IndexOld.Entry(entry: entry.pointee))
 			}
 		}
 		return .success(entries)
@@ -77,7 +77,7 @@ public final class Index {
 	}
 }
 
-public extension Index {
+public extension IndexOld {
 	struct Time {
 		let seconds : Int32
 		let nanoseconds : UInt32
@@ -129,7 +129,7 @@ public extension Index {
 	}
 }
 
-public extension Index.Entry {
+public extension IndexOld.Entry {
 	struct Flags: OptionSet {
 
 		public let rawValue: UInt32

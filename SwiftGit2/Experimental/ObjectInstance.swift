@@ -8,11 +8,11 @@
 
 import Clibgit2
 
-public protocol ObjectProtocol : InstanceProtocol {
-	var oid : OID { get }
+public protocol ObjectProtocol : InstanceProtocol { }
+
+public extension ObjectProtocol {
+	var oid : OID { OID(git_object_id(pointer).pointee) }
 }
-
-
 
 public extension RepositoryInstance {
 	func instanciate<ObjectType>(_ oid: OID) -> Result<ObjectType, NSError> where ObjectType : ObjectProtocol {

@@ -33,6 +33,14 @@ public class ReferenceInstance : InstanceProtocol {
 }
 
 public extension RepositoryInstance {
+	func HEAD() -> Result<ReferenceInstance, NSError> {
+		var pointer: OpaquePointer? = nil
+		
+		return _result({ ReferenceInstance(pointer!) }, pointOfFailure: "git_repository_head") {
+			git_repository_head(&pointer, self.pointer)
+		}
+	}
+	
 	func references(withPrefix prefix: String) -> Result<[ReferenceInstance], NSError> {
 		let pointer = UnsafeMutablePointer<git_strarray>.allocate(capacity: 1)
 		defer {

@@ -42,3 +42,20 @@ public extension RepositoryInstance {
 	}
 	
 }
+
+// index
+public extension RepositoryInstance {
+	func reset(path: String) -> Result<(), NSError> {
+		let dir = path
+		var dirPointer = UnsafeMutablePointer<Int8>(mutating: (dir as NSString).utf8String)
+		var paths = git_strarray(strings: &dirPointer, count: 1)
+		
+		return HEAD()
+			.flatMap { self.instanciate($0.oid) as Result<CommitInstance, NSError> }
+			.flatMap { commit in
+				_result((), pointOfFailure: "git_reset_default") {
+					git_reset_default(self.pointer, commit.pointer, &paths)
+				}
+		}
+	}
+}
