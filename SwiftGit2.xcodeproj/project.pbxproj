@@ -100,7 +100,7 @@
 		E6D4A91C24DEA9AD00E8041E /* Branch.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6D4A91B24DEA9AD00E8041E /* Branch.swift */; };
 		E6D4A91E24DEAA3000E8041E /* Reference.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6D4A91D24DEAA3000E8041E /* Reference.swift */; };
 		E6D4A92024DEACC000E8041E /* Repository.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6D4A91F24DEACC000E8041E /* Repository.swift */; };
-		E6D4A92224DF1B4300E8041E /* ObjectInstance.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6D4A92124DF1B4300E8041E /* ObjectInstance.swift */; };
+		E6D4A92224DF1B4300E8041E /* Object.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6D4A92124DF1B4300E8041E /* Object.swift */; };
 		E6D4A92424DF40CA00E8041E /* Index.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6D4A92324DF40CA00E8041E /* Index.swift */; };
 /* End PBXBuildFile section */
 
@@ -224,7 +224,7 @@
 		E6D4A91B24DEA9AD00E8041E /* Branch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Branch.swift; sourceTree = "<group>"; };
 		E6D4A91D24DEAA3000E8041E /* Reference.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Reference.swift; sourceTree = "<group>"; };
 		E6D4A91F24DEACC000E8041E /* Repository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Repository.swift; sourceTree = "<group>"; };
-		E6D4A92124DF1B4300E8041E /* ObjectInstance.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObjectInstance.swift; sourceTree = "<group>"; };
+		E6D4A92124DF1B4300E8041E /* Object.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Object.swift; sourceTree = "<group>"; };
 		E6D4A92324DF40CA00E8041E /* Index.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Index.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -495,7 +495,7 @@
 		E6D4A92624DF43F500E8041E /* Object */ = {
 			isa = PBXGroup;
 			children = (
-				E6D4A92124DF1B4300E8041E /* ObjectInstance.swift */,
+				E6D4A92124DF1B4300E8041E /* Object.swift */,
 				E6D4A91924DEA93E00E8041E /* Commit.swift */,
 			);
 			path = Object;
@@ -871,7 +871,7 @@
 				E6D4A92424DF40CA00E8041E /* Index.swift in Sources */,
 				E6D4A91824DEA8EC00E8041E /* Instance.swift in Sources */,
 				BE7A753F1A4A2BCC002DA7E3 /* Pointers.swift in Sources */,
-				E6D4A92224DF1B4300E8041E /* ObjectInstance.swift in Sources */,
+				E6D4A92224DF1B4300E8041E /* Object.swift in Sources */,
 				E653907A23E7328200C08416 /* Diff+Delta.swift in Sources */,
 				E6914C77227A2D6B00F8039C /* Repository+Diff.swift in Sources */,
 				E6D4A91E24DEAA3000E8041E /* Reference.swift in Sources */,
