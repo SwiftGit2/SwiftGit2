@@ -29,4 +29,21 @@ public extension Repository {
 		return self.reference(name: reference)
 			.flatMap { $0.rename( newName) }
 	}
+	
+	func rename(remote: String, to newName: String) -> Result<(), NSError> {
+		let problems = UnsafeMutablePointer<git_strarray>.allocate(capacity: 1)
+		defer {
+			git_strarray_free(problems)
+			problems.deallocate()
+		}
+		
+		return _result((), pointOfFailure: "git_remote_rename") {
+			remote.withCString { name in
+				newName.withCString { new_name in
+					git_remote_rename(problems, self.pointer, name, new_name)
+				}
+				
+			}
+		}
+	}
 }
