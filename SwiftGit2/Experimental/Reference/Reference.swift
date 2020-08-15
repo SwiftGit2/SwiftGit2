@@ -20,8 +20,6 @@ public class Reference : InstanceProtocol {
 	}
 	
 	var oid 	 		: OID  { OID(git_reference_target(pointer).pointee) }
-	var isLocalBranch 	: Bool { git_reference_is_branch(pointer) 	!= 0 }
-	var isRemoteBranch	: Bool { git_reference_is_remote(pointer) 	!= 0 }
 	var isTag    		: Bool { git_reference_is_tag(pointer) 	!= 0 }
 	
 	var asBranch		: Branch? {
