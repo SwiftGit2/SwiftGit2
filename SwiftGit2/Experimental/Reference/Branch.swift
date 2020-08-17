@@ -24,8 +24,11 @@ public protocol Branch: InstanceProtocol {
 }
 
 public extension Branch {
-	var isLocalBranch 	: Bool { git_reference_is_branch(pointer) 	!= 0 }
-	var isRemoteBranch	: Bool { git_reference_is_remote(pointer) 	!= 0 }
+	var isBranch 	: Bool { git_reference_is_branch(pointer) 	!= 0 }
+	var isRemote	: Bool { git_reference_is_remote(pointer) 	!= 0 }
+
+	var isLocalBranch 	: Bool { self.longName.starts(with: "refs/heads/") }
+	var isRemoteBranch	: Bool { self.longName.starts(with: "refs/remotes/") }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

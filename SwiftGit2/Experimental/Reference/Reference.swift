@@ -23,7 +23,7 @@ public class Reference : InstanceProtocol {
 	var isTag    		: Bool { git_reference_is_tag(pointer) 	!= 0 }
 	
 	var asBranch		: Branch? {
-		if isLocalBranch || isRemoteBranch {
+		if isBranch || isRemote {
 			return self as Branch
 		}
 		return nil
