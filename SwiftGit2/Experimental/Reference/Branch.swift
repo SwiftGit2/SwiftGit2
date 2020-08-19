@@ -17,8 +17,8 @@ public enum BranchLocation {
 }
 
 public protocol Branch: InstanceProtocol {
-	var name	 	: String	{ get }
-	var longName	: String	{ get }
+	var shortName	: String	{ get }
+	var name		: String	{ get }
 	var commitOID	: OID?		{ get }
 }
 
@@ -26,17 +26,19 @@ public extension Branch {
 	var isBranch : Bool { git_reference_is_branch(pointer) != 0 }
 	var isRemote : Bool { git_reference_is_remote(pointer) != 0 }
 
-	var isLocalBranch	: Bool { self.longName.starts(with: "refs/heads/") }
-	var isRemoteBranch	: Bool { self.longName.starts(with: "refs/remotes/") }
+	var isLocalBranch	: Bool { self.name.starts(with: "refs/heads/") }
+	var isRemoteBranch	: Bool { self.name.starts(with: "refs/remotes/") }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /// Reference
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-extension Reference : Branch {
-	public var name 		: String 	{ getName() }
-	public var longName 	: String 	{ getLongName() }
+extension Reference : Branch {}
+	
+extension Branch {
+	public var shortName 		: String 	{ getName() }
+	public var name 	: String 	{ getLongName() }
 	public var commitOID	: OID? 		{ getCommitOID() }
 }
 
@@ -57,9 +59,22 @@ public extension Repository {
 										.map { $0.compactMap { $0.asBranch } }
 		}
 	}
+	
+	func upstreamName(branchLongName: String) -> Result<String, NSError> {
+		let buf_ptr = UnsafeMutablePointer<git_buf>.allocate(capacity: 1)
+		buf_ptr.pointee.asize = 0
+		buf_ptr.pointee.size = 0
+		buf_ptr.pointee.ptr = nil
+		
+		return _result({Buffer(pointer: buf_ptr)}, pointOfFailure: "" ) {
+			branchLongName.withCString { refname in
+				git_branch_upstream_name(buf_ptr, self.pointer, refname)
+			}
+		}.map { $0.asString() ?? "" }
+	}
 }
 
-private extension Reference {
+private extension Branch {
 	func getName() -> String {
 		var namePointer: UnsafePointer<Int8>? = nil
 		let success = git_branch_name(&namePointer, pointer)
