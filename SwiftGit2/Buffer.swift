@@ -45,7 +45,7 @@ public final class Buffer {
 	public func set(data: Data) -> Result<(),NSError> {
 		let nsData = data as NSData
 		
-		return _resultOf({git_buf_set(pointer, nsData.bytes, nsData.length)}, pointOfFailure: "git_buf_set") { () }
+		return _result( { () }, pointOfFailure: "git_buf_set", block: {git_buf_set(pointer, nsData.bytes, nsData.length)})
 	}
 	
 	public func asString() -> String? {

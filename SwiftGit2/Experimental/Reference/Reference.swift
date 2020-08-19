@@ -47,7 +47,6 @@ public extension Repository {
 		}
 		
 		let result = git_reference_list(strArrayPointer, self.pointer)
-
 		guard result == GIT_OK.rawValue else {
 			return Result.failure(NSError(gitError: result, pointOfFailure: "git_reference_list"))
 		}
@@ -63,7 +62,6 @@ public extension Repository {
 	
 	func reference(name: String) -> Result<Reference, NSError> {
 		var pointer: OpaquePointer? = nil
-		
 		
 		return _result({ Reference(pointer!) }, pointOfFailure: "git_reference_lookup") {
 			git_reference_lookup(&pointer, self.pointer, name)
