@@ -34,5 +34,4 @@ public extension Repository {
 		default:				return GIT_OBJECT_ANY
 		}
 	}
-
 }

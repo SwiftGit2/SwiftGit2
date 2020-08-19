@@ -15,7 +15,7 @@ public protocol ReferenceWriter : InstanceProtocol {
 extension Reference: ReferenceWriter {
 	public func rename(_ newName: String) -> Result<Reference,NSError> {
 		var newReference: OpaquePointer? = nil
-
+		
 		return _result({ Reference(newReference!) }, pointOfFailure: "git_reference_rename") {
 			newName.withCString { new_name in
 				git_reference_rename(&newReference, self.pointer, new_name, 0, "ReferenceWriter.rename")
@@ -42,7 +42,6 @@ public extension Repository {
 				newName.withCString { new_name in
 					git_remote_rename(problems, self.pointer, name, new_name)
 				}
-				
 			}
 		}
 	}

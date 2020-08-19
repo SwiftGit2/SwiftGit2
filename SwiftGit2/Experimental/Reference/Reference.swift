@@ -19,10 +19,10 @@ public class Reference : InstanceProtocol {
 		git_reference_free(pointer)
 	}
 	
-	var oid 	 		: OID  { OID(git_reference_target(pointer).pointee) }
-	var isTag    		: Bool { git_reference_is_tag(pointer) 	!= 0 }
+	var oid		: OID  { OID(git_reference_target(pointer).pointee) }
+	var isTag	: Bool { git_reference_is_tag(pointer) != 0 }
 	
-	var asBranch		: Branch? {
+	var asBranch: Branch? {
 		if isBranch || isRemote {
 			return self as Branch
 		}
@@ -40,30 +40,30 @@ public extension Repository {
 	}
 	
 	func references(withPrefix prefix: String) -> Result<[Reference], NSError> {
-		let strArray = UnsafeMutablePointer<git_strarray>.allocate(capacity: 1)
+		let strArrayPointer = UnsafeMutablePointer<git_strarray>.allocate(capacity: 1)
 		defer {
-			git_strarray_free(strArray)
-			strArray.deallocate()
+			git_strarray_free(strArrayPointer)
+			strArrayPointer.deallocate()
 		}
 		
-		let result = git_reference_list(strArray, self.pointer)
+		let result = git_reference_list(strArrayPointer, self.pointer)
 
 		guard result == GIT_OK.rawValue else {
 			return Result.failure(NSError(gitError: result, pointOfFailure: "git_reference_list"))
 		}
 
-		let strarray = strArray.pointee
-		let references = strarray
+		let strArray = strArrayPointer.pointee
+		let references = strArray
 			.filter { $0.hasPrefix(prefix) }
 			.map { self.reference(name: $0) }
 		
-
 		return references.aggregateResult()
 		//.map { $0.compactMap { InstanceBranch(instance: $0) } }
 	}
 	
 	func reference(name: String) -> Result<Reference, NSError> {
 		var pointer: OpaquePointer? = nil
+		
 		
 		return _result({ Reference(pointer!) }, pointOfFailure: "git_reference_lookup") {
 			git_reference_lookup(&pointer, self.pointer, name)

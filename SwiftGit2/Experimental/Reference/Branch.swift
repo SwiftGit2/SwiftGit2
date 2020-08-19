@@ -7,7 +7,6 @@
 //
 
 import Clibgit2
-
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /// Branch
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -18,16 +17,16 @@ public enum BranchLocation {
 }
 
 public protocol Branch: InstanceProtocol {
-	var name 	 	: String 	{ get }
-	var longName 	: String 	{ get }
-	var commitOID	: OID? 		{ get }
+	var name	 	: String	{ get }
+	var longName	: String	{ get }
+	var commitOID	: OID?		{ get }
 }
 
 public extension Branch {
-	var isBranch 	: Bool { git_reference_is_branch(pointer) 	!= 0 }
-	var isRemote	: Bool { git_reference_is_remote(pointer) 	!= 0 }
+	var isBranch : Bool { git_reference_is_branch(pointer) != 0 }
+	var isRemote : Bool { git_reference_is_remote(pointer) != 0 }
 
-	var isLocalBranch 	: Bool { self.longName.starts(with: "refs/heads/") }
+	var isLocalBranch	: Bool { self.longName.starts(with: "refs/heads/") }
 	var isRemoteBranch	: Bool { self.longName.starts(with: "refs/remotes/") }
 }
 

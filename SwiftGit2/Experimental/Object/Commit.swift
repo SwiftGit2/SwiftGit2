@@ -8,7 +8,6 @@
 
 import Clibgit2
 
-
 public class Commit : Object {
 	public var pointer: OpaquePointer
 	
