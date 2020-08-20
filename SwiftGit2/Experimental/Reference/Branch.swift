@@ -37,9 +37,19 @@ public extension Branch {
 extension Reference : Branch {}
 	
 extension Branch {
-	public var shortName 		: String 	{ getName() }
-	public var name 	: String 	{ getLongName() }
+	public var shortName 	: String 	{ getName() }
+	public var name 		: String 	{ getLongName() }
 	public var commitOID	: OID? 		{ getCommitOID() }
+}
+
+extension Branch{
+	public func setUpstreamName(newName: String) -> Result<(), NSError> {
+		return _result({}, pointOfFailure: "git_branch_set_upstream" ) {
+			newName.withCString { newBrName in
+				git_branch_set_upstream(self.pointer, newBrName);
+			}
+		}
+	}
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -60,14 +70,14 @@ public extension Repository {
 		}
 	}
 	
-	func upstreamName(branchLongName: String) -> Result<String, NSError> {
+	func upstreamName(branchName: String) -> Result<String, NSError> {
 		let buf_ptr = UnsafeMutablePointer<git_buf>.allocate(capacity: 1)
 		buf_ptr.pointee.asize = 0
 		buf_ptr.pointee.size = 0
 		buf_ptr.pointee.ptr = nil
 		
 		return _result({Buffer(pointer: buf_ptr)}, pointOfFailure: "" ) {
-			branchLongName.withCString { refname in
+			branchName.withCString { refname in
 				git_branch_upstream_name(buf_ptr, self.pointer, refname)
 			}
 		}.map { $0.asString() ?? "" }
