@@ -12,11 +12,6 @@ import Clibgit2
 public final class Buffer {
 	let pointer : UnsafeMutablePointer<git_buf>
 	
-	public var isBinary 	: Bool { 1 == git_buf_is_binary(pointer) }
-	public var containsNul 	: Bool { 1 == git_buf_contains_nul(pointer) }
-	public var size			: Int  { pointer.pointee.size }
-	public var ptr			: UnsafeMutablePointer<Int8> { pointer.pointee.ptr }
-	
 	public init(pointer: UnsafeMutablePointer<git_buf>) {
 		self.pointer = pointer
 	}
@@ -25,15 +20,24 @@ public final class Buffer {
 		self.pointer = UnsafeMutablePointer.allocate(capacity: 1)
 		self.pointer.pointee = git_buf(ptr: nil, asize: 0, size: 0)
 		
-		guard let _ = try? set(string: str).get() else {
-			return nil
-		}
+		guard let _ = try? set(string: str).get() else { return nil }
 	}
 	
 	deinit {
 		dispose()
 		pointer.deallocate()
 	}
+	
+	public func dispose() {
+		git_buf_dispose(pointer)
+	}
+}
+
+public extension Buffer {
+	public var isBinary 	: Bool { 1 == git_buf_is_binary(pointer) }
+	public var containsNul 	: Bool { 1 == git_buf_contains_nul(pointer) }
+	public var size			: Int  { pointer.pointee.size }
+	public var ptr			: UnsafeMutablePointer<Int8> { pointer.pointee.ptr }
 	
 	public func set(string: String) -> Result<(),NSError> {
 		guard let data = string.data(using: .utf8) else {
@@ -60,9 +64,5 @@ public final class Buffer {
 		return _result( { Diff(diff!) }, pointOfFailure: "git_diff_from_buffer") {
 			git_diff_from_buffer(&diff, ptr, size)
 		}
-	}
-	
-	public func dispose() {
-		git_buf_dispose(pointer)
 	}
 }

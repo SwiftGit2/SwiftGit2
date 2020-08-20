@@ -80,9 +80,7 @@ public extension Repository {
 	
 	func upstreamName(branchName: String) -> Result<String, NSError> {
 		let buf_ptr = UnsafeMutablePointer<git_buf>.allocate(capacity: 1)
-		buf_ptr.pointee.asize = 0
-		buf_ptr.pointee.size = 0
-		buf_ptr.pointee.ptr = nil
+		buf_ptr.pointee = git_buf(ptr: nil, asize: 0, size: 0)
 		
 		return _result({Buffer(pointer: buf_ptr)}, pointOfFailure: "" ) {
 			branchName.withCString { refname in

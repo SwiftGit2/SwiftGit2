@@ -357,7 +357,6 @@
 				25499A996CA7BD416620A397 /* CommitIterator.swift */,
 				E65C767923E6F4FF00FD14BE /* IndexOld.swift */,
 				E653907B23E73CDE00C08416 /* Patch.swift */,
-				AA89482E23F1671A0074288B /* Buffer.swift */,
 			);
 			path = SwiftGit2;
 			sourceTree = "<group>";
@@ -480,6 +479,7 @@
 				E6D4A92624DF43F500E8041E /* Object */,
 				E6D4A92524DF43DB00E8041E /* Reference */,
 				E6D4A91F24DEACC000E8041E /* Repository.swift */,
+				AA89482E23F1671A0074288B /* Buffer.swift */,
 				E6D4A92324DF40CA00E8041E /* Index.swift */,
 			);
 			path = Experimental;

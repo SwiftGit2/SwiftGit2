@@ -59,9 +59,7 @@ public extension Patch {
 	
 	func asBuffer() -> Result<Buffer, NSError> {
 		let buff = UnsafeMutablePointer<git_buf>.allocate(capacity: 1)
-		buff.pointee.asize = 0
-		buff.pointee.size = 0
-		buff.pointee.ptr = nil
+		buff.pointee = git_buf(ptr: nil, asize: 0, size: 0)
 		
 		return _result({ Buffer(pointer: buff) }, pointOfFailure: "git_patch_to_buf") {
 			git_patch_to_buf(buff, pointer)
