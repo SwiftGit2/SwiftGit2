@@ -43,9 +43,17 @@ extension Branch {
 }
 
 extension Branch{
+	
+	/// can be called only for local branch;
+	///
+	/// newName looks like "BrowserGridItemView" BUT NOT LIKE "refs/heads/BrowserGridItemView"
 	public func setUpstreamName(newName: String) -> Result<(), NSError> {
+		let cleanedName = newName
+							.replace(of: "refs/heads/", to: "")
+							.replace(of: "refs/remotes/", to: "")
+		
 		return _result({}, pointOfFailure: "git_branch_set_upstream" ) {
-			newName.withCString { newBrName in
+			cleanedName.withCString { newBrName in
 				git_branch_set_upstream(self.pointer, newBrName);
 			}
 		}
@@ -114,5 +122,12 @@ private extension Branch {
 		} else {
 			return OID(git_reference_target(pointer).pointee)
 		}
+	}
+}
+
+
+fileprivate extension String {
+	func replace(of: String, to: String) -> String {
+		return self.replacingOccurrences(of: of, with: to, options: .regularExpression, range: nil)
 	}
 }
