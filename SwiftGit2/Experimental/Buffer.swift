@@ -34,32 +34,32 @@ public final class Buffer {
 }
 
 public extension Buffer {
-	public var isBinary 	: Bool { 1 == git_buf_is_binary(pointer) }
-	public var containsNul 	: Bool { 1 == git_buf_contains_nul(pointer) }
-	public var size			: Int  { pointer.pointee.size }
-	public var ptr			: UnsafeMutablePointer<Int8> { pointer.pointee.ptr }
+	var isBinary 	: Bool { 1 == git_buf_is_binary(pointer) }
+	var containsNul 	: Bool { 1 == git_buf_contains_nul(pointer) }
+	var size			: Int  { pointer.pointee.size }
+	var ptr			: UnsafeMutablePointer<Int8> { pointer.pointee.ptr }
 	
-	public func set(string: String) -> Result<(),NSError> {
+	func set(string: String) -> Result<(),NSError> {
 		guard let data = string.data(using: .utf8) else {
 			return .failure(NSError(gitError: 0, pointOfFailure: "string.data(using: .utf8)"))
 		}
 		return set(data: data)
 	}
 	
-	public func set(data: Data) -> Result<(),NSError> {
+	func set(data: Data) -> Result<(),NSError> {
 		let nsData = data as NSData
 		
 		return _result( { () }, pointOfFailure: "git_buf_set", block: {git_buf_set(pointer, nsData.bytes, nsData.length)})
 	}
 	
-	public func asString() -> String? {
+	func asString() -> String? {
 		guard !isBinary else { return nil }
 		
 		let data = Data(bytesNoCopy: pointer.pointee.ptr, count: pointer.pointee.size, deallocator: .none)
 		return String(data: data, encoding: .utf8)
 	}
 	
-	public func asDiff() -> Result<Diff, NSError> {
+	func asDiff() -> Result<Diff, NSError> {
 		var diff: OpaquePointer? = nil
 		return _result( { Diff(diff!) }, pointOfFailure: "git_diff_from_buffer") {
 			git_diff_from_buffer(&diff, ptr, size)
