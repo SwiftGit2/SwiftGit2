@@ -10,15 +10,29 @@ import Clibgit2
 
 // SetHEAD and Checkout
 public extension Repository {
+	func checkout(branch: Branch, strategy: CheckoutStrategy = .Safe,
+				  progress: CheckoutProgressBlock? = nil) -> Result<(), NSError> {
+		
+		setHEAD(branch).flatMap {
+			self.checkoutHead(strategy: strategy, progress: progress)
+		}
+	}
+	
+	func checkout(commit: Commit, strategy: CheckoutStrategy = .Safe,
+				  progress: CheckoutProgressBlock? = nil) -> Result<(), NSError>  {
+		
+		checkout(commit.oid, strategy: strategy, progress: progress)
+	}
+	
 	/// Set HEAD to the given oid (detached).
 	///
 	/// :param: oid The OID to set as HEAD.
 	/// :returns: Returns a result with void or the error that occurred.
-	func setHEAD(_ oid: OID) -> Result<(), NSError> {
+	fileprivate func setHEAD(_ oid: OID) -> Result<(), NSError> {
 		var oid = oid.oid
 		let result = git_repository_set_head_detached(self.pointer, &oid)
 		guard result == GIT_OK.rawValue else {
-			return Result.failure(NSError(gitError: result, pointOfFailure: "git_repository_set_head"))
+			return Result.failure(NSError(gitError: result, pointOfFailure: "git_repository_set_head_detached"))
 		}
 		return Result.success(())
 	}
@@ -27,11 +41,12 @@ public extension Repository {
 	///
 	/// :param: reference The reference to set as HEAD.
 	/// :returns: Returns a result with void or the error that occurred.
-	func setHEAD(_ reference: ReferenceType) -> Result<(), NSError> {
-		let result = git_repository_set_head(self.pointer, reference.longName)
+	fileprivate func setHEAD(_ reference: Branch) -> Result<(), NSError> {
+		let result = git_repository_set_head(self.pointer, reference.name)
 		guard result == GIT_OK.rawValue else {
 			return Result.failure(NSError(gitError: result, pointOfFailure: "git_repository_set_head"))
 		}
+		
 		return Result.success(())
 	}
 	
@@ -40,7 +55,7 @@ public extension Repository {
 	/// :param: strategy The checkout strategy to use.
 	/// :param: progress A block that's called with the progress of the checkout.
 	/// :returns: Returns a result with void or the error that occurred.
-	public func checkout(strategy: CheckoutStrategy, progress: CheckoutProgressBlock? = nil) -> Result<(), NSError> {
+	fileprivate func checkoutHead(strategy: CheckoutStrategy, progress: CheckoutProgressBlock? = nil) -> Result<(), NSError> {
 		var options = checkoutOptions(strategy: strategy, progress: progress)
 
 		let result = git_checkout_head(self.pointer, &options)
@@ -57,9 +72,12 @@ public extension Repository {
 	/// :param: strategy The checkout strategy to use.
 	/// :param: progress A block that's called with the progress of the checkout.
 	/// :returns: Returns a result with void or the error that occurred.
-	public func checkout(_ oid: OID, strategy: CheckoutStrategy,
+	fileprivate func checkout(_ oid: OID, strategy: CheckoutStrategy,
 						 progress: CheckoutProgressBlock? = nil) -> Result<(), NSError> {
-		return setHEAD(oid).flatMap { self.checkout(strategy: strategy, progress: progress) }
+		
+		return setHEAD(oid).flatMap {
+			self.checkoutHead(strategy: strategy, progress: progress)
+		}
 	}
 
 	/// Check out the given reference.
@@ -68,9 +86,12 @@ public extension Repository {
 	/// :param: strategy The checkout strategy to use.
 	/// :param: progress A block that's called with the progress of the checkout.
 	/// :returns: Returns a result with void or the error that occurred.
-	func checkout(_ reference: ReferenceType, strategy: CheckoutStrategy,
+	fileprivate func checkout(_ reference: Reference, strategy: CheckoutStrategy,
 						 progress: CheckoutProgressBlock? = nil) -> Result<(), NSError> {
-		return setHEAD(reference).flatMap { self.checkout(strategy: strategy, progress: progress) }
+		
+		return setHEAD(reference).flatMap {
+			self.checkoutHead(strategy: strategy, progress: progress)
+		}
 	}
 }
 
