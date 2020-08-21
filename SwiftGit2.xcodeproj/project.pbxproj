@@ -278,6 +278,16 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		1DB0F84F24EFFD7B00637B9B /* Repository */ = {
+			isa = PBXGroup;
+			children = (
+				E6D4A91F24DEACC000E8041E /* Repository.swift */,
+				E67D157124EF24A500DA3542 /* Repository+Status.swift */,
+				1DB0F84D24EFFB2D00637B9B /* RepositoryCheckout.swift */,
+			);
+			path = Repository;
+			sourceTree = "<group>";
+		};
 		621E66D41C72965C00A0F352 /* Mac */ = {
 			isa = PBXGroup;
 			children = (
@@ -482,9 +492,7 @@
 				E6D4A91724DEA8EC00E8041E /* Instance.swift */,
 				E6D4A92624DF43F500E8041E /* Object */,
 				E6D4A92524DF43DB00E8041E /* Reference */,
-				E6D4A91F24DEACC000E8041E /* Repository.swift */,
-				1DB0F84D24EFFB2D00637B9B /* RepositoryCheckout.swift */,
-				E67D157124EF24A500DA3542 /* Repository+Status.swift */,
+				1DB0F84F24EFFD7B00637B9B /* Repository */,
 				AA89482E23F1671A0074288B /* Buffer.swift */,
 				E6D4A92324DF40CA00E8041E /* Index.swift */,
 			);
