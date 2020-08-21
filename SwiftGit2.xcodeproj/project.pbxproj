@@ -21,6 +21,7 @@
 /* End PBXAggregateTarget section */
 
 /* Begin PBXBuildFile section */
+		1DB0F84E24EFFB2D00637B9B /* RepositoryCheckout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DB0F84D24EFFB2D00637B9B /* RepositoryCheckout.swift */; };
 		232861431F4A3A2E00276D65 /* Diffs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 232861421F4A3A2E00276D65 /* Diffs.swift */; };
 		232861451F4A3A2E00276D65 /* Diffs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 232861421F4A3A2E00276D65 /* Diffs.swift */; };
 		237731C71F46542B0020A3FE /* repository-with-status.zip in Resources */ = {isa = PBXBuildFile; fileRef = 237731C61F46542B0020A3FE /* repository-with-status.zip */; };
@@ -152,6 +153,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		1DB0F84D24EFFB2D00637B9B /* RepositoryCheckout.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RepositoryCheckout.swift; sourceTree = "<group>"; };
 		232861421F4A3A2E00276D65 /* Diffs.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Diffs.swift; sourceTree = "<group>"; };
 		237731C61F46542B0020A3FE /* repository-with-status.zip */ = {isa = PBXFileReference; lastKnownFileType = archive.zip; path = "repository-with-status.zip"; sourceTree = "<group>"; };
 		25499A996CA7BD416620A397 /* CommitIterator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CommitIterator.swift; sourceTree = "<group>"; };
@@ -481,6 +483,7 @@
 				E6D4A92624DF43F500E8041E /* Object */,
 				E6D4A92524DF43DB00E8041E /* Reference */,
 				E6D4A91F24DEACC000E8041E /* Repository.swift */,
+				1DB0F84D24EFFB2D00637B9B /* RepositoryCheckout.swift */,
 				E67D157124EF24A500DA3542 /* Repository+Status.swift */,
 				AA89482E23F1671A0074288B /* Buffer.swift */,
 				E6D4A92324DF40CA00E8041E /* Index.swift */,
@@ -858,6 +861,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1DB0F84E24EFFB2D00637B9B /* RepositoryCheckout.swift in Sources */,
 				E61B443423CE4D670059650A /* Repository+Submodule.swift in Sources */,
 				E67D157224EF24A500DA3542 /* Repository+Status.swift in Sources */,
 				BE70B3E51A1ACB1A002C3F4E /* OID.swift in Sources */,
