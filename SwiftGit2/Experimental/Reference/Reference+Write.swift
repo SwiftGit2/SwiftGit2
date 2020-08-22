@@ -10,6 +10,7 @@ import Clibgit2
 
 enum RefWriterError: Error {
 	case NameHaveNoCorrectPrefix
+	case Unknown
 }
 
 public protocol ReferenceWriter : InstanceProtocol {
@@ -50,7 +51,11 @@ public extension Branch {
 			return (self as! Reference).rename("refs/heads/\(newName)")
 		}
 		else {
-			let origin = self.name.split(separator: "/")[2]
+			let sections = self.name.split(separator: "/")
+			if sections.count < 3 {
+				return .failure(RefWriterError.Unknown as NSError)
+			}
+			let origin = sections[2]
 			
 			return  (self as! Reference).rename("refs/remotes/\(origin)/\(newName)")
 		}
