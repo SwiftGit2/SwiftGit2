@@ -78,6 +78,7 @@ public extension Repository {
 		}
 	}
 	
+	/// Get upstream name by branchName
 	func upstreamName(branchName: String) -> Result<String, NSError> {
 		let buf_ptr = UnsafeMutablePointer<git_buf>.allocate(capacity: 1)
 		buf_ptr.pointee = git_buf(ptr: nil, asize: 0, size: 0)
@@ -121,6 +122,9 @@ private extension Branch {
 			return OID(git_reference_target(pointer).pointee)
 		}
 	}
+	
+	//BrnchCreate git_branch_create
+	//https://libgit2.org/libgit2/#HEAD/group/branch/git_branch_create
 }
 
 
