@@ -60,6 +60,12 @@ public extension Branch {
 			return  (self as! Reference).rename("refs/remotes/\(origin)/\(newName)")
 		}
 	}
+	
+	func delete() -> Result<(), NSError> {
+		return _result((), pointOfFailure: "git_branch_delete") {
+			git_branch_delete(self.pointer)
+		}
+	}
 }
 
 public extension Repository {
