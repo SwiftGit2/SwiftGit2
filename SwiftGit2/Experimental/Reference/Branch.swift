@@ -122,9 +122,6 @@ private extension Branch {
 			return OID(git_reference_target(pointer).pointee)
 		}
 	}
-	
-	//BrnchCreate git_branch_create
-	//https://libgit2.org/libgit2/#HEAD/group/branch/git_branch_create
 }
 
 

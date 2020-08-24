@@ -18,6 +18,19 @@ public class Repository : InstanceProtocol {
 	deinit {
 		git_repository_free(pointer)
 	}
+	
+	public func createBranch(from commit: Commit, withName newName: String, overwriteExisting: Bool = false) -> Result<Reference, NSError> {
+		let force: Int32 = overwriteExisting ? 0 : 1
+		
+		var referenceToBranch : OpaquePointer? = nil
+		
+		return _result( { Reference(referenceToBranch!) }, pointOfFailure: "git_branch_create") {
+			newName.withCString { new_name in
+				
+				git_branch_create(&referenceToBranch, self.pointer, new_name, commit.pointer, force);
+			}
+		}
+	}
 }
 
 public extension Repository {
