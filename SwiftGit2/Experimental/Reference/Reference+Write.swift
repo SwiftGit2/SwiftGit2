@@ -10,6 +10,7 @@ import Clibgit2
 
 enum RefWriterError: Error {
 	case NameHaveNoCorrectPrefix
+	case BranchWasntFound
 	case Unknown
 }
 
@@ -46,11 +47,15 @@ public extension Branch {
 		return (self as! Reference).rename(newName)
 	}
 	
-	func renameUsingUnifiedName(to newName: String) -> Result<Reference, NSError> {
-		if self.isLocalBranch{
+	func renameLocalUsingUnifiedName(to newName: String) -> Result<Reference, NSError> {
+		if self.isLocalBranch {
 			return (self as! Reference).rename("refs/heads/\(newName)")
 		}
-		else {
+		return .failure(RefWriterError.BranchWasntFound as NSError)
+	}
+	
+	func renameRemoteUsingUnifiedName(to newName: String ) -> Result<Reference, NSError> {
+		if self.isRemoteBranch {
 			let sections = self.name.split(separator: "/")
 			if sections.count < 3 {
 				return .failure(RefWriterError.Unknown as NSError)
@@ -59,7 +64,10 @@ public extension Branch {
 			
 			return  (self as! Reference).rename("refs/remotes/\(origin)/\(newName)")
 		}
+		
+		return .failure(RefWriterError.BranchWasntFound as NSError)
 	}
+	
 	
 	func delete() -> Result<(), NSError> {
 		return _result((), pointOfFailure: "git_branch_delete") {
