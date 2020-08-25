@@ -65,7 +65,7 @@ public extension Repository {
 	/// checkoutProgress   A block that's called with the progress of the checkout.
 	///
 	/// Returns a `Result` with a `Repository` or an error.
-	func clone(from remoteURL: URL, to localURL: URL, isLocalClone: Bool = false, bare: Bool = false,
+	static func clone(from remoteURL: URL, to localURL: URL, isLocalClone: Bool = false, bare: Bool = false,
 							credentials: Credentials = .default, checkoutStrategy: CheckoutStrategy = .Safe,
 							checkoutProgress: CheckoutProgressBlock? = nil) -> Result<Repository, NSError> {
 			var options = cloneOptions(
