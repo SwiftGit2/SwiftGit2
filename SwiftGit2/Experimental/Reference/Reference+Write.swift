@@ -54,19 +54,6 @@ public extension Branch {
 		return .failure(RefWriterError.BranchWasntFound as NSError)
 	}
 	
-//	func renameLocalUpstreamUsingUnifiedName(to: String)  -> Result<Reference, NSError> {
-//		if self.isLocalBranch {
-//			let sections = self.split(separator: "/")
-//			if sections.count < 3 {
-//				return .failure(RefWriterError.Unknown as NSError)
-//			}
-//			let origin = sections[2]
-//			
-//			return (self as! Reference).setUpstreamName(newName: "refs/remotes/\(origin)/\(newName)")
-//		}
-//		return .failure(RefWriterError.BranchWasntFound as NSError)
-//	}
-	
 	func renameRemoteUsingUnifiedName(to newName: String ) -> Result<Reference, NSError> {
 		if self.isRemoteBranch {
 			let sections = self.name.split(separator: "/")
