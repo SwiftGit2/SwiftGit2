@@ -22,7 +22,7 @@ public class Reference : InstanceProtocol {
 	var oid		: OID  { OID(git_reference_target(pointer).pointee) }
 	var isTag	: Bool { git_reference_is_tag(pointer) != 0 }
 	
-	var asBranch: Branch? {
+	public var asBranch: Branch? {
 		if isBranch || isRemote {
 			return self as Branch
 		}
