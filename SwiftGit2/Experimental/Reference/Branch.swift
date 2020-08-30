@@ -19,7 +19,7 @@ public enum BranchLocation {
 public protocol Branch: InstanceProtocol {
 	var shortName	: String	{ get }
 	var name		: String	{ get }
-	var commitOID	: OID?		{ get }
+	var commitOID_	: OID?		{ get }
 }
 
 public extension Branch {
@@ -39,7 +39,8 @@ extension Reference : Branch {}
 extension Branch {
 	public var shortName 	: String 	{ getName() }
 	public var name 		: String 	{ getLongName() }
-	public var commitOID	: OID? 		{ getCommitOID() }
+	public var commitOID_	: OID? 		{ getCommitOID_() }
+	public var commitOID	: Result<OID, NSError> { getCommitOid() }
 }
 
 extension Branch{
@@ -105,7 +106,23 @@ private extension Branch {
 		return String(validatingUTF8: git_reference_name(pointer)) ?? ""
 	}
 	
-	func getCommitOID() -> OID? {
+	func getCommitOid() -> Result<OID, NSError> {
+		if git_reference_type(pointer).rawValue == GIT_REFERENCE_SYMBOLIC.rawValue {
+			var resolved: OpaquePointer? = nil
+			defer {
+				git_reference_free(resolved)
+			}
+			
+			return _result( { resolved }, pointOfFailure: "git_reference_resolve") {
+				git_reference_resolve(&resolved, self.pointer)
+			}.map { OID(git_reference_target($0).pointee) }
+			
+		} else {
+			return .success( OID(git_reference_target(pointer).pointee) )
+		}
+	}
+	
+	func getCommitOID_() -> OID? {
 		if git_reference_type(pointer).rawValue == GIT_REFERENCE_SYMBOLIC.rawValue {
 			var resolved: OpaquePointer? = nil
 			defer {
