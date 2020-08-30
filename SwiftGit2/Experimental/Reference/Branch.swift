@@ -70,12 +70,12 @@ public extension Repository {
 		return reference(name: "").map{ $0.asBranch_! }
 	}
 	
-	func branches( _ location: BranchLocation) -> Result<[Branch], NSError> {
+	func branches( _ location: BranchLocation) -> Result<[Branch], NSError> {		
 		switch location {
 		case .local:		return references(withPrefix: "refs/heads/")
-										.map { $0.compactMap { $0.asBranch_ } }
+										.flatMap { $0.map { $0.asBranch() }.aggregateResult() }
 		case .remote: 		return references(withPrefix: "refs/remotes/")
-										.map { $0.compactMap { $0.asBranch_ } }
+										.flatMap { $0.map { $0.asBranch() }.aggregateResult() }
 		}
 	}
 	
