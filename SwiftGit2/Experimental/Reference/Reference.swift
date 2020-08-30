@@ -22,7 +22,16 @@ public class Reference : InstanceProtocol {
 	var oid		: OID  { OID(git_reference_target(pointer).pointee) }
 	var isTag	: Bool { git_reference_is_tag(pointer) != 0 }
 	
-	public var asBranch: Branch? {
+	public func asBranch() -> Result<Branch, NSError> {
+		if isBranch || isRemote {
+			return .success(self as Branch)
+		}
+		
+		
+		return Result.failure(NSError(gitError: 0, pointOfFailure: "asBranch"))
+	}
+	
+	public var asBranch_ : Branch? {
 		if isBranch || isRemote {
 			return self as Branch
 		}

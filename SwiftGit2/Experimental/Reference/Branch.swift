@@ -67,15 +67,15 @@ extension Branch{
 
 public extension Repository {
 	func branchTest()  -> Result<Branch, NSError> {
-		return reference(name: "").map{ $0.asBranch! }
+		return reference(name: "").map{ $0.asBranch_! }
 	}
 	
 	func branches( _ location: BranchLocation) -> Result<[Branch], NSError> {
 		switch location {
 		case .local:		return references(withPrefix: "refs/heads/")
-										.map { $0.compactMap { $0.asBranch } }
+										.map { $0.compactMap { $0.asBranch_ } }
 		case .remote: 		return references(withPrefix: "refs/remotes/")
-										.map { $0.compactMap { $0.asBranch } }
+										.map { $0.compactMap { $0.asBranch_ } }
 		}
 	}
 	
