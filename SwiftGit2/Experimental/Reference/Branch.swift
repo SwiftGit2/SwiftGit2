@@ -61,14 +61,14 @@ extension Branch{
 	}
 }
 
-struct Tuple<T1,T2> {
-	var value: (T1, T2)
-	init(value: (T1, T2)) {
+public struct Duo<T1,T2> {
+	public let value: (T1, T2)
+	public init(_ value: (T1, T2)) {
 		self.value = value
 	}
 }
 
-extension Tuple where T1 == Branch, T2 == Repository {
+public extension Duo where T1 == Branch, T2 == Repository {
 	func commit() -> Result<Commit, NSError> {
 		let (branch, repo) = self.value
 		return branch.commitOID.flatMap { repo.instanciate($0) }
