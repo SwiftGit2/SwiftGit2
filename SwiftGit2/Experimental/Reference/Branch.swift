@@ -42,6 +42,38 @@ extension Branch {
 	public var commitOID_	: OID? 		{ getCommitOID_() }
 	public var commitOID	: Result<OID, NSError> { getCommitOid() }
 }
+
+extension Branch{
+	
+	/// can be called only for local branch;
+	///
+	/// newName looks like "BrowserGridItemView" BUT NOT LIKE "refs/heads/BrowserGridItemView"
+	public func setUpstreamName(newName: String) -> Result<(), NSError> {
+		let cleanedName = newName
+							.replace(of: "refs/heads/", to: "")
+							.replace(of: "refs/remotes/", to: "")
+		
+		return _result({}, pointOfFailure: "git_branch_set_upstream" ) {
+			cleanedName.withCString { newBrName in
+				git_branch_set_upstream(self.pointer, newBrName);
+			}
+		}
+	}
+}
+
+struct Tuple<T1,T2> {
+	var value: (T1, T2)
+	init(value: (T1, T2)) {
+		self.value = value
+	}
+}
+
+extension Tuple where T1 == Branch, T2 == Repository {
+	func commit() -> Result<Commit, NSError> {
+		let (branch, repo) = self.value
+		return branch.commitOID.flatMap { repo.instanciate($0) }
+	}
+}
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /// Repository
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -68,25 +100,6 @@ public extension Repository {
 		}.map { $0.asString() ?? "" }
 	}
 }
-
-extension Branch{
-	
-	/// can be called only for local branch;
-	///
-	/// newName looks like "BrowserGridItemView" BUT NOT LIKE "refs/heads/BrowserGridItemView"
-	public func setUpstreamName(newName: String) -> Result<(), NSError> {
-		let cleanedName = newName
-							.replace(of: "refs/heads/", to: "")
-							.replace(of: "refs/remotes/", to: "")
-		
-		return _result({}, pointOfFailure: "git_branch_set_upstream" ) {
-			cleanedName.withCString { newBrName in
-				git_branch_set_upstream(self.pointer, newBrName);
-			}
-		}
-	}
-}
-
 
 private extension Branch {
 	func getName() -> String {

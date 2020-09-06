@@ -42,28 +42,7 @@
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
       shouldUseLaunchSchemeArgsEnv = "YES">
       <Testables>
-         <TestableReference
-            skipped = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "BEB31F2D1A0D6F7A00F525B9"
-               BuildableName = "SwiftGit2-OSXTests.xctest"
-               BlueprintName = "SwiftGit2-OSXTests"
-               ReferencedContainer = "container:SwiftGit2.xcodeproj">
-            </BuildableReference>
-         </TestableReference>
       </Testables>
-      <MacroExpansion>
-         <BuildableReference
-            BuildableIdentifier = "primary"
-            BlueprintIdentifier = "BEB31F221A0D6F7A00F525B9"
-            BuildableName = "SwiftGit2.framework"
-            BlueprintName = "SwiftGit2-OSX"
-            ReferencedContainer = "container:SwiftGit2.xcodeproj">
-         </BuildableReference>
-      </MacroExpansion>
-      <AdditionalOptions>
-      </AdditionalOptions>
    </TestAction>
    <LaunchAction
       buildConfiguration = "Debug"
@@ -84,8 +63,6 @@
             ReferencedContainer = "container:SwiftGit2.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
-      <AdditionalOptions>
-      </AdditionalOptions>
    </LaunchAction>
    <ProfileAction
       buildConfiguration = "Release"
