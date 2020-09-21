@@ -68,25 +68,21 @@ public extension Duo where T1 == Branch, T2 == Repository {
 	}
 	
 	/// Push local branch changes to remote branch
-	public func push(into remote: Remote_OLD, credentials: Credentials = .default) -> Result<(), NSError> {
+	public func push(into remoteRepo: RemoteRepo, credentials: Credentials = .default) -> Result<(), NSError> {
 		let (branch, repo) = self.value
 		
-		return repo.remoteLookup(named: remote.name) { remote in
-			remote.flatMap { pointer in
-				var opts = pushOptions(credentials: credentials)
+		var opts = pushOptions(credentials: credentials)
 
-				let branchName = branch.name
-				var dirPointer = UnsafeMutablePointer<Int8>(mutating: (branchName as NSString).utf8String)
-				var refs = git_strarray(strings: &dirPointer, count: 1)
+		let branchName = branch.name
+		var dirPointer = UnsafeMutablePointer<Int8>(mutating: (branchName as NSString).utf8String)
+		var refs = git_strarray(strings: &dirPointer, count: 1)
 
-				let result = git_remote_push(pointer, &refs, &opts)
-				guard result == GIT_OK.rawValue else {
-					let err = NSError(gitError: result, pointOfFailure: "git_remote_push")
-					return .failure(err)
-				}
-				return .success(())
-			}
+		let result = git_remote_push(remoteRepo.pointer, &refs, &opts)
+		guard result == GIT_OK.rawValue else {
+			let err = NSError(gitError: result, pointOfFailure: "git_remote_push")
+			return .failure(err)
 		}
+		return .success(())
 	}
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
