@@ -66,10 +66,12 @@ public extension Duo where T1 == Branch, T2 == Repository {
 		let (branch, repo) = self.value
 		return branch.commitOID.flatMap { repo.instanciate($0) }
 	}
-	
+}
+
+public extension Duo where T1 == Branch, T2 == RemoteRepo{
 	/// Push local branch changes to remote branch
-	public func push(into remoteRepo: RemoteRepo, credentials: Credentials = .default) -> Result<(), NSError> {
-		let (branch, repo) = self.value
+	func push(credentials: Credentials = .default) -> Result<(), NSError> {
+		let (branch, remoteRepo) = self.value
 		
 		var opts = pushOptions(credentials: credentials)
 
