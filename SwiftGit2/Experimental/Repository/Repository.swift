@@ -69,10 +69,6 @@ public class Repository : InstanceProtocol {
 		}
 		return .success(())
 	}
-	
-	public func branchFind(name: String ) -> Result<Branch, NSError> {
-		return reference(name: name).flatMap{ $0.asBranch() }
-	}
 }
 
 public extension Repository {
