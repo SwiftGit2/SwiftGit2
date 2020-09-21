@@ -21,6 +21,7 @@
 /* End PBXAggregateTarget section */
 
 /* Begin PBXBuildFile section */
+		1D991AE12518FA7900335255 /* Duo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D991AE02518FA7900335255 /* Duo.swift */; };
 		1DB0F84E24EFFB2D00637B9B /* RepositoryCheckout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DB0F84D24EFFB2D00637B9B /* RepositoryCheckout.swift */; };
 		232861431F4A3A2E00276D65 /* Diffs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 232861421F4A3A2E00276D65 /* Diffs.swift */; };
 		232861451F4A3A2E00276D65 /* Diffs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 232861421F4A3A2E00276D65 /* Diffs.swift */; };
@@ -28,7 +29,7 @@
 		2549921B34FFC36AF8C9CD6D /* CommitIterator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25499A996CA7BD416620A397 /* CommitIterator.swift */; };
 		25499D325997CAB9BEFFCA4D /* CommitIterator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25499A996CA7BD416620A397 /* CommitIterator.swift */; };
 		621E66A01C72958800A0F352 /* OID.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE70B3E41A1ACB1A002C3F4E /* OID.swift */; };
-		621E66A11C72958800A0F352 /* Remotes.swift in Sources */ = {isa = PBXBuildFile; fileRef = BECB5F6D1A57284700999413 /* Remotes.swift */; };
+		621E66A11C72958800A0F352 /* Remote_OLD.swift in Sources */ = {isa = PBXBuildFile; fileRef = BECB5F6D1A57284700999413 /* Remote_OLD.swift */; };
 		621E66A21C72958800A0F352 /* CheckoutStrategy.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE276B281ACCD3CF00D6DAD7 /* CheckoutStrategy.swift */; };
 		621E66A31C72958800A0F352 /* RepositoryOLD.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEB31F6C1A0D78F300F525B9 /* RepositoryOLD.swift */; };
 		621E66A41C72958800A0F352 /* Objects.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE2E3BE51A31261300C67092 /* Objects.swift */; };
@@ -81,7 +82,7 @@
 		BEB31FA01A0E595600F525B9 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = BEB31F9F1A0E595600F525B9 /* libz.dylib */; };
 		BECB5F6A1A56F19900999413 /* References.swift in Sources */ = {isa = PBXBuildFile; fileRef = BECB5F691A56F19900999413 /* References.swift */; };
 		BECB5F6C1A56F1B400999413 /* ReferencesSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = BECB5F6B1A56F1B400999413 /* ReferencesSpec.swift */; };
-		BECB5F6E1A57284700999413 /* Remotes.swift in Sources */ = {isa = PBXBuildFile; fileRef = BECB5F6D1A57284700999413 /* Remotes.swift */; };
+		BECB5F6E1A57284700999413 /* Remote_OLD.swift in Sources */ = {isa = PBXBuildFile; fileRef = BECB5F6D1A57284700999413 /* Remote_OLD.swift */; };
 		BECB5F701A57286200999413 /* RemotesSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = BECB5F6F1A57286200999413 /* RemotesSpec.swift */; };
 		C98A2BA22263FDB9007A4E3A /* ResultShims.swift in Sources */ = {isa = PBXBuildFile; fileRef = C98A2B9F2263E017007A4E3A /* ResultShims.swift */; };
 		C98A2BA32263FDBA007A4E3A /* ResultShims.swift in Sources */ = {isa = PBXBuildFile; fileRef = C98A2B9F2263E017007A4E3A /* ResultShims.swift */; };
@@ -153,6 +154,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		1D991AE02518FA7900335255 /* Duo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Duo.swift; sourceTree = "<group>"; };
 		1DB0F84D24EFFB2D00637B9B /* RepositoryCheckout.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RepositoryCheckout.swift; sourceTree = "<group>"; };
 		232861421F4A3A2E00276D65 /* Diffs.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Diffs.swift; sourceTree = "<group>"; };
 		237731C61F46542B0020A3FE /* repository-with-status.zip */ = {isa = PBXFileReference; lastKnownFileType = archive.zip; path = "repository-with-status.zip"; sourceTree = "<group>"; };
@@ -211,7 +213,7 @@
 		BEB31F9F1A0E595600F525B9 /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
 		BECB5F691A56F19900999413 /* References.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = References.swift; sourceTree = "<group>"; };
 		BECB5F6B1A56F1B400999413 /* ReferencesSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReferencesSpec.swift; sourceTree = "<group>"; };
-		BECB5F6D1A57284700999413 /* Remotes.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Remotes.swift; sourceTree = "<group>"; };
+		BECB5F6D1A57284700999413 /* Remote_OLD.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Remote_OLD.swift; sourceTree = "<group>"; };
 		BECB5F6F1A57286200999413 /* RemotesSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RemotesSpec.swift; sourceTree = "<group>"; };
 		C98A2B9F2263E017007A4E3A /* ResultShims.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResultShims.swift; sourceTree = "<group>"; };
 		DA50239F1A969F1A004175D7 /* Nimble.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Nimble.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -367,7 +369,7 @@
 				E61B443323CE4D670059650A /* Repository+Submodule.swift */,
 				AA66039E23FAD9F60093E7AF /* Repository+Apply.swift */,
 				BECB5F691A56F19900999413 /* References.swift */,
-				BECB5F6D1A57284700999413 /* Remotes.swift */,
+				BECB5F6D1A57284700999413 /* Remote_OLD.swift */,
 				25499A996CA7BD416620A397 /* CommitIterator.swift */,
 				E65C767923E6F4FF00FD14BE /* IndexOld.swift */,
 				E653907B23E73CDE00C08416 /* Patch.swift */,
@@ -495,6 +497,7 @@
 				1DB0F84F24EFFD7B00637B9B /* Repository */,
 				AA89482E23F1671A0074288B /* Buffer.swift */,
 				E6D4A92324DF40CA00E8041E /* Index.swift */,
+				1D991AE02518FA7900335255 /* Duo.swift */,
 			);
 			path = Experimental;
 			sourceTree = "<group>";
@@ -833,7 +836,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				621E66A01C72958800A0F352 /* OID.swift in Sources */,
-				621E66A11C72958800A0F352 /* Remotes.swift in Sources */,
+				621E66A11C72958800A0F352 /* Remote_OLD.swift in Sources */,
 				621E66A21C72958800A0F352 /* CheckoutStrategy.swift in Sources */,
 				622726351C84E52500C53D17 /* Credentials.swift in Sources */,
 				621E66A31C72958800A0F352 /* RepositoryOLD.swift in Sources */,
@@ -869,11 +872,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1D991AE12518FA7900335255 /* Duo.swift in Sources */,
 				1DB0F84E24EFFB2D00637B9B /* RepositoryCheckout.swift in Sources */,
 				E61B443423CE4D670059650A /* Repository+Submodule.swift in Sources */,
 				E67D157224EF24A500DA3542 /* Repository+Status.swift in Sources */,
 				BE70B3E51A1ACB1A002C3F4E /* OID.swift in Sources */,
-				BECB5F6E1A57284700999413 /* Remotes.swift in Sources */,
+				BECB5F6E1A57284700999413 /* Remote_OLD.swift in Sources */,
 				BE276B291ACCD3CF00D6DAD7 /* CheckoutStrategy.swift in Sources */,
 				622726341C84E52500C53D17 /* Credentials.swift in Sources */,
 				AA89482F23F1671A0074288B /* Buffer.swift in Sources */,

@@ -368,7 +368,7 @@ public final class RepositoryOLD {
 	/// Loads all the remotes in the repository.
 	///
 	/// Returns an array of remotes, or an error.
-	public func allRemotes() -> Result<[Remote], NSError> {
+	public func allRemotes() -> Result<[Remote_OLD], NSError> {
 		let pointer = UnsafeMutablePointer<git_strarray>.allocate(capacity: 1)
 		let result = git_remote_list(pointer, self.pointer)
 
@@ -378,7 +378,7 @@ public final class RepositoryOLD {
 		}
 
 		let strarray = pointer.pointee
-		let remotes: [Result<Remote, NSError>] = strarray.map {
+		let remotes: [Result<Remote_OLD, NSError>] = strarray.map {
 			return self.remote(named: $0)
 		}
 		git_strarray_free(pointer)
@@ -405,12 +405,12 @@ public final class RepositoryOLD {
 	/// name - The name of the remote.
 	///
 	/// Returns the remote if it exists, or an error.
-	public func remote(named name: String) -> Result<Remote, NSError> {
-		return remoteLookup(named: name) { $0.map(Remote.init) }
+	public func remote(named name: String) -> Result<Remote_OLD, NSError> {
+		return remoteLookup(named: name) { $0.map(Remote_OLD.init) }
 	}
 
 	/// Download new data and update tips
-	public func fetch(_ remote: Remote) -> Result<(), NSError> {
+	public func fetch(_ remote: Remote_OLD) -> Result<(), NSError> {
 		return remoteLookup(named: remote.name) { remote in
 			remote.flatMap { pointer in
 				var opts = git_fetch_options()
@@ -428,7 +428,7 @@ public final class RepositoryOLD {
 	}
 	
 	/// Push local branch changes to remote branch
-	public func push(branch: BranchOLD, to remote: Remote, credentials: Credentials = .default) -> Result<(), NSError> {
+	public func push(branch: BranchOLD, to remote: Remote_OLD, credentials: Credentials = .default) -> Result<(), NSError> {
 		return remoteLookup(named: remote.name) { remote in
 			remote.flatMap { pointer in
 				var opts = pushOptions(credentials: credentials)

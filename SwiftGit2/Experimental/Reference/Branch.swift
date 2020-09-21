@@ -61,17 +61,32 @@ extension Branch{
 	}
 }
 
-public struct Duo<T1,T2> {
-	public let value: (T1, T2)
-	public init(_ value: (T1, T2)) {
-		self.value = value
-	}
-}
-
 public extension Duo where T1 == Branch, T2 == Repository {
 	func commit() -> Result<Commit, NSError> {
 		let (branch, repo) = self.value
 		return branch.commitOID.flatMap { repo.instanciate($0) }
+	}
+	
+	/// Push local branch changes to remote branch
+	public func push(into remote: Remote_OLD, credentials: Credentials = .default) -> Result<(), NSError> {
+		let (branch, repo) = self.value
+		
+		return repo.remoteLookup(named: remote.name) { remote in
+			remote.flatMap { pointer in
+				var opts = pushOptions(credentials: credentials)
+
+				let branchName = branch.name
+				var dirPointer = UnsafeMutablePointer<Int8>(mutating: (branchName as NSString).utf8String)
+				var refs = git_strarray(strings: &dirPointer, count: 1)
+
+				let result = git_remote_push(pointer, &refs, &opts)
+				guard result == GIT_OK.rawValue else {
+					let err = NSError(gitError: result, pointOfFailure: "git_remote_push")
+					return .failure(err)
+				}
+				return .success(())
+			}
+		}
 	}
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -155,4 +170,18 @@ fileprivate extension String {
 	func replace(of: String, to: String) -> String {
 		return self.replacingOccurrences(of: of, with: to, options: .regularExpression, range: nil)
 	}
+}
+
+fileprivate func pushOptions(credentials: Credentials) -> git_push_options {
+	let pointer = UnsafeMutablePointer<git_push_options>.allocate(capacity: 1)
+	git_push_init_options(pointer, UInt32(GIT_PUSH_OPTIONS_VERSION))
+	
+	var options = pointer.move()
+	
+	pointer.deallocate()
+	
+	options.callbacks.payload = credentials.toPointer()
+	options.callbacks.credentials = credentialsCallback
+	
+	return options
 }

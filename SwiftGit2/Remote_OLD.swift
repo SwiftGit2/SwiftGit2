@@ -9,7 +9,7 @@
 import Clibgit2
 
 /// A remote in a git repository.
-public struct Remote: Hashable {
+public struct Remote_OLD: Hashable {
 	/// The name of the remote.
 	public let name: String
 
