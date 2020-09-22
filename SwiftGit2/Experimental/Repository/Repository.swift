@@ -34,10 +34,10 @@ public class Repository : InstanceProtocol {
 	public func mergeCommits(commitFrom: Commit, commitInto: Commit ) -> Result<Index, NSError> {
 		var mrgOptions = mergeOptions()
 		
-		var rezPointer: UnsafeMutablePointer<OpaquePointer?>?
+		var rezPointer : OpaquePointer? = nil
 		
-		return _result( { Index(rezPointer!.pointee!) } , pointOfFailure: "git_merge_commits") {
-			git_merge_commits(rezPointer, self.pointer , commitFrom.pointer, commitInto.pointer, &mrgOptions)
+		return _result( { Index(rezPointer!) } , pointOfFailure: "git_merge_commits") {
+			git_merge_commits(&rezPointer, self.pointer , commitFrom.pointer, commitInto.pointer, &mrgOptions)
 		}
 	}
 	
