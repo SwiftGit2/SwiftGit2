@@ -26,5 +26,11 @@ public class RemoteRepo : InstanceProtocol {
 	/// The URL of the remote repo
 	///
 	/// This may be an SSH URL, which isn't representable using `NSURL`.
-	public var URL: String { String(validatingUTF8: git_remote_url(pointer))! }
+	
+	//TODO:LAME HACK
+	public var URL: String {
+		"ssh://" + String(validatingUTF8: git_remote_url(pointer))!
+		.replacingOccurrences(of: ":", with: "/")
+		
+	}
 }
