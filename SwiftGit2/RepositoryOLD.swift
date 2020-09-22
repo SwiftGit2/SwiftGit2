@@ -703,7 +703,7 @@ public final class RepositoryOLD {
 	/// assuming we are not doing a merge and using the current tip as the parent.
 	public func commit(message: String, signature: Signature) -> Result<CommitOLD, NSError> {
 		return index().flatMap { index in
-			var treeOID = git_oid()
+			var treeOID = git_oid() // out
 			let treeResult = git_index_write_tree(&treeOID, index.pointer)
 			guard treeResult == GIT_OK.rawValue else {
 				let err = NSError(gitError: treeResult, pointOfFailure: "git_index_write_tree")
