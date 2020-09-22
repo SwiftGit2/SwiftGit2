@@ -68,7 +68,7 @@ public extension Duo where T1 == Branch, T2 == Repository {
 	}
 }
 
-public extension Duo where T1 == Branch, T2 == RemoteRepo{
+public extension Duo where T1 == Branch, T2 == RemoteRepo {
 	/// Push local branch changes to remote branch
 	func push(credentials: Credentials = .default) -> Result<(), NSError> {
 		let (branch, remoteRepo) = self.value
