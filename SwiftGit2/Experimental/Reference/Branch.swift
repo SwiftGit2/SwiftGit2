@@ -74,7 +74,7 @@ public extension Duo where T1 == Branch, T2 == RemoteRepo {
 		let (branch, remoteRepo) = self.value
 		
 		var opts = pushOptions(credentials: credentials)
-
+		
 		let branchName = branch.name
 		var dirPointer = UnsafeMutablePointer<Int8>(mutating: (branchName as NSString).utf8String)
 		var refs = git_strarray(strings: &dirPointer, count: 1)

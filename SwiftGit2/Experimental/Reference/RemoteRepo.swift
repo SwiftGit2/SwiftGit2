@@ -10,14 +10,14 @@ import Foundation
 import Clibgit2
 
 public class RemoteRepo : InstanceProtocol {
-	public var pointer: OpaquePointer
+	public let pointer: OpaquePointer
 	
 	public required init(_ pointer: OpaquePointer) {
 		self.pointer = pointer
 	}
 	
 	deinit {
-		git_commit_free(pointer)
+		git_remote_free(pointer)
 	}
 	
 	/// The name of the remote repo

@@ -40,19 +40,21 @@ public class Repository : InstanceProtocol {
 			git_merge_commits(rezPointer, self.pointer , commitFrom.pointer, commitInto.pointer, &mrgOptions)
 		}
 	}
-
+	
 	public func remoteRepo(named name: String ) -> Result<RemoteRepo, NSError> {
+		return remoteLookup(named: name) { $0.map(RemoteRepo.init) }
+	}
+	
+	public func remoteLookup<A>(named name: String, _ callback: (Result<OpaquePointer, NSError>) -> A) -> A {
 		var pointer: OpaquePointer? = nil
-		defer { git_remote_free(pointer) }
-		
+
 		let result = git_remote_lookup(&pointer, self.pointer, name)
-		
-		
+
 		guard result == GIT_OK.rawValue else {
-			return .failure(NSError(gitError: result, pointOfFailure: "git_remote_lookup"))
+			return callback(.failure(NSError(gitError: result, pointOfFailure: "git_remote_lookup")))
 		}
-		
-		return .success( RemoteRepo(pointer!) )
+
+		return callback(.success(pointer!))
 	}
 	
 	/// Download new data and update tips
