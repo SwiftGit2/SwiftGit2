@@ -43,6 +43,19 @@ extension Branch {
 	public var commitOID	: Result<OID, NSError> { getCommitOid() }
 }
 
+public extension Result where Failure == NSError {
+	func withSwiftError() -> Result<Success, Error> {
+		switch self {
+		case .success(let success):
+			return .success(success)
+		case .failure(let error):
+			return .failure(error)
+		}
+	}
+}
+
+
+
 extension Branch{
 	
 	/// can be called only for local branch;
@@ -65,6 +78,14 @@ public extension Duo where T1 == Branch, T2 == Repository {
 	func commit() -> Result<Commit, NSError> {
 		let (branch, repo) = self.value
 		return branch.commitOID.flatMap { repo.instanciate($0) }
+	}
+	
+	func newBranch(withName name: String) -> Result<Reference, NSError> {
+		let (branch, repo) = self.value
+		
+		return branch.commitOID
+			.flatMap { Duo<OID,Repository>(($0, repo)).commit() }
+			.flatMap { commit in repo.createBranch(from: commit, withName: name)  }
 	}
 }
 
