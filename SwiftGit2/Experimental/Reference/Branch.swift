@@ -49,15 +49,26 @@ extension Branch{
 	///
 	/// newName looks like "BrowserGridItemView" BUT NOT LIKE "refs/heads/BrowserGridItemView"
 	public func setUpstreamName(newName: String) -> Result<(), NSError> {
-		let cleanedName = newName
-							.replace(of: "refs/heads/", to: "")
-							.replace(of: "refs/remotes/", to: "")
+		guard   !newName.contains("refs/heads/") ||
+				!newName.contains("refs/remotes/")
+		else { return .failure(BranchError.NameIsNotUnified as NSError) }
 		
 		return _result({}, pointOfFailure: "git_branch_set_upstream" ) {
-			cleanedName.withCString { newBrName in
+			newName.withCString { newBrName in
 				git_branch_set_upstream(self.pointer, newBrName);
 			}
 		}
+	}
+	
+	/// can be called only for local branch;
+	///
+	/// newName looks like "BrowserGridItemView" BUT NOT LIKE "refs/heads/BrowserGridItemView"
+	public func setLocalName(newName: String) -> Result<(), NSError> {
+		guard   !newName.contains("refs/heads/") ||
+				!newName.contains("refs/remotes/")
+		else { return .failure(BranchError.NameIsNotUnified as NSError) }
+		
+		return (self as! Reference).rename(newName).map { _ in () }
 	}
 }
 
@@ -242,4 +253,22 @@ fileprivate func pushOptions(credentials: Credentials) -> git_push_options {
 	
 	
 	return options
+}
+
+
+////////////////////////////////////////////////////////////////////
+///ERRORS
+////////////////////////////////////////////////////////////////////
+
+enum BranchError: Error {
+  case NameIsNotUnified
+}
+
+extension BranchError: LocalizedError {
+  public var errorDescription: String? {
+	switch self {
+	case .NameIsNotUnified:
+	  return "Name must be unified name ( without 'refs' or 'home' block)"
+	}
+  }
 }
