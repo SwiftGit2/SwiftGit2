@@ -62,6 +62,14 @@ extension Branch{
 	///
 	/// newName looks like "BrowserGridItemView" BUT NOT LIKE "refs/heads/BrowserGridItemView"
 	public func setUpstreamName(newName: String) -> Result<(), NSError> {
+		setUpstreamNameWrapped(newName: newName)
+	}
+	
+	public func removeUpstreamName() -> Result<(), NSError> {
+		setUpstreamNameWrapped(newName: nil)
+	}
+		
+	private func setUpstreamNameWrapped(newName: String?) -> Result<(), NSError> {
 		guard   !newName.contains("refs/heads/") ||
 				!newName.contains("refs/remotes/")
 		else { return .failure(BranchError.NameIsNotUnified as NSError) }
