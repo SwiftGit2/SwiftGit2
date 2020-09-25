@@ -75,13 +75,10 @@ extension Branch{
 	
 	/// can be called only for local branch;
 	///
-	/// newName looks like "BrowserGridItemView" BUT NOT LIKE "refs/heads/BrowserGridItemView"
-	public func setLocalName(newName: String) -> Result<(), NSError> {
-		guard   !newName.contains("refs/heads/") ||
-				!newName.contains("refs/remotes/")
-		else { return .failure(BranchError.NameIsNotUnified as NSError) }
-		
-		return (self as! Reference).rename(newName).map { _ in () }
+	/// newName MUST BE WITH "refs/heads/"
+	/// Will reset assigned upstream Name
+	public func setLocalName(newNameWithPath: String) -> Result<Branch, NSError> {
+		return (self as! Reference).rename(newNameWithPath).flatMap { $0.asBranch() }
 	}
 }
 
