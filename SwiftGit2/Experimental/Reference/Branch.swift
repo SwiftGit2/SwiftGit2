@@ -61,32 +61,14 @@ extension Branch{
 	/// can be called only for local branch;
 	///
 	/// newName looks like "BrowserGridItemView" BUT NOT LIKE "refs/heads/BrowserGridItemView"
-	public func setUpstreamName(newNameWithPath: String) -> Result<(), NSError> {
-		guard !newNameWithPath.contains("refs/remotes/")
-		else { return .failure(BranchError.NameMustNotContainsRefsRemotes as NSError) }
+	public func setUpstreamName(newName: String) -> Result<Branch, NSError> {
+		let cleanedName = newName.replace(of: "refs/heads/", to: "")
 		
-		return _result({}, pointOfFailure: "git_branch_set_upstream" ) {
-			newNameWithPath.withCString { newBrName in
+		return _result({ self }, pointOfFailure: "git_branch_set_upstream" ) {
+			cleanedName.withCString { newBrName in
 				git_branch_set_upstream(self.pointer, newBrName);
 			}
 		}
-	}
-	
-	public func removeUpstreamName() -> Result<(), NSError> {
-		return _result({}, pointOfFailure: "git_branch_set_upstream" ) {
-			git_branch_set_upstream(self.pointer, nil);
-		}
-	}
-	
-	/// can be called only for local branch;
-	///
-	/// newNameWithPath MUST BE WITH "refs/heads/"
-	/// Will reset assigned upstream Name
-	public func setLocalName(newNameWithPath: String) -> Result<Branch, NSError> {
-		guard   newNameWithPath.contains("refs/heads/")
-		else { return .failure(BranchError.NameIsNotLocal as NSError) }
-		
-		return (self as! Reference).rename(newNameWithPath).flatMap { $0.asBranch() }
 	}
 }
 
@@ -279,28 +261,4 @@ fileprivate func pushOptions(credentials: Credentials) -> git_push_options {
 	
 	
 	return options
-}
-
-
-////////////////////////////////////////////////////////////////////
-///ERRORS
-////////////////////////////////////////////////////////////////////
-
-enum BranchError: Error {
-    //case BranchNameIncorrectFormat
-	case NameIsNotLocal
-	case NameMustNotContainsRefsRemotes
-}
-
-extension BranchError: LocalizedError {
-  public var errorDescription: String? {
-	switch self {
-//	case .BranchNameIncorrectFormat:
-//	  return "Name must include 'refs' or 'home' block"
-	case .NameIsNotLocal:
-	  return "Name must be Local. It must have include 'refs/heads/'"
-	case .NameMustNotContainsRefsRemotes:
-	  return "Name must be Remote. But it must not contain 'refs/remotes/'"
-	}
-  }
 }
