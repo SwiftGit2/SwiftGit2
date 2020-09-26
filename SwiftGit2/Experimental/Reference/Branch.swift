@@ -61,31 +61,31 @@ extension Branch{
 	/// can be called only for local branch;
 	///
 	/// newName looks like "BrowserGridItemView" BUT NOT LIKE "refs/heads/BrowserGridItemView"
-	public func setUpstreamName(newName: String) -> Result<(), NSError> {
-		setUpstreamNameWrapped(newName: newName)
-	}
-	
-	public func removeUpstreamName() -> Result<(), NSError> {
-		setUpstreamNameWrapped(newName: nil)
-	}
-		
-	private func setUpstreamNameWrapped(newName: String?) -> Result<(), NSError> {
-		guard   !newName.contains("refs/heads/") ||
-				!newName.contains("refs/remotes/")
-		else { return .failure(BranchError.NameIsNotUnified as NSError) }
+	public func setUpstreamName(newNameWithPath: String) -> Result<(), NSError> {
+		guard !newNameWithPath.contains("refs/remotes/")
+		else { return .failure(BranchError.NameMustNotContainsRefsRemotes as NSError) }
 		
 		return _result({}, pointOfFailure: "git_branch_set_upstream" ) {
-			newName.withCString { newBrName in
+			newNameWithPath.withCString { newBrName in
 				git_branch_set_upstream(self.pointer, newBrName);
 			}
 		}
 	}
 	
+	public func removeUpstreamName() -> Result<(), NSError> {
+		return _result({}, pointOfFailure: "git_branch_set_upstream" ) {
+			git_branch_set_upstream(self.pointer, nil);
+		}
+	}
+	
 	/// can be called only for local branch;
 	///
-	/// newName MUST BE WITH "refs/heads/"
+	/// newNameWithPath MUST BE WITH "refs/heads/"
 	/// Will reset assigned upstream Name
 	public func setLocalName(newNameWithPath: String) -> Result<Branch, NSError> {
+		guard   newNameWithPath.contains("refs/heads/")
+		else { return .failure(BranchError.NameIsNotLocal as NSError) }
+		
 		return (self as! Reference).rename(newNameWithPath).flatMap { $0.asBranch() }
 	}
 }
@@ -287,14 +287,20 @@ fileprivate func pushOptions(credentials: Credentials) -> git_push_options {
 ////////////////////////////////////////////////////////////////////
 
 enum BranchError: Error {
-  case NameIsNotUnified
+    //case BranchNameIncorrectFormat
+	case NameIsNotLocal
+	case NameMustNotContainsRefsRemotes
 }
 
 extension BranchError: LocalizedError {
   public var errorDescription: String? {
 	switch self {
-	case .NameIsNotUnified:
-	  return "Name must be unified name ( without 'refs' or 'home' block)"
+//	case .BranchNameIncorrectFormat:
+//	  return "Name must include 'refs' or 'home' block"
+	case .NameIsNotLocal:
+	  return "Name must be Local. It must have include 'refs/heads/'"
+	case .NameMustNotContainsRefsRemotes:
+	  return "Name must be Remote. But it must not contain 'refs/remotes/'"
 	}
   }
 }
