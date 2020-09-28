@@ -11,7 +11,7 @@ import Clibgit2
 public class Repository : InstanceProtocol {
 	public var pointer: OpaquePointer
 	
-	public let directoryURL: URL? {
+	public var directoryURL: URL? {
 		let path = git_repository_workdir(self.pointer)
 		
 		return path.map({ URL(fileURLWithPath: String(validatingUTF8: $0)!, isDirectory: true) })
