@@ -11,6 +11,12 @@ import Clibgit2
 public class Repository : InstanceProtocol {
 	public var pointer: OpaquePointer
 	
+	public let directoryURL: URL? {
+		let path = git_repository_workdir(self.pointer)
+		
+		return path.map({ URL(fileURLWithPath: String(validatingUTF8: $0)!, isDirectory: true) })
+	}
+	
 	required public init(_ pointer: OpaquePointer) {
 		self.pointer = pointer
 	}
@@ -143,7 +149,7 @@ public extension Repository {
 		}
 	}
 	
-	class func create(url: URL) -> Result<Repository, NSError> {
+	class func create(at url: URL) -> Result<Repository, NSError> {
 		var pointer: OpaquePointer? = nil
 		
 		return _result( { Repository(pointer!) }, pointOfFailure: "git_repository_init") {
