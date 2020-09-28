@@ -70,6 +70,17 @@ extension Branch{
 			}
 		}
 	}
+	
+	/// can be called only for local branch;
+	///
+	/// newNameWithPath MUST BE WITH "refs/heads/"
+	/// Will reset assigned upstream Name
+	public func setLocalName(newNameWithPath: String) -> Result<Branch, NSError> {
+		guard   newNameWithPath.contains("refs/heads/")
+		else { return .failure(BranchError.NameIsNotLocal as NSError) }
+		
+		return (self as! Reference).rename(newNameWithPath).flatMap { $0.asBranch() }
+	}
 }
 
 public extension Duo where T1 == Branch, T2 == Repository {
@@ -261,4 +272,27 @@ fileprivate func pushOptions(credentials: Credentials) -> git_push_options {
 	
 	
 	return options
+}
+
+////////////////////////////////////////////////////////////////////
+///ERRORS
+////////////////////////////////////////////////////////////////////
+
+enum BranchError: Error {
+	//case BranchNameIncorrectFormat
+	case NameIsNotLocal
+	//case NameMustNotContainsRefsRemotes
+}
+
+extension BranchError: LocalizedError {
+  public var errorDescription: String? {
+	switch self {
+//	case .BranchNameIncorrectFormat:
+//	  return "Name must include 'refs' or 'home' block"
+	case .NameIsNotLocal:
+	  return "Name must be Local. It must have include 'refs/heads/'"
+//	case .NameMustNotContainsRefsRemotes:
+//	  return "Name must be Remote. But it must not contain 'refs/remotes/'"
+	}
+  }
 }
