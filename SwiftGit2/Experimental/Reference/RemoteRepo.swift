@@ -29,10 +29,41 @@ public class RemoteRepo : InstanceProtocol {
 	
 	//TODO:LAME HACK
 	public var URL: String {
-		"ssh://" + String(validatingUTF8: git_remote_url(pointer))!
-		.replacingOccurrences(of: ":", with: "/")
+		let url = String(validatingUTF8: git_remote_url(pointer))!
 		
+		return urlGetHttp(url: url)
 	}
+
+	
+	// https://github.com/ukushu/PushTest.git
+	// ssh://git@github.com:ukushu/PushTest.git
+	private func urlGetHttp(url: String) -> String {
+		var url = String(validatingUTF8: git_remote_url(pointer))!
+		
+		if url.contains("https://") {
+			return url
+		}
+		
+		//else this is ssh and need to make https
+		
+		if url.contains("@") {
+			let tmp = url.split(separator: "@")
+			if tmp.count == 2 { url = String(tmp[1]) }
+		}
+		
+		url =  "https://" + url.replacingOccurrences(of: ":", with: "/")
+	
+		return url
+	}
+	
+	// https://github.com/ukushu/PushTest.git
+	// ssh://git@github.com:ukushu/PushTest.git
+	private func urlGetSsh(url: String) -> String {
+		return "ssh://\(url)"
+					.replacingOccurrences(of: ":", with: "/")
+	}
+	
+	
 	
 	/// FOR INTERNAL USAGE ONLY. USE DUO instead.
 	public func push(branchName: String, options: UnsafePointer<git_push_options> ) -> Result<(), NSError> {
