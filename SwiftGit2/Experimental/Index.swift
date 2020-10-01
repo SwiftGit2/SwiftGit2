@@ -25,7 +25,7 @@ public extension Repository {
 		var pointer: OpaquePointer? = nil
 		
 		return _result( { Index(pointer!) }, pointOfFailure: "git_repository_index") {
-			git_repository_index(&pointer, pointer)
+			git_repository_index(&pointer, self.pointer)
 		}
 	}
 }
