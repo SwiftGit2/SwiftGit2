@@ -66,46 +66,65 @@ public extension Index {
 	}
 	
 	func clear() -> Result<(), NSError> {
-		return _result((), pointOfFailure: "git_index_clear") {
-			git_index_clear(pointer)
-		}
+		_result((), pointOfFailure: "git_index_clear") { git_index_clear(pointer) }
 	}
 	
 	private func write() -> Result<(),NSError> {
-		return _result((), pointOfFailure: "git_index_write") {
-			git_index_write(pointer)
-		}
+		_result((), pointOfFailure: "git_index_write") { git_index_write(pointer) }
 	}
 }
 
 public extension Duo where T1 == Index, T2 == Repository {
-	/// Perform a commit of the staged files with the specified message and signature,
-	/// assuming we are not doing a merge and using the current tip as the parent.
+// OLD commit code
+//	/// Perform a commit of the staged files with the specified message and signature,
+//	/// assuming we are not doing a merge and using the current tip as the parent.
+//	func commit(message: String, signature: Signature) -> Result<Commit, NSError> {
+//		let (index,repo) = self.value
+//
+//		var treeOID = git_oid() // out
+//		let treeResult = git_index_write_tree(&treeOID, index.pointer)
+//		guard treeResult == GIT_OK.rawValue else {
+//			let err = NSError(gitError: treeResult, pointOfFailure: "git_index_write_tree")
+//			return .failure(err)
+//		}
+//		var parentID = git_oid()
+//		let nameToIDResult = git_reference_name_to_id(&parentID, repo.pointer, "HEAD")
+//		if nameToIDResult == GIT_OK.rawValue {
+//			let commit = repo.instanciate(OID(parentID)) as Result<Commit, NSError>
+//			return commit.flatMap { parentCommit in
+//				repo.commit(tree: OID(treeOID), parents: [parentCommit], message: message, signature: signature)
+//			}
+//		}
+//
+//		// if there are no parents: initial commit
+//		return repo.commit(tree: OID(treeOID), parents: [], message: message, signature: signature)
+//	}
+	
 	func commit(message: String, signature: Signature) -> Result<Commit, NSError> {
 		let (index,repo) = self.value
 		
 		var treeOID = git_oid() // out
-		let treeResult = git_index_write_tree(&treeOID, index.pointer)
-		guard treeResult == GIT_OK.rawValue else {
-			let err = NSError(gitError: treeResult, pointOfFailure: "git_index_write_tree")
-			return .failure(err)
-		}
-		var parentID = git_oid()
-		let nameToIDResult = git_reference_name_to_id(&parentID, repo.pointer, "HEAD")
-		if nameToIDResult == GIT_OK.rawValue {
-			let commit = repo.instanciate(OID(parentID)) as Result<Commit, NSError>
-			return commit.flatMap { parentCommit in
-				repo.commit(tree: OID(treeOID), parents: [parentCommit], message: message, signature: signature)
-			}
+		
+		_ = _result((), pointOfFailure: "git_index_write_tree") {
+			git_index_write_tree(&treeOID, index.pointer)
 		}
 		
+		var parentID = git_oid() //out
+		
+		//find parent commit
+		return _result((), pointOfFailure: "git_reference_name_to_id") {
+			git_reference_name_to_id(&parentID, repo.pointer, "HEAD")
+		}
+		.flatMap { _ in
+			repo.instanciate(OID(parentID)) as Result<Commit, NSError>
+		}
+		// If parrent commit exist
+		.flatMap{ parentCommit in
+			repo.commit(tree: OID(treeOID), parents: [parentCommit], message: message, signature: signature)
+		}
 		// if there are no parents: initial commit
-		return repo.commit(tree: OID(treeOID), parents: [], message: message, signature: signature)
+		.flatMapError { _ in
+			repo.commit(tree: OID(treeOID), parents: [], message: message, signature: signature)
+		}
 	}
-	
-}
-
-public extension Index {
-
-	
 }
