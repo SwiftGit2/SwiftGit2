@@ -33,4 +33,14 @@ public class RemoteRepo : InstanceProtocol {
 		.replacingOccurrences(of: ":", with: "/")
 		
 	}
+	
+	/// FOR INTERNAL USAGE ONLY. USE DUO instead.
+	public func push(branchName: String, options: UnsafePointer<git_push_options> ) -> Result<(), NSError> {
+		var dirPointer = UnsafeMutablePointer<Int8>(mutating: (branchName as NSString).utf8String)
+		var refs = git_strarray(strings: &dirPointer, count: 1)
+		
+		return _result( (), pointOfFailure: "git_remote_push") {
+			git_remote_push(self.pointer, &refs, options)
+		}
+	}
 }

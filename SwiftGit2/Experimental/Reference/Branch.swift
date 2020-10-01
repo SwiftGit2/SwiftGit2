@@ -155,26 +155,14 @@ public extension Duo where T1 == Branch, T2 == RemoteRepo {
 	func push(credentials1: Credentials = .sshAgent) -> Result<(), NSError> {
 		let (branch, remoteRepo) = self.value
 		
-		
 		var credentials = Credentials.sshMemory(username: "ukushu@gmail.com", publicKey: publicKey ,
 											privateKey: privateKey, passphrase: "")
-		
 		
 		var opts = pushOptions(credentials: credentials1)
 		
 		var a = remoteRepo.URL
 		
-		let branchName = branch.name
-		var dirPointer = UnsafeMutablePointer<Int8>(mutating: (branchName as NSString).utf8String)
-		var refs = git_strarray(strings: &dirPointer, count: 1)
-
-		//TODO: Can be optimized
-		let result = git_remote_push(remoteRepo.pointer, &refs, &opts)
-		guard result == GIT_OK.rawValue else {
-			let err = NSError(gitError: result, pointOfFailure: "git_remote_push")
-			return .failure(err)
-		}
-		return .success(())
+		return remoteRepo.push(branchName: branch.name, options: &opts )
 	}
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
