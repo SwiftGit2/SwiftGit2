@@ -22,6 +22,20 @@ public class Repository : InstanceProtocol {
 	}
 	
 	deinit { git_repository_free(pointer) }
+}
+
+extension Repository {
+	public func headParentCommit() -> Result<Commit, NSError> {
+		var parentID = git_oid() //out
+		
+		return _result((), pointOfFailure: "git_reference_name_to_id") {
+			git_reference_name_to_id(&parentID, self.pointer, "HEAD")
+		}
+		.flatMap { _ in
+			self.instanciate(OID(parentID)) as Result<Commit, NSError>
+		}
+	}
+	
 	
 	public func createBranch(from commit: Commit, withName newName: String, overwriteExisting: Bool = false) -> Result<Reference, NSError> {
 		let force: Int32 = overwriteExisting ? 0 : 1
