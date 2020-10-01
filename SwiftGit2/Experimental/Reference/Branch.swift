@@ -168,6 +168,7 @@ public extension Duo where T1 == Branch, T2 == RemoteRepo {
 		var dirPointer = UnsafeMutablePointer<Int8>(mutating: (branchName as NSString).utf8String)
 		var refs = git_strarray(strings: &dirPointer, count: 1)
 
+		//TODO: Can be optimized
 		let result = git_remote_push(remoteRepo.pointer, &refs, &opts)
 		guard result == GIT_OK.rawValue else {
 			let err = NSError(gitError: result, pointOfFailure: "git_remote_push")
@@ -206,6 +207,8 @@ public extension Repository {
 private extension Branch {
 	func getName() -> String {
 		var namePointer: UnsafePointer<Int8>? = nil
+		
+		//TODO: Can be optimized
 		let success = git_branch_name(&namePointer, pointer)
 		guard success == GIT_OK.rawValue else {
 			return ""
@@ -240,6 +243,7 @@ private extension Branch {
 				git_reference_free(resolved)
 			}
 			
+			//TODO: Can be optimized
 			let success = git_reference_resolve(&resolved, pointer)
 			guard success == GIT_OK.rawValue else {
 				return nil

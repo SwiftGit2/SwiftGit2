@@ -21,9 +21,7 @@ public class Repository : InstanceProtocol {
 		self.pointer = pointer
 	}
 	
-	deinit {
-		git_repository_free(pointer)
-	}
+	deinit { git_repository_free(pointer) }
 	
 	public func createBranch(from commit: Commit, withName newName: String, overwriteExisting: Bool = false) -> Result<Reference, NSError> {
 		let force: Int32 = overwriteExisting ? 0 : 1
@@ -87,6 +85,8 @@ public class Repository : InstanceProtocol {
 					parents.count,
 					parentsPtr
 				)
+				
+				//TODO: Can be optimized
 				guard result == GIT_OK.rawValue else {
 					return .failure(NSError(gitError: result, pointOfFailure: "git_commit_create"))
 				}
@@ -115,6 +115,7 @@ public class Repository : InstanceProtocol {
 
 		let result = git_remote_lookup(&pointer, self.pointer, name)
 
+		//TODO: Can be optimized
 		guard result == GIT_OK.rawValue else {
 			return callback(.failure(NSError(gitError: result, pointOfFailure: "git_remote_lookup")))
 		}
@@ -130,6 +131,8 @@ public class Repository : InstanceProtocol {
 		assert(resultInit == GIT_OK.rawValue)
 
 		let result = git_remote_fetch(pointer, nil, &opts, nil)
+		
+		//TODO: Can be optimized
 		guard result == GIT_OK.rawValue else {
 			let err = NSError(gitError: result, pointOfFailure: "git_remote_fetch")
 			return .failure(err)
@@ -207,6 +210,7 @@ public extension Repository {
 				git_clone(&pointer, remoteURLString, localPath, &options)
 			}
 
+			//TODO: can be optimized
 			guard result == GIT_OK.rawValue else {
 				return Result.failure(NSError(gitError: result, pointOfFailure: "git_clone"))
 			}
