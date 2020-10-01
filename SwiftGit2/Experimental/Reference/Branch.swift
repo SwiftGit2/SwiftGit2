@@ -160,7 +160,7 @@ public extension Duo where T1 == Branch, T2 == RemoteRepo {
 		
 		var opts = pushOptions(credentials: credentials1)
 		
-		var a = remoteRepo.URL
+		//var a = remoteRepo.URL
 		
 		return remoteRepo.push(branchName: branch.name, options: &opts )
 	}
