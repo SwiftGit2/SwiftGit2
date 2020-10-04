@@ -9,7 +9,7 @@
 import Foundation
 import Clibgit2
 
-public class RemoteRepo : InstanceProtocol {
+public class Remote : InstanceProtocol {
 	public let pointer: OpaquePointer
 	
 	public required init(_ pointer: OpaquePointer) {

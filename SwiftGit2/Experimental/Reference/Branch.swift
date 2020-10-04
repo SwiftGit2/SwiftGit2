@@ -150,7 +150,7 @@ nOfRkyQTVBx89wAAABB1a3VzaHVAZ21haWwuY29tAQ==
 
 let publicKey = "AAAAB3NzaC1yc2EAAAADAQABAAACAQDOkKA9wnTakoQ2i9vJ3IpzCRySji6lBawRLUzch4jrFq54GZAt+8dDR/WTiGk6nlvAY0a5zN6Umqx+Ed1OCnrYg/IWZm5+gsdsURRaD3yRJdRluZHwYLgkbL2wAhl/kl13zFxwkcABJnKQnrAF1PiI28rmbBOLjoRngHLyB8Dy+zK0bgmgI7GqUnNo/F3MOarQ59DOtTcevGiTIJa+y2DDk2t7oGm6+/9k4oFZ0imQ9j0CH3jvfy9D540UKew6kVSAZiW6V/2mBPyCTzlVgeREmzXLW5HEkDfBbYWPS7LH7Hd1w8DvW7WAt6NDgug0L+7dgcWgVjsuFlkx5jgxKQKRHn2+dfESLpb+Kc9wMPydWYfQHKVUC+7Hoe7N4n8YvXievIuU+KZK7cavtvWhGtWSj8lUkZnhXnkiOai8yXTbIAD27LOVEAVi/7G5LZUeqTqTyF/dvCCljtGEY6p8N3iAgQA+zFD9Z12/QsKa/Fu/ZcGG6UkzaVK2PdHA/kkDEu0eYpoqw7rd8D+A+O1uVuAcYMBr2u7TOjixIrd8UdnfIsubNGP+A4MdvkcaCggEKfSN1V0rVSpyPhjtyC40q+WYPNYUzjqWeotj8nj7x+gHuod/uFw3y1l1y7SDhdg88oe8zTQHxX1RiZdlRcS86yPLMTxcBtEkf6D+Kbl3Y99SEw=="
 
-public extension Duo where T1 == Branch, T2 == RemoteRepo {
+public extension Duo where T1 == Branch, T2 == Remote {
 	/// Push local branch changes to remote branch
 	func push(credentials1: Credentials = .sshAgent) -> Result<(), NSError> {
 		let (branch, remoteRepo) = self.value
