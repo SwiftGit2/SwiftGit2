@@ -80,24 +80,14 @@ public class Remote : InstanceProtocol {
 	
 	/// Download new data and update tips
 	/// Input:  REMOTE (like an "Origin")
-	public func fetch(credentials: Credentials = .sshAgent) -> Result<(), NSError> {
-		var opts = FetchOptions(credentials: credentials).fetch_options
+	public func fetch(options: FetchOptions) -> Result<(), NSError> {
+		var opts = options.fetch_options
 		
 		let resultInit = git_fetch_init_options(&opts, UInt32(GIT_FETCH_OPTIONS_VERSION))
 		assert(resultInit == GIT_OK.rawValue)
 		
 		return _result((), pointOfFailure: "git_remote_fetch") {
 			git_remote_fetch(pointer, nil, &opts, nil)
-		}
-	}
-	
-	/// FOR INTERNAL USAGE ONLY. USE DUO instead.
-	public func push(branchName: String, options: UnsafePointer<git_push_options> ) -> Result<(), NSError> {
-		var dirPointer = UnsafeMutablePointer<Int8>(mutating: (branchName as NSString).utf8String)
-		var refs = git_strarray(strings: &dirPointer, count: 1)
-
-		return _result( (), pointOfFailure: "git_remote_push") {
-			git_remote_push(self.pointer, &refs, options)
 		}
 	}
 }
@@ -107,7 +97,7 @@ public class FetchOptions {
 	private(set) var fetch_options : git_fetch_options
 	let credentials: Credentials
 	
-	init(credentials: Credentials) {
+	public init(credentials: Credentials) {
 		self.credentials = credentials
 		self.fetch_options = git_fetch_options()
 		
