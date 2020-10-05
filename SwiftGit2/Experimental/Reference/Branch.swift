@@ -19,7 +19,7 @@ public enum BranchLocation {
 public protocol Branch: InstanceProtocol {
 	var shortName	: String	{ get }
 	var name		: String	{ get }
-	var commitOID_	: OID?		{ get }
+	var commitOID	: Result<OID, NSError> { get }
 }
 
 public extension Branch {
@@ -37,9 +37,8 @@ public extension Branch {
 extension Reference : Branch {}
 	
 extension Branch {
-	public var shortName 	: String 	{ getName() }
+	public var shortName 	: String 	{ ( try? getNameInternal().get() ) ?? "" }
 	public var name 		: String 	{ getLongName() }
-	public var commitOID_	: OID? 		{ getCommitOID_() }
 	public var commitOID	: Result<OID, NSError> { getCommitOid() }
 }
 
@@ -54,9 +53,7 @@ public extension Result where Failure == NSError {
 	}
 }
 
-
-
-extension Branch{
+extension Branch {
 	
 	/// can be called only for local branch;
 	///
@@ -103,11 +100,11 @@ public extension Duo where T1 == Branch, T2 == Remote {
 	func push(credentials1: Credentials = .sshAgent) -> Result<(), NSError> {
 		let (branch, remoteRepo) = self.value
 		
-		var credentials = Credentials
+		let credentials = Credentials
 			.plaintext(username: "skulptorrr@gmail.com", password: "Sr@mom!Hl3dr:gi")
 		
 		
-		var opts = pushOptions(credentials: credentials1)
+		var opts = pushOptions(credentials: credentials)
 		
 		var a = remoteRepo.URL
 				
@@ -142,14 +139,6 @@ public extension Repository {
 }
 
 private extension Branch {
-	func getName() -> String {
-		do {
-			return try getNameInternal().get()
-		}
-		catch {
-			return ""
-		}
-	}
 	private func getNameInternal() -> Result<String, NSError> {
 		var namePointer: UnsafePointer<Int8>? = nil
 		
@@ -172,29 +161,8 @@ private extension Branch {
 			return _result( { resolved }, pointOfFailure: "git_reference_resolve") {
 				git_reference_resolve(&resolved, self.pointer)
 			}.map { OID(git_reference_target($0).pointee) }
-			
 		} else {
 			return .success( OID(git_reference_target(pointer).pointee) )
-		}
-	}
-	
-	//TODO: Delete me if you can
-	func getCommitOID_() -> OID? {
-		if git_reference_type(pointer).rawValue == GIT_REFERENCE_SYMBOLIC.rawValue {
-			var resolved: OpaquePointer? = nil
-			defer {
-				git_reference_free(resolved)
-			}
-			
-			//TODO: Can be optimized
-			let success = git_reference_resolve(&resolved, pointer)
-			guard success == GIT_OK.rawValue else {
-				return nil
-			}
-			return OID(git_reference_target(resolved).pointee)
-			
-		} else {
-			return OID(git_reference_target(pointer).pointee)
 		}
 	}
 }
@@ -209,7 +177,6 @@ fileprivate extension Remote {
 		}
 	}
 }
-
 
 fileprivate extension String {
 	func replace(of: String, to: String) -> String {
@@ -227,7 +194,6 @@ fileprivate func pushOptions(credentials: Credentials) -> git_push_options {
 	
 	options.callbacks.payload = credentials.toPointer()
 	options.callbacks.credentials = credentialsCallback
-	
 	
 	return options
 }
