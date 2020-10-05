@@ -48,13 +48,13 @@ internal func credentialsCallback(
 
 	switch Credentials.fromPointer(payload!) {
 	case .default:
-		result = git_cred_default_new(cred)
+		result = git_credential_default_new(cred)
 	case .sshAgent:
-		result = git_cred_ssh_key_from_agent(cred, name!)
+		result = git_credential_ssh_key_from_agent(cred, name!)
 	case .plaintext(let username, let password):
-		result = git_cred_userpass_plaintext_new(cred, username, password)
+		result = git_credential_userpass_plaintext_new(cred, username, password)
 	case .sshMemory(let username, let publicKey, let privateKey, let passphrase):
-		result = git_cred_ssh_key_memory_new(cred, username, publicKey, privateKey, passphrase)
+		result = git_credential_ssh_key_memory_new(cred, username, publicKey, privateKey, passphrase)
 	}
 
 	return (result != GIT_OK.rawValue) ? -1 : 0
