@@ -120,8 +120,8 @@ extension Repository {
 		}
 	}
 	
-	public func remoteRepo(named name: String ) -> Result<RemoteRepo, NSError> {
-		return remoteLookup(named: name) { $0.map(RemoteRepo.init) }
+	public func remoteRepo(named name: String ) -> Result<Remote, NSError> {
+		return remoteLookup(named: name) { $0.map(Remote.init) }
 	}
 	
 	public func remoteLookup<A>(named name: String, _ callback: (Result<OpaquePointer, NSError>) -> A) -> A {
@@ -135,23 +135,6 @@ extension Repository {
 		}
 
 		return callback(.success(pointer!))
-	}
-	
-	/// Download new data and update tips
-	/// Input:  REMOTE (like an "Origin")
-	public func fetch(remote: RemoteRepo) -> Result<(), NSError> {
-		var opts = git_fetch_options()
-		let resultInit = git_fetch_init_options(&opts, UInt32(GIT_FETCH_OPTIONS_VERSION))
-		assert(resultInit == GIT_OK.rawValue)
-
-		let result = git_remote_fetch(pointer, nil, &opts, nil)
-		
-		//TODO: Can be optimized
-		guard result == GIT_OK.rawValue else {
-			let err = NSError(gitError: result, pointOfFailure: "git_remote_fetch")
-			return .failure(err)
-		}
-		return .success(())
 	}
 }
 
