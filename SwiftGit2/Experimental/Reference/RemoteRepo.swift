@@ -51,16 +51,32 @@ public class RemoteRepo : InstanceProtocol {
 			if tmp.count == 2 { url = String(tmp[1]) }
 		}
 		
-		url =  "https://" + url.replacingOccurrences(of: ":", with: "/")
-	
-		return url
+		url = url.replacingOccurrences(of: "ssh://", with: "")
+				.replacingOccurrences(of: ":", with: "/")
+		
+		return "https://\(url)"
 	}
 	
 	// https://github.com/ukushu/PushTest.git
 	// ssh://git@github.com:ukushu/PushTest.git
 	private func urlGetSsh(url: String) -> String {
-		return "ssh://\(url)"
-					.replacingOccurrences(of: ":", with: "/")
+		var newUrl = url
+		
+		if newUrl.contains("github") {
+			if !newUrl.contains("ssh://") && newUrl.contains("git@") {
+				newUrl = "ssh://\(url)"
+			}
+			else if newUrl.contains("ssh://") && !newUrl.contains("git@") {
+				newUrl = url.replacingOccurrences(of: "ssh://", with: "ssh://git@")
+			}
+		}
+		else{
+			if !newUrl.contains("ssh://"){
+				newUrl = "ssh://\(url)"
+			}
+		}
+		
+		return newUrl.replacingOccurrences(of: ":", with: "/")
 	}
 	
 	
