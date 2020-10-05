@@ -8,7 +8,7 @@
 
 import Clibgit2
 
-public class TreeNew : InstanceProtocol {
+public class Tree : InstanceProtocol {
 	public var pointer: OpaquePointer
 	
 	public required init(_ pointer: OpaquePointer) {

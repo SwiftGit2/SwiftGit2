@@ -137,13 +137,11 @@ fileprivate extension Repository {
 		}
 	}
 
-	private func gitTreeLookup(tree treeOID: OID) -> Result<TreeNew, NSError> {
+	private func gitTreeLookup(tree treeOID: OID) -> Result<Tree, NSError> {
 		var tree: OpaquePointer? = nil
 		var treeOIDCopy = treeOID.oid
 		
-		defer { git_tree_free(tree) }
-		
-		return _result( { TreeNew(tree!) } , pointOfFailure: "git_tree_lookup") {
+		return _result( { Tree(tree!) } , pointOfFailure: "git_tree_lookup") {
 			git_tree_lookup(&tree, self.pointer, &treeOIDCopy)
 		}
 	}
