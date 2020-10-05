@@ -55,59 +55,8 @@ extension Repository {
 		}
 	}
 
+
 	
-	/// If no parents write "[]"
-	/// Perform a commit with arbitrary numbers of parent commits.
-	public func commit(
-		tree treeOID: OID,
-		parents: [Commit],
-		message: String,
-		signature: Signature
-	) -> Result<Commit, NSError> {
-		// create commit signature
-		return signature.makeUnsafeSignature().flatMap { signature in
-			defer { git_signature_free(signature) }
-			var tree: OpaquePointer? = nil
-			var treeOIDCopy = treeOID.oid
-			let lookupResult = git_tree_lookup(&tree, self.pointer, &treeOIDCopy)
-			guard lookupResult == GIT_OK.rawValue else {
-				let err = NSError(gitError: lookupResult, pointOfFailure: "git_tree_lookup")
-				return .failure(err)
-			}
-			defer { git_tree_free(tree) }
-
-			var msgBuf = git_buf()
-			git_message_prettify(&msgBuf, message, 0, /* ascii for # */ 35)
-			defer { git_buf_free(&msgBuf) }
-
-			// libgit2 expects a C-like array of parent git_commit pointer
-			let parentGitCommits: [OpaquePointer?] = parents.map { $0.pointer }
-
-			let parentsContiguous = ContiguousArray(parentGitCommits)
-			return parentsContiguous.withUnsafeBufferPointer { unsafeBuffer in
-				var commitOID = git_oid()
-				let parentsPtr = UnsafeMutablePointer(mutating: unsafeBuffer.baseAddress)
-				let result = git_commit_create(
-					&commitOID,
-					self.pointer,
-					"HEAD",
-					signature,
-					signature,
-					"UTF-8",
-					msgBuf.ptr,
-					tree,
-					parents.count,
-					parentsPtr
-				)
-				
-				//TODO: Can be optimized
-				guard result == GIT_OK.rawValue else {
-					return .failure(NSError(gitError: result, pointOfFailure: "git_commit_create"))
-				}
-				return self.instanciate(OID(commitOID))//commit(OID(commitOID))
-			}
-		}
-	}
 
 	
 	public func mergeCommits(commitFrom: Commit, commitInto: Commit ) -> Result<Index, NSError> {
@@ -126,15 +75,12 @@ extension Repository {
 	
 	public func remoteLookup<A>(named name: String, _ callback: (Result<OpaquePointer, NSError>) -> A) -> A {
 		var pointer: OpaquePointer? = nil
-
-		let result = git_remote_lookup(&pointer, self.pointer, name)
-
-		//TODO: Can be optimized
-		guard result == GIT_OK.rawValue else {
-			return callback(.failure(NSError(gitError: result, pointOfFailure: "git_remote_lookup")))
-		}
-
-		return callback(.success(pointer!))
+		
+		let result = _result( () , pointOfFailure: "git_remote_lookup") {
+			git_remote_lookup(&pointer, self.pointer, name)
+		}.map{ pointer! }
+		
+		return callback(result)
 	}
 }
 
@@ -195,26 +141,20 @@ public extension Repository {
 	static func clone(from remoteURL: URL, to localURL: URL, isLocalClone: Bool = false, bare: Bool = false,
 							credentials: Credentials = .default, checkoutStrategy: CheckoutStrategy = .Safe,
 							checkoutProgress: CheckoutProgressBlock? = nil) -> Result<Repository, NSError> {
-			var options = cloneOptions(
-				bare: bare,
-				localClone: isLocalClone,
-				fetchOptions: fetchOptions(credentials: credentials),
-				checkoutOptions: checkoutOptions(strategy: checkoutStrategy, progress: checkoutProgress))
+		var options = cloneOptions(
+			bare: bare,
+			localClone: isLocalClone,
+			fetchOptions: fetchOptions(credentials: credentials),
+			checkoutOptions: checkoutOptions(strategy: checkoutStrategy, progress: checkoutProgress))
 
-			var pointer: OpaquePointer? = nil
-			let remoteURLString = (remoteURL as NSURL).isFileReferenceURL() ? remoteURL.path : remoteURL.absoluteString
-			
-			let result = localURL.withUnsafeFileSystemRepresentation { localPath in
-				git_clone(&pointer, remoteURLString, localPath, &options)
+		var pointer: OpaquePointer? = nil
+		let remoteURLString = (remoteURL as NSURL).isFileReferenceURL() ? remoteURL.path : remoteURL.absoluteString
+		
+		return _result( { Repository(pointer!) } , pointOfFailure: "git_clone") {
+			localURL.withUnsafeFileSystemRepresentation { localPath in
+				return git_clone(&pointer, remoteURLString, localPath, &options)
 			}
-
-			//TODO: can be optimized
-			guard result == GIT_OK.rawValue else {
-				return Result.failure(NSError(gitError: result, pointOfFailure: "git_clone"))
-			}
-
-			let repository = Repository(pointer!)
-			return Result.success(repository)
+		}
 	}
 }
 

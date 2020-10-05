@@ -10,7 +10,7 @@ import Foundation
 import Clibgit2
 
 public extension RepositoryOLD {
-	func diffTreeToTree(oldTree: Tree, newTree: Tree, options: DiffOptions? = nil) -> Result<Diff, NSError> {
+	func diffTreeToTree(oldTree: Tree_Old, newTree: Tree_Old, options: DiffOptions? = nil) -> Result<Diff, NSError> {
 		var diff: OpaquePointer? = nil
 		let result = git_diff_tree_to_tree(&diff, self.pointer, oldTree.pointer, newTree.pointer, options?.pointer)
 		
@@ -21,7 +21,7 @@ public extension RepositoryOLD {
 		return .success(Diff(diff!))
 	}
 	
-	func diffTreeToIndex(tree: Tree, options: DiffOptions? = nil) -> Result<Diff, NSError> {
+	func diffTreeToIndex(tree: Tree_Old, options: DiffOptions? = nil) -> Result<Diff, NSError> {
 		var diff: OpaquePointer? = nil
 		let result = git_diff_tree_to_index(&diff, self.pointer, tree.pointer, nil /*index*/, options?.pointer)
 		
@@ -43,7 +43,7 @@ public extension RepositoryOLD {
 		return .success(Diff(diff!))
 	}
 	
-	func diffTreeToWorkdir(tree: Tree, options: DiffOptions? = nil) -> Result<Diff, NSError> {
+	func diffTreeToWorkdir(tree: Tree_Old, options: DiffOptions? = nil) -> Result<Diff, NSError> {
 		var diff: OpaquePointer? = nil
 		let result = git_diff_tree_to_workdir(&diff, self.pointer, tree.pointer, options?.pointer)
 		
@@ -54,7 +54,7 @@ public extension RepositoryOLD {
 		return .success(Diff(diff!))
 	}
 	
-	func diffTreeToWorkdirWithIndex(tree: Tree, options: DiffOptions? = nil) -> Result<Diff, NSError> {
+	func diffTreeToWorkdirWithIndex(tree: Tree_Old, options: DiffOptions? = nil) -> Result<Diff, NSError> {
 		var diff: OpaquePointer? = nil
 		let result = git_diff_tree_to_workdir_with_index(&diff, self.pointer, tree.pointer, options?.pointer)
 		

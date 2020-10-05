@@ -83,31 +83,6 @@ public extension Index {
 }
 
 public extension Duo where T1 == Index, T2 == Repository {
-// OLD commit code
-//	/// Perform a commit of the staged files with the specified message and signature,
-//	/// assuming we are not doing a merge and using the current tip as the parent.
-//	func commit(message: String, signature: Signature) -> Result<Commit, NSError> {
-//		let (index,repo) = self.value
-//
-//		var treeOID = git_oid() // out
-//		let treeResult = git_index_write_tree(&treeOID, index.pointer)
-//		guard treeResult == GIT_OK.rawValue else {
-//			let err = NSError(gitError: treeResult, pointOfFailure: "git_index_write_tree")
-//			return .failure(err)
-//		}
-//		var parentID = git_oid()
-//		let nameToIDResult = git_reference_name_to_id(&parentID, repo.pointer, "HEAD")
-//		if nameToIDResult == GIT_OK.rawValue {
-//			let commit = repo.instanciate(OID(parentID)) as Result<Commit, NSError>
-//			return commit.flatMap { parentCommit in
-//				repo.commit(tree: OID(treeOID), parents: [parentCommit], message: message, signature: signature)
-//			}
-//		}
-//
-//		// if there are no parents: initial commit
-//		return repo.commit(tree: OID(treeOID), parents: [], message: message, signature: signature)
-//	}
-	
 	func commit(message: String, signature: Signature) -> Result<Commit, NSError> {
 		let (index,repo) = self.value
 		
@@ -124,5 +99,50 @@ public extension Duo where T1 == Index, T2 == Repository {
 					repo.commit(tree: OID(treeOID), parents: [], message: message, signature: signature)
 				}
 			}
+	}
+}
+
+fileprivate extension Repository {
+	/// If no parents write "[]"
+	/// Perform a commit with arbitrary numbers of parent commits.
+	public func commit( tree treeOID: OID, parents: [Commit], message: String, signature: Signature ) -> Result<Commit, NSError> {
+		// create commit signature
+		return signature.makeUnsafeSignature().flatMap { signature in
+			defer { git_signature_free(signature) }
+			
+			return gitTreeLookup(tree: treeOID).flatMap { tree in
+				// Clean up excess whitespace
+				// + make sure there is a trailing newline in the message
+				var msgBuf = git_buf()
+				defer { git_buf_free(&msgBuf) }
+				git_message_prettify(&msgBuf, message, 0, /* ascii for # */ 35)
+				
+				// libgit2 expects a C-like array of parent git_commit pointer
+				let parentGitCommits: [OpaquePointer?] = parents.map { $0.pointer }
+				let parentsContiguous = ContiguousArray(parentGitCommits)
+				
+				return parentsContiguous.withUnsafeBufferPointer { unsafeBuffer in
+					var commitOID = git_oid()
+					let parentsPtr = UnsafeMutablePointer(mutating: unsafeBuffer.baseAddress)
+					
+					return _result( { OID(commitOID) } , pointOfFailure: "git_commit_create") {
+						git_commit_create( &commitOID, self.pointer, "HEAD", signature, signature,
+										   "UTF-8", msgBuf.ptr, tree.pointer, parents.count, parentsPtr )
+					}
+					.flatMap{ currOID in
+						self.instanciate(currOID)
+					}
+				}
+			}
+		}
+	}
+
+	private func gitTreeLookup(tree treeOID: OID) -> Result<Tree, NSError> {
+		var tree: OpaquePointer? = nil
+		var treeOIDCopy = treeOID.oid
+		
+		return _result( { Tree(tree!) } , pointOfFailure: "git_tree_lookup") {
+			git_tree_lookup(&tree, self.pointer, &treeOIDCopy)
+		}
 	}
 }

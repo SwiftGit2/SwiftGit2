@@ -276,8 +276,8 @@ public final class RepositoryOLD {
 				return Result.success(CommitOLD(object))
 			} else if type == Tag.type {
 				return Result.success(Tag(object))
-			} else if type == Tree.type {
-				return Result.success(Tree(object))
+			} else if type == Tree_Old.type {
+				return Result.success(Tree_Old(object))
 			}
 
 			let error = NSError(
@@ -332,8 +332,8 @@ public final class RepositoryOLD {
 	/// oid - The OID of the tree to look up.
 	///
 	/// Returns the tree if it exists, or an error.
-	public func tree(_ oid: OID) -> Result<Tree, NSError> {
-		return withGitObject(oid, type: GIT_OBJECT_TREE) { Tree($0) }
+	public func tree(_ oid: OID) -> Result<Tree_Old, NSError> {
+		return withGitObject(oid, type: GIT_OBJECT_TREE) { Tree_Old($0) }
 	}
 
 	/// Loads the referenced object from the pointer.
@@ -803,7 +803,7 @@ public final class RepositoryOLD {
 	private func diff(from oldCommitOid: OID?, to newCommitOid: OID?) -> Result<Diff, NSError> {
 		assert(oldCommitOid != nil || newCommitOid != nil, "It is an error to pass nil for both the oldOid and newOid")
 
-		var oldTree: Tree? = nil
+		var oldTree: Tree_Old? = nil
 		if let oldCommitOid = oldCommitOid {
 			switch safeTreeForCommitId(oldCommitOid) {
 			case .failure(let error):
@@ -813,7 +813,7 @@ public final class RepositoryOLD {
 			}
 		}
 
-		var newTree: Tree? = nil
+		var newTree: Tree_Old? = nil
 		if let newCommitOid = newCommitOid {
 			switch safeTreeForCommitId(newCommitOid) {
 			case .failure(let error):
@@ -885,7 +885,7 @@ public final class RepositoryOLD {
 		return result
 	}
 
-	private func safeTreeForCommitId(_ oid: OID) -> Result<Tree, NSError> {
+	private func safeTreeForCommitId(_ oid: OID) -> Result<Tree_Old, NSError> {
 		return withGitObject(oid, type: GIT_OBJECT_COMMIT) { commit in
 			let treeId = git_commit_tree_id(commit)
 			return tree(OID(treeId!.pointee))

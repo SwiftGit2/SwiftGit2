@@ -80,7 +80,7 @@ public struct StatusOptions {
 	let show		: StatusOptions.Show
 	let flags		: StatusOptions.Flags
 	let pathspec	: [String]
-	let baseline	: Tree?
+	let baseline	: Tree_Old?
 	
 	public init(options: git_status_options) {
 		git_options = options
@@ -90,7 +90,7 @@ public struct StatusOptions {
 		flags		= Flags(rawValue: options.flags)
 		pathspec	= options.pathspec.map { $0 }
 		if let baseline = options.baseline {
-			self.baseline	= Tree(baseline)
+			self.baseline	= Tree_Old(baseline)
 		} else {
 			self.baseline	= nil
 		}

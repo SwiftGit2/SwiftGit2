@@ -92,7 +92,7 @@ public struct CommitOLD: ObjectType, Hashable {
 	public let oid: OID
 
 	/// The OID of the commit's tree.
-	public let tree: PointerTo<Tree>
+	public let tree: PointerTo<Tree_Old>
 
 	/// The OIDs of the commit's parents.
 	public let parents: [PointerTo<CommitOLD>]
@@ -126,7 +126,7 @@ public struct CommitOLD: ObjectType, Hashable {
 }
 
 /// A git tree.
-public struct Tree: ObjectType, Hashable {
+public struct Tree_Old: ObjectType, Hashable {
 	public let pointer: OpaquePointer
 	public static let type = GIT_OBJECT_TREE
 
@@ -177,7 +177,7 @@ public struct Tree: ObjectType, Hashable {
 	}
 }
 
-extension Tree.Entry: CustomStringConvertible {
+extension Tree_Old.Entry: CustomStringConvertible {
 	public var description: String {
 		return "\(attributes) \(object) \(name)"
 	}

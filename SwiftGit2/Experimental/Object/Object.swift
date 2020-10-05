@@ -27,6 +27,7 @@ public extension Repository {
 	private func gitType<ObjectType>(for type: ObjectType.Type) -> git_object_t where ObjectType : Object {
 		switch type {
 		case is Commit.Type: 	return GIT_OBJECT_COMMIT
+		case is Tree_Old.Type:	return GIT_OBJECT_TREE //TODO: DELETE ME
 		case is Tree.Type:		return GIT_OBJECT_TREE
 		case is Blob.Type:		return GIT_OBJECT_BLOB
 		case is Tag.Type:		return GIT_OBJECT_TAG
