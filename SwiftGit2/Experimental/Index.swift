@@ -122,29 +122,21 @@ fileprivate extension Repository {
 				let parentsContiguous = ContiguousArray(parentGitCommits)
 				
 				return parentsContiguous.withUnsafeBufferPointer { unsafeBuffer in
-					
-					
 					var commitOID = git_oid()
 					let parentsPtr = UnsafeMutablePointer(mutating: unsafeBuffer.baseAddress)
 					
-					let result = git_commit_create( &commitOID, self.pointer, "HEAD", signature, signature,
-													"UTF-8", msgBuf.ptr, tree.pointer, parents.count, parentsPtr )
-					
-					//TODO: Can be optimized
-					guard result == GIT_OK.rawValue else {
-						return .failure(NSError(gitError: result, pointOfFailure: "git_commit_create"))
+					return _result( { OID(commitOID) } , pointOfFailure: "git_commit_create") {
+						git_commit_create( &commitOID, self.pointer, "HEAD", signature, signature,
+										   "UTF-8", msgBuf.ptr, tree.pointer, parents.count, parentsPtr )
 					}
-					return self.instanciate(OID(commitOID))
+					.flatMap{ currOID in
+						self.instanciate(currOID)
+					}
 				}
-			
 			}
 		}
 	}
 
-//	private func commitCreate( parents: [Commit] ) -> Result<OID, NSError>{
-//		
-//	}
-	
 	private func gitTreeLookup(tree treeOID: OID) -> Result<Tree, NSError> {
 		var tree: OpaquePointer? = nil
 		var treeOIDCopy = treeOID.oid
