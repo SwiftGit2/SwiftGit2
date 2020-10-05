@@ -195,14 +195,20 @@ public extension Repository {
 
 private extension Branch {
 	func getName() -> String {
-		var namePointer: UnsafePointer<Int8>? = nil
-		
-		//TODO: Can be optimized
-		let success = git_branch_name(&namePointer, pointer)
-		guard success == GIT_OK.rawValue else {
+		do {
+			return try getNameInternal().get()
+		}
+		catch {
 			return ""
 		}
-		return String(validatingUTF8: namePointer!) ?? ""
+	}
+	
+	private func getNameInternal() -> Result<String, NSError> {
+		var namePointer: UnsafePointer<Int8>? = nil
+		
+		return _result( { String(validatingUTF8: namePointer!) ?? "" }, pointOfFailure: "git_branch_name") {
+			git_branch_name(&namePointer, pointer)
+		}
 	}
 	
 	func getLongName() -> String {
@@ -225,6 +231,7 @@ private extension Branch {
 		}
 	}
 	
+	//TODO: Delete me if you can
 	func getCommitOID_() -> OID? {
 		if git_reference_type(pointer).rawValue == GIT_REFERENCE_SYMBOLIC.rawValue {
 			var resolved: OpaquePointer? = nil
