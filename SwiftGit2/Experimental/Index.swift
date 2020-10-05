@@ -110,33 +110,41 @@ fileprivate extension Repository {
 		return signature.makeUnsafeSignature().flatMap { signature in
 			defer { git_signature_free(signature) }
 			
-			let tree = try! gitTreeLookup(tree: treeOID).get()
-			
-			var msgBuf = git_buf()
-			defer { git_buf_free(&msgBuf) }
-			git_message_prettify(&msgBuf, message, 0, /* ascii for # */ 35)
-			
-			
-			// libgit2 expects a C-like array of parent git_commit pointer
-			let parentGitCommits: [OpaquePointer?] = parents.map { $0.pointer }
-
-			let parentsContiguous = ContiguousArray(parentGitCommits)
-			return parentsContiguous.withUnsafeBufferPointer { unsafeBuffer in
-				var commitOID = git_oid()
-				let parentsPtr = UnsafeMutablePointer(mutating: unsafeBuffer.baseAddress)
+			return gitTreeLookup(tree: treeOID).flatMap { tree in
+				// Clean up excess whitespace
+				// + make sure there is a trailing newline in the message
+				var msgBuf = git_buf()
+				defer { git_buf_free(&msgBuf) }
+				git_message_prettify(&msgBuf, message, 0, /* ascii for # */ 35)
 				
-				let result = git_commit_create( &commitOID, self.pointer, "HEAD", signature, signature,
-												"UTF-8", msgBuf.ptr, tree.pointer, parents.count, parentsPtr )
+				// libgit2 expects a C-like array of parent git_commit pointer
+				let parentGitCommits: [OpaquePointer?] = parents.map { $0.pointer }
+				let parentsContiguous = ContiguousArray(parentGitCommits)
 				
-				//TODO: Can be optimized
-				guard result == GIT_OK.rawValue else {
-					return .failure(NSError(gitError: result, pointOfFailure: "git_commit_create"))
+				return parentsContiguous.withUnsafeBufferPointer { unsafeBuffer in
+					
+					
+					var commitOID = git_oid()
+					let parentsPtr = UnsafeMutablePointer(mutating: unsafeBuffer.baseAddress)
+					
+					let result = git_commit_create( &commitOID, self.pointer, "HEAD", signature, signature,
+													"UTF-8", msgBuf.ptr, tree.pointer, parents.count, parentsPtr )
+					
+					//TODO: Can be optimized
+					guard result == GIT_OK.rawValue else {
+						return .failure(NSError(gitError: result, pointOfFailure: "git_commit_create"))
+					}
+					return self.instanciate(OID(commitOID))
 				}
-				return self.instanciate(OID(commitOID))
+			
 			}
 		}
 	}
 
+//	private func commitCreate( parents: [Commit] ) -> Result<OID, NSError>{
+//		
+//	}
+	
 	private func gitTreeLookup(tree treeOID: OID) -> Result<Tree, NSError> {
 		var tree: OpaquePointer? = nil
 		var treeOIDCopy = treeOID.oid
