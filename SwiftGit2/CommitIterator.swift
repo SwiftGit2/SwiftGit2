@@ -8,23 +8,23 @@ import Clibgit2
 
 public class CommitIterator: IteratorProtocol, Sequence {
 	public typealias Iterator = CommitIterator
-	public typealias Element = Result<Commit, NSError>
+	public typealias Element = Result<Commit, SwiftGit2Error>
 	let repo: Repository
 	private var revisionWalker: OpaquePointer?
 
 	private enum Next {
 		case over
 		case okay
-		case error(NSError)
+		case error(SwiftGit2Error)
 
-		init(_ result: Int32, name: String) {
+		init(_ result: Int32, source: Libgit2Method) {
 			switch result {
 			case GIT_ITEROVER.rawValue:
 				self = .over
 			case GIT_OK.rawValue:
 				self = .okay
 			default:
-				self = .error(NSError(gitError: result, pointOfFailure: name))
+				self = .error(.init(libgitErrorCode: result, source: source))
 			}
 		}
 	}
@@ -49,10 +49,10 @@ public class CommitIterator: IteratorProtocol, Sequence {
 	public func next() -> Element? {
 		var oid = git_oid()
 		let revwalkGitResult = git_revwalk_next(&oid, revisionWalker)
-		let nextResult = Next(revwalkGitResult, name: "git_revwalk_next")
+		let nextResult = Next(revwalkGitResult, source: .git_revwalk_next)
 		switch nextResult {
 		case let .error(error):
-			return Result.failure(error)
+			return .failure(error)
 		case .over:
 			return nil
 		case .okay:
@@ -60,9 +60,9 @@ public class CommitIterator: IteratorProtocol, Sequence {
 			let lookupGitResult = git_commit_lookup(&unsafeCommit, repo.pointer, &oid)
 			guard lookupGitResult == GIT_OK.rawValue,
 				let unwrapCommit = unsafeCommit else {
-					return Result.failure(NSError(gitError: lookupGitResult, pointOfFailure: "git_commit_lookup"))
+				return .failure(.init(libgitErrorCode: lookupGitResult, source: .git_commit_lookup))
 			}
-			let result: Element = Result.success(Commit(unwrapCommit))
+			let result: Element = .success(Commit(unwrapCommit))
 			git_commit_free(unsafeCommit)
 			return result
 		}
