@@ -172,7 +172,6 @@ private extension Branch {
 			return _result( { resolved }, pointOfFailure: "git_reference_resolve") {
 				git_reference_resolve(&resolved, self.pointer)
 			}.map { OID(git_reference_target($0).pointee) }
-			
 		} else {
 			return .success( OID(git_reference_target(pointer).pointee) )
 		}
@@ -180,21 +179,11 @@ private extension Branch {
 	
 	//TODO: Delete me if you can
 	func getCommitOID_() -> OID? {
-		if git_reference_type(pointer).rawValue == GIT_REFERENCE_SYMBOLIC.rawValue {
-			var resolved: OpaquePointer? = nil
-			defer {
-				git_reference_free(resolved)
-			}
-			
-			//TODO: Can be optimized
-			let success = git_reference_resolve(&resolved, pointer)
-			guard success == GIT_OK.rawValue else {
-				return nil
-			}
-			return OID(git_reference_target(resolved).pointee)
-			
-		} else {
-			return OID(git_reference_target(pointer).pointee)
+		do {
+			return try getCommitOid().get()
+		}
+		catch{
+			return nil
 		}
 	}
 }
