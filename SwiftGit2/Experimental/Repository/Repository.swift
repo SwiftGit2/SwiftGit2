@@ -305,20 +305,6 @@ fileprivate func cloneOptions(bare: Bool = false, localClone: Bool = false, fetc
 	return options
 }
 
-//fileprivate func pushOptions(credentials: Credentials) -> git_push_options {
-//	let pointer = UnsafeMutablePointer<git_push_options>.allocate(capacity: 1)
-//	git_push_init_options(pointer, UInt32(GIT_PUSH_OPTIONS_VERSION))
-//
-//	var options = pointer.move()
-//
-//	pointer.deallocate()
-//
-//	options.callbacks.payload = credentials.toPointer()
-//	options.callbacks.credentials = credentialsCallback
-//
-//	return options
-//}
-
 /// Helper function for initializing libgit2 git_checkout_options.
 ///
 /// :param: strategy The strategy to be used when checking out the repo, see CheckoutStrategy
