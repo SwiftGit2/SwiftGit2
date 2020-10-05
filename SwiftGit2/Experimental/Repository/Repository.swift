@@ -139,7 +139,7 @@ public extension Repository {
 	///
 	/// Returns a `Result` with a `Repository` or an error.
 	static func clone(from remoteURL: URL, to localURL: URL, isLocalClone: Bool = false, bare: Bool = false,
-							credentials: Credentials = .default, checkoutStrategy: CheckoutStrategy = .Safe,
+							credentials: Credentials_OLD = .default, checkoutStrategy: CheckoutStrategy = .Safe,
 							checkoutProgress: CheckoutProgressBlock? = nil) -> Result<Repository, NSError> {
 		var options = cloneOptions(
 			bare: bare,
@@ -188,7 +188,7 @@ extension Array {
 	}
 }
 
-fileprivate func fetchOptions(credentials: Credentials) -> git_fetch_options {
+fileprivate func fetchOptions(credentials: Credentials_OLD) -> git_fetch_options {
 	let pointer = UnsafeMutablePointer<git_fetch_options>.allocate(capacity: 1)
 	git_fetch_init_options(pointer, UInt32(GIT_FETCH_OPTIONS_VERSION))
 

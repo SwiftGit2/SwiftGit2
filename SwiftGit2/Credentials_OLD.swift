@@ -16,14 +16,14 @@ private class Wrapper<T> {
 	}
 }
 
-public enum Credentials {
+public enum Credentials_OLD {
 	case `default`
 	case sshAgent
 	case plaintext(username: String, password: String)
 	case sshMemory(username: String, publicKey: String, privateKey: String, passphrase: String)
 
-	internal static func fromPointer(_ pointer: UnsafeMutableRawPointer) -> Credentials {
-		return Unmanaged<Wrapper<Credentials>>.fromOpaque(UnsafeRawPointer(pointer)).takeRetainedValue().value
+	internal static func fromPointer(_ pointer: UnsafeMutableRawPointer) -> Credentials_OLD {
+		return Unmanaged<Wrapper<Credentials_OLD>>.fromOpaque(UnsafeRawPointer(pointer)).takeRetainedValue().value
 	}
 
 	internal func toPointer() -> UnsafeMutableRawPointer {
@@ -46,7 +46,7 @@ internal func credentialsCallback(
 	// Find username_from_url
 	let name = username.map(String.init(cString:))
 
-	switch Credentials.fromPointer(payload!) {
+	switch Credentials_OLD.fromPointer(payload!) {
 	case .default:
 		result = git_credential_default_new(cred)
 	case .sshAgent:

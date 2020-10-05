@@ -97,10 +97,10 @@ public extension Duo where T1 == Branch, T2 == Repository {
 
 public extension Duo where T1 == Branch, T2 == Remote {
 	/// Push local branch changes to remote branch
-	func push(credentials1: Credentials = .sshAgent) -> Result<(), NSError> {
+	func push(credentials1: Credentials_OLD = .sshAgent) -> Result<(), NSError> {
 		let (branch, remoteRepo) = self.value
 		
-		let credentials = Credentials
+		let credentials = Credentials_OLD
 			.plaintext(username: "skulptorrr@gmail.com", password: "Sr@mom!Hl3dr:gi")
 		
 		var opts = pushOptions(credentials: credentials)
@@ -183,7 +183,7 @@ fileprivate extension String {
 	}
 }
 
-fileprivate func pushOptions(credentials: Credentials) -> git_push_options {
+fileprivate func pushOptions(credentials: Credentials_OLD) -> git_push_options {
 	let pointer = UnsafeMutablePointer<git_push_options>.allocate(capacity: 1)
 	git_push_init_options(pointer, UInt32(GIT_PUSH_OPTIONS_VERSION))
 	

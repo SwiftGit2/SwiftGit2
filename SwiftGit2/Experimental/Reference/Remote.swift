@@ -95,9 +95,9 @@ public class Remote : InstanceProtocol {
 
 public class FetchOptions {
 	private(set) var fetch_options : git_fetch_options
-	let credentials: Credentials
+	let credentials: Credentials_OLD
 	
-	public init(credentials: Credentials) {
+	public init(credentials: Credentials_OLD) {
 		self.credentials = credentials
 		self.fetch_options = git_fetch_options()
 		

@@ -58,8 +58,8 @@
 		621E66E61C729D9600A0F352 /* SwiftGit2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 621E66B41C72958800A0F352 /* SwiftGit2.framework */; };
 		621E66FE1C72A5FF00A0F352 /* libiconv.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 621E66FD1C72A5FF00A0F352 /* libiconv.tbd */; };
 		621E67001C72A60B00A0F352 /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 621E66FF1C72A60B00A0F352 /* libz.tbd */; };
-		622726341C84E52500C53D17 /* Credentials.swift in Sources */ = {isa = PBXBuildFile; fileRef = 622726331C84E52500C53D17 /* Credentials.swift */; };
-		622726351C84E52500C53D17 /* Credentials.swift in Sources */ = {isa = PBXBuildFile; fileRef = 622726331C84E52500C53D17 /* Credentials.swift */; };
+		622726341C84E52500C53D17 /* Credentials_OLD.swift in Sources */ = {isa = PBXBuildFile; fileRef = 622726331C84E52500C53D17 /* Credentials_OLD.swift */; };
+		622726351C84E52500C53D17 /* Credentials_OLD.swift in Sources */ = {isa = PBXBuildFile; fileRef = 622726331C84E52500C53D17 /* Credentials_OLD.swift */; };
 		62E6FD8F1C727E9C00A312B0 /* ZipArchive.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 62E6FD8E1C727E9C00A312B0 /* ZipArchive.framework */; };
 		8F9A51F2209596A40037C3A6 /* repository-with-status.zip in Resources */ = {isa = PBXBuildFile; fileRef = 237731C61F46542B0020A3FE /* repository-with-status.zip */; };
 		AA66039F23FAD9F60093E7AF /* Repository+Apply.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA66039E23FAD9F60093E7AF /* Repository+Apply.swift */; };
@@ -172,7 +172,7 @@
 		621E66F21C729EBB00A0F352 /* libssh2.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libssh2.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		621E66FD1C72A5FF00A0F352 /* libiconv.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libiconv.tbd; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS9.2.sdk/usr/lib/libiconv.tbd; sourceTree = DEVELOPER_DIR; };
 		621E66FF1C72A60B00A0F352 /* libz.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS9.2.sdk/usr/lib/libz.tbd; sourceTree = DEVELOPER_DIR; };
-		622726331C84E52500C53D17 /* Credentials.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Credentials.swift; sourceTree = "<group>"; };
+		622726331C84E52500C53D17 /* Credentials_OLD.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Credentials_OLD.swift; sourceTree = "<group>"; };
 		62E6FD8E1C727E9C00A312B0 /* ZipArchive.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ZipArchive.framework; path = ../Carthage/Checkouts/ZipArchive/build/Debug/ZipArchive.framework; sourceTree = "<group>"; };
 		AA66039E23FAD9F60093E7AF /* Repository+Apply.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Repository+Apply.swift"; sourceTree = "<group>"; };
 		AA89482E23F1671A0074288B /* Buffer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Buffer.swift; sourceTree = "<group>"; };
@@ -362,7 +362,7 @@
 				BEB31F281A0D6F7A00F525B9 /* SwiftGit2.h */,
 				BE14AA4F1A1974010015B439 /* SwiftGit2.m */,
 				BE276B281ACCD3CF00D6DAD7 /* CheckoutStrategy.swift */,
-				622726331C84E52500C53D17 /* Credentials.swift */,
+				622726331C84E52500C53D17 /* Credentials_OLD.swift */,
 				DA5914751A94579000AED74C /* Errors.swift */,
 				BE36354B1A632C9700D37EC8 /* Libgit2.swift */,
 				BE2E3BE51A31261300C67092 /* Objects.swift */,
@@ -847,7 +847,7 @@
 				621E66A01C72958800A0F352 /* OID.swift in Sources */,
 				621E66A11C72958800A0F352 /* Remote_OLD.swift in Sources */,
 				621E66A21C72958800A0F352 /* CheckoutStrategy.swift in Sources */,
-				622726351C84E52500C53D17 /* Credentials.swift in Sources */,
+				622726351C84E52500C53D17 /* Credentials_OLD.swift in Sources */,
 				621E66A31C72958800A0F352 /* RepositoryOLD.swift in Sources */,
 				621E66A41C72958800A0F352 /* Objects.swift in Sources */,
 				232861451F4A3A2E00276D65 /* Diffs.swift in Sources */,
@@ -889,7 +889,7 @@
 				BE70B3E51A1ACB1A002C3F4E /* OID.swift in Sources */,
 				BECB5F6E1A57284700999413 /* Remote_OLD.swift in Sources */,
 				BE276B291ACCD3CF00D6DAD7 /* CheckoutStrategy.swift in Sources */,
-				622726341C84E52500C53D17 /* Credentials.swift in Sources */,
+				622726341C84E52500C53D17 /* Credentials_OLD.swift in Sources */,
 				AA89482F23F1671A0074288B /* Buffer.swift in Sources */,
 				E6D4A92024DEACC000E8041E /* Repository.swift in Sources */,
 				1D5B38A825228C790019E593 /* Repository+Diff.swift in Sources */,
