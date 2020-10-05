@@ -103,26 +103,15 @@ public extension Duo where T1 == Branch, T2 == Remote {
 	func push(credentials1: Credentials = .sshAgent) -> Result<(), NSError> {
 		let (branch, remoteRepo) = self.value
 		
-		
-		var credentials = Credentials.sshMemory(username: "ukushu@gmail.com", publicKey: "",
-											privateKey: "", passphrase: "")
+		var credentials = Credentials
+			.plaintext(username: "skulptorrr@gmail.com", password: "Sr@mom!Hl3dr:gi")
 		
 		
 		var opts = pushOptions(credentials: credentials1)
 		
 		var a = remoteRepo.URL
-		
-		let branchName = branch.name
-		var dirPointer = UnsafeMutablePointer<Int8>(mutating: (branchName as NSString).utf8String)
-		var refs = git_strarray(strings: &dirPointer, count: 1)
-
-		//TODO: Can be optimized
-		let result = git_remote_push(remoteRepo.pointer, &refs, &opts)
-		guard result == GIT_OK.rawValue else {
-			let err = NSError(gitError: result, pointOfFailure: "git_remote_push")
-			return .failure(err)
-		}
-		return .success(())
+				
+		return remoteRepo.push(branchName: branch.name, options: &opts )
 	}
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -200,6 +189,17 @@ private extension Branch {
 			
 		} else {
 			return OID(git_reference_target(pointer).pointee)
+		}
+	}
+}
+
+fileprivate extension Remote {
+	public func push(branchName: String, options: UnsafePointer<git_push_options> ) -> Result<(), NSError> {
+		var dirPointer = UnsafeMutablePointer<Int8>(mutating: (branchName as NSString).utf8String)
+		var refs = git_strarray(strings: &dirPointer, count: 1)
+
+		return _result( (), pointOfFailure: "git_remote_push") {
+			git_remote_push(self.pointer, &refs, options)
 		}
 	}
 }
