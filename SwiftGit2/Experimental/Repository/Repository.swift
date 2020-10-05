@@ -55,59 +55,8 @@ extension Repository {
 		}
 	}
 
+
 	
-	/// If no parents write "[]"
-	/// Perform a commit with arbitrary numbers of parent commits.
-	public func commit(
-		tree treeOID: OID,
-		parents: [Commit],
-		message: String,
-		signature: Signature
-	) -> Result<Commit, NSError> {
-		// create commit signature
-		return signature.makeUnsafeSignature().flatMap { signature in
-			defer { git_signature_free(signature) }
-			var tree: OpaquePointer? = nil
-			var treeOIDCopy = treeOID.oid
-			let lookupResult = git_tree_lookup(&tree, self.pointer, &treeOIDCopy)
-			guard lookupResult == GIT_OK.rawValue else {
-				let err = NSError(gitError: lookupResult, pointOfFailure: "git_tree_lookup")
-				return .failure(err)
-			}
-			defer { git_tree_free(tree) }
-
-			var msgBuf = git_buf()
-			git_message_prettify(&msgBuf, message, 0, /* ascii for # */ 35)
-			defer { git_buf_free(&msgBuf) }
-
-			// libgit2 expects a C-like array of parent git_commit pointer
-			let parentGitCommits: [OpaquePointer?] = parents.map { $0.pointer }
-
-			let parentsContiguous = ContiguousArray(parentGitCommits)
-			return parentsContiguous.withUnsafeBufferPointer { unsafeBuffer in
-				var commitOID = git_oid()
-				let parentsPtr = UnsafeMutablePointer(mutating: unsafeBuffer.baseAddress)
-				let result = git_commit_create(
-					&commitOID,
-					self.pointer,
-					"HEAD",
-					signature,
-					signature,
-					"UTF-8",
-					msgBuf.ptr,
-					tree,
-					parents.count,
-					parentsPtr
-				)
-				
-				//TODO: Can be optimized
-				guard result == GIT_OK.rawValue else {
-					return .failure(NSError(gitError: result, pointOfFailure: "git_commit_create"))
-				}
-				return self.instanciate(OID(commitOID))//commit(OID(commitOID))
-			}
-		}
-	}
 
 	
 	public func mergeCommits(commitFrom: Commit, commitInto: Commit ) -> Result<Index, NSError> {
