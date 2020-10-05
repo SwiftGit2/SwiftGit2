@@ -75,15 +75,12 @@ extension Repository {
 	
 	public func remoteLookup<A>(named name: String, _ callback: (Result<OpaquePointer, NSError>) -> A) -> A {
 		var pointer: OpaquePointer? = nil
-
-		let result = git_remote_lookup(&pointer, self.pointer, name)
-
-		//TODO: Can be optimized
-		guard result == GIT_OK.rawValue else {
-			return callback(.failure(NSError(gitError: result, pointOfFailure: "git_remote_lookup")))
-		}
-
-		return callback(.success(pointer!))
+		
+		let result = _result( () , pointOfFailure: "git_remote_lookup") {
+			git_remote_lookup(&pointer, self.pointer, name)
+		}.map{ pointer! }
+		
+		return callback(result)
 	}
 }
 

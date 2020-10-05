@@ -103,7 +103,6 @@ public extension Duo where T1 == Branch, T2 == Remote {
 		let credentials = Credentials
 			.plaintext(username: "skulptorrr@gmail.com", password: "Sr@mom!Hl3dr:gi")
 		
-		
 		var opts = pushOptions(credentials: credentials)
 		
 		var a = remoteRepo.URL
