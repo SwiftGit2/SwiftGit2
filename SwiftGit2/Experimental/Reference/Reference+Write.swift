@@ -26,7 +26,9 @@ extension Reference: ReferenceWriter {
 	/// If the force flag is not enabled, and there's already a reference with the given name, the renaming will fail.
 	public func rename(_ newName: String, force: Bool) -> Result<Reference,NSError> {
 		var newReference: OpaquePointer? = nil
-		let messageToLog = "ReferenceWriter.rename: renaming: \(self.shortName) [OID: \(String(describing: self.commitOID_))] to \(newName)"
+		
+		let oid = try? self.commitOID.get()
+		let messageToLog = "ReferenceWriter.rename: renaming: \(self.shortName) [OID: \(String(describing: oid ))] to \(newName)"
 		let forceInt: Int32 = force ? 1 : 0
 		
 		return _result({ Reference(newReference!) }, pointOfFailure: "git_reference_rename") {
