@@ -34,9 +34,7 @@ extension Repository {
 		}
 		.map { names in
 			names.map { try! self.submoduleLookup(named: $0).get() }
-				//.aggregateResult()
 		}
-		
 	}
 	
 	public func submoduleLookup( named name: String ) -> Result<Submodule, NSError> {
