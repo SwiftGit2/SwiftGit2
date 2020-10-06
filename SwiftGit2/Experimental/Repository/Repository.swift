@@ -37,6 +37,23 @@ extension Repository {
 	}
 }
 
+class SubmoduleCallbacks {
+	/// Name + Pointer to the submodule
+	var namesAndPointers = [(String, OpaquePointer?)]()
+	
+	let submodule_cb : git_submodule_cb = { submodulePointer, name, payload in
+		let self_ = payload.unsafelyUnwrapped
+						.bindMemory(to: SubmoduleCallbacks.self, capacity: 1)
+						.pointee
+		
+		let nameStr = String(describing: name)
+		
+		self_.namesAndPointers.append( (nameStr, submodulePointer) )
+		
+		return 0
+	}
+}
+
 
 extension Repository {
 	public func headParentCommit() -> Result<Commit, NSError> {
