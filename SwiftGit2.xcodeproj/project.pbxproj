@@ -23,6 +23,7 @@
 /* Begin PBXBuildFile section */
 		1D5B38A825228C790019E593 /* Repository+Diff.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D5B38A725228C790019E593 /* Repository+Diff.swift */; };
 		1D6EFB2A252BA5A1000D0BE1 /* Tree.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D6EFB29252BA5A1000D0BE1 /* Tree.swift */; };
+		1D764BD8252CD148008417A7 /* Submodule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D764BD7252CD148008417A7 /* Submodule.swift */; };
 		1D991AE12518FA7900335255 /* Duo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D991AE02518FA7900335255 /* Duo.swift */; };
 		1D991AE3251934FF00335255 /* Remote.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D991AE2251934FF00335255 /* Remote.swift */; };
 		1DB0F84E24EFFB2D00637B9B /* RepositoryCheckout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DB0F84D24EFFB2D00637B9B /* RepositoryCheckout.swift */; };
@@ -159,6 +160,7 @@
 /* Begin PBXFileReference section */
 		1D5B38A725228C790019E593 /* Repository+Diff.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Repository+Diff.swift"; sourceTree = "<group>"; };
 		1D6EFB29252BA5A1000D0BE1 /* Tree.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tree.swift; sourceTree = "<group>"; };
+		1D764BD7252CD148008417A7 /* Submodule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Submodule.swift; sourceTree = "<group>"; };
 		1D991AE02518FA7900335255 /* Duo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Duo.swift; sourceTree = "<group>"; };
 		1D991AE2251934FF00335255 /* Remote.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Remote.swift; sourceTree = "<group>"; };
 		1DB0F84D24EFFB2D00637B9B /* RepositoryCheckout.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RepositoryCheckout.swift; sourceTree = "<group>"; };
@@ -516,6 +518,7 @@
 				E6D4A92724DF55E400E8041E /* Reference+Write.swift */,
 				E6D4A91B24DEA9AD00E8041E /* Branch.swift */,
 				1D991AE2251934FF00335255 /* Remote.swift */,
+				1D764BD7252CD148008417A7 /* Submodule.swift */,
 			);
 			path = Reference;
 			sourceTree = "<group>";
@@ -895,6 +898,7 @@
 				1D5B38A825228C790019E593 /* Repository+Diff.swift in Sources */,
 				E6D4A91A24DEA93E00E8041E /* Commit.swift in Sources */,
 				BEB31F6D1A0D78F300F525B9 /* RepositoryOLD.swift in Sources */,
+				1D764BD8252CD148008417A7 /* Submodule.swift in Sources */,
 				BE2E3BE61A31261300C67092 /* Objects.swift in Sources */,
 				AA66039F23FAD9F60093E7AF /* Repository+Apply.swift in Sources */,
 				232861431F4A3A2E00276D65 /* Diffs.swift in Sources */,

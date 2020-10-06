@@ -19,7 +19,9 @@ public class Remote : InstanceProtocol {
 	deinit {
 		git_remote_free(pointer)
 	}
-	
+}
+
+public extension Remote {	
 	/// The name of the remote repo
 	public var name: String { String(validatingUTF8: git_remote_name(pointer))! }
 	

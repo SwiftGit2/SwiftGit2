@@ -25,28 +25,44 @@ public class Repository : InstanceProtocol {
 }
 
 //SUBMODULES
-public extension Repository {
-	public func getSubmodules() -> Result<[(String, OpaquePointer)], NSError> {
+extension Repository {
+	public func getSubmodules() -> Result<[Submodule], NSError> {
 		var submodulePairs = SubmoduleCallbacks()
 		
-		return _result( { submodulePairs.namesAndPointers }, pointOfFailure: "git_submodule_foreach") {
-			git_submodule_foreach( self.pointer, submodulePairs.submodule_cb, &submodulePairs );
+		return _result( { submodulePairs.submodulesNames }, pointOfFailure: "git_submodule_foreach") {
+			git_submodule_foreach( self.pointer, submodulePairs.submodule_cb, &submodulePairs )
+		}
+		.map { names in
+			names.map { try! self.submoduleLookup(named: $0).get() }
+				//.aggregateResult()
+		}
+		
+	}
+	
+	public func submoduleLookup( named name: String ) -> Result<Submodule, NSError> {
+		var subModPointer: OpaquePointer? = nil
+
+		return _result( { Submodule(subModPointer!) }, pointOfFailure: "git_submodule_lookup") {
+			name.withCString { submoduleName in
+				git_submodule_lookup( &subModPointer, self.pointer, submoduleName )
+			}
 		}
 	}
 }
 
 class SubmoduleCallbacks {
-	/// Name + Pointer to the submodule
-	var namesAndPointers = [(String, OpaquePointer)]()
+	var submodulesNames = [String]()
 	
-	let submodule_cb : git_submodule_cb = { submodulePointer, name, payload in
+	let submodule_cb : git_submodule_cb = { _, name, payload in
 		let self_ = payload.unsafelyUnwrapped
 						.bindMemory(to: SubmoduleCallbacks.self, capacity: 1)
 						.pointee
 		
-		let nameStr: String = String(validatingUTF8: name!)!
+		guard let name = name,
+			  let nameStr = String(utf8String: name)
+		else { return -1 } 
 		
-		self_.namesAndPointers.append( (nameStr, submodulePointer!) )
+		self_.submodulesNames.append( nameStr )
 		
 		return 0
 	}

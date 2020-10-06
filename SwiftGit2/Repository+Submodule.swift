@@ -10,7 +10,7 @@ import Foundation
 import Clibgit2
 
 public extension RepositoryOLD {
-	func submodules() -> Result<[Submodule], NSError> {
+	func submodules() -> Result<[Submodule_OLD], NSError> {
 		var cb = SubmodeleEachCallback(repoPointer: self.pointer)
 		let result = git_submodule_foreach(self.pointer, cb.each_submodule_cb, &cb)
 		
@@ -24,7 +24,7 @@ public extension RepositoryOLD {
 
 
 class SubmodeleEachCallback {
-	var items = [Submodule]()
+	var items = [Submodule_OLD]()
 	let repoPointer : OpaquePointer
 	
 	init(repoPointer: OpaquePointer) {
@@ -50,12 +50,12 @@ class SubmodeleEachCallback {
 		git_submodule_lookup(&submodulePointer, repoPointer, name)
 		
 		if let sm = submodulePointer {
-			items.append(Submodule(pointer: sm))
+			items.append(Submodule_OLD(pointer: sm))
 		}
 	}
 }
 
-public final class Submodule {
+public final class Submodule_OLD {
 	public let  pointer		: OpaquePointer
 	
 	public var name : String { return String(cString: git_submodule_name(pointer)) }
