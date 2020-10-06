@@ -24,6 +24,20 @@ public class Repository : InstanceProtocol {
 	deinit { git_repository_free(pointer) }
 }
 
+//SUBMODULES
+extension Repository {
+	func getSubmodules() -> Result<git_submodule_cb, NSError> {
+		var callback: git_submodule_cb? = nil
+		
+		return _result( { callback! }, pointOfFailure: "git_branch_create") {
+			git_submodule_foreach(self.pointer, callback, nil);
+				//git_branch_create(&referenceToBranch, self.pointer, new_name, commit.pointer, force);
+			
+		}
+	}
+}
+
+
 extension Repository {
 	public func headParentCommit() -> Result<Commit, NSError> {
 		var parentID = git_oid() //out
