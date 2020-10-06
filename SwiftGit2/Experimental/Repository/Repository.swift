@@ -25,30 +25,28 @@ public class Repository : InstanceProtocol {
 }
 
 //SUBMODULES
-extension Repository {
-	func getSubmodules() -> Result<git_submodule_cb, NSError> {
-		var callback: git_submodule_cb? = nil
+public extension Repository {
+	public func getSubmodules() -> Result<[(String, OpaquePointer)], NSError> {
+		var submodulePairs = SubmoduleCallbacks()
 		
-		return _result( { callback! }, pointOfFailure: "git_branch_create") {
-			git_submodule_foreach(self.pointer, callback, nil);
-				//git_branch_create(&referenceToBranch, self.pointer, new_name, commit.pointer, force);
-			
+		return _result( { submodulePairs.namesAndPointers }, pointOfFailure: "git_submodule_foreach") {
+			git_submodule_foreach( self.pointer, submodulePairs.submodule_cb, &submodulePairs );
 		}
 	}
 }
 
 class SubmoduleCallbacks {
 	/// Name + Pointer to the submodule
-	var namesAndPointers = [(String, OpaquePointer?)]()
+	var namesAndPointers = [(String, OpaquePointer)]()
 	
 	let submodule_cb : git_submodule_cb = { submodulePointer, name, payload in
 		let self_ = payload.unsafelyUnwrapped
 						.bindMemory(to: SubmoduleCallbacks.self, capacity: 1)
 						.pointee
 		
-		let nameStr = String(describing: name)
+		let nameStr: String = String(validatingUTF8: name!)!
 		
-		self_.namesAndPointers.append( (nameStr, submodulePointer) )
+		self_.namesAndPointers.append( (nameStr, submodulePointer!) )
 		
 		return 0
 	}
