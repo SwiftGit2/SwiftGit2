@@ -60,7 +60,7 @@ class SubmoduleCallbacks {
 		
 		guard let name = name,
 			  let nameStr = String(utf8String: name)
-		else { return -1 } 
+		else { return -1 }
 		
 		self_.submodulesNames.append( nameStr )
 		
