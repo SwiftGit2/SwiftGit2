@@ -163,12 +163,12 @@ public extension Submodule {
 
 //TODO: Test Me
 public class SubmoduleUpdateOptions {
-	public var optionsPointer = UnsafeMutablePointer<git_submodule_update_options>.allocate(capacity: 1)
-	public var options: git_submodule_update_options { optionsPointer.move() }
+	private var optionsPointer = UnsafeMutablePointer<git_submodule_update_options>.allocate(capacity: 1)
+	public var options: git_submodule_update_options { optionsPointer.pointee }
+	
+	private let GIT_SUBMODULE_UPDATE_OPTIONS_VERSION = UInt32(1) //have no idea what is this
 	
 	func create() -> Result<SubmoduleUpdateOptions, NSError> {
-		let GIT_SUBMODULE_UPDATE_OPTIONS_VERSION = UInt32(1) //have no idea what is this
-		
 		return _result( self , pointOfFailure: "git_submodule_update_options_init") {
 			git_submodule_update_options_init(optionsPointer, GIT_SUBMODULE_UPDATE_OPTIONS_VERSION )
 		}
