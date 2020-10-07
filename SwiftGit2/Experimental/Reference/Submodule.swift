@@ -96,6 +96,24 @@ public extension Duo where T1 == Submodule, T2 == Repository {
 //		}
 //		.map { $0.asString() ?? "" }
 //	}
+	
+	//TODO: Test Me
+	/// Set the URL for the submodule in the configuration
+	/// No need to call sync manually!
+	func submoduleSetUrl(newRelativeUrl: String) -> Result<(), NSError> {
+		let (submodule, repo) = self.value
+		
+		return _result({()}, pointOfFailure: "git_submodule_set_url") {
+			submodule.name.withCString { submoduleName in
+				newRelativeUrl.withCString { newUrl in
+					git_submodule_set_url(repo.pointer, submoduleName, newUrl)
+				}
+			}
+		}
+		.flatMap {
+			submodule.sync()
+		}
+	}
 }
 
 public extension Submodule {
@@ -198,16 +216,23 @@ public class SubmoduleUpdateOptions {
 	}
 }
 
+public enum SubmoduleIgnore : Int32 {
+	case unspecified = -1 	//GIT_SUBMODULE_IGNORE_UNSPECIFIED  = -1, /**< use the submodule's configuration */
+	case none        = 1	//GIT_SUBMODULE_IGNORE_NONE      = 1,  /**< any change or untracked == dirty */
+	case untracked   = 2	//GIT_SUBMODULE_IGNORE_UNTRACKED = 2,  /**< dirty if tracked files change */
+	case ignoreDirty = 3	//GIT_SUBMODULE_IGNORE_DIRTY     = 3,  /**< only dirty if HEAD moved */
+	case ignoreAll   = 4	//GIT_SUBMODULE_IGNORE_ALL       = 4,  /**< never dirty */
+}
+
 /*
 UNUSED:
 	git_submodule_add_setup
 	git_submodule_clone
-	git_submodule_ignore
+	git_submodule_ignore -- use SubmoduleIgnore enum
+	git_submodule_set_ignore
 	git_submodule_repo_init
 	git_submodule_resolve_url // partially used
-	git_submodule_set_ignore
 	git_submodule_set_update
-	git_submodule_set_url
 	git_submodule_status
 	git_submodule_update_strategy
 */
