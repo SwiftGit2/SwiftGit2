@@ -8,8 +8,6 @@
 
 import Clibgit2
 
-
-
 public class Submodule: InstanceProtocol {
 	public let pointer: OpaquePointer
 	
@@ -38,11 +36,11 @@ public extension Submodule {
 	
 	//TODO: Test Me
 	var fetchRecurse: Bool {
-			// True when "result == 1"
-			return git_submodule_fetch_recurse_submodules(self.pointer) == git_submodule_recurse_t(rawValue: 1)
+		// True when "result == 1"
+		return git_submodule_fetch_recurse_submodules(self.pointer) == git_submodule_recurse_t(rawValue: 1)
 	}
 	
-	//TODO: Test Me
+	//TODO: Test Me -- this must be string or Branch?
 	var branch : String {
 		if let brPointer = git_submodule_branch(self.pointer) {
 			return String(cString: brPointer)
@@ -57,7 +55,7 @@ public extension Duo where T1 == Submodule, T2 == Repository {
 	func fetchRecurseSet(_ bool: Bool ) -> Result<(),NSError> {
 		let (submodule, repo) = self.value
 		
-		let valToSet = bool ? git_submodule_recurse_t(rawValue: 1) : git_submodule_recurse_t(rawValue: 0)
+		let valToSet = git_submodule_recurse_t(rawValue:  bool ? 1 : 0 ) // TODO: test me too!
 		
 		return _result( { () }, pointOfFailure: "git_submodule_set_fetch_recurse_submodules" ) {
 			submodule.name.withCString{ submoduleName in
@@ -165,14 +163,18 @@ public extension Submodule {
 
 //TODO: Test Me
 public class SubmoduleUpdateOptions {
-	public var options : UnsafeMutablePointer<git_submodule_update_options>?
-	
-	//TODO:
-	private let GIT_SUBMODULE_UPDATE_OPTIONS_VERSION: UInt32 = 1 //have no idea what is this
+	public var optionsPointer = UnsafeMutablePointer<git_submodule_update_options>.allocate(capacity: 1)
+	public var options: git_submodule_update_options { optionsPointer.move() }
 	
 	func create() -> Result<SubmoduleUpdateOptions, NSError> {
+		let GIT_SUBMODULE_UPDATE_OPTIONS_VERSION = UInt32(1) //have no idea what is this
+		
 		return _result( self , pointOfFailure: "git_submodule_update_options_init") {
-			git_submodule_update_options_init(options, GIT_SUBMODULE_UPDATE_OPTIONS_VERSION )
+			git_submodule_update_options_init(optionsPointer, GIT_SUBMODULE_UPDATE_OPTIONS_VERSION )
 		}
+	}
+	
+	deinit {
+		optionsPointer.deallocate()
 	}
 }
