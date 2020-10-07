@@ -121,8 +121,20 @@ public extension Submodule {
 		let initBeforeUpdateInt: Int32 = initBeforeUpdate ? 1 : 0
 		
 		return _result({()}, pointOfFailure: "git_submodule_update") {
-			git_submodule_update(self.pointer, initBeforeUpdateInt, options );
+			git_submodule_update(self.pointer, initBeforeUpdateInt, options )
 		}
+	}
+	
+	//TODO: Test Me
+	///Add current submodule HEAD commit to index of superproject.
+	/// writeIndex = if true - should immediately write the index file. If you pass this as false, you will have to get the git_index and explicitly call `git_index_write()` on it to save the change
+	func addToIndex( writeIndex: Bool = true) -> Result<(), NSError> {
+		let writeIndex:Int32 = writeIndex ? 1 : 0
+		
+		return _result({()}, pointOfFailure: "git_submodule_add_to_index") {
+			git_submodule_add_to_index(self.pointer, writeIndex);
+		}
+		
 	}
 	
 	//TODO: Test Me
@@ -178,3 +190,17 @@ public class SubmoduleUpdateOptions {
 		optionsPointer.deallocate()
 	}
 }
+
+/*
+UNUSED:
+	git_submodule_add_setup
+	git_submodule_clone
+	git_submodule_ignore
+	git_submodule_repo_init
+	git_submodule_resolve_url // partially used
+	git_submodule_set_ignore
+	git_submodule_set_update
+	git_submodule_set_url
+	git_submodule_status
+	git_submodule_update_strategy
+*/
