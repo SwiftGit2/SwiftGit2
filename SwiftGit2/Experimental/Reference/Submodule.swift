@@ -22,8 +22,9 @@ public class Submodule: InstanceProtocol {
 
 public extension Submodule {
 	var name 	 : String { String(cString: git_submodule_name(self.pointer)) }
-	///Get the path to the submodule. RELATIVE!
+	///Get the path to the submodule. RELATIVE! Almost allways the same as "name" parameter
 	var path 	 : String { String(cString: git_submodule_path(self.pointer)) }
+	/// Url to remote repo (https or ssh)
 	var url  	 : String { String(cString: git_submodule_url(self.pointer)) }
 	
 	//TODO: Test Me
@@ -66,8 +67,7 @@ public extension Duo where T1 == Submodule, T2 == Repository {
 	
 	//TODO: Test Me
 	/// Set the branch for the submodule in the configuration
-	/// No need to call Sync after this method!
-	func setBranch(branchName: String) -> Result<(), NSError> {
+	func setBranchAndSync(branchName: String) -> Result<(), NSError> {
 		let (submodule, repo) = self.value
 		
 		return _result( { () }, pointOfFailure: "git_submodule_set_branch" ) {
@@ -84,23 +84,22 @@ public extension Duo where T1 == Submodule, T2 == Repository {
 	//TODO: Test Me
 	//TODO: Move to another place. This must not be in DUO
 	//Resolve a submodule url relative to the given repository.
-//	func resolveUrl(fromRelativeUrl: String) -> Result<String, NSError> {
-//		let (submodule, repo) = self.value
-//
-//		let buf_ptr = UnsafeMutablePointer<git_buf>.allocate(capacity: 1)
-//
-//		return _result( { Buffer(pointer: buf_ptr) }, pointOfFailure: "git_submodule_resolve_url") {
-//			fromRelativeUrl.withCString { relativeUrl in
-//				git_submodule_resolve_url(buf_ptr, repo.pointer, relativeUrl)
-//			}
-//		}
-//		.map { $0.asString() ?? "" }
-//	}
+	func resolveUrl(fromRelativeUrl: String) -> Result<String, NSError> {
+		let (submodule, repo) = self.value
+
+		let buf_ptr = UnsafeMutablePointer<git_buf>.allocate(capacity: 1)
+
+		return _result( { Buffer(pointer: buf_ptr) }, pointOfFailure: "git_submodule_resolve_url") {
+			fromRelativeUrl.withCString { relativeUrl in
+				git_submodule_resolve_url(buf_ptr, repo.pointer, relativeUrl)
+			}
+		}
+		.map { $0.asString() ?? "" }
+	}
 	
 	//TODO: Test Me
 	/// Set the URL for the submodule in the configuration
-	/// No need to call sync manually!
-	func submoduleSetUrl(newRelativeUrl: String) -> Result<(), NSError> {
+	func submoduleSetUrlAndSync(newRelativeUrl: String) -> Result<(), NSError> {
 		let (submodule, repo) = self.value
 		
 		return _result({()}, pointOfFailure: "git_submodule_set_url") {
