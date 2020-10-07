@@ -24,6 +24,7 @@ public extension Submodule {
 	var name 	 : String { String(cString: git_submodule_name(self.pointer)) }
 	///Get the path to the submodule. RELATIVE! Almost allways the same as "name" parameter
 	var path 	 : String { String(cString: git_submodule_path(self.pointer)) }
+	
 	/// Url to remote repo (https or ssh)
 	var url  	 : String { String(cString: git_submodule_url(self.pointer)) }
 	
@@ -80,17 +81,14 @@ public extension Duo where T1 == Submodule, T2 == Repository {
 		.flatMap{ submodule.sync() }
 	}
 	
-	
-	//TODO: Test Me
-	//TODO: Move to another place. This must not be in DUO
 	//Resolve a submodule url relative to the given repository.
-	func resolveUrl(fromRelativeUrl: String) -> Result<String, NSError> {
+	func resolveUrl() -> Result<String, NSError> {
 		let (submodule, repo) = self.value
 
 		let buf_ptr = UnsafeMutablePointer<git_buf>.allocate(capacity: 1)
 
 		return _result( { Buffer(pointer: buf_ptr) }, pointOfFailure: "git_submodule_resolve_url") {
-			fromRelativeUrl.withCString { relativeUrl in
+			submodule.path.withCString { relativeUrl in
 				git_submodule_resolve_url(buf_ptr, repo.pointer, relativeUrl)
 			}
 		}
@@ -116,6 +114,9 @@ public extension Duo where T1 == Submodule, T2 == Repository {
 }
 
 public extension Submodule {
+	//TODO: Test Me
+	func getAbsPath() -> Result<String, NSError> { Duo((self, ownerRepo)).resolveUrl() }
+	
 	//TODO: Test Me
 	///Copy submodule remote info into submodule repo.
 	func sync() -> Result<(), NSError> {
