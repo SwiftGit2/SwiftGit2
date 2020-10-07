@@ -80,14 +80,21 @@ public extension Duo where T1 == Submodule, T2 == Repository {
 		.flatMap{ submodule.sync() }
 	}
 	
-//	func resolveUrl() -> Result<String, NSError> {
+	
+	//TODO: Test Me
+	//TODO: Move to another place. This must not be in DUO
+	//Resolve a submodule url relative to the given repository.
+//	func resolveUrl(fromRelativeUrl: String) -> Result<String, NSError> {
 //		let (submodule, repo) = self.value
 //
 //		let buf_ptr = UnsafeMutablePointer<git_buf>.allocate(capacity: 1)
 //
-//		return _result(<#T##value: T##T#>, pointOfFailure: <#T##String#>) {
-//			git_submodule_resolve_url(buf_ptr, repo, const char *url);
+//		return _result( { Buffer(pointer: buf_ptr) }, pointOfFailure: "git_submodule_resolve_url") {
+//			fromRelativeUrl.withCString { relativeUrl in
+//				git_submodule_resolve_url(buf_ptr, repo.pointer, relativeUrl)
+//			}
 //		}
+//		.map { $0.asString() ?? "" }
 //	}
 }
 
