@@ -35,8 +35,6 @@ public extension Submodule {
 	//TODO: Test Me
 	/// Get the OID for the submodule in the current HEAD tree.
 	var headOID  : OID   { OID( git_submodule_head_id(self.pointer).pointee ) }
-	
-	
 }
 
 public extension Duo where T1 == Submodule, T2 == Repository {
@@ -177,13 +175,9 @@ public extension Submodule {
 		
 	}
 	
-	/// Get the containing repository for a submodule.
-	/// (Parent Repository)
-	//var ownerRepo: Repository { Repository( git_submodule_owner(self.pointer) ) }
-	
 	//TODO: Test Me
 	/// Open the repository for a submodule.
-	func openRepo () -> Result<Repository, NSError> { //TODO: Test Me
+	func openRepo () -> Result<Repository, NSError> {
 		var pointer: OpaquePointer? = nil
 		
 		return _result( { Repository(pointer!) }, pointOfFailure: "") {
@@ -248,7 +242,7 @@ UNUSED:
 	git_submodule_set_update
 	git_submodule_status
 	git_submodule_update_strategy
-	git_submodule_owner -- NEVER USE THIS SHIT
+	git_submodule_owner -- NEVER USE THIS SHIT. It's killing pointer too fast for you, buddy
 */
 
 
@@ -258,14 +252,14 @@ UNUSED:
 ////////////////////////////////////////////////////////////////////
 
 enum SubmoduleError: Error {
-  case FailedToGetSubmoduleParentRepoPath
+	case FailedToGetSubmoduleParentRepoPath
 }
 
 extension SubmoduleError: LocalizedError {
-  public var errorDescription: String? {
-	switch self {
-	case .FailedToGetSubmoduleParentRepoPath:
-		return "FailedToGetSubmoduleParentRepoPath"
+	public var errorDescription: String? {
+		switch self {
+		case .FailedToGetSubmoduleParentRepoPath:
+			return "FailedToGetSubmoduleParentRepoPath"
+		}
 	}
-  }
 }
