@@ -86,13 +86,29 @@ public extension Duo where T1 == Submodule, T2 == Repository {
 		let (submodule, repo) = self.value
 
 		let buf_ptr = UnsafeMutablePointer<git_buf>.allocate(capacity: 1)
+		buf_ptr.pointee = git_buf(ptr: nil, asize: 0, size: 0)
 
 		return _result( { Buffer(pointer: buf_ptr) }, pointOfFailure: "git_submodule_resolve_url") {
 			submodule.path.withCString { relativeUrl in
 				git_submodule_resolve_url(buf_ptr, repo.pointer, relativeUrl)
 			}
 		}
-		.map { $0.asString() ?? "" }
+		.flatMap { $0.asStringRez() }
+	}
+	
+	func getAbsPath() -> Result<String, NSError> {
+		let (submodule, repo) = self.value
+		
+		let subModPath = submodule.path
+		
+		let a = repo.branches(.local).map{ asdf in
+			asdf.map { print($0.name ) }
+		}
+		
+		guard let repoPath = repo.directoryURL?.path
+		else { return .failure(SubmoduleError.FailedToGetRepoPath as NSError) } // TODO:
+		
+		return .success("\(repoPath)/\(subModPath)")
 	}
 	
 	//TODO: Test Me
@@ -115,7 +131,7 @@ public extension Duo where T1 == Submodule, T2 == Repository {
 
 public extension Submodule {
 	//TODO: Test Me
-	func getAbsPath() -> Result<String, NSError> { Duo((self, ownerRepo)).resolveUrl() }
+	func getAbsPath() -> Result<String, NSError> { Duo((self, ownerRepo)).getAbsPath() }
 	
 	//TODO: Test Me
 	///Copy submodule remote info into submodule repo.
@@ -162,7 +178,6 @@ public extension Submodule {
 		
 	}
 	
-	//TODO: Test Me
 	/// Get the containing repository for a submodule.
 	/// (Parent Repository)
 	var ownerRepo: Repository { Repository( git_submodule_owner(self.pointer) ) }
@@ -194,7 +209,6 @@ public extension Submodule {
 		return _result( {()}, pointOfFailure: "git_submodule_init") {
 			git_submodule_init(self.pointer, overwriteInt)
 		}
-		
 	}
 }
 
@@ -236,3 +250,22 @@ UNUSED:
 	git_submodule_status
 	git_submodule_update_strategy
 */
+
+
+
+////////////////////////////////////////////////////////////////////
+///ERRORS
+////////////////////////////////////////////////////////////////////
+
+enum SubmoduleError: Error {
+  case FailedToGetRepoPath
+}
+
+extension SubmoduleError: LocalizedError {
+  public var errorDescription: String? {
+	switch self {
+	case .FailedToGetRepoPath:
+	  return "FailedToGetRepoPath"
+	}
+  }
+}

@@ -12,9 +12,12 @@ public class Repository : InstanceProtocol {
 	public var pointer: OpaquePointer
 	
 	public var directoryURL: URL? {
-		let path = git_repository_workdir(self.pointer)
+		guard let pathPointer = git_repository_workdir(self.pointer)
+		else { return nil }
 		
-		return path.map({ URL(fileURLWithPath: String(validatingUTF8: $0)!, isDirectory: true) })
+		let pathStr = String(cString: pathPointer)
+		
+		return URL(fileURLWithPath: pathStr, isDirectory: true)
 	}
 	
 	required public init(_ pointer: OpaquePointer) {

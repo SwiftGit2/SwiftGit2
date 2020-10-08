@@ -59,10 +59,41 @@ public extension Buffer {
 		return String(data: data, encoding: .utf8)
 	}
 	
+	func asStringRez() -> Result<String, NSError> {
+		guard !isBinary else { return .failure(BufferError.BufferIsNotBinary as NSError) }
+		
+		let data = Data(bytesNoCopy: pointer.pointee.ptr, count: pointer.pointee.size, deallocator: .none)
+		
+		guard let str = String(data: data, encoding: .utf8)
+		else { return .failure(BufferError.FailedCastBufferToString as NSError)}
+		
+		return .success( str )
+	}
+	
 	func asDiff() -> Result<Diff, NSError> {
 		var diff: OpaquePointer? = nil
 		return _result( { Diff(diff!) }, pointOfFailure: "git_diff_from_buffer") {
 			git_diff_from_buffer(&diff, ptr, size)
 		}
 	}
+}
+
+////////////////////////////////////////////////////////////////////
+///ERRORS
+////////////////////////////////////////////////////////////////////
+
+enum BufferError: Error {
+	case BufferIsNotBinary
+	case FailedCastBufferToString
+}
+
+extension BufferError: LocalizedError {
+  public var errorDescription: String? {
+	switch self {
+	case .BufferIsNotBinary:
+	  return "BufferIsNotBinary"
+	case .FailedCastBufferToString:
+	  return "Failed to Cast Buffer To String"
+	}
+  }
 }
