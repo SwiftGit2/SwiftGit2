@@ -24,7 +24,10 @@ public class Repository : InstanceProtocol {
 		self.pointer = pointer
 	}
 	
-	deinit { git_repository_free(pointer) }
+	deinit {
+		git_repository_free(pointer)
+		
+	}
 }
 
 //SUBMODULES

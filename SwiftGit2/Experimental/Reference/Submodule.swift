@@ -36,23 +36,28 @@ public extension Submodule {
 	/// Get the OID for the submodule in the current HEAD tree.
 	var headOID  : OID   { OID( git_submodule_head_id(self.pointer).pointee ) }
 	
-	//TODO: Test Me
-	var fetchRecurse: Bool {
-		// True when "result == 1"
-		return git_submodule_fetch_recurse_submodules(self.pointer) == git_submodule_recurse_t(rawValue: 1)
-	}
 	
-	//TODO: Test Me -- this must be string or Branch?
-	var branch : String {
-		if let brPointer = git_submodule_branch(self.pointer) {
-			return String(cString: brPointer)
-		}
-		
-		return ""
-	}
 }
 
 public extension Duo where T1 == Submodule, T2 == Repository {
+	//TODO: Test Me
+	func getSubmoduleAbsPath() -> Result<String, NSError> {
+		let (submodule, repo) = self.value
+		
+		if let repoPath = repo.directoryURL?.path {
+			return .success("\(repoPath)/\(submodule.path)")
+		}
+		
+		return .failure(SubmoduleError.FailedToGetSubmoduleParentRepoPath as NSError)
+	}
+	
+	//TODO: Test Me
+	func fetchRecurseGet() -> Bool {
+		let (submodule, _) = self.value
+		// True when "result == 1"
+		return git_submodule_fetch_recurse_submodules(submodule.pointer) == git_submodule_recurse_t(rawValue: 1)
+	}
+	
 	//TODO: Test Me
 	func fetchRecurseSet(_ bool: Bool ) -> Result<(),NSError> {
 		let (submodule, repo) = self.value
@@ -66,9 +71,20 @@ public extension Duo where T1 == Submodule, T2 == Repository {
 		}
 	}
 	
+	//TODO: Test Me -- this must be string or Branch?
+	func branchGet() -> String {
+		let (submodule, _) = self.value
+	
+		if let brPointer = git_submodule_branch(submodule.pointer) {
+			return String(cString: brPointer)
+		}
+		
+		return ""
+	}
+	
 	//TODO: Test Me
 	/// Set the branch for the submodule in the configuration
-	func setBranchAndSync(branchName: String) -> Result<(), NSError> {
+	func branchSetAndSync(branchName: String) -> Result<(), NSError> {
 		let (submodule, repo) = self.value
 		
 		return _result( { () }, pointOfFailure: "git_submodule_set_branch" ) {
@@ -89,27 +105,13 @@ public extension Duo where T1 == Submodule, T2 == Repository {
 		buf_ptr.pointee = git_buf(ptr: nil, asize: 0, size: 0)
 
 		return _result( { Buffer(pointer: buf_ptr) }, pointOfFailure: "git_submodule_resolve_url") {
-			submodule.path.withCString { relativeUrl in
+			submodule.url.withCString { relativeUrl in
 				git_submodule_resolve_url(buf_ptr, repo.pointer, relativeUrl)
 			}
 		}
 		.flatMap { $0.asStringRez() }
 	}
 	
-	func getAbsPath() -> Result<String, NSError> {
-		let (submodule, repo) = self.value
-		
-		let subModPath = submodule.path
-		
-		let a = repo.branches(.local).map{ asdf in
-			asdf.map { print($0.name ) }
-		}
-		
-		guard let repoPath = repo.directoryURL?.path
-		else { return .failure(SubmoduleError.FailedToGetRepoPath as NSError) } // TODO:
-		
-		return .success("\(repoPath)/\(subModPath)")
-	}
 	
 	//TODO: Test Me
 	/// Set the URL for the submodule in the configuration
@@ -130,9 +132,6 @@ public extension Duo where T1 == Submodule, T2 == Repository {
 }
 
 public extension Submodule {
-	//TODO: Test Me
-	func getAbsPath() -> Result<String, NSError> { Duo((self, ownerRepo)).getAbsPath() }
-	
 	//TODO: Test Me
 	///Copy submodule remote info into submodule repo.
 	func sync() -> Result<(), NSError> {
@@ -180,7 +179,7 @@ public extension Submodule {
 	
 	/// Get the containing repository for a submodule.
 	/// (Parent Repository)
-	var ownerRepo: Repository { Repository( git_submodule_owner(self.pointer) ) }
+	//var ownerRepo: Repository { Repository( git_submodule_owner(self.pointer) ) }
 	
 	//TODO: Test Me
 	/// Open the repository for a submodule.
@@ -249,6 +248,7 @@ UNUSED:
 	git_submodule_set_update
 	git_submodule_status
 	git_submodule_update_strategy
+	git_submodule_owner -- NEVER USE THIS SHIT
 */
 
 
@@ -258,14 +258,14 @@ UNUSED:
 ////////////////////////////////////////////////////////////////////
 
 enum SubmoduleError: Error {
-  case FailedToGetRepoPath
+  case FailedToGetSubmoduleParentRepoPath
 }
 
 extension SubmoduleError: LocalizedError {
   public var errorDescription: String? {
 	switch self {
-	case .FailedToGetRepoPath:
-	  return "FailedToGetRepoPath"
+	case .FailedToGetSubmoduleParentRepoPath:
+		return "FailedToGetSubmoduleParentRepoPath"
 	}
   }
 }
