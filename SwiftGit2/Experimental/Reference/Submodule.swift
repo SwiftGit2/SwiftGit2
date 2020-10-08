@@ -235,10 +235,9 @@ public enum SubmoduleIgnore : Int32 {
 UNUSED:
 	git_submodule_add_setup
 	git_submodule_clone
-	git_submodule_ignore -- use SubmoduleIgnore enum
+	git_submodule_ignore -- need to use SubmoduleIgnore enum here
 	git_submodule_set_ignore
 	git_submodule_repo_init
-	git_submodule_resolve_url // partially used
 	git_submodule_set_update
 	git_submodule_status
 	git_submodule_update_strategy
