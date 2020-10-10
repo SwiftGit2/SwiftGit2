@@ -53,8 +53,7 @@ public extension Duo where T1 == Submodule, T2 == Repository {
 	func getSubmoduleRepoFromParentRepo() -> Result<Repository, NSError>{
 		self.getSubmoduleAbsPath()
 			.flatMap { path in
-				print ("path: \(path)")
-				return Repository.at(url: URL(fileURLWithPath: path, isDirectory:true  ))
+				Repository.at(url: URL(fileURLWithPath: path, isDirectory:true  ))
 			}
 	}
 	
