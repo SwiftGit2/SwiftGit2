@@ -50,6 +50,15 @@ public extension Duo where T1 == Submodule, T2 == Repository {
 	}
 	
 	//TODO: Test Me
+	func getSubmoduleRepoFromParentRepo() -> Result<Repository, NSError>{
+		self.getSubmoduleAbsPath()
+			.flatMap { path in
+				print ("path: \(path)")
+				return Repository.at(url: URL(fileURLWithPath: path, isDirectory:true  ))
+			}
+	}
+	
+	//TODO: Test Me
 	func fetchRecurseGet() -> Bool {
 		let (submodule, _) = self.value
 		// True when "result == 1"

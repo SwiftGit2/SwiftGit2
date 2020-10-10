@@ -222,7 +222,7 @@ public extension Repository {
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-extension Array {
+public extension Array {
 	func aggregateResult<Value, Error>() -> Result<[Value], Error> where Element == Result<Value, Error> {
 		var values: [Value] = []
 		for result in self {
