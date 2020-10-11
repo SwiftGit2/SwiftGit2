@@ -48,11 +48,9 @@ public extension Duo where T1 == Submodule, T2 == Repository {
 	func getSubmoduleAbsPath() -> Result<String, NSError> {
 		let (submodule, repo) = self.value
 		
-		if let repoPath = repo.directoryURL?.path {
-			return .success("\(repoPath)/\(submodule.path)")
+		return repo.directoryURL.flatMap { url in
+			.success("\(url.path)/\(submodule.path)")
 		}
-		
-		return .failure(SubmoduleError.FailedToGetSubmoduleParentRepoPath as NSError)
 	}
 	
 	func fetchRecurseValueSet(_ bool: Bool ) -> Result<(),NSError> {
@@ -240,22 +238,3 @@ UNUSED:
 	git_submodule_update_strategy
 	git_submodule_owner -- NEVER USE THIS SHIT. It's killing pointer too fast for you, buddy
 */
-
-
-
-////////////////////////////////////////////////////////////////////
-///ERRORS
-////////////////////////////////////////////////////////////////////
-
-enum SubmoduleError: Error {
-	case FailedToGetSubmoduleParentRepoPath
-}
-
-extension SubmoduleError: LocalizedError {
-	public var errorDescription: String? {
-		switch self {
-		case .FailedToGetSubmoduleParentRepoPath:
-			return "FailedToGetSubmoduleParentRepoPath"
-		}
-	}
-}
