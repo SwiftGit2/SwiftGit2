@@ -28,17 +28,23 @@ public extension Submodule {
 	/// Url to remote repo (https or ssh)
 	var url  	 : String { String(cString: git_submodule_url(self.pointer)) }
 	
-	//TODO: Test Me
 	/// Get the OID for the submodule in the current working directory.
 	var Oid      : OID   { OID( git_submodule_wd_id(self.pointer).pointee ) }
 	
-	//TODO: Test Me
 	/// Get the OID for the submodule in the current HEAD tree.
 	var headOID  : OID   { OID( git_submodule_head_id(self.pointer).pointee ) }
+	
+	/// Open the repository for a submodule.
+	func repo() -> Result<Repository, NSError> {
+		var pointer: OpaquePointer? = nil
+		
+		return _result( { Repository(pointer!) }, pointOfFailure: "") {
+			git_submodule_open( &pointer, self.pointer )
+		}
+	}
 }
 
 public extension Duo where T1 == Submodule, T2 == Repository {
-	//TODO: Test Me
 	func getSubmoduleAbsPath() -> Result<String, NSError> {
 		let (submodule, repo) = self.value
 		
@@ -49,26 +55,16 @@ public extension Duo where T1 == Submodule, T2 == Repository {
 		return .failure(SubmoduleError.FailedToGetSubmoduleParentRepoPath as NSError)
 	}
 	
-	//TODO: Test Me
-	func getSubmoduleRepoFromParentRepo() -> Result<Repository, NSError>{
-		self.getSubmoduleAbsPath()
-			.flatMap { path in
-				Repository.at(url: URL(fileURLWithPath: path, isDirectory:true  ))
-			}
-	}
-	
-	//TODO: Test Me
 	func fetchRecurseGet() -> Bool {
 		let (submodule, _) = self.value
 		// True when "result == 1"
 		return git_submodule_fetch_recurse_submodules(submodule.pointer) == git_submodule_recurse_t(rawValue: 1)
 	}
 	
-	//TODO: Test Me
 	func fetchRecurseSet(_ bool: Bool ) -> Result<(),NSError> {
 		let (submodule, repo) = self.value
 		
-		let valToSet = git_submodule_recurse_t(rawValue:  bool ? 1 : 0 ) // TODO: test me too!
+		let valToSet = git_submodule_recurse_t(rawValue:  bool ? 1 : 0 )
 		
 		return _result( { () }, pointOfFailure: "git_submodule_set_fetch_recurse_submodules" ) {
 			submodule.name.withCString{ submoduleName in
@@ -103,6 +99,10 @@ public extension Duo where T1 == Submodule, T2 == Repository {
 		.flatMap{ submodule.sync() }
 	}
 	
+	// WTF? What this fucking THING is doing? I have no idea.
+	//   .resolveUrl() -> "git@gitlab.com:sergiy.vynnychenko/AppCore.git"
+	//            .url -> "git@gitlab.com:sergiy.vynnychenko/AppCore.git"
+	//
 	//Resolve a submodule url relative to the given repository.
 	func resolveUrl() -> Result<String, NSError> {
 		let (submodule, repo) = self.value
@@ -146,7 +146,7 @@ public extension Submodule {
 		}
 	}
 	
-	//TODO: Test Me.
+	//TODO: Test Me. // don't know how to test
 	///Reread submodule info from config, index, and HEAD |
 	///Call this to reread cached submodule information for this submodule if you have reason to believe that it has changed.
 	func reload(force: Bool = false) -> Result<(), NSError> {
@@ -171,9 +171,9 @@ public extension Submodule {
 		}
 	}
 	
-	//TODO: Test Me
+	//TODO: Test Me --- not sure how to test
 	///Add current submodule HEAD commit to index of superproject.
-	/// writeIndex = if true - should immediately write the index file. If you pass this as false, you will have to get the git_index and explicitly call `git_index_write()` on it to save the change
+	/// writeIndex -- if true - should immediately write the index file. If you pass this as false, you will have to get the git_index and explicitly call `git_index_write()` on it to save the change
 	func addToIndex( writeIndex: Bool = true) -> Result<(), NSError> {
 		let writeIndex:Int32 = writeIndex ? 1 : 0
 		
@@ -181,16 +181,6 @@ public extension Submodule {
 			git_submodule_add_to_index(self.pointer, writeIndex);
 		}
 		
-	}
-	
-	//TODO: Test Me
-	/// Open the repository for a submodule.
-	func openRepo () -> Result<Repository, NSError> {
-		var pointer: OpaquePointer? = nil
-		
-		return _result( { Repository(pointer!) }, pointOfFailure: "") {
-			git_submodule_open( &pointer, self.pointer )
-		}
 	}
 	
 	//TODO: Test Me
