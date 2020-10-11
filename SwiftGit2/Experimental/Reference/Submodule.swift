@@ -55,13 +55,7 @@ public extension Duo where T1 == Submodule, T2 == Repository {
 		return .failure(SubmoduleError.FailedToGetSubmoduleParentRepoPath as NSError)
 	}
 	
-	func fetchRecurseGet() -> Bool {
-		let (submodule, _) = self.value
-		// True when "result == 1"
-		return git_submodule_fetch_recurse_submodules(submodule.pointer) == git_submodule_recurse_t(rawValue: 1)
-	}
-	
-	func fetchRecurseSet(_ bool: Bool ) -> Result<(),NSError> {
+	func fetchRecurseValueSet(_ bool: Bool ) -> Result<(),NSError> {
 		let (submodule, repo) = self.value
 		
 		let valToSet = git_submodule_recurse_t(rawValue:  bool ? 1 : 0 )
@@ -138,6 +132,11 @@ public extension Duo where T1 == Submodule, T2 == Repository {
 }
 
 public extension Submodule {
+	func fetchRecurseValueGet() -> Bool {
+		//"result == 1"
+		return git_submodule_fetch_recurse_submodules(self.pointer) == git_submodule_recurse_t(rawValue: 1)
+	}
+	
 	//TODO: Test Me
 	///Copy submodule remote info into submodule repo.
 	func sync() -> Result<(), NSError> {
