@@ -25,7 +25,6 @@ public class Repository : InstanceProtocol {
 	
 	deinit {
 		git_repository_free(pointer)
-		
 	}
 }
 
