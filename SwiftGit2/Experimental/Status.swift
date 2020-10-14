@@ -96,7 +96,7 @@ public extension StatusEntry {
 //////////////////////////////////////////////
 
 public struct StatusOptions {
-	let git_options : git_status_options
+	var git_options : git_status_options
 	
 	let version		: UInt32
 	let show		: StatusOptions.Show
@@ -118,7 +118,7 @@ public struct StatusOptions {
 		}
 	}
 	
-	public init(flags: StatusOptions.Flags? = nil, filters: [String]? = nil, show: StatusOptions.Show? = nil) {
+	public init(flags: StatusOptions.Flags? = nil, show: StatusOptions.Show? = nil) {
 		let pointer = UnsafeMutablePointer<git_status_options>.allocate(capacity: 1)
 		let optionsResult = git_status_init_options(pointer, UInt32(GIT_STATUS_OPTIONS_VERSION))
 		guard optionsResult == GIT_OK.rawValue else {
@@ -134,10 +134,6 @@ public struct StatusOptions {
 		
 		if let show = show {
 			options.show = git_status_show_t(rawValue: show.rawValue)
-		}
-		
-		if let filters = filters {
-			//options.
 		}
 		
 		self.init(options: options)

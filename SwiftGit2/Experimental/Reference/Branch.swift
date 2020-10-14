@@ -167,7 +167,7 @@ private extension Branch {
 }
 
 fileprivate extension Remote {
-	public func push(branchName: String, options: UnsafePointer<git_push_options> ) -> Result<(), NSError> {
+	func push(branchName: String, options: UnsafePointer<git_push_options> ) -> Result<(), NSError> {
 		var dirPointer = UnsafeMutablePointer<Int8>(mutating: (branchName as NSString).utf8String)
 		var refs = git_strarray(strings: &dirPointer, count: 1)
 

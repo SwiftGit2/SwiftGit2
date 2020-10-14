@@ -41,9 +41,15 @@ extension StatusIterator : RandomAccessCollection {
 }
 
 public extension Repository {
-	func status(options: StatusOptions = StatusOptions()) -> Result<StatusIterator, NSError> {
+	func status(options: StatusOptions = StatusOptions(), filter: String? = nil) -> Result<StatusIterator, NSError> {
 		var pointer: OpaquePointer? = nil
 		var git_options = options.git_options
+		
+		//TODO: Ugly hack. Need to move to StatusOptions() but it's a little bit difficult
+		if let filter = filter {
+			var dirPointer = UnsafeMutablePointer<Int8>(mutating: (filter as NSString).utf8String)
+			git_options.pathspec = git_strarray(strings: &dirPointer, count: 1)
+		}
 		
 		return _result( { StatusIterator(pointer!) }, pointOfFailure: "git_status_list_new") {
 			git_status_list_new(&pointer, self.pointer, &git_options)
