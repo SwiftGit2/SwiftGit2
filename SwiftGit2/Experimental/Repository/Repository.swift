@@ -146,8 +146,8 @@ public extension Repository {
 		var pointer: OpaquePointer? = nil
 		
 		return _result( { Repository(pointer!) }, pointOfFailure: "git_repository_init") {
-			url.withUnsafeFileSystemRepresentation {
-				git_repository_init(&pointer, $0, 1)
+			url.path.withCString { path in
+				git_repository_init(&pointer, path, 1)
 			}
 		}
 	}
