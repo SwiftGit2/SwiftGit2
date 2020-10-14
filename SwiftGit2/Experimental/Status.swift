@@ -16,9 +16,9 @@ extension StatusEntry: Identifiable {
 	public var id: String {
 		var finalId: String = ""
 		
-		if let newPath = self.headToIndex?.newFile?.path { finalId += newPath }
+		if let newPath = self.indexToWorkDir?.newFile?.path { finalId += newPath }
 		
-		if let oldPath = self.headToIndex?.oldFile?.path { finalId += oldPath }
+		if let oldPath = self.indexToWorkDir?.oldFile?.path { finalId += oldPath }
 		
 		return finalId
 	}
