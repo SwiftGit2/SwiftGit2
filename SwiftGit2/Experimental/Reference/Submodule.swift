@@ -42,6 +42,28 @@ public extension Submodule {
 			git_submodule_open( &pointer, self.pointer )
 		}
 	}
+	
+	func repoExist() -> Bool { ( try? self.repo().get() ) != nil }
+}
+
+public extension Submodule {
+	func getSubmodulesRecurcive() -> [Submodule] {
+		var subs: [Submodule] = [self]
+		
+		let subsToAdd = getSubmodules().map {
+			$0.getSubmodulesRecurcive()
+		}.flatMap{ $0 }
+		
+		subs.append(contentsOf: subsToAdd)
+		
+		return subs
+	}
+	
+	private func getSubmodules() -> [Submodule] {
+		let subs = try? repo().flatMap { repo in repo.getSubmodules() }.get()
+		
+		return subs ?? []
+	}
 }
 
 public extension Duo where T1 == Submodule, T2 == Repository {
