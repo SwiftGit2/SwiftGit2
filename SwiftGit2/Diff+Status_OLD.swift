@@ -9,8 +9,8 @@
 import Clibgit2
 import Foundation
 
-public extension StatusEntry {
-	struct Status: OptionSet {
+public extension StatusEntry_OLD {
+	struct Status_OLD: OptionSet {
 		// This appears to be necessary due to bug in Swift
 		// https://bugs.swift.org/browse/SR-3003
 		public init(rawValue: UInt32) {
@@ -18,20 +18,20 @@ public extension StatusEntry {
 		}
 		public let rawValue: UInt32
 
-		public static let current                = Status(rawValue: GIT_STATUS_CURRENT.rawValue)
-		public static let indexNew               = Status(rawValue: GIT_STATUS_INDEX_NEW.rawValue)
-		public static let indexModified          = Status(rawValue: GIT_STATUS_INDEX_MODIFIED.rawValue)
-		public static let indexDeleted           = Status(rawValue: GIT_STATUS_INDEX_DELETED.rawValue)
-		public static let indexRenamed           = Status(rawValue: GIT_STATUS_INDEX_RENAMED.rawValue)
-		public static let indexTypeChange        = Status(rawValue: GIT_STATUS_INDEX_TYPECHANGE.rawValue)
-		public static let workTreeNew            = Status(rawValue: GIT_STATUS_WT_NEW.rawValue)
-		public static let workTreeModified       = Status(rawValue: GIT_STATUS_WT_MODIFIED.rawValue)
-		public static let workTreeDeleted        = Status(rawValue: GIT_STATUS_WT_DELETED.rawValue)
-		public static let workTreeTypeChange     = Status(rawValue: GIT_STATUS_WT_TYPECHANGE.rawValue)
-		public static let workTreeRenamed        = Status(rawValue: GIT_STATUS_WT_RENAMED.rawValue)
-		public static let workTreeUnreadable     = Status(rawValue: GIT_STATUS_WT_UNREADABLE.rawValue)
-		public static let ignored                = Status(rawValue: GIT_STATUS_IGNORED.rawValue)
-		public static let conflicted             = Status(rawValue: GIT_STATUS_CONFLICTED.rawValue)
+		public static let current                = Status_OLD(rawValue: GIT_STATUS_CURRENT.rawValue)
+		public static let indexNew               = Status_OLD(rawValue: GIT_STATUS_INDEX_NEW.rawValue)
+		public static let indexModified          = Status_OLD(rawValue: GIT_STATUS_INDEX_MODIFIED.rawValue)
+		public static let indexDeleted           = Status_OLD(rawValue: GIT_STATUS_INDEX_DELETED.rawValue)
+		public static let indexRenamed           = Status_OLD(rawValue: GIT_STATUS_INDEX_RENAMED.rawValue)
+		public static let indexTypeChange        = Status_OLD(rawValue: GIT_STATUS_INDEX_TYPECHANGE.rawValue)
+		public static let workTreeNew            = Status_OLD(rawValue: GIT_STATUS_WT_NEW.rawValue)
+		public static let workTreeModified       = Status_OLD(rawValue: GIT_STATUS_WT_MODIFIED.rawValue)
+		public static let workTreeDeleted        = Status_OLD(rawValue: GIT_STATUS_WT_DELETED.rawValue)
+		public static let workTreeTypeChange     = Status_OLD(rawValue: GIT_STATUS_WT_TYPECHANGE.rawValue)
+		public static let workTreeRenamed        = Status_OLD(rawValue: GIT_STATUS_WT_RENAMED.rawValue)
+		public static let workTreeUnreadable     = Status_OLD(rawValue: GIT_STATUS_WT_UNREADABLE.rawValue)
+		public static let ignored                = Status_OLD(rawValue: GIT_STATUS_IGNORED.rawValue)
+		public static let conflicted             = Status_OLD(rawValue: GIT_STATUS_CONFLICTED.rawValue)
 	}
 }
 
@@ -49,14 +49,13 @@ public extension RepositoryOLD {
 	}
 }
 
-
-public struct StatusEntry {
-	public let status: Status
+public struct StatusEntry_OLD {
+	public let status: Status_OLD
 	public let headToIndex: Diff.Delta?
 	public let indexToWorkDir: Diff.Delta?
 
 	public init(from statusEntry: git_status_entry) {
-		self.status = Status(rawValue: statusEntry.status.rawValue)
+		self.status = Status_OLD(rawValue: statusEntry.status.rawValue)
 
 		if let htoi = statusEntry.head_to_index {
 			self.headToIndex = Diff.Delta(htoi.pointee)
@@ -72,13 +71,12 @@ public struct StatusEntry {
 	}
 }
 
-
-public struct StatusOptions {
+public struct StatusOptions_OLD {
 	let git_options : git_status_options
 	
 	let version		: UInt32
-	let show		: StatusOptions.Show
-	let flags		: StatusOptions.Flags
+	let show		: StatusOptions_OLD.Show
+	let flags		: StatusOptions_OLD.Flags
 	let pathspec	: [String]
 	let baseline	: Tree_Old?
 	
@@ -96,7 +94,7 @@ public struct StatusOptions {
 		}
 	}
 	
-	public init(flags: StatusOptions.Flags? = nil, show: StatusOptions.Show? = nil) {
+	public init(flags: StatusOptions_OLD.Flags? = nil, show: StatusOptions_OLD.Show? = nil) {
 		let pointer = UnsafeMutablePointer<git_status_options>.allocate(capacity: 1)
 		let optionsResult = git_status_init_options(pointer, UInt32(GIT_STATUS_OPTIONS_VERSION))
 		guard optionsResult == GIT_OK.rawValue else {
@@ -117,7 +115,7 @@ public struct StatusOptions {
 	}
 }
 
-public extension StatusOptions {
+public extension StatusOptions_OLD {
 	/**
 	* - GIT_STATUS_SHOW_INDEX_AND_WORKDIR is the default.  This roughly
 	*   matches `git status --porcelain` regarding which files are
@@ -135,7 +133,7 @@ public extension StatusOptions {
 	}
 }
 
-public extension StatusOptions {
+public extension StatusOptions_OLD {
 	/**
 	* - GIT_STATUS_OPT_INCLUDE_UNTRACKED says that callbacks should be made
 	*   on untracked files.  These will only be made if the workdir files are
