@@ -38,7 +38,7 @@ public extension Submodule {
 	func repo() -> Result<Repository, NSError> {
 		var pointer: OpaquePointer? = nil
 		
-		return _result( { Repository(pointer!) }, pointOfFailure: "") {
+		return _result( { Repository(pointer!) }, pointOfFailure: "git_submodule_open") {
 			git_submodule_open( &pointer, self.pointer )
 		}
 	}
