@@ -38,30 +38,24 @@ public extension Submodule {
 	func repo() -> Result<Repository, NSError> {
 		var pointer: OpaquePointer? = nil
 		
-		return _result( { Repository(pointer!) }, pointOfFailure: "") {
+		return _result( { Repository(pointer!) }, pointOfFailure: "git_submodule_open") {
 			git_submodule_open( &pointer, self.pointer )
 		}
 	}
+	
+	func repoExist() -> Bool { ( try? self.repo().get() ) != nil }
 }
 
 public extension Duo where T1 == Submodule, T2 == Repository {
 	func getSubmoduleAbsPath() -> Result<String, NSError> {
 		let (submodule, repo) = self.value
 		
-		if let repoPath = repo.directoryURL?.path {
-			return .success("\(repoPath)/\(submodule.path)")
+		return repo.directoryURL.flatMap { url in
+			.success("\(url.path)/\(submodule.path)")
 		}
-		
-		return .failure(SubmoduleError.FailedToGetSubmoduleParentRepoPath as NSError)
 	}
 	
-	func fetchRecurseGet() -> Bool {
-		let (submodule, _) = self.value
-		// True when "result == 1"
-		return git_submodule_fetch_recurse_submodules(submodule.pointer) == git_submodule_recurse_t(rawValue: 1)
-	}
-	
-	func fetchRecurseSet(_ bool: Bool ) -> Result<(),NSError> {
+	func fetchRecurseValueSet(_ bool: Bool ) -> Result<(),NSError> {
 		let (submodule, repo) = self.value
 		
 		let valToSet = git_submodule_recurse_t(rawValue:  bool ? 1 : 0 )
@@ -138,6 +132,11 @@ public extension Duo where T1 == Submodule, T2 == Repository {
 }
 
 public extension Submodule {
+	func fetchRecurseValueGet() -> Bool {
+		//"result == 1"
+		return git_submodule_fetch_recurse_submodules(self.pointer) == git_submodule_recurse_t(rawValue: 1)
+	}
+	
 	//TODO: Test Me
 	///Copy submodule remote info into submodule repo.
 	func sync() -> Result<(), NSError> {
@@ -241,22 +240,3 @@ UNUSED:
 	git_submodule_update_strategy
 	git_submodule_owner -- NEVER USE THIS SHIT. It's killing pointer too fast for you, buddy
 */
-
-
-
-////////////////////////////////////////////////////////////////////
-///ERRORS
-////////////////////////////////////////////////////////////////////
-
-enum SubmoduleError: Error {
-	case FailedToGetSubmoduleParentRepoPath
-}
-
-extension SubmoduleError: LocalizedError {
-	public var errorDescription: String? {
-		switch self {
-		case .FailedToGetSubmoduleParentRepoPath:
-			return "FailedToGetSubmoduleParentRepoPath"
-		}
-	}
-}

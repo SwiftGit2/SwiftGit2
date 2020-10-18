@@ -11,12 +11,12 @@ import Clibgit2
 public class Repository : InstanceProtocol {
 	public var pointer: OpaquePointer
 	
-	public var directoryURL: URL? {
+	public var directoryURL: Result<URL, NSError> {
 		if let pathPointer = git_repository_workdir(self.pointer) {
-			return URL(fileURLWithPath: String(cString: pathPointer) , isDirectory: true)
+			return .success( URL(fileURLWithPath: String(cString: pathPointer) , isDirectory: true) )
 		}
 		
-		return nil
+		return .failure(RepositoryError.FailedToGetRepoUrl as NSError)
 	}
 	
 	required public init(_ pointer: OpaquePointer) {
@@ -344,4 +344,21 @@ fileprivate func mergeOptions( mergeFlags: git_merge_flag_t? = nil,
 	//options.
 
 	return options
+}
+
+////////////////////////////////////////////////////////////////////
+///ERRORS
+////////////////////////////////////////////////////////////////////
+
+enum RepositoryError: Error {
+	case FailedToGetRepoUrl
+}
+
+extension RepositoryError: LocalizedError {
+	public var errorDescription: String? {
+		switch self {
+		case .FailedToGetRepoUrl:
+			return "FailedToGetRepoUrl. Url is nil?"
+		}
+	}
 }

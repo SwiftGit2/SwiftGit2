@@ -52,13 +52,6 @@ public extension Buffer {
 		return _result( { () }, pointOfFailure: "git_buf_set", block: {git_buf_set(pointer, nsData.bytes, nsData.length)})
 	}
 	
-	func asString() -> String? {
-		guard !isBinary else { return nil }
-		
-		let data = Data(bytesNoCopy: pointer.pointee.ptr, count: pointer.pointee.size, deallocator: .none)
-		return String(data: data, encoding: .utf8)
-	}
-	
 	func asStringRez() -> Result<String, NSError> {
 		guard !isBinary else { return .failure(BufferError.BufferIsNotBinary as NSError) }
 		

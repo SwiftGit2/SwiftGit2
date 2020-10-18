@@ -129,11 +129,12 @@ public extension Repository {
 		let buf_ptr = UnsafeMutablePointer<git_buf>.allocate(capacity: 1)
 		buf_ptr.pointee = git_buf(ptr: nil, asize: 0, size: 0)
 		
-		return _result({Buffer(pointer: buf_ptr)}, pointOfFailure: "" ) {
+		return  _result({Buffer(pointer: buf_ptr)}, pointOfFailure: "" ) {
 			branchName.withCString { refname in
 				git_branch_upstream_name(buf_ptr, self.pointer, refname)
 			}
-		}.map { $0.asString() ?? "" }
+		}
+		.flatMap { $0.asStringRez() }
 	}
 }
 
