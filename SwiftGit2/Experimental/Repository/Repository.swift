@@ -11,7 +11,15 @@ import Clibgit2
 public class Repository : InstanceProtocol {
 	public var pointer: OpaquePointer
 	
-	public var directoryURL: URL? {
+	public var directoryURL: Result<URL, NSError> {
+		if let pathPointer = git_repository_workdir(self.pointer) {
+			return .success( URL(fileURLWithPath: String(cString: pathPointer) , isDirectory: true) )
+		}
+		//TODO: HACK. Need to fix
+		return .failure(NSError())
+	}
+	
+	public var directoryURLold: URL? {
 		if let pathPointer = git_repository_workdir(self.pointer) {
 			return URL(fileURLWithPath: String(cString: pathPointer) , isDirectory: true)
 		}

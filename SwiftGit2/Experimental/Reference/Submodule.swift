@@ -48,7 +48,7 @@ public extension Duo where T1 == Submodule, T2 == Repository {
 	func getSubmoduleAbsPath() -> Result<String, NSError> {
 		let (submodule, repo) = self.value
 		
-		if let repoPath = repo.directoryURL?.path {
+		if let repoPath = repo.directoryURLold?.path {
 			return .success("\(repoPath)/\(submodule.path)")
 		}
 		
