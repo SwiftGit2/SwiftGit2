@@ -22,7 +22,7 @@ public class Repository : InstanceProtocol {
 	
 	public var directoryURL: Result<URL, NSError> {
 		if let pathPointer = git_repository_workdir(self.pointer) {
-			return .success(  )
+			return .success( URL(fileURLWithPath: String(cString: pathPointer) , isDirectory: true) )
 		}
 		
 		return .failure(RepositoryError.FailedToGetRepoUrl as NSError)
