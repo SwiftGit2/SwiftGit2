@@ -95,7 +95,7 @@ public extension Diff {
 	}
 }
 
-public enum SubmoduleIgnore : Int32 {
+public enum SubmoduleIgnore_OLD : Int32 {
 	case unspecified = -1 	//GIT_SUBMODULE_IGNORE_UNSPECIFIED  = -1, /**< use the submodule's configuration */
 	case none        = 1	//GIT_SUBMODULE_IGNORE_NONE      = 1,  /**< any change or untracked == dirty */
 	case untracked   = 2	//GIT_SUBMODULE_IGNORE_UNTRACKED = 2,  /**< dirty if tracked files change */
@@ -108,7 +108,7 @@ public class DiffOptions {
 	
 	public var version 			: UInt32 			{ pointer.pointee.version }
 	public var flags 			: DiffOptions.Flags { get { DiffOptions.Flags(rawValue: pointer.pointee.flags) } set { pointer.pointee.flags = newValue.rawValue } }
-	public var ignoreSubmodules : SubmoduleIgnore 	{ get { SubmoduleIgnore(rawValue: pointer.pointee.ignore_submodules.rawValue)! } set { pointer.pointee.ignore_submodules = git_submodule_ignore_t(rawValue: newValue.rawValue)} }
+	public var ignoreSubmodules : SubmoduleIgnore_OLD 	{ get { SubmoduleIgnore_OLD(rawValue: pointer.pointee.ignore_submodules.rawValue)! } set { pointer.pointee.ignore_submodules = git_submodule_ignore_t(rawValue: newValue.rawValue)} }
 	
 	public var notify_cb		: git_diff_notify_cb?		{ get { pointer.pointee.notify_cb } 	set { pointer.pointee.notify_cb = newValue } }
 	public var progress_cb 		: git_diff_progress_cb?		{ get { pointer.pointee.progress_cb} 	set { pointer.pointee.progress_cb = newValue } }

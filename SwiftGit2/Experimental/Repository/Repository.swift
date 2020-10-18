@@ -11,17 +11,21 @@ import Clibgit2
 public class Repository : InstanceProtocol {
 	public var pointer: OpaquePointer
 	
-	public var directoryURL: URL? {
-		let path = git_repository_workdir(self.pointer)
+	public var directoryURL: Result<URL, NSError> {
+		if let pathPointer = git_repository_workdir(self.pointer) {
+			return .success( URL(fileURLWithPath: String(cString: pathPointer) , isDirectory: true) )
+		}
 		
-		return path.map({ URL(fileURLWithPath: String(validatingUTF8: $0)!, isDirectory: true) })
+		return .failure(RepositoryError.FailedToGetRepoUrl as NSError)
 	}
 	
 	required public init(_ pointer: OpaquePointer) {
 		self.pointer = pointer
 	}
 	
-	deinit { git_repository_free(pointer) }
+	deinit {
+		git_repository_free(pointer)
+	}
 }
 
 //SUBMODULES
@@ -216,7 +220,7 @@ public extension Repository {
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-extension Array {
+public extension Array {
 	func aggregateResult<Value, Error>() -> Result<[Value], Error> where Element == Result<Value, Error> {
 		var values: [Value] = []
 		for result in self {
@@ -340,4 +344,21 @@ fileprivate func mergeOptions( mergeFlags: git_merge_flag_t? = nil,
 	//options.
 
 	return options
+}
+
+////////////////////////////////////////////////////////////////////
+///ERRORS
+////////////////////////////////////////////////////////////////////
+
+enum RepositoryError: Error {
+	case FailedToGetRepoUrl
+}
+
+extension RepositoryError: LocalizedError {
+	public var errorDescription: String? {
+		switch self {
+		case .FailedToGetRepoUrl:
+			return "FailedToGetRepoUrl. Url is nil?"
+		}
+	}
 }
