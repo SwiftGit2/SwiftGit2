@@ -61,6 +61,36 @@ extension Repository {
 	}
 }
 
+//Remotes
+extension Repository {
+	public func getRemoteFirst() -> Result<Remote, NSError> {
+		return getRemotesNames()
+			.flatMap{ arr -> Result<Remote, NSError> in
+				if let first = arr.first {
+					return self.remoteRepo(named: first)
+				}
+				return .failure(NSError() )// TODO: Noone repo in the repository
+			}
+	}
+	
+	public func getAllRemotes() -> Result<[Remote], NSError> {
+		return getRemotesNames()
+			.flatMap{ $0.map({ self.remoteRepo(named: $0) }).aggregateResult() }
+	}
+	
+	private func getRemotesNames() -> Result<[String], NSError> {
+		let strArrayPointer = UnsafeMutablePointer<git_strarray>.allocate(capacity: 1)
+		defer {
+			git_strarray_free(strArrayPointer)
+			strArrayPointer.deallocate()
+		}
+		
+		return _result( { strArrayPointer.pointee.map{ $0 } } , pointOfFailure: "git_remote_list") {
+			git_remote_list(strArrayPointer, self.pointer)
+		}
+	}
+}
+
 class SubmoduleCallbacks {
 	var submodulesNames = [String]()
 	
@@ -227,22 +257,6 @@ public extension Repository {
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /// HELPERS
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
-public extension Array {
-	func aggregateResult<Value, Error>() -> Result<[Value], Error> where Element == Result<Value, Error> {
-		var values: [Value] = []
-		for result in self {
-			switch result {
-			case .success(let value):
-				values.append(value)
-			case .failure(let error):
-				return .failure(error)
-			}
-		}
-		return .success(values)
-	}
-}
 
 fileprivate func fetchOptions(credentials: Credentials_OLD) -> git_fetch_options {
 	let pointer = UnsafeMutablePointer<git_fetch_options>.allocate(capacity: 1)
