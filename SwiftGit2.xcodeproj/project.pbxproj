@@ -30,6 +30,7 @@
 		1D991AE3251934FF00335255 /* Remote.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D991AE2251934FF00335255 /* Remote.swift */; };
 		1DB0F84E24EFFB2D00637B9B /* RepositoryCheckout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DB0F84D24EFFB2D00637B9B /* RepositoryCheckout.swift */; };
 		1DCEA352253FF1460012BF38 /* Array.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DCEA351253FF1460012BF38 /* Array.swift */; };
+		1DCEA37E2542364D0012BF38 /* Result.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DCEA37D2542364D0012BF38 /* Result.swift */; };
 		232861431F4A3A2E00276D65 /* Diffs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 232861421F4A3A2E00276D65 /* Diffs.swift */; };
 		232861451F4A3A2E00276D65 /* Diffs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 232861421F4A3A2E00276D65 /* Diffs.swift */; };
 		237731C71F46542B0020A3FE /* repository-with-status.zip in Resources */ = {isa = PBXBuildFile; fileRef = 237731C61F46542B0020A3FE /* repository-with-status.zip */; };
@@ -170,6 +171,7 @@
 		1D991AE2251934FF00335255 /* Remote.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Remote.swift; sourceTree = "<group>"; };
 		1DB0F84D24EFFB2D00637B9B /* RepositoryCheckout.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RepositoryCheckout.swift; sourceTree = "<group>"; };
 		1DCEA351253FF1460012BF38 /* Array.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Array.swift; sourceTree = "<group>"; };
+		1DCEA37D2542364D0012BF38 /* Result.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Result.swift; sourceTree = "<group>"; };
 		232861421F4A3A2E00276D65 /* Diffs.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Diffs.swift; sourceTree = "<group>"; };
 		237731C61F46542B0020A3FE /* repository-with-status.zip */ = {isa = PBXFileReference; lastKnownFileType = archive.zip; path = "repository-with-status.zip"; sourceTree = "<group>"; };
 		25499A996CA7BD416620A397 /* CommitIterator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CommitIterator.swift; sourceTree = "<group>"; };
@@ -309,6 +311,7 @@
 			isa = PBXGroup;
 			children = (
 				1DCEA351253FF1460012BF38 /* Array.swift */,
+				1DCEA37D2542364D0012BF38 /* Result.swift */,
 			);
 			path = Ext;
 			sourceTree = "<group>";
@@ -907,6 +910,7 @@
 				1DB0F84E24EFFB2D00637B9B /* RepositoryCheckout.swift in Sources */,
 				E61B443423CE4D670059650A /* Repository_OLD+Submodule_OLD.swift in Sources */,
 				E67D157224EF24A500DA3542 /* Repository+Status.swift in Sources */,
+				1DCEA37E2542364D0012BF38 /* Result.swift in Sources */,
 				BE70B3E51A1ACB1A002C3F4E /* OID.swift in Sources */,
 				BECB5F6E1A57284700999413 /* Remote_OLD.swift in Sources */,
 				BE276B291ACCD3CF00D6DAD7 /* CheckoutStrategy.swift in Sources */,
