@@ -34,9 +34,6 @@ public extension Submodule {
 	/// Get the OID for the submodule in the current HEAD tree.
 	var headOID  : OID   { OID( git_submodule_head_id(self.pointer).pointee ) }
 	
-	/// To checkout you need to call Update
-	var isCheckedOut: Bool { self.pointer != nil }
-	
 	/// Open the repository for a submodule.
 	/// WILL WORK ONLY IF SUBMODULE IS CHECKED OUT INTO WORKING DIRECTORY
 	func repo() -> Result<Repository, NSError> {
