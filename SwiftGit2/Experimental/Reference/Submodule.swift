@@ -48,6 +48,21 @@ public extension Submodule {
 }
 
 public extension Duo where T1 == Submodule, T2 == Repository {
+	///Repository must be PARENT of submodule
+	func getSubmoduleStatus() -> Result<SubmoduleStatusFlags, NSError> {
+		let (submodule, parentRepo) = self.value
+		
+		let ignore = git_submodule_ignore_t.init(SubmoduleIgnore.none.rawValue)
+		
+		var result = UInt32(0)
+		
+		return _result( { SubmoduleStatusFlags(rawValue: result) }, pointOfFailure: "git_submodule_status" ) {
+			submodule.name.withCString{ submoduleName in
+				git_submodule_status(&result, parentRepo.pointer, submoduleName, ignore )
+			}
+		}
+	}
+	
 	func getSubmoduleAbsPath() -> Result<String, NSError> {
 		let (submodule, repo) = self.value
 		
@@ -221,6 +236,7 @@ public class SubmoduleUpdateOptions {
 	}
 }
 
+/// git_submodule_ignore_t;
 public enum SubmoduleIgnore : Int32 {
 	case unspecified = -1 	//GIT_SUBMODULE_IGNORE_UNSPECIFIED  = -1, /**< use the submodule's configuration */
 	case none        = 1	//GIT_SUBMODULE_IGNORE_NONE      = 1,  /**< any change or untracked == dirty */
@@ -228,6 +244,36 @@ public enum SubmoduleIgnore : Int32 {
 	case ignoreDirty = 3	//GIT_SUBMODULE_IGNORE_DIRTY     = 3,  /**< only dirty if HEAD moved */
 	case ignoreAll   = 4	//GIT_SUBMODULE_IGNORE_ALL       = 4,  /**< never dirty */
 }
+
+/// git_submodule_recurse_t;
+public enum SubmoduleRecurse: UInt32 {
+	case RecurseNo = 0       //GIT_SUBMODULE_RECURSE_NO
+	case RecurseYes = 1      //GIT_SUBMODULE_RECURSE_YES
+	case RecurseOnDemand = 2 //GIT_SUBMODULE_RECURSE_ONDEMAND
+}
+
+public struct SubmoduleStatusFlags: OptionSet {
+	public init(rawValue: UInt32) {
+		self.rawValue = rawValue
+	}
+	public let rawValue: UInt32
+	
+	public static let InHead           	= SubmoduleStatusFlags(rawValue: GIT_SUBMODULE_STATUS_IN_HEAD.rawValue)
+	public static let InIndex          	= SubmoduleStatusFlags(rawValue: GIT_SUBMODULE_STATUS_IN_INDEX.rawValue)
+	public static let InConfig         	= SubmoduleStatusFlags(rawValue: GIT_SUBMODULE_STATUS_IN_CONFIG.rawValue)
+	public static let InWd             	= SubmoduleStatusFlags(rawValue: GIT_SUBMODULE_STATUS_IN_WD.rawValue)
+	public static let IndexAdded       	= SubmoduleStatusFlags(rawValue: GIT_SUBMODULE_STATUS_INDEX_ADDED.rawValue)
+	public static let IndexDeleted     	= SubmoduleStatusFlags(rawValue: GIT_SUBMODULE_STATUS_INDEX_DELETED.rawValue)
+	public static let IndexModified    	= SubmoduleStatusFlags(rawValue: GIT_SUBMODULE_STATUS_INDEX_MODIFIED.rawValue)
+	public static let WdUninitialized  	= SubmoduleStatusFlags(rawValue: GIT_SUBMODULE_STATUS_WD_UNINITIALIZED.rawValue)
+	public static let WdAdded       	= SubmoduleStatusFlags(rawValue: GIT_SUBMODULE_STATUS_WD_ADDED.rawValue)
+	public static let WdDeleted     	= SubmoduleStatusFlags(rawValue: GIT_SUBMODULE_STATUS_WD_DELETED.rawValue)
+	public static let WdModified    	= SubmoduleStatusFlags(rawValue: GIT_SUBMODULE_STATUS_WD_MODIFIED.rawValue)
+	public static let WdIndexModified  	= SubmoduleStatusFlags(rawValue: GIT_SUBMODULE_STATUS_WD_INDEX_MODIFIED.rawValue)
+	public static let WdWdModified    	= SubmoduleStatusFlags(rawValue: GIT_SUBMODULE_STATUS_WD_WD_MODIFIED.rawValue)
+	public static let WdUntracked   	= SubmoduleStatusFlags(rawValue: GIT_SUBMODULE_STATUS_WD_UNTRACKED.rawValue)
+}
+
 
 /*
 UNUSED:
@@ -237,7 +283,6 @@ UNUSED:
 	git_submodule_set_ignore
 	git_submodule_repo_init
 	git_submodule_set_update
-	git_submodule_status
 	git_submodule_update_strategy
 	git_submodule_owner -- NEVER USE THIS SHIT. It's killing pointer too fast for you, buddy
 */

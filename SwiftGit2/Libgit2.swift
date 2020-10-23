@@ -21,7 +21,7 @@ extension git_strarray {
 	}
 }
 
-func _result<T>(_ value: T, pointOfFailure: String, block: () -> Int32) -> Result<T, NSError> {
+public func _result<T>(_ value: T, pointOfFailure: String, block: () -> Int32) -> Result<T, NSError> {
 	let result = block()
 	if result == GIT_OK.rawValue {
 		return .success(value)

@@ -49,32 +49,7 @@ extension Repository {
 			names.map { try! self.submoduleLookup(named: $0).get() }
 		}
 	}
-	
-	//TEST CODE
-	public func getSubmodulesRepos() -> Result<[Repository], NSError> {
-		var submodulePairs = SubmoduleCallbacks()
-		
-		let submodRelativePaths = _result( { submodulePairs.submodulesNames }, pointOfFailure: "git_submodule_foreach") {
-			git_submodule_foreach( self.pointer, submodulePairs.submodule_cb, &submodulePairs )
-		}
-		.map { names in
-			names.map { try! self.submoduleLookup(named: $0).get() }
-		}
-		.map { submodules in submodules.map { $0.path } }
-		
-		return self.directoryURL
-			.combine(with: submodRelativePaths)
-			.flatMap { directory, submodRelPaths in
-				print("NEXT")
-				print (submodRelPaths)
-				
-				return submodRelPaths
-					.map{ URL(fileURLWithPath: "\(directory.path)/\($0)", isDirectory: true) }
-					.map{ Repository.at(url: $0) }
-					.aggregateResult()
-			}
-	}
-	
+
 	public func submoduleLookup( named name: String ) -> Result<Submodule, NSError> {
 		var subModPointer: OpaquePointer? = nil
 
@@ -115,8 +90,8 @@ extension Repository {
 		}
 	}
 }
-
 class SubmoduleCallbacks {
+	
 	var submodulesNames = [String]()
 	
 	let submodule_cb : git_submodule_cb = { _, name, payload in
