@@ -593,7 +593,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 0720;
-				LastUpgradeCheck = 1010;
+				LastUpgradeCheck = 1220;
 				ORGANIZATIONNAME = "GitHub, Inc";
 				TargetAttributes = {
 					621E66611C72958800A0F352 = {
