@@ -9,11 +9,11 @@
 import Clibgit2
 import Foundation
 
-public class Diff {
-	let pointer: OpaquePointer
+public class Diff : InstanceProtocol {
+	public let pointer: OpaquePointer
 
 	/// Create an instance with a libgit2 `git_diff`.
-	public init(_ pointer: OpaquePointer) {
+	required public init(_ pointer: OpaquePointer) {
 		self.pointer = pointer
 	}
 	

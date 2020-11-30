@@ -9,29 +9,7 @@
 import Foundation
 import Clibgit2
 
-public extension RepositoryOLD {
-	func diffTreeToTree(oldTree: Tree_Old, newTree: Tree_Old, options: DiffOptions? = nil) -> Result<Diff, NSError> {
-		var diff: OpaquePointer? = nil
-		let result = git_diff_tree_to_tree(&diff, self.pointer, oldTree.pointer, newTree.pointer, options?.pointer)
-		
-		guard result == GIT_OK.rawValue else {
-			return Result.failure(NSError(gitError: result, pointOfFailure: "git_diff_tree_to_tree"))
-		}
-		
-		return .success(Diff(diff!))
-	}
-	
-	func diffTreeToIndex(tree: Tree_Old, options: DiffOptions? = nil) -> Result<Diff, NSError> {
-		var diff: OpaquePointer? = nil
-		let result = git_diff_tree_to_index(&diff, self.pointer, tree.pointer, nil /*index*/, options?.pointer)
-		
-		guard result == GIT_OK.rawValue else {
-			return Result.failure(NSError(gitError: result, pointOfFailure: "git_diff_tree_to_index"))
-		}
-		
-		return .success(Diff(diff!))
-	}
-	
+public extension Repository {	
 	func diffIndexToWorkDir(options: DiffOptions? = nil) -> Result<Diff, NSError> {
 		var diff: OpaquePointer? = nil
 		let result = git_diff_index_to_workdir(&diff, self.pointer, nil /* git_index */, options?.pointer)
@@ -65,26 +43,26 @@ public extension RepositoryOLD {
 		return .success(Diff(diff!))
 	}
 	
-	func hunksFrom(delta: Diff.Delta, options: DiffOptions? = nil) -> Result<[Diff.Hunk], NSError> {
-		let old = delta.oldFile != nil ? (try? blob(oid: delta.oldFile!.oid).get()) : nil
-		let new = delta.newFile != nil ? (try? blob(oid: delta.newFile!.oid).get()) : nil
-		
-		return hunksBetweenBlobs(old: old, new: new, options: options)
-	}
-	
-	func patchFrom(delta: Diff.Delta, options: DiffOptions? = nil, reverse: Bool = false) -> Result<Patch, NSError> {
-		
-		var oldFile = delta.oldFile
-		var newFile = delta.newFile
-		
-		loadBlobFor(file: &oldFile)
-		loadBlobFor(file: &newFile)
-		
-		if reverse {
-			return Patch.fromFiles(old: newFile, new: oldFile)
-		}
-		return Patch.fromFiles(old: oldFile, new: newFile)
-	}
+//	func hunksFrom(delta: Diff.Delta, options: DiffOptions? = nil) -> Result<[Diff.Hunk], NSError> {
+//		let old = delta.oldFile != nil ? (try? blob(oid: delta.oldFile!.oid).get()) : nil
+//		let new = delta.newFile != nil ? (try? blob(oid: delta.newFile!.oid).get()) : nil
+//
+//		return hunksBetweenBlobs(old: old, new: new, options: options)
+//	}
+//
+//	func patchFrom(delta: Diff.Delta, options: DiffOptions? = nil, reverse: Bool = false) -> Result<Patch, NSError> {
+//
+//		var oldFile = delta.oldFile
+//		var newFile = delta.newFile
+//
+//		loadBlobFor(file: &oldFile)
+//		loadBlobFor(file: &newFile)
+//
+//		if reverse {
+//			return Patch.fromFiles(old: newFile, new: oldFile)
+//		}
+//		return Patch.fromFiles(old: oldFile, new: newFile)
+//	}
 }
 
 private extension RepositoryOLD {
