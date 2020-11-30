@@ -522,17 +522,25 @@
 			isa = PBXGroup;
 			children = (
 				1DCEA350253FF1350012BF38 /* Ext */,
-				E6D4A91724DEA8EC00E8041E /* Instance.swift */,
-				E6D4A92624DF43F500E8041E /* Object */,
-				E6D4A92524DF43DB00E8041E /* Reference */,
-				1DB0F84F24EFFD7B00637B9B /* Repository */,
+				E69D5D102573B21400AEBA28 /* Instance */,
 				AA89482E23F1671A0074288B /* Buffer.swift */,
 				1D496A4125372FA800789177 /* StrArray.swift */,
-				E6D4A92324DF40CA00E8041E /* Index.swift */,
 				1D991AE02518FA7900335255 /* Duo.swift */,
 				1D0AFF632534AC440045D68D /* Status.swift */,
 			);
 			path = Experimental;
+			sourceTree = "<group>";
+		};
+		E69D5D102573B21400AEBA28 /* Instance */ = {
+			isa = PBXGroup;
+			children = (
+				E6D4A91724DEA8EC00E8041E /* Instance.swift */,
+				E6D4A92624DF43F500E8041E /* Object */,
+				E6D4A92524DF43DB00E8041E /* Reference */,
+				1DB0F84F24EFFD7B00637B9B /* Repository */,
+				E6D4A92324DF40CA00E8041E /* Index.swift */,
+			);
+			path = Instance;
 			sourceTree = "<group>";
 		};
 		E6D4A92524DF43DB00E8041E /* Reference */ = {
