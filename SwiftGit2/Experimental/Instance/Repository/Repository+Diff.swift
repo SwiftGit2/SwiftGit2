@@ -40,19 +40,4 @@ public extension Repository {
 	}
 }
 
-public extension Repository {
-	func hunksBetweenBlobs(old: Blob?, new: Blob?, options: DiffOptions?) -> Result<[Diff.Hunk],NSError>{
-		var cb = DiffEachCallbacks()
-		
-		return _result( { cb.deltas.first?.hunks ?? [] }, pointOfFailure: "git_diff_blobs") {
-			git_diff_blobs(old?.pointer, nil, new?.pointer, nil, options?.pointer, cb.each_file_cb, nil, cb.each_hunk_cb, cb.each_line_cb, &cb)
-		}
-	}
-	
-	func loadBlobFor(file: inout Diff.File?) {
-		if let oid = file?.oid {
-			file?.blob = try? blob(oid: oid).get()
-		}
-	}
-	
-}
+
