@@ -61,10 +61,11 @@ function build_all_archs ()
 
     for ARCH in ${ARCHS}
     do
-        PLATFORM="macos"
+        PLATFORM="macosx"
+        SDKVERSION=$(macos_sdk_version)
 
         SDKNAME="${PLATFORM}${SDKVERSION}"
-        SDKROOT="$(ios_sdk_path ${SDKNAME})"
+        SDKROOT="$(sdk_path ${SDKNAME})"
 
         echo "Building ${LIBRARY_NAME} for ${SDKNAME} ${ARCH}"
         echo "Please stand by..."

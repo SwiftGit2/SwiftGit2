@@ -46,7 +46,7 @@ function macos_sdk_version ()
 }
 
 # Returns the path to the specified iOS SDK name
-function ios_sdk_path ()
+function sdk_path ()
 {
     /usr/bin/xcodebuild -version -sdk 2> /dev/null | grep -i $1 | grep 'Path:' | awk '{ print $2 }'
 }
