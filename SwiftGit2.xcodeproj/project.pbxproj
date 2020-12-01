@@ -1021,12 +1021,13 @@
 				);
 				INFOPLIST_FILE = SwiftGit2/Info.plist;
 				LIBRARY_SEARCH_PATHS = (
-					External,
+					"External/libgit2-mac",
+					External/,
 					"$(inherited)",
 				);
 				OTHER_LDFLAGS = (
 					"-force_load",
-					"External/libgit2-mac.a",
+					"External/libgit2-mac/libgit2-mac.a",
 					/usr/local/lib/libssh2.a,
 					"-lgit2-mac",
 					"-lcrypto",
@@ -1049,12 +1050,13 @@
 				);
 				INFOPLIST_FILE = SwiftGit2/Info.plist;
 				LIBRARY_SEARCH_PATHS = (
-					External,
+					"External/libgit2-mac",
+					External/,
 					"$(inherited)",
 				);
 				OTHER_LDFLAGS = (
 					"-force_load",
-					"External/libgit2-mac.a",
+					"External/libgit2-mac/libgit2-mac.a",
 					/usr/local/lib/libssh2.a,
 					"-lgit2-mac",
 					"-lcrypto",
