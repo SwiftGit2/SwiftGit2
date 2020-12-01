@@ -14,6 +14,11 @@ function xcode_major_version ()
     xcode_version | awk -F '.' '{ print $1 }'
 }
 
+function xcode_minor_version ()
+{
+    xcode_version | awk -F '.' '{ print $2 }'
+}
+
 # Returns the latest iOS SDK version available via xcodebuild.
 function ios_sdk_version ()
 {
@@ -26,7 +31,7 @@ function ios_sdk_version ()
     #   iPhoneSimulator9.0.sdk - Simulator - iOS 9.0 (iphonesimulator9.0)
     #   SDKVersion: 9.0
 
-    /usr/bin/xcodebuild -version -sdk 2> /dev/null | grep -A 1 '^iPhone' | tail -n 1 |  awk '{ print $2 }' 
+    /usr/bin/xcodebuild -version -sdk 2> /dev/null | grep -A 1 '^iPhone' | tail -n 1 |  awk '{ print $2 }'
 }
 
 # Returns the path to the specified iOS SDK name
