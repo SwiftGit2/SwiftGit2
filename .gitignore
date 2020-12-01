@@ -23,6 +23,7 @@ DerivedData
 *.idea*
 
 External/libgit2*.a
+External/libgit2-mac
 External/ios-openssl
 External/libgit2-ios
 External/libssh2-ios
