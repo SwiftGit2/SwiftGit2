@@ -1037,6 +1037,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "org.libgit2.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = SwiftGit2;
 				SWIFT_INCLUDE_PATHS = "$(SRCROOT)/libgit2";
+				VALID_ARCHS = "arm64 arm64e i386 x86_64\n";
 			};
 			name = Debug;
 		};
@@ -1066,6 +1067,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "org.libgit2.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = SwiftGit2;
 				SWIFT_INCLUDE_PATHS = "$(SRCROOT)/libgit2";
+				VALID_ARCHS = "arm64 arm64e i386 x86_64\n";
 			};
 			name = Release;
 		};
