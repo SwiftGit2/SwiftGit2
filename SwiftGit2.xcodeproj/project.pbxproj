@@ -928,6 +928,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = BEB31F511A0D75EE00F525B9 /* iOS-StaticLibrary.xcconfig */;
 			buildSettings = {
+				GCC_TREAT_WARNINGS_AS_ERRORS = NO;
 				PRODUCT_NAME = git2;
 			};
 			name = Debug;
@@ -936,6 +937,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = BEB31F511A0D75EE00F525B9 /* iOS-StaticLibrary.xcconfig */;
 			buildSettings = {
+				GCC_TREAT_WARNINGS_AS_ERRORS = NO;
 				PRODUCT_NAME = git2;
 			};
 			name = Release;
@@ -1083,6 +1085,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = BEB31F571A0D75EE00F525B9 /* macOS-StaticLibrary.xcconfig */;
 			buildSettings = {
+				GCC_TREAT_WARNINGS_AS_ERRORS = NO;
 				PRODUCT_NAME = git2;
 			};
 			name = Debug;
@@ -1091,6 +1094,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = BEB31F571A0D75EE00F525B9 /* macOS-StaticLibrary.xcconfig */;
 			buildSettings = {
+				GCC_TREAT_WARNINGS_AS_ERRORS = NO;
 				PRODUCT_NAME = git2;
 			};
 			name = Release;
