@@ -1025,10 +1025,10 @@
 					"$(inherited)",
 				);
 				OTHER_LDFLAGS = (
-					"-lgit2",
 					"-force_load",
-					External/libgit2.a,
+					"External/libgit2-mac.a",
 					/usr/local/lib/libssh2.a,
+					"-lgit2-mac",
 					"-lcrypto",
 					"-lssl",
 					"-lcurl",
@@ -1053,10 +1053,10 @@
 					"$(inherited)",
 				);
 				OTHER_LDFLAGS = (
-					"-lgit2",
 					"-force_load",
-					External/libgit2.a,
+					"External/libgit2-mac.a",
 					/usr/local/lib/libssh2.a,
+					"-lgit2-mac",
 					"-lcrypto",
 					"-lssl",
 					"-lcurl",
