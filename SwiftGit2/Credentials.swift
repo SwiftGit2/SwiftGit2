@@ -22,8 +22,18 @@ public enum Credentials {
 	case plaintext(username: String, password: String)
 	case sshMemory(username: String, publicKey: String, privateKey: String, passphrase: String)
 
+	private static var previouslyUsedPointer: String? = nil
 	internal static func fromPointer(_ pointer: UnsafeMutableRawPointer) -> Credentials {
-		return Unmanaged<Wrapper<Credentials>>.fromOpaque(UnsafeRawPointer(pointer)).takeRetainedValue().value
+		// check if we had just seen this pointer
+		if pointer.debugDescription == previouslyUsedPointer {
+			// we have already used this pointer, so it is likely that libgit2 has already freed the memory and using Unmanaged<>.fromOpaque will result in a BAD_ACCESS crash
+			return nil
+		} else {
+			// mark that we have used this pointer so that later attempts to use it in this function will be blocked
+			previouslyUsedPointer = pointer.debugDescription
+			// access the pointer and convert it into a Credentials Swift object
+			return Unmanaged<Wrapper<Credentials>>.fromOpaque(UnsafeRawPointer(pointer)).takeRetainedValue().value
+		}
 	}
 
 	internal func toPointer() -> UnsafeMutableRawPointer {
@@ -46,7 +56,7 @@ internal func credentialsCallback(
 	// Find username_from_url
 	let name = username.map(String.init(cString:))
 
-	switch Credentials.fromPointer(payload!) {
+	switch Credentials.fromPointer(payload!) ?? .default {
 	case .default:
 		result = git_cred_default_new(cred)
 	case .sshAgent:
