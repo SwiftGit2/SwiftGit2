@@ -13,8 +13,8 @@ public protocol PointerType: Hashable {
 	/// The OID of the referenced object.
 	var oid: OID { get }
 
-	/// The libgit2 `git_otype` of the referenced object.
-	var type: git_otype { get }
+	/// The libgit2 `git_object_t` of the referenced object.
+	var type: git_object_t { get }
 }
 
 public extension PointerType {
@@ -48,29 +48,29 @@ public enum Pointer: PointerType {
 		}
 	}
 
-	public var type: git_otype {
+	public var type: git_object_t {
 		switch self {
 		case .commit:
-			return GIT_OBJ_COMMIT
+			return GIT_OBJECT_COMMIT
 		case .tree:
-			return GIT_OBJ_TREE
+			return GIT_OBJECT_TREE
 		case .blob:
-			return GIT_OBJ_BLOB
+			return GIT_OBJECT_BLOB
 		case .tag:
-			return GIT_OBJ_TAG
+			return GIT_OBJECT_TAG
 		}
 	}
 
-	/// Create an instance with an OID and a libgit2 `git_otype`.
-	init?(oid: OID, type: git_otype) {
+	/// Create an instance with an OID and a libgit2 `git_object_t`.
+	init?(oid: OID, type: git_object_t) {
 		switch type {
-		case GIT_OBJ_COMMIT:
+		case GIT_OBJECT_COMMIT:
 			self = .commit(oid)
-		case GIT_OBJ_TREE:
+		case GIT_OBJECT_TREE:
 			self = .tree(oid)
-		case GIT_OBJ_BLOB:
+		case GIT_OBJECT_BLOB:
 			self = .blob(oid)
-		case GIT_OBJ_TAG:
+		case GIT_OBJECT_TAG:
 			self = .tag(oid)
 		default:
 			return nil
@@ -96,7 +96,7 @@ extension Pointer: CustomStringConvertible {
 public struct PointerTo<T: ObjectType>: PointerType {
 	public let oid: OID
 
-	public var type: git_otype {
+	public var type: git_object_t {
 		return T.type
 	}
 

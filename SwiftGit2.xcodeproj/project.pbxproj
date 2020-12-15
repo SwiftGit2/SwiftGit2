@@ -593,7 +593,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 0720;
-				LastUpgradeCheck = 1010;
+				LastUpgradeCheck = 1220;
 				ORGANIZATIONNAME = "GitHub, Inc";
 				TargetAttributes = {
 					621E66611C72958800A0F352 = {
@@ -928,6 +928,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = BEB31F511A0D75EE00F525B9 /* iOS-StaticLibrary.xcconfig */;
 			buildSettings = {
+				GCC_TREAT_WARNINGS_AS_ERRORS = NO;
 				PRODUCT_NAME = git2;
 			};
 			name = Debug;
@@ -936,6 +937,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = BEB31F511A0D75EE00F525B9 /* iOS-StaticLibrary.xcconfig */;
 			buildSettings = {
+				GCC_TREAT_WARNINGS_AS_ERRORS = NO;
 				PRODUCT_NAME = git2;
 			};
 			name = Release;
@@ -976,6 +978,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = BEB31F451A0D75EE00F525B9 /* Debug.xcconfig */;
 			buildSettings = {
+				GCC_TREAT_WARNINGS_AS_ERRORS = NO;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				INSTALL_GROUP = "";
 				INSTALL_MODE_FLAG = "";
@@ -991,6 +994,7 @@
 			baseConfigurationReference = BEB31F471A0D75EE00F525B9 /* Release.xcconfig */;
 			buildSettings = {
 				ENABLE_NS_ASSERTIONS = NO;
+				GCC_TREAT_WARNINGS_AS_ERRORS = NO;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				INSTALL_GROUP = "";
 				INSTALL_MODE_FLAG = "";
@@ -1083,6 +1087,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = BEB31F571A0D75EE00F525B9 /* macOS-StaticLibrary.xcconfig */;
 			buildSettings = {
+				GCC_TREAT_WARNINGS_AS_ERRORS = NO;
 				PRODUCT_NAME = git2;
 			};
 			name = Debug;
@@ -1091,6 +1096,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = BEB31F571A0D75EE00F525B9 /* macOS-StaticLibrary.xcconfig */;
 			buildSettings = {
+				GCC_TREAT_WARNINGS_AS_ERRORS = NO;
 				PRODUCT_NAME = git2;
 			};
 			name = Release;

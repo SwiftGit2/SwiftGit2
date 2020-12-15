@@ -206,7 +206,7 @@ public final class Repository {
 	///
 	/// Returns the result of calling `transform` or an error if the object
 	/// cannot be loaded.
-	private func withGitObject<T>(_ oid: OID, type: git_otype,
+	private func withGitObject<T>(_ oid: OID, type: git_object_t,
 	                              transform: (OpaquePointer) -> Result<T, NSError>) -> Result<T, NSError> {
 		var pointer: OpaquePointer? = nil
 		var oid = oid.oid
@@ -221,11 +221,11 @@ public final class Repository {
 		return value
 	}
 
-	private func withGitObject<T>(_ oid: OID, type: git_otype, transform: (OpaquePointer) -> T) -> Result<T, NSError> {
+	private func withGitObject<T>(_ oid: OID, type: git_object_t, transform: (OpaquePointer) -> T) -> Result<T, NSError> {
 		return withGitObject(oid, type: type) { Result.success(transform($0)) }
 	}
 
-	private func withGitObjects<T>(_ oids: [OID], type: git_otype, transform: ([OpaquePointer]) -> Result<T, NSError>) -> Result<T, NSError> {
+	private func withGitObjects<T>(_ oids: [OID], type: git_object_t, transform: ([OpaquePointer]) -> Result<T, NSError>) -> Result<T, NSError> {
 		var pointers = [OpaquePointer]()
 		defer {
 			for pointer in pointers {
@@ -254,7 +254,7 @@ public final class Repository {
 	///
 	/// Returns a `Blob`, `Commit`, `Tag`, or `Tree` if one exists, or an error.
 	public func object(_ oid: OID) -> Result<ObjectType, NSError> {
-		return withGitObject(oid, type: GIT_OBJ_ANY) { object in
+		return withGitObject(oid, type: GIT_OBJECT_ANY) { object in
 			let type = git_object_type(object)
 			if type == Blob.type {
 				return Result.success(Blob(object))
@@ -270,7 +270,7 @@ public final class Repository {
 				domain: "org.libgit2.SwiftGit2",
 				code: 1,
 				userInfo: [
-					NSLocalizedDescriptionKey: "Unrecognized git_otype '\(type)' for oid '\(oid)'.",
+					NSLocalizedDescriptionKey: "Unrecognized git_object_t '\(type)' for oid '\(oid)'.",
 				]
 			)
 			return Result.failure(error)
@@ -283,7 +283,7 @@ public final class Repository {
 	///
 	/// Returns the blob if it exists, or an error.
 	public func blob(_ oid: OID) -> Result<Blob, NSError> {
-		return withGitObject(oid, type: GIT_OBJ_BLOB) { Blob($0) }
+		return withGitObject(oid, type: GIT_OBJECT_BLOB) { Blob($0) }
 	}
 
 	/// Loads the commit with the given OID.
@@ -292,7 +292,7 @@ public final class Repository {
 	///
 	/// Returns the commit if it exists, or an error.
 	public func commit(_ oid: OID) -> Result<Commit, NSError> {
-		return withGitObject(oid, type: GIT_OBJ_COMMIT) { Commit($0) }
+		return withGitObject(oid, type: GIT_OBJECT_COMMIT) { Commit($0) }
 	}
 
 	/// Loads the tag with the given OID.
@@ -301,7 +301,7 @@ public final class Repository {
 	///
 	/// Returns the tag if it exists, or an error.
 	public func tag(_ oid: OID) -> Result<Tag, NSError> {
-		return withGitObject(oid, type: GIT_OBJ_TAG) { Tag($0) }
+		return withGitObject(oid, type: GIT_OBJECT_TAG) { Tag($0) }
 	}
 
 	/// Loads the tree with the given OID.
@@ -310,7 +310,7 @@ public final class Repository {
 	///
 	/// Returns the tree if it exists, or an error.
 	public func tree(_ oid: OID) -> Result<Tree, NSError> {
-		return withGitObject(oid, type: GIT_OBJ_TREE) { Tree($0) }
+		return withGitObject(oid, type: GIT_OBJECT_TREE) { Tree($0) }
 	}
 
 	/// Loads the referenced object from the pointer.
@@ -796,7 +796,7 @@ public final class Repository {
 		}
 
 		if oldTree != nil && newTree != nil {
-			return withGitObjects([oldTree!.oid, newTree!.oid], type: GIT_OBJ_TREE) { objects in
+			return withGitObjects([oldTree!.oid, newTree!.oid], type: GIT_OBJECT_TREE) { objects in
 				var diff: OpaquePointer? = nil
 				let diffResult = git_diff_tree_to_tree(&diff,
 				                                       self.pointer,
@@ -806,7 +806,7 @@ public final class Repository {
 				return processTreeToTreeDiff(diffResult, diff: diff)
 			}
 		} else if let tree = oldTree {
-			return withGitObject(tree.oid, type: GIT_OBJ_TREE, transform: { tree in
+			return withGitObject(tree.oid, type: GIT_OBJECT_TREE, transform: { tree in
 				var diff: OpaquePointer? = nil
 				let diffResult = git_diff_tree_to_tree(&diff,
 				                                       self.pointer,
@@ -816,7 +816,7 @@ public final class Repository {
 				return processTreeToTreeDiff(diffResult, diff: diff)
 			})
 		} else if let tree = newTree {
-			return withGitObject(tree.oid, type: GIT_OBJ_TREE, transform: { tree in
+			return withGitObject(tree.oid, type: GIT_OBJECT_TREE, transform: { tree in
 				var diff: OpaquePointer? = nil
 				let diffResult = git_diff_tree_to_tree(&diff,
 				                                       self.pointer,
@@ -858,7 +858,7 @@ public final class Repository {
 	}
 
 	private func safeTreeForCommitId(_ oid: OID) -> Result<Tree, NSError> {
-		return withGitObject(oid, type: GIT_OBJ_COMMIT) { commit in
+		return withGitObject(oid, type: GIT_OBJECT_COMMIT) { commit in
 			let treeId = git_commit_tree_id(commit)
 			return tree(OID(treeId!.pointee))
 		}
@@ -868,14 +868,14 @@ public final class Repository {
 	private func unsafeTreeForCommitId(_ oid: OID) -> Result<OpaquePointer, NSError> {
 		var commit: OpaquePointer? = nil
 		var oid = oid.oid
-		let commitResult = git_object_lookup(&commit, self.pointer, &oid, GIT_OBJ_COMMIT)
+		let commitResult = git_object_lookup(&commit, self.pointer, &oid, GIT_OBJECT_COMMIT)
 		guard commitResult == GIT_OK.rawValue else {
 			return .failure(NSError(gitError: commitResult, pointOfFailure: "git_object_lookup"))
 		}
 
 		var tree: OpaquePointer? = nil
 		let treeId = git_commit_tree_id(commit)
-		let treeResult = git_object_lookup(&tree, self.pointer, treeId, GIT_OBJ_TREE)
+		let treeResult = git_object_lookup(&tree, self.pointer, treeId, GIT_OBJECT_TREE)
 
 		git_object_free(commit)
 

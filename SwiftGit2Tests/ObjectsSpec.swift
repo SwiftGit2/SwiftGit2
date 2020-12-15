@@ -17,7 +17,7 @@ private extension Repository {
 		var oid = oid.oid
 
 		var pointer: OpaquePointer? = nil
-		git_object_lookup(&pointer, repository, &oid, GIT_OBJ_ANY)
+		git_object_lookup(&pointer, repository, &oid, GIT_OBJECT_ANY)
 		let result = transform(pointer!)
 		git_object_free(pointer)
 
