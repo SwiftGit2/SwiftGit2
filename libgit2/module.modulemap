@@ -28,4 +28,8 @@ module Clibgit2 {
 		export *
 		module * { export * }
 	}
+
+	link "curl"
+	link "iconv"
+	link "z"
 }
