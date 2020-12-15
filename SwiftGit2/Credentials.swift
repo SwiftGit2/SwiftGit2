@@ -26,12 +26,17 @@ public enum Credentials {
 	internal static func fromPointer(_ pointer: UnsafeMutableRawPointer) -> Credentials {
 		// check if we had just seen this pointer
 		if pointer.debugDescription == previouslyUsedPointer {
-			// we have already used this pointer, so it is likely that libgit2 has already freed the memory and using Unmanaged<>.fromOpaque will result in a BAD_ACCESS crash
+			// we have already used this pointer, so it is likely that libgit2
+			// has already freed the memory and using Unmanaged<>.fromOpaque will
+			// result in a BAD_ACCESS crash
 			return nil
 		} else {
-			// mark that we have used this pointer so that later attempts to use it in this function will be blocked
+			// mark that we have used this pointer so that
+			// later attempts to use it in this function will
+			// be blocked
 			previouslyUsedPointer = pointer.debugDescription
-			// access the pointer and convert it into a Credentials Swift object
+			// access the pointer and convert it into a
+			// Credentials Swift object
 			return Unmanaged<Wrapper<Credentials>>.fromOpaque(UnsafeRawPointer(pointer)).takeRetainedValue().value
 		}
 	}
