@@ -85,8 +85,8 @@ public extension Remote {
 	public func fetch(options: FetchOptions) -> Result<(), NSError> {
 		var opts = options.fetch_options
 		
-		let resultInit = git_fetch_init_options(&opts, UInt32(GIT_FETCH_OPTIONS_VERSION))
-		assert(resultInit == GIT_OK.rawValue)
+		//let resultInit = git_fetch_init_options(&opts, UInt32(GIT_FETCH_OPTIONS_VERSION))
+		//assert(resultInit == GIT_OK.rawValue)
 		
 		return _result((), pointOfFailure: "git_remote_fetch") {
 			git_remote_fetch(pointer, nil, &opts, nil)
@@ -105,8 +105,10 @@ public class FetchOptions {
 		
 		let result = git_fetch_options_init(&fetch_options, UInt32(GIT_FETCH_OPTIONS_VERSION))
 		assert(result == GIT_OK.rawValue)
-
+		
 		fetch_options.callbacks.payload = self.credentials.toPointer()
 		fetch_options.callbacks.credentials = credentialsCallback
+
+		
 	}
 }
