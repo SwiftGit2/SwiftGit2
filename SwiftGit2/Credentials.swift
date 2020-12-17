@@ -23,7 +23,7 @@ public enum Credentials {
 	case sshMemory(username: String, publicKey: String, privateKey: String, passphrase: String)
 
 	private static var previouslyUsedPointer: String? = nil
-	internal static func fromPointer(_ pointer: UnsafeMutableRawPointer) -> Credentials {
+	internal static func fromPointer(_ pointer: UnsafeMutableRawPointer) -> Credentials? {
 		// check if we had just seen this pointer
 		if pointer.debugDescription == previouslyUsedPointer {
 			// we have already used this pointer, so it is likely that libgit2
