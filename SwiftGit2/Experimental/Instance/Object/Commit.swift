@@ -26,35 +26,23 @@ public class Commit : Object {
 }
 
 public extension Commit {
-	func getParentCount() ->  Result<Int, NSError> {
-		var parentCount: Int32 = 0
+	func parents() -> Result<[Commit], NSError> {
+		var result: [Commit] = []
+		let parentsCount = git_commit_parentcount(self.pointer)
 		
-		return  _result( { Int(parentCount) } , pointOfFailure: "git_commit_parentcount" ) {
-			parentCount = Int32( git_commit_parentcount(self.pointer) )
-			return parentCount
-		}
-	}
-	
-	func getParentCommit(index: Int) -> Result<Commit, NSError> {
-		var parentCommitPointer: OpaquePointer? = nil
-		defer {
-			git_reference_free(parentCommitPointer)
-		}
 		
-		return  _result({ Commit(parentCommitPointer!) }, pointOfFailure: "git_commit_parent" ) {
-			git_commit_parent(&parentCommitPointer, self.pointer, UInt32(index))
-		}
-	}
-	
-	func getAllParents() -> Result<[Commit], NSError> {
-		getParentCount()
-			.flatMap { parentCount in
-				if parentCount == 0 { return .success([]) }
-					
-				return (0...parentCount)
-					.map{ idx in self.getParentCommit(index: idx) }
-					.aggregateResult()
+		for i in 0..<parentsCount {
+			var commit: OpaquePointer? = nil
+			let gitResult = git_commit_parent(&commit, self.pointer, i )
+			
+			if gitResult == GIT_OK.rawValue {
+				result.append(Commit(commit!))
+			} else {
+				return Result.failure(NSError(gitError: gitResult, pointOfFailure: "git_commit_parent"))
 			}
+		}
+		
+		return .success(result)
 	}
 	
 	func getTree() -> Result<Tree, NSError> {
