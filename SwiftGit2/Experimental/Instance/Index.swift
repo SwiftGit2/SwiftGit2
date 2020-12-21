@@ -89,10 +89,10 @@ public extension Duo where T1 == Index, T2 == Repository {
 		return index.getTreeOID()
 			.flatMap { treeOID in
 				
-				return repo.headParentCommit()
-				// If parrent commit exist
-				.flatMap{ parentCommit in
-					repo.commit(tree: OID(treeOID), parents: [parentCommit], message: message, signature: signature)
+				return repo.headCommit()
+				// If commit exist
+				.flatMap{ commit in
+					repo.commit(tree: OID(treeOID), parents: [commit], message: message, signature: signature)
 				}
 				// if there are no parents: initial commit
 				.flatMapError { _ in

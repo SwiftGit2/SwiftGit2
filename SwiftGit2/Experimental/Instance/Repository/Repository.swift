@@ -68,14 +68,14 @@ extension Repository {
 }
 
 extension Repository {
-	public func headParentCommit() -> Result<Commit, NSError> {
-		var parentID = git_oid() //out
+	public func headCommit() -> Result<Commit, NSError> {
+		var oid = git_oid() //out
 		
 		return _result((), pointOfFailure: "git_reference_name_to_id") {
-			git_reference_name_to_id(&parentID, self.pointer, "HEAD")
+			git_reference_name_to_id(&oid, self.pointer, "HEAD")
 		}
 		.flatMap { _ in
-			self.instanciate(OID(parentID)) as Result<Commit, NSError>
+			self.instanciate(OID(oid)) as Result<Commit, NSError>
 		}
 	}
 	
