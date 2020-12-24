@@ -19,7 +19,7 @@ extension Diff {
 	}
 }
 
-public extension Diff {
+public extension Diff{
 	struct Delta {
 		public static let type = GIT_OBJECT_REF_DELTA
 
@@ -37,6 +37,18 @@ public extension Diff {
 			self.oldFile = File(delta.old_file)
 			self.newFile = File(delta.new_file)
 		}
+	}
+}
+
+extension Diff.Delta: Identifiable {
+	public var id: String {
+		var finalId: String = ""
+		
+		if let newPath = self.newFile?.path { finalId += newPath }
+		
+		if let oldPath = self.oldFile?.path { finalId += oldPath }
+		
+		return finalId
 	}
 }
 

@@ -20,6 +20,10 @@ extension StatusEntry: Identifiable {
 		
 		if let oldPath = self.indexToWorkDir?.oldFile?.path { finalId += oldPath }
 		
+		if let newPath = self.headToIndex?.newFile?.path { finalId += newPath }
+		
+		if let oldPath = self.headToIndex?.oldFile?.path { finalId += oldPath }
+		
 		return finalId
 	}
 }
