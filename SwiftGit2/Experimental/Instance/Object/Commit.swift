@@ -19,10 +19,17 @@ public class Commit : Object {
 		git_commit_free(pointer)
 	}
 	
-	///Commit Subject
-	public var message 	: String 	{ String(validatingUTF8: git_commit_message(pointer)) ?? "" }
-	///Commit DetailedDescription
+	///Subject
 	public var summary  : String 	{ String(validatingUTF8: git_commit_summary(pointer)) ?? "" }
+	///Description
+	public var body     : String	{
+		if let commitBody = git_commit_body(pointer) {
+			return String(validatingUTF8: commitBody ) ?? ""
+		}
+		return ""
+	}
+	///Description + \n\n + Subject
+	//public var message 	: String 	{ String(validatingUTF8: git_commit_message(pointer)) ?? "" }
 	
 	public var author 	: Signature { Signature(git_commit_author(pointer).pointee) }
 	public var commiter	: Signature { Signature(git_commit_committer(pointer).pointee) }
