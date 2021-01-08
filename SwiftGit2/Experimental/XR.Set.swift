@@ -22,12 +22,16 @@ public struct XR {
 			self.objects = _objects
 		}
 		
+		private init(objects: [Int:Any]) {
+			self.objects = objects
+		}
+		
 		public func with<ObjectType>(_ obj : ObjectType) -> Self {
 			let hash = ObjectIdentifier(ObjectType.self).hashValue
 			var _objects = objects
 			_objects[hash] = obj
 			
-			return Set(with: _objects)
+			return Set(objects: _objects)
 		}
 		
 		public func with<ObjectType>(_ id: String, _ obj : ObjectType) -> Self {
@@ -35,7 +39,7 @@ public struct XR {
 			var _objects = objects
 			_objects[hash] = obj
 			
-			return Set(with: _objects)
+			return Set(objects: _objects)
 		}
 		
 		public func with<ObjectType>(_ obj : Result<ObjectType, NSError>) -> Result<Self, NSError> {
@@ -49,7 +53,6 @@ public struct XR {
 		public subscript<ObjectType>(_ : ObjectType.Type) -> ObjectType {
 			get {
 				let hash = ObjectIdentifier(ObjectType.self).hashValue
-				let object = objects[hash]
 				return objects[hash] as! ObjectType
 			}
 		}
