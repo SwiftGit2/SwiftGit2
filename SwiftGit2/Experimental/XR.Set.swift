@@ -49,6 +49,7 @@ public struct XR {
 		public subscript<ObjectType>(_ : ObjectType.Type) -> ObjectType {
 			get {
 				let hash = ObjectIdentifier(ObjectType.self).hashValue
+				let object = objects[hash]
 				return objects[hash] as! ObjectType
 			}
 		}
