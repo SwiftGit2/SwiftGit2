@@ -20,7 +20,26 @@ public class Tree : InstanceProtocol {
 	}
 }
 
+//High level func's
+public extension Repository {
+	func headDiff() -> Result<[Diff], NSError> {
+		let set = XR.Set(with: self)
+		
+		// diff with all parents
+		return set.with( set[Repository.self].headCommit() )        // assigns set[Commit.self] to refer HEAD commit
+			.flatMap { $0.with( $0[Commit.self].getTree()) }        // assigns set[Tree.self] to refer Tree of HEAD commit
+			.flatMap { $0.with( $0[Commit.self]                     // assigns set[[Tree].self] to refer parent trees of HEAD commit
+									.parents()
+									.flatMap { $0.mapResult { $0.getTree() } }
+							   ) }
+			//call diffTreeToTree for each parent tree
+			.flatMap { set in set[[Tree].self].mapResult { parent in set[Repository.self].diffTreeToTree(oldTree: parent, newTree: set[Tree.self]) } }
+		// diff with first parent would be
+		//  .flatMap { $0[Repository.self].diffTreeToTree(oldTree: $0[[Tree].self][0], newTree: $0[Tree.self]) }
+	}
+}
 
+//Low level func's
 public extension Repository {
 	func diffTreeToTree(oldTree: Tree, newTree: Tree, options: DiffOptions? = nil) -> Result<Diff, NSError> {
 		var diff: OpaquePointer? = nil
