@@ -105,8 +105,6 @@ public extension Duo where T1 == Branch, T2 == Remote {
 		
 		var opts = pushOptions(credentials: credentials)
 		
-		var a = remoteRepo.URL
-				
 		return remoteRepo.push(branchName: branch.name, options: &opts )
 	}
 }
@@ -114,6 +112,18 @@ public extension Duo where T1 == Branch, T2 == Remote {
 /// Repository
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+// High Level code
+public extension Repository {
+	func push(remoteRepoName: String, localBranchName: String) -> Result<(), NSError> {
+		let set = XR.Set()
+		
+		return set.with( self.remoteRepo(named: remoteRepoName) ) //Remote
+			.flatMap{ $0.with( self.reference(name: localBranchName).flatMap{ $0.asBranch() } ) } // branch
+			.flatMap{ set in Duo((set[Branch.self], set[Remote.self] )).push() }
+	}
+}
+
+// Low Level code
 public extension Repository {
 	func branches( _ location: BranchLocation) -> Result<[Branch], NSError> {		
 		switch location {
