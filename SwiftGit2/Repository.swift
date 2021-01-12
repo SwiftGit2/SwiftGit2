@@ -486,7 +486,7 @@ public final class Repository {
 	public func tag(named name: String) -> Result<TagReference, NSError> {
 		return reference(named: "refs/tags/" + name).map { $0 as! TagReference }
 	}
-	
+
 	/// Returns the name of the upstream branch.
 	public func upstreamName(for branch: Branch) -> String? {
 		var namePointer = git_buf()
