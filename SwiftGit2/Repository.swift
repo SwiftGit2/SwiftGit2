@@ -933,34 +933,34 @@ public final class Repository {
 			self.rawValue = rawValue
 		}
 		public let rawValue: UInt32
-		
+
 		/**
 		* - GIT_STATUS_OPT_INCLUDE_UNTRACKED says that callbacks should be made
 		*   on untracked files.  These will only be made if the workdir files are
 		*   included in the status "show" option.
 		*/
-		public static let includeUntracked 				= GitStatusOpt(rawValue: GIT_STATUS_OPT_INCLUDE_UNTRACKED.rawValue)
-		
+		public static let includeUntracked = GitStatusOpt(rawValue: GIT_STATUS_OPT_INCLUDE_UNTRACKED.rawValue)
+
 		/**
 		* - GIT_STATUS_OPT_INCLUDE_IGNORED says that ignored files get callbacks.
 		*   Again, these callbacks will only be made if the workdir files are
 		*   included in the status "show" option.
 		*/
-		public static let includeIgnored				= GitStatusOpt(rawValue: GIT_STATUS_OPT_INCLUDE_IGNORED.rawValue)
-		
+		public static let includeIgnored = GitStatusOpt(rawValue: GIT_STATUS_OPT_INCLUDE_IGNORED.rawValue)
+
 		/**
 		* - GIT_STATUS_OPT_INCLUDE_UNMODIFIED indicates that callback should be
 		*   made even on unmodified files.
 		*/
-		public static let includeUnmodified 			= GitStatusOpt(rawValue: GIT_STATUS_OPT_INCLUDE_UNMODIFIED.rawValue)
-		
+		public static let includeUnmodified = GitStatusOpt(rawValue: GIT_STATUS_OPT_INCLUDE_UNMODIFIED.rawValue)
+
 		/**
 		* - GIT_STATUS_OPT_EXCLUDE_SUBMODULES indicates that submodules should be
 		*   skipped.  This only applies if there are no pending typechanges to
 		*   the submodule (either from or to another type).
 		*/
-		public static let excludeSumodules 				= GitStatusOpt(rawValue: GIT_STATUS_OPT_EXCLUDE_SUBMODULES.rawValue)
-		
+		public static let excludeSumodules = GitStatusOpt(rawValue: GIT_STATUS_OPT_EXCLUDE_SUBMODULES.rawValue)
+
 		/**
 		* - GIT_STATUS_OPT_RECURSE_UNTRACKED_DIRS indicates that all files in
 		*   untracked directories should be included.  Normally if an entire
@@ -968,62 +968,62 @@ public final class Repository {
 		*   a trailing slash on the entry name).  This flag says to include all
 		*   of the individual files in the directory instead.
 		*/
-		public static let recurseUntrackedDirs 			= GitStatusOpt(rawValue: GIT_STATUS_OPT_RECURSE_UNTRACKED_DIRS.rawValue)
-		
+		public static let recurseUntrackedDirs = GitStatusOpt(rawValue: GIT_STATUS_OPT_RECURSE_UNTRACKED_DIRS.rawValue)
+
 		/**
 		* - GIT_STATUS_OPT_DISABLE_PATHSPEC_MATCH indicates that the given path
 		*   should be treated as a literal path, and not as a pathspec pattern.
 		*/
-		public static let disablePathspecMatch 			= GitStatusOpt(rawValue: GIT_STATUS_OPT_DISABLE_PATHSPEC_MATCH.rawValue)
-		
+		public static let disablePathspecMatch = GitStatusOpt(rawValue: GIT_STATUS_OPT_DISABLE_PATHSPEC_MATCH.rawValue)
+
 		/**
 		* - GIT_STATUS_OPT_RECURSE_IGNORED_DIRS indicates that the contents of
 		*   ignored directories should be included in the status.  This is like
 		*   doing `git ls-files -o -i --exclude-standard` with core git.
 		*/
-		public static let recurseIgnoredDirs 			= GitStatusOpt(rawValue: GIT_STATUS_OPT_RECURSE_IGNORED_DIRS.rawValue)
-		
+		public static let recurseIgnoredDirs = GitStatusOpt(rawValue: GIT_STATUS_OPT_RECURSE_IGNORED_DIRS.rawValue)
+
 		/**
 		* - GIT_STATUS_OPT_RENAMES_HEAD_TO_INDEX indicates that rename detection
 		*   should be processed between the head and the index and enables
 		*   the GIT_STATUS_INDEX_RENAMED as a possible status flag.
 		*/
-		public static let renamesHeadToIndex 			= GitStatusOpt(rawValue: GIT_STATUS_OPT_RENAMES_HEAD_TO_INDEX.rawValue)
-		
+		public static let renamesHeadToIndex = GitStatusOpt(rawValue: GIT_STATUS_OPT_RENAMES_HEAD_TO_INDEX.rawValue)
+
 		/**
 		* - GIT_STATUS_OPT_RENAMES_INDEX_TO_WORKDIR indicates that rename
 		*   detection should be run between the index and the working directory
 		*   and enabled GIT_STATUS_WT_RENAMED as a possible status flag.
 		*/
-		public static let renamesIndexToWorkdir 		= GitStatusOpt(rawValue: GIT_STATUS_OPT_RENAMES_INDEX_TO_WORKDIR.rawValue)
-		
+		public static let renamesIndexToWorkdir = GitStatusOpt(rawValue: GIT_STATUS_OPT_RENAMES_INDEX_TO_WORKDIR.rawValue)
+
 		/**
 		* - GIT_STATUS_OPT_SORT_CASE_SENSITIVELY overrides the native case
 		*   sensitivity for the file system and forces the output to be in
 		*   case-sensitive order
 		*/
-		public static let sortCaseSensitively 			= GitStatusOpt(rawValue: GIT_STATUS_OPT_SORT_CASE_SENSITIVELY.rawValue)
-		
+		public static let sortCaseSensitively = GitStatusOpt(rawValue: GIT_STATUS_OPT_SORT_CASE_SENSITIVELY.rawValue)
+
 		/**
 		* - GIT_STATUS_OPT_SORT_CASE_INSENSITIVELY overrides the native case
 		*   sensitivity for the file system and forces the output to be in
 		*   case-insensitive order
 		*/
-		public static let sortCaseInsensitively 		= GitStatusOpt(rawValue: GIT_STATUS_OPT_SORT_CASE_INSENSITIVELY.rawValue)
-		
+		public static let sortCaseInsensitively = GitStatusOpt(rawValue: GIT_STATUS_OPT_SORT_CASE_INSENSITIVELY.rawValue)
+
 		/**
 		* - GIT_STATUS_OPT_RENAMES_FROM_REWRITES indicates that rename detection
 		*   should include rewritten files
 		*/
-		public static let renamesFromRewrites 			= GitStatusOpt(rawValue: GIT_STATUS_OPT_RENAMES_FROM_REWRITES.rawValue)
-		
+		public static let renamesFromRewrites = GitStatusOpt(rawValue: GIT_STATUS_OPT_RENAMES_FROM_REWRITES.rawValue)
+
 		/**
 		* - GIT_STATUS_OPT_NO_REFRESH bypasses the default status behavior of
 		*   doing a "soft" index reload (i.e. reloading the index data if the
 		*   file on disk has been modified outside libgit2).
 		*/
-		public static let noRefresh 					= GitStatusOpt(rawValue: GIT_STATUS_OPT_NO_REFRESH.rawValue)
-		
+		public static let noRefresh = GitStatusOpt(rawValue: GIT_STATUS_OPT_NO_REFRESH.rawValue)
+
 		/**
 		* - GIT_STATUS_OPT_UPDATE_INDEX tells libgit2 to refresh the stat cache
 		*   in the index for files that are unchanged but have out of date stat
@@ -1031,9 +1031,10 @@ public final class Repository {
 		*   subsequent calls to get status.  This is mutually exclusive with the
 		*   NO_REFRESH option.
 		*/
-		public static let updateIndex 					= GitStatusOpt(rawValue: GIT_STATUS_OPT_UPDATE_INDEX.rawValue)
-		public static let includeUnreadable 			= GitStatusOpt(rawValue: GIT_STATUS_OPT_INCLUDE_UNREADABLE.rawValue)
-		public static let includeUnreadableAsUntracked 	= GitStatusOpt(rawValue: GIT_STATUS_OPT_INCLUDE_UNREADABLE_AS_UNTRACKED.rawValue)
+		public static let updateIndex = GitStatusOpt(rawValue: GIT_STATUS_OPT_UPDATE_INDEX.rawValue)
+		public static let includeUnreadable = GitStatusOpt(rawValue: GIT_STATUS_OPT_INCLUDE_UNREADABLE.rawValue)
+		public static let includeUnreadableAsUntracked = GitStatusOpt(
+			rawValue: GIT_STATUS_OPT_INCLUDE_UNREADABLE_AS_UNTRACKED.rawValue)
 	}
 
 	// MARK: - Validity/Existence Check
