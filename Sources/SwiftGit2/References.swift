@@ -178,7 +178,7 @@ public enum TagReference: ReferenceType, Hashable {
 		var oid = git_reference_target(pointer).pointee
 
 		var pointer: OpaquePointer? = nil
-		let result = git_object_lookup(&pointer, repo, &oid, GIT_OBJ_TAG)
+		let result = git_object_lookup(&pointer, repo, &oid, GIT_OBJECT_TAG)
 		if result == GIT_OK.rawValue {
 			self = .annotated(name, Tag(pointer!))
 		} else {

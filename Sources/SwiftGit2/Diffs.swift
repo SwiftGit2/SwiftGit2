@@ -32,7 +32,7 @@ public struct Diff {
 	public var deltas = [Delta]()
 
 	public struct Delta {
-		public static let type = GIT_OBJ_REF_DELTA
+		public static let type = GIT_OBJECT_REF_DELTA
 
 		public var status: Status
 		public var flags: Flags
