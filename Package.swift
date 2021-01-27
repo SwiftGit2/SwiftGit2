@@ -12,7 +12,8 @@ let package = Package(
 	products: [
 		.library(
 			name: "SwiftGit2",
-			targets: ["SwiftGit2"]),
+			targets: ["SwiftGit2"]
+		),
 	],
 	dependencies: [
 		.package(url: "https://github.com/Quick/Quick", from: "2.2.0"),
@@ -22,18 +23,22 @@ let package = Package(
 	targets: [
 		.target(
 			name: "SwiftGit2",
-			dependencies: ["Clibgit2"],
-			path: "SwiftGit2",
+			dependencies: [
+				.target(name: "Clibgit2")
+			],
 			exclude: ["Info.plist"]
 		),
-		.binaryTarget(
+		.systemLibrary(
 			name: "Clibgit2",
-			path: "External/Clibgit2.xcframework"
+			pkgConfig: "git2",
+			providers: [
+				.brew(["libgit2"]),
+				.apt(["libgit2-dev"])
+			]
 		),
 		.testTarget(
 			name: "SwiftGit2Tests",
 			dependencies: ["SwiftGit2", "Quick", "Nimble", "Zip"],
-			path: "SwiftGit2Tests",
 			exclude: ["Info.plist"],
 			resources: [
 				.copy("Fixtures/repository-with-status.zip"),
