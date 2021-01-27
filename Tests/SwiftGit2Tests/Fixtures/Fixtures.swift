@@ -34,12 +34,7 @@ final class Fixtures {
 	func setUp() {
 		try! FileManager.default.createDirectory(at: directoryURL, withIntermediateDirectories: true, attributes: nil)
 
-		//let bundle = Bundle.module // crashes Swift 5.3 beta (5.3-DEVELOPMENT-SNAPSHOT-2020-05-11-a)
-		let bundleURL = Bundle.allBundles.first(where: { $0.bundlePath.hasSuffix(".xctest") })!.bundleURL
-		let bundle =
-			Bundle(url: bundleURL.deletingLastPathComponent().appendingPathComponent("SwiftGit2_SwiftGit2Tests.bundle"))!
-
-		let zipURLs = bundle.urls(forResourcesWithExtension: "zip", subdirectory: nil)!
+		let zipURLs = Bundle.module.urls(forResourcesWithExtension: "zip", subdirectory: nil)!
 		assert(!zipURLs.isEmpty, "No zip-files for testing found.")
 		for url in zipURLs {
 			// Will throw error but everything will be fine. Does not happen when using SwiftPM.
