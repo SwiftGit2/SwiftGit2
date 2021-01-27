@@ -1,7 +1,20 @@
 import XCTest
+import Quick
 
-import SwiftGit2Tests
+@testable import SwiftGit2Tests
 
-var tests = [XCTestCaseEntry]()
-tests += SwiftGit2Tests.allTests()
-XCTMain(tests)
+QCKMain([
+    FixturesSpec.self,
+    SignatureSpec.self,
+    CommitSpec.self,
+    TreeEntrySpec.self,
+    TreeSpec.self,
+    BlobSpec.self,
+    TagSpec.self,
+    OIDSpec.self,
+    ReferenceSpec.self,
+    BranchSpec.self,
+    TagReferenceSpec.self,
+    RemoteSpec.self,
+    RepositorySpec.self
+])

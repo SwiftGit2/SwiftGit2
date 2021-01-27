@@ -34,26 +34,16 @@ final class Fixtures {
 	func setUp() {
 		try! FileManager.default.createDirectory(at: directoryURL, withIntermediateDirectories: true, attributes: nil)
 
-		#if SWIFT_PACKAGE
-			//let bundle = Bundle.module // crashes Swift 5.3 beta (5.3-DEVELOPMENT-SNAPSHOT-2020-05-11-a)
-			let bundleURL = Bundle.allBundles.first(where: { $0.bundlePath.hasSuffix(".xctest") })!.bundleURL
-			let bundle =
-				Bundle(url: bundleURL.deletingLastPathComponent().appendingPathComponent("SwiftGit2_SwiftGit2Tests.bundle"))!
-		#else
-			#if os(OSX)
-			let platform = "OSX"
-			#else
-			let platform = "iOS"
-			#endif
-			let bundleIdentifier = String(format: "org.libgit2.SwiftGit2-%@Tests", arguments: [platform])
-			let bundle = Bundle(identifier: bundleIdentifier)!
-		#endif
+		//let bundle = Bundle.module // crashes Swift 5.3 beta (5.3-DEVELOPMENT-SNAPSHOT-2020-05-11-a)
+		let bundleURL = Bundle.allBundles.first(where: { $0.bundlePath.hasSuffix(".xctest") })!.bundleURL
+		let bundle =
+			Bundle(url: bundleURL.deletingLastPathComponent().appendingPathComponent("SwiftGit2_SwiftGit2Tests.bundle"))!
 
 		let zipURLs = bundle.urls(forResourcesWithExtension: "zip", subdirectory: nil)!
 		assert(!zipURLs.isEmpty, "No zip-files for testing found.")
 		for url in zipURLs {
 			// Will throw error but everything will be fine. Does not happen when using SwiftPM.
-			try? Zip.unzipFile(url, destination: directoryURL, overwrite: true, password: nil)
+			try? Zip.unzipFile(url as URL, destination: directoryURL, overwrite: true, password: nil)
 		}
 	}
 
