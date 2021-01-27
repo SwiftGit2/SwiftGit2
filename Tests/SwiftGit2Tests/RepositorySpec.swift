@@ -124,7 +124,7 @@ class RepositorySpec: FixturesSpec {
 					expect(remoteResult.error).to(beNil())
 
 					if case .success(let remote) = remoteResult {
-						expect(remote.URL).to(equal(remoteRepo.directoryURL?.absoluteString))
+						expect(remote.URL).to(equal(remoteRepo.directoryURL?.path))
 					}
 				}
 			}
