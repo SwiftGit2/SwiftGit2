@@ -58,14 +58,19 @@ class RepositorySpec: FixturesSpec {
 			it("should return error if .git is not readable") {
 				let localURL = self.temporaryURL(forPurpose: "git-isValid-unreadable").appendingPathComponent(".git")
 				let nonReadablePermissions: [FileAttributeKey: Any] = [.posixPermissions: 0o077]
-				try! FileManager.default.createDirectory(
-					at: localURL,
-					withIntermediateDirectories: true,
-					attributes: nonReadablePermissions)
-				let result = Repository.isValid(url: localURL)
 
-				expect(result.value).to(beNil())
-				expect(result.error).notTo(beNil())
+				do {
+					try FileManager.default.createDirectory(
+						at: localURL,
+						withIntermediateDirectories: true,
+						attributes: nonReadablePermissions)
+					let result = Repository.isValid(url: localURL)
+
+					expect(result.value).to(beNil())
+					expect(result.error).notTo(beNil())
+				} catch {
+					print("Warning: Could not create non-readable .git, skipping the test...")
+				}
 			}
 		}
 
@@ -968,7 +973,8 @@ class RepositorySpec: FixturesSpec {
 
 	func temporaryURL(forPurpose purpose: String) -> URL {
 		let globallyUniqueString = ProcessInfo.processInfo.globallyUniqueString
-		let path = "\(NSTemporaryDirectory())\(globallyUniqueString)_\(purpose)"
-		return URL(fileURLWithPath: path)
+		return FileManager.default
+			.temporaryDirectory
+			.appendingPathComponent("\(globallyUniqueString)_\(purpose)")
 	}
 }
