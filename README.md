@@ -31,7 +31,7 @@ case let .failure(error):
 ```
 
 ## Design
-SwiftGit2 uses value objects wherever possible. That means using Swift’s `struct`s and `enum`s without holding references to libgit2 objects. This has a number of advantages:
+SwiftGit2 uses value types wherever possible. That means using Swift’s `struct`s and `enum`s without holding references to libgit2 objects. This has a number of advantages:
 
 1. Values can be used concurrently.
 2. Consuming values won’t result in disk access.
@@ -42,36 +42,35 @@ This vastly simplifies the design of long-lived applications, which are the most
 All methods for reading from or writing to a repository are on SwiftGit’s only `class`: `Repository`. This highlights the failability and mutation of these methods, while freeing up all other instances to be immutable `struct`s and `enum`s.
 
 ## Required Tools
-To build SwiftGit2, you'll need the following tools installed locally:
+To build SwiftGit2, you need to install `libgit2` on your system.
 
-* cmake
-* libssh2
-* libtool
-* autoconf
-* automake
-* pkg-config
+### on macOS
+Make sure to have Homebrew installed, then run
 
 ```
-brew install cmake libssh2 libtool autoconf automake pkg-config
+brew install libgit2
+```
+
+### on Linux
+On Debian/Ubuntu-based distributions, run
+
+```
+apt install libgit2-dev
 ```
 
 ## Adding SwiftGit2 to your Project
-The easiest way to add SwiftGit2 to your project is to use [Carthage](https://github.com/Carthage/Carthage). Simply add `github "SwiftGit2/SwiftGit2"` to your `Cartfile` and run `carthage update`.
+The easiest way to add SwiftGit2 to your project is to use [SwiftPM](https://swift.org/package-manager/). Simply add the following line to your `Package.swift`'s dependencies:
 
-If you’d like, you can do things the ~~hard~~ old-fashioned way:
-
-1. Add SwiftGit2 as a submodule of your project’s repository.
-2. Run `git submodule update --init --recursive` to fetch all of SwiftGit2’s depedencies.
-3. Add `SwiftGit2.xcodeproj` to your project’s Xcode project or workspace.
-4. On the “Build Phases” tab of your application target, add `SwiftGit2.framework` to the “Link Binary With Libraries” phase. SwiftGit2 must also be added to a “Copy Frameworks” build phase.
-5. **If you added SwiftGit2 to a project (not a workspace)**, you will also need to add the appropriate SwiftGit2 target to the “Target Dependencies” of your application.
+```swift
+.package(url: "https://github.com/SwiftGit2/SwiftGit2.git", .branch("master"))
+```
 
 ## Building SwiftGit2 Manually
-If you want to build a copy of SwiftGit2 without Carthage, possibly for development:
+If you want to build a copy of SwiftGit2, e.g. for development:
 
 1. Clone SwiftGit2
-2. Run `git submodule update --init --recursive` to clone the submodules
-3. Build in Xcode
+2. Run `swift build`
+3. Optionally run `swift test` to run the tests
 
 ## Contributions
 We :heart: to receive pull requests! GitHub makes it easy:
