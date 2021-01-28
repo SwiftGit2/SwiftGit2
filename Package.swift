@@ -26,13 +26,13 @@ let package = Package(
 			pkgConfig: "git2",
 			providers: [
 				.brew(["libgit2"]),
-				.apt(["libgit2-dev"])
+				.apt(["libgit2-dev"]),
 			]
 		),
 		.target(
 			name: "SwiftGit2",
 			dependencies: [
-				.target(name: "Clibgit2")
+				.target(name: "Clibgit2"),
 			],
 			exclude: ["Info.plist"]
 		),
@@ -42,7 +42,7 @@ let package = Package(
 				.target(name: "SwiftGit2"),
 				.product(name: "Quick", package: "Quick"),
 				.product(name: "Nimble", package: "Nimble"),
-				.product(name: "Zip", package: "Zip")
+				.product(name: "Zip", package: "Zip"),
 			],
 			exclude: ["Info.plist"],
 			resources: [

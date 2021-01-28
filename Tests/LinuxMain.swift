@@ -16,5 +16,5 @@ QCKMain([
     BranchSpec.self,
     TagReferenceSpec.self,
     RemoteSpec.self,
-    RepositorySpec.self
+    RepositorySpec.self,
 ])
