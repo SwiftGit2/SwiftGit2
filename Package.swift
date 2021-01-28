@@ -21,13 +21,6 @@ let package = Package(
 		.package(url: "https://github.com/marmelroy/Zip.git", from: "2.0.0"),
 	],
 	targets: [
-		.target(
-			name: "SwiftGit2",
-			dependencies: [
-				.target(name: "Clibgit2")
-			],
-			exclude: ["Info.plist"]
-		),
 		.systemLibrary(
 			name: "Clibgit2",
 			pkgConfig: "git2",
@@ -36,9 +29,21 @@ let package = Package(
 				.apt(["libgit2-dev"])
 			]
 		),
+		.target(
+			name: "SwiftGit2",
+			dependencies: [
+				.target(name: "Clibgit2")
+			],
+			exclude: ["Info.plist"]
+		),
 		.testTarget(
 			name: "SwiftGit2Tests",
-			dependencies: ["SwiftGit2", "Quick", "Nimble", "Zip"],
+			dependencies: [
+				.target(name: "SwiftGit2"),
+				.product(name: "Quick", package: "Quick"),
+				.product(name: "Nimble", package: "Nimble"),
+				.product(name: "Zip", package: "Zip")
+			],
 			exclude: ["Info.plist"],
 			resources: [
 				.copy("Fixtures/repository-with-status.zip"),
