@@ -573,7 +573,7 @@ public final class Repository {
 	public func commits(in branch: Branch) -> CommitIterator {
 		return commits(from: branch.oid)
 	}
-	
+
 	/// Load all commits from the given base in topological & time order descending
 	///
 	/// :param: base The oid to get all commits from
