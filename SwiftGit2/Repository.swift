@@ -571,7 +571,15 @@ public final class Repository {
 	/// :param: branch The branch to get all commits from
 	/// :returns: Returns a result with array of branches or the error that occurred
 	public func commits(in branch: Branch) -> CommitIterator {
-		let iterator = CommitIterator(repo: self, root: branch.oid.oid)
+		return commits(from: branch.oid)
+	}
+	
+	/// Load all commits from the given base in topological & time order descending
+	///
+	/// :param: base The oid to get all commits from
+	/// :returns: Returns a result with array of branches or the error that occurred
+	public func commits(from base: OID) -> CommitIterator {
+		let iterator = CommitIterator(repo: self, root: base.oid)
 		return iterator
 	}
 
