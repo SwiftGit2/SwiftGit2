@@ -61,7 +61,7 @@ internal func credentialsCallback(
 	// Find username_from_url
 	let name = username.map(String.init(cString:))
 
-	switch Credentials.fromPointer(payload!) ?? .default {
+	switch Credentials.fromPointer(payload!) {
 	case .default:
 		result = git_cred_default_new(cred)
 	case .sshAgent:
@@ -70,6 +70,8 @@ internal func credentialsCallback(
 		result = git_cred_userpass_plaintext_new(cred, username, password)
 	case .sshMemory(let username, let publicKey, let privateKey, let passphrase):
 		result = git_cred_ssh_key_memory_new(cred, username, publicKey, privateKey, passphrase)
+	default:
+		result = git_cred_default_new(cred)
 	}
 
 	return (result != GIT_OK.rawValue) ? -1 : 0
