@@ -776,7 +776,7 @@ class RepositorySpec: FixturesSpec {
 			}
 
 			it("Should accurately report status for repositories with status") {
-				let expectedCount = 5
+				let expectedCount = 6
 				let expectedNewFilePaths = [
 					"stage-file-1",
 					"stage-file-2",
@@ -791,6 +791,9 @@ class RepositorySpec: FixturesSpec {
 					"stage-file-4",
 					"stage-file-5",
 				]
+				let expectedUntrackedFiles = [
+					"unstaged-file",
+				]
 
 				let repoWithStatus = Fixtures.sharedInstance.repository(named: "repository-with-status")
 				let branchWithStatus = repoWithStatus.localBranch(named: "master").value!
@@ -800,16 +803,28 @@ class RepositorySpec: FixturesSpec {
 
 				var newFilePaths: [String] = []
 				for status in statuses {
-					newFilePaths.append((status.headToIndex?.newFile?.path)!)
+					if let path = status.headToIndex?.newFile?.path {
+						newFilePaths.append(path)
+					}
 				}
 				var oldFilePaths: [String] = []
 				for status in statuses {
-					oldFilePaths.append((status.headToIndex?.oldFile?.path)!)
+					if let path = status.headToIndex?.oldFile?.path {
+						oldFilePaths.append(path)
+					}
+				}
+
+				var newUntrackedFilePaths: [String] = []
+				for status in statuses {
+					if let path = status.indexToWorkDir?.newFile?.path {
+						newUntrackedFilePaths.append(path)
+					}
 				}
 
 				expect(statuses.count).to(equal(expectedCount))
 				expect(newFilePaths).to(equal(expectedNewFilePaths))
 				expect(oldFilePaths).to(equal(expectedOldFilePaths))
+				expect(newUntrackedFilePaths).to(equal(expectedUntrackedFiles))
 			}
 		}
 
