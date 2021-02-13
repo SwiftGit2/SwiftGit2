@@ -99,6 +99,14 @@ public enum SwiftGit2Error: Error, CustomStringConvertible, Equatable {
 		}
 	}
 
+	/// Initialize a `SwiftGit2Error` with an error code originating in libgit2.
+	/// An error message will be obtained from libgit2 using the
+	/// `git_error_last` method.
+	///
+	/// :param: code An error code returned by a libgit2 function.
+	/// :param: source The libgit2 method that produced the
+	///         error code.
+	/// :returns: An appropriate `SwiftGit2Error` with an underlying libgit2 error code and corresponding source message.
 	internal init(libgitErrorCode code: Int32, source: Libgit2Method) {
 		let libgit2Error = Libgit2Error(errorCode: code, source: source)
 		switch git_error_code(code) {
