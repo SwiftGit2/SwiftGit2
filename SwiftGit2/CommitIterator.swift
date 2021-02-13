@@ -60,7 +60,7 @@ public class CommitIterator: IteratorProtocol, Sequence {
 			let lookupGitResult = git_commit_lookup(&unsafeCommit, repo.pointer, &oid)
 			guard lookupGitResult == GIT_OK.rawValue,
 				let unwrapCommit = unsafeCommit else {
-				return .failure(.init(libgitErrorCode: lookupGitResult, source: .git_commit_lookup))
+					return .failure(.init(libgitErrorCode: lookupGitResult, source: .git_commit_lookup))
 			}
 			let result: Element = .success(Commit(unwrapCommit))
 			git_commit_free(unsafeCommit)
