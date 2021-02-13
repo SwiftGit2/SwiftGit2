@@ -26,8 +26,7 @@ public struct Libgit2Error: Error, CustomStringConvertible, Equatable {
 	}
 
 	internal static func getLatestType() -> (type: Libgit2ErrorType, errorMessage: String?) {
-		let last = giterr_last()
-		guard let lastErrorPointer = last else {
+		guard let lastErrorPointer = git_error_last() else {
 			return (type: .none, errorMessage: nil)
 		}
 		let errorType = git_error_t(rawValue: UInt32(lastErrorPointer.pointee.klass))
@@ -168,77 +167,83 @@ public enum Libgit2ErrorType {
 	case patch
 	case workTree
 	case sha1
+	case http
+	case `internal`
 }
 
 extension Libgit2ErrorType: RawRepresentable {
 	public init(rawValue: git_error_t) {
 		switch rawValue {
-		case GITERR_NOMEMORY:
+		case GIT_ERROR_NOMEMORY:
 			self = .noMemory
-		case GITERR_OS:
+		case GIT_ERROR_OS:
 			self = .os
-		case GITERR_INVALID:
+		case GIT_ERROR_INVALID:
 			self = .invalid
-		case GITERR_REFERENCE:
+		case GIT_ERROR_REFERENCE:
 			self = .reference
-		case GITERR_ZLIB:
+		case GIT_ERROR_ZLIB:
 			self = .zlib
-		case GITERR_REPOSITORY:
+		case GIT_ERROR_REPOSITORY:
 			self = .repository
-		case GITERR_CONFIG:
+		case GIT_ERROR_CONFIG:
 			self = .config
-		case GITERR_REGEX:
+		case GIT_ERROR_REGEX:
 			self = .regex
-		case GITERR_ODB:
+		case GIT_ERROR_ODB:
 			self = .odb
-		case GITERR_INDEX:
+		case GIT_ERROR_INDEX:
 			self = .index
-		case GITERR_OBJECT:
+		case GIT_ERROR_OBJECT:
 			self = .object
-		case GITERR_NET:
+		case GIT_ERROR_NET:
 			self = .net
-		case GITERR_TAG:
+		case GIT_ERROR_TAG:
 			self = .tag
-		case GITERR_TREE:
+		case GIT_ERROR_TREE:
 			self = .tree
-		case GITERR_INDEXER:
+		case GIT_ERROR_INDEXER:
 			self = .indexer
-		case GITERR_SSL:
+		case GIT_ERROR_SSL:
 			self = .ssl
-		case GITERR_SUBMODULE:
+		case GIT_ERROR_SUBMODULE:
 			self = .submodule
-		case GITERR_THREAD:
+		case GIT_ERROR_THREAD:
 			self = .thread
-		case GITERR_STASH:
+		case GIT_ERROR_STASH:
 			self = .stash
-		case GITERR_CHECKOUT:
+		case GIT_ERROR_CHECKOUT:
 			self = .checkout
-		case GITERR_FETCHHEAD:
+		case GIT_ERROR_FETCHHEAD:
 			self = .fetchHead
-		case GITERR_MERGE:
+		case GIT_ERROR_MERGE:
 			self = .merge
-		case GITERR_SSH:
+		case GIT_ERROR_SSH:
 			self = .ssh
-		case GITERR_FILTER:
+		case GIT_ERROR_FILTER:
 			self = .filter
-		case GITERR_REVERT:
+		case GIT_ERROR_REVERT:
 			self = .revert
-		case GITERR_CALLBACK:
+		case GIT_ERROR_CALLBACK:
 			self = .callback
-		case GITERR_CHERRYPICK:
+		case GIT_ERROR_CHERRYPICK:
 			self = .cherryPick
-		case GITERR_DESCRIBE:
+		case GIT_ERROR_DESCRIBE:
 			self = .describe
-		case GITERR_REBASE:
+		case GIT_ERROR_REBASE:
 			self = .rebase
-		case GITERR_FILESYSTEM:
+		case GIT_ERROR_FILESYSTEM:
 			self = .fileSystem
-		case GITERR_PATCH:
+		case GIT_ERROR_PATCH:
 			self = .patch
-		case GITERR_WORKTREE:
+		case GIT_ERROR_WORKTREE:
 			self = .workTree
-		case GITERR_SHA1:
+		case GIT_ERROR_SHA1:
 			self = .sha1
+		case GIT_ERROR_HTTP:
+			self = .http
+		case GIT_ERROR_INTERNAL:
+			self = .internal
 		default:
 			self = .none
 		}
@@ -247,73 +252,77 @@ extension Libgit2ErrorType: RawRepresentable {
 	public var rawValue: git_error_t {
 		switch self {
 		case .none:
-			return GITERR_NONE
+			return GIT_ERROR_NONE
 		case .noMemory:
-			return GITERR_NOMEMORY
+			return GIT_ERROR_NOMEMORY
 		case .os:
-			return GITERR_OS
+			return GIT_ERROR_OS
 		case .invalid:
-			return GITERR_INVALID
+			return GIT_ERROR_INVALID
 		case .reference:
-			return GITERR_REFERENCE
+			return GIT_ERROR_REFERENCE
 		case .zlib:
-			return GITERR_ZLIB
+			return GIT_ERROR_ZLIB
 		case .repository:
-			return GITERR_REPOSITORY
+			return GIT_ERROR_REPOSITORY
 		case .config:
-			return GITERR_CONFIG
+			return GIT_ERROR_CONFIG
 		case .regex:
-			return GITERR_REGEX
+			return GIT_ERROR_REGEX
 		case .odb:
-			return GITERR_ODB
+			return GIT_ERROR_ODB
 		case .index:
-			return GITERR_INDEX
+			return GIT_ERROR_INDEX
 		case .object:
-			return GITERR_OBJECT
+			return GIT_ERROR_OBJECT
 		case .net:
-			return GITERR_NET
+			return GIT_ERROR_NET
 		case .tag:
-			return GITERR_TAG
+			return GIT_ERROR_TAG
 		case .tree:
-			return GITERR_TREE
+			return GIT_ERROR_TREE
 		case .indexer:
-			return GITERR_INDEXER
+			return GIT_ERROR_INDEXER
 		case .ssl:
-			return GITERR_SSL
+			return GIT_ERROR_SSL
 		case .submodule:
-			return GITERR_SUBMODULE
+			return GIT_ERROR_SUBMODULE
 		case .thread:
-			return GITERR_THREAD
+			return GIT_ERROR_THREAD
 		case .stash:
-			return GITERR_STASH
+			return GIT_ERROR_STASH
 		case .checkout:
-			return GITERR_CHECKOUT
+			return GIT_ERROR_CHECKOUT
 		case .fetchHead:
-			return GITERR_FETCHHEAD
+			return GIT_ERROR_FETCHHEAD
 		case .merge:
-			return GITERR_MERGE
+			return GIT_ERROR_MERGE
 		case .ssh:
-			return GITERR_SSH
+			return GIT_ERROR_SSH
 		case .filter:
-			return GITERR_FILTER
+			return GIT_ERROR_FILTER
 		case .revert:
-			return GITERR_REVERT
+			return GIT_ERROR_REVERT
 		case .callback:
-			return GITERR_CALLBACK
+			return GIT_ERROR_CALLBACK
 		case .cherryPick:
-			return GITERR_CHERRYPICK
+			return GIT_ERROR_CHERRYPICK
 		case .describe:
-			return GITERR_DESCRIBE
+			return GIT_ERROR_DESCRIBE
 		case .rebase:
-			return GITERR_REBASE
+			return GIT_ERROR_REBASE
 		case .fileSystem:
-			return GITERR_FILESYSTEM
+			return GIT_ERROR_FILESYSTEM
 		case .patch:
-			return GITERR_PATCH
+			return GIT_ERROR_PATCH
 		case .workTree:
-			return GITERR_WORKTREE
+			return GIT_ERROR_WORKTREE
 		case .sha1:
-			return GITERR_SHA1
+			return GIT_ERROR_SHA1
+		case .http:
+			return GIT_ERROR_HTTP
+		case .internal:
+			return GIT_ERROR_INTERNAL
 		}
 	}
 }

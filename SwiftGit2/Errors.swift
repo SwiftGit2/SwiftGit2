@@ -80,7 +80,7 @@ public enum SwiftGit2Error: Error, CustomStringConvertible, Equatable {
 	case hashMismatch(libgit2Error: Libgit2Error)
 
 	/// Object has an unrecognized type
-	case unknownObjectType(git_otype, OID)
+	case unknownObjectType(git_object_t, OID)
 
 	/// Could not compute diff
 	case diffError
