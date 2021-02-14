@@ -28,6 +28,10 @@ public extension Diff{
 		public let flags: Flags
 		public let oldFile: File?
 		public let newFile: File?
+		
+		///DELETE ME.
+		///SOMETIMES THIS HUNKS IS EMPTY
+		///USE repo.hunksFrom(delta....)
 		public var hunks = [Hunk]()
 		
 		public init(_ delta: git_diff_delta) {
