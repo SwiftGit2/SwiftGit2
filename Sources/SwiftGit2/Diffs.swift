@@ -50,7 +50,7 @@ public struct Diff {
 	public struct File {
 		public var oid: OID
 		public var path: String
-		public var size: Int64
+		public var size: UInt64
 		public var flags: Flags
 
 		public init(_ diffFile: git_diff_file) {
