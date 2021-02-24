@@ -57,7 +57,7 @@ public struct Diff {
 			self.oid = OID(diffFile.id)
 			let path = diffFile.path
 			self.path = path.map(String.init(cString:))!
-			self.size = diffFile.size
+			self.size = UInt64(diffFile.size)
 			self.flags = Flags(rawValue: diffFile.flags)
 		}
 	}
