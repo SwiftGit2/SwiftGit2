@@ -20,7 +20,7 @@ public class Patch {
 		git_patch_free(pointer)
 	}
 	
-	static func fromFiles(old: Diff.File?, new: Diff.File?, options: DiffOptions? = nil) -> Result<Patch, NSError> {
+	public static func fromFiles(old: Diff.File?, new: Diff.File?, options: DiffOptions? = nil) -> Result<Patch, NSError> {
 		var patchPointer: OpaquePointer? = nil
 	
 		return _result({ Patch(patchPointer!) }, pointOfFailure: "git_patch_from_blobs") {
@@ -28,7 +28,7 @@ public class Patch {
 		}
 	}
 	
-	static func fromBlobs(old: Blob?, new: Blob?, options: DiffOptions? = nil) -> Result<Patch, NSError> {
+	public static func fromBlobs(old: Blob?, new: Blob?, options: DiffOptions? = nil) -> Result<Patch, NSError> {
 		var patchPointer: OpaquePointer? = nil
 		
 		return _result({ Patch(patchPointer!) }, pointOfFailure: "git_patch_from_blobs") {
