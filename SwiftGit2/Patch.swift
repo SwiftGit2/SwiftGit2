@@ -42,6 +42,7 @@ public extension Patch {
 		return Diff.Delta(git_patch_get_delta(pointer).pointee)
 	}
 	
+	//DOESNT WORKS
 	func asHunks() -> Result<[Diff.Hunk],NSError> {
 		var hunks = [Diff.Hunk]()
 		
@@ -108,5 +109,9 @@ extension Patch {
 		}
 		
 		return .success(lines)
+	}
+	
+	public func getText() -> Result<String, NSError> {
+		self.asBuffer().flatMap{ $0.asStringRez() }
 	}
 }

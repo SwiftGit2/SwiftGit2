@@ -110,7 +110,7 @@ class DiffEachCallbacks {
 			.bindMemory(to: DiffEachCallbacks.self, capacity: 1)
 			.pointee
 			.hunk(hunk: Diff.Hunk(hunk.unsafelyUnwrapped.pointee))
-
+		
 		return 0
 	}
 		
