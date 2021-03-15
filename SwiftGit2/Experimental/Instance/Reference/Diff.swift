@@ -35,7 +35,6 @@ public class Diff : InstanceProtocol {
 		return _result( { Patch(pointer!) }, pointOfFailure: "git_patch_from_diff") {
 			git_patch_from_diff(&pointer, self.pointer, 0)
 		}
-
 	}
 }
 

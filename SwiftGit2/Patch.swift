@@ -114,4 +114,21 @@ extension Patch {
 	public func getText() -> Result<String, NSError> {
 		self.asBuffer().flatMap{ $0.asStringRez() }
 	}
+	
+	public func getTextHeader() -> Result<String, NSError> {
+		getText().map{ $0.stringBefore("@") }
+	}
+}
+
+////////////////////////////////////////////
+// HELPERS
+///////////////////////////////////////////
+fileprivate extension String {
+	func stringBefore(_ delimiter: Character) -> String {
+		if let index = firstIndex(of: delimiter) {
+			return String(prefix(upTo: index))
+		} else {
+			return ""
+		}
+	}
 }
