@@ -97,11 +97,8 @@ public extension Duo where T1 == Branch, T2 == Repository {
 
 public extension Duo where T1 == Branch, T2 == Remote {
 	/// Push local branch changes to remote branch
-	func push(credentials1: Credentials_OLD = .sshAgent) -> Result<(), NSError> {
+	func push(credentials: Credentials_OLD) -> Result<(), NSError> {
 		let (branch, remoteRepo) = self.value
-		
-		let credentials = Credentials_OLD
-			.plaintext(username: "skulptorrr@gmail.com", password: "Sr@mom!Hl3dr:gi")
 		
 		var opts = pushOptions(credentials: credentials)
 		
@@ -114,12 +111,12 @@ public extension Duo where T1 == Branch, T2 == Remote {
 
 // High Level code
 public extension Repository {
-	func push(remoteRepoName: String, localBranchName: String) -> Result<(), NSError> {
+	func push(remoteRepoName: String, localBranchName: String, credentials: Credentials_OLD) -> Result<(), NSError> {
 		let set = XR.Set()
 		
 		return set.with( self.remoteRepo(named: remoteRepoName) ) //Remote
 			.flatMap{ $0.with( self.reference(name: localBranchName).flatMap{ $0.asBranch() } ) } // branch
-			.flatMap{ set in Duo((set[Branch.self], set[Remote.self] )).push() }
+			.flatMap{ set in Duo((set[Branch.self], set[Remote.self] )).push(credentials: credentials) }
 	}
 }
 
