@@ -19,6 +19,8 @@ public class Remote : InstanceProtocol {
 	deinit {
 		git_remote_free(pointer)
 	}
+	
+	private var connectionModeIsSsh: Bool = true
 }
 
 public extension Remote {	
@@ -33,7 +35,7 @@ public extension Remote {
 	public var URL: String {
 		let url = String(validatingUTF8: git_remote_url(pointer))!
 		
-		return urlGetHttp(url: url)
+		return connectionModeIsSsh ? urlGetSsh(url: url) : urlGetHttp(url: url)
 	}
 	
 	// https://github.com/ukushu/PushTest.git
@@ -110,5 +112,17 @@ public class FetchOptions {
 		fetch_options.callbacks.credentials = credentialsCallback
 
 		
+	}
+}
+
+public extension Remote {
+	func switchToSshMode() -> Remote {
+		self.connectionModeIsSsh = true
+		return self
+	}
+	
+	func switchToHttpMode() -> Remote {
+		self.connectionModeIsSsh = false
+		return self
 	}
 }

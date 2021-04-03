@@ -114,18 +114,13 @@ public extension Repository {
 	func push(remoteRepoName: String, localBranchName: String, credentials: Credentials_OLD) -> Result<(), NSError> {
 		let set = XR.Set()
 		
-		return set.with( self.remoteRepo(named: remoteRepoName) ) //Remote
+		//Huck, but works
+		let remote = self.remoteRepo(named: remoteRepoName)
+			.map { credentials.isSsh() ? $0.switchToSshMode() : $0.switchToHttpMode() }
+		
+		return set.with( remote )
 			.flatMap{ $0.with( self.reference(name: localBranchName).flatMap{ $0.asBranch() } ) } // branch
 			.flatMap{ set in Duo((set[Branch.self], set[Remote.self] )).push(credentials: credentials) }
-	}
-	
-	func push(remoteRepoName: String, localBranch: Branch, credentials: Credentials_OLD) -> Result<(), NSError> {
-		let set = XR.Set()
-		
-		return set.with( self.remoteRepo(named: remoteRepoName) ) //Remote
-			.flatMap { $0.with( .success(localBranch) ) }
-			.flatMap{ set in
-				Duo((set[Branch.self], set[Remote.self] )).push(credentials: credentials) }
 	}
 }
 
@@ -188,6 +183,8 @@ fileprivate extension Remote {
 		var dirPointer = UnsafeMutablePointer<Int8>(mutating: (branchName as NSString).utf8String)
 		var refs = git_strarray(strings: &dirPointer, count: 1)
 
+		print("Trying to push ''\(self.name)'' remote with URL:''\(self.URL)''")
+		
 		return _result( (), pointOfFailure: "git_remote_push") {
 			git_remote_push(self.pointer, &refs, options)
 		}
@@ -235,4 +232,15 @@ extension BranchError: LocalizedError {
 //	  return "Name must be Remote. But it must not contain 'refs/remotes/'"
 	}
   }
+}
+
+extension Credentials_OLD {
+	func isSsh() -> Bool {
+		switch self {
+		case .ssh(_,_,_):
+			return true
+			default:
+			return false
+		}
+	}
 }
