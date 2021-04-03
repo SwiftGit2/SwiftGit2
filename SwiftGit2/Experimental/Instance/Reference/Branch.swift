@@ -118,6 +118,15 @@ public extension Repository {
 			.flatMap{ $0.with( self.reference(name: localBranchName).flatMap{ $0.asBranch() } ) } // branch
 			.flatMap{ set in Duo((set[Branch.self], set[Remote.self] )).push(credentials: credentials) }
 	}
+	
+	func push(remoteRepoName: String, localBranch: Branch, credentials: Credentials_OLD) -> Result<(), NSError> {
+		let set = XR.Set()
+		
+		return set.with( self.remoteRepo(named: remoteRepoName) ) //Remote
+			.flatMap { $0.with( .success(localBranch) ) }
+			.flatMap{ set in
+				Duo((set[Branch.self], set[Remote.self] )).push(credentials: credentials) }
+	}
 }
 
 // Low Level code
