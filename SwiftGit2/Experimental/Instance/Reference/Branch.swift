@@ -183,7 +183,7 @@ fileprivate extension Remote {
 		var dirPointer = UnsafeMutablePointer<Int8>(mutating: (branchName as NSString).utf8String)
 		var refs = git_strarray(strings: &dirPointer, count: 1)
 
-		print("Trying to push ''\(self.name)'' remote with URL:''\(self.URL)''")
+		print("Trying to push ''\(branchName)'' to remote ''\(self.name)'' with URL:''\(self.URL)''")
 		
 		return _result( (), pointOfFailure: "git_remote_push") {
 			git_remote_push(self.pointer, &refs, options)
