@@ -115,8 +115,8 @@ public extension Repository {
 		let set = XR.Set()
 		
 		//Huck, but works
-		let remote = self.remoteRepo(named: remoteRepoName)
-			.map { credentials.isSsh() ? $0.switchToSshMode() : $0.switchToHttpMode() }
+		//let remoteType  = credentials.isSsh() ? RemoteType.ForceSSH  : .ForceHttps
+		let remote = self.remoteRepo(named: remoteRepoName, remoteType: .ForceHttps )
 		
 		return set.with( remote )
 			.flatMap{ $0.with( self.reference(name: localBranchName).flatMap{ $0.asBranch() } ) } // branch
