@@ -54,7 +54,6 @@ public extension Result where Failure == NSError {
 }
 
 extension Branch {
-	
 	/// can be called only for local branch;
 	///
 	/// newName looks like "BrowserGridItemView" BUT NOT LIKE "refs/heads/BrowserGridItemView"
@@ -92,6 +91,37 @@ public extension Duo where T1 == Branch, T2 == Repository {
 		return branch.commitOID
 			.flatMap { Duo<OID,Repository>(($0, repo)).commit() }
 			.flatMap { commit in repo.createBranch(from: commit, withName: name)  }
+	}
+	
+	
+	fileprivate func getRemoteName() -> Result<String, NSError> {
+		let (branch, repo) = self.value
+		
+		let buf_ptr = UnsafeMutablePointer<git_buf>.allocate(capacity: 1)
+		buf_ptr.pointee = git_buf(ptr: nil, asize: 0, size: 0)
+		
+		let result = {
+			branch.getLongName().withCString { fullBranchName in
+				git_branch_upstream_remote(buf_ptr, repo.pointer, fullBranchName);
+			}
+		}()
+		
+		if result == GIT_OK.rawValue {
+			return Buffer(pointer: &buf_ptr.pointee).asStringRez()
+		} else {
+			return Result.failure(NSError(gitError: result, pointOfFailure: "git_branch_upstream_remote"))
+		}
+	}
+	
+	///Gets REMOTE item from local branch. Doesn't works with remote branch
+	func getRemote() -> Result<Remote, NSError> {
+		let (_, repo) = self.value
+		
+		return getRemoteName()
+			.flatMap { remoteName in
+				repo.remoteRepo(named: remoteName, remoteType: .Original)
+			}
+		
 	}
 }
 
