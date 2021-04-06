@@ -150,6 +150,20 @@ public extension Repository {
 }
 
 
+public extension Repository {
+	func notPulledCommits(localBranchToHide: String, remoteBranchToPush: String) -> Result<[Commit], NSError> {
+		let revWalker = RevisionWalker(repo: self, localBranchToHide: localBranchToHide, remoteBranchToPush: remoteBranchToPush)
+		
+		var result: [Result<Commit, NSError>] = []
+		
+		while let elem = revWalker.next() {
+			result.append(elem)
+		}
+		
+		return result.aggregateResult()
+	}
+}
+
 // index
 public extension Repository {
 	func reset(path: String) -> Result<(), NSError> {

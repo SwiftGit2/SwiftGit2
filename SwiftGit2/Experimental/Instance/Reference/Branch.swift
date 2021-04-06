@@ -53,11 +53,11 @@ public extension Result where Failure == NSError {
 	}
 }
 
-extension Branch {
+public extension Branch {
 	/// can be called only for local branch;
 	///
 	/// newName looks like "BrowserGridItemView" BUT NOT LIKE "refs/heads/BrowserGridItemView"
-	public func setUpstreamName(newName: String) -> Result<Branch, NSError> {
+	func setUpstreamName(newName: String) -> Result<Branch, NSError> {
 		let cleanedName = newName.replace(of: "refs/heads/", to: "")
 		
 		return _result({ self }, pointOfFailure: "git_branch_set_upstream" ) {
@@ -68,10 +68,30 @@ extension Branch {
 	}
 	
 	/// can be called only for local branch;
+	func getUpstreamName() -> Result<String, NSError> {
+		getUpstreamBranch().map{ $0.name }
+	}
+	
+	/// Can be used only on local branch
+	func getUpstreamBranch() -> Result<Branch, NSError> {
+		let localBranch = self
+		
+		var resolved: OpaquePointer? = nil
+		
+		let result = git_branch_upstream(&resolved, localBranch.pointer)
+		
+		if result == GIT_OK.rawValue {
+			return Reference(resolved!).asBranch()
+		}
+		
+		return Result.failure(NSError(gitError: result, pointOfFailure: "git_branch_upstream"))
+	}
+	
+	/// can be called only for local branch;
 	///
 	/// newNameWithPath MUST BE WITH "refs/heads/"
 	/// Will reset assigned upstream Name
-	public func setLocalName(newNameWithPath: String) -> Result<Branch, NSError> {
+	func setLocalName(newNameWithPath: String) -> Result<Branch, NSError> {
 		guard   newNameWithPath.contains("refs/heads/")
 		else { return .failure(BranchError.NameIsNotLocal as NSError) }
 		
@@ -92,7 +112,6 @@ public extension Duo where T1 == Branch, T2 == Repository {
 			.flatMap { Duo<OID,Repository>(($0, repo)).commit() }
 			.flatMap { commit in repo.createBranch(from: commit, withName: name)  }
 	}
-	
 	
 	fileprivate func getRemoteName() -> Result<String, NSError> {
 		let (branch, repo) = self.value
