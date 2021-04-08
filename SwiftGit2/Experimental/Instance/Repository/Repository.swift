@@ -151,8 +151,9 @@ public extension Repository {
 
 
 public extension Repository {
-	func notPulledCommits(localBranchToHide: String, remoteBranchToPush: String) -> Result<[Commit], NSError> {
-		let revWalker = RevisionWalker(repo: self, localBranchToHide: localBranchToHide, remoteBranchToPush: remoteBranchToPush)
+	/// Method needed to collect not pushed or not pulled commits
+	func getChangedCommits(branchToHide: String, branchToPush: String) -> Result<[Commit], NSError> {
+		let revWalker = RevisionWalker(repo: self, localBranchToHide: branchToHide, remoteBranchToPush: branchToPush)
 		
 		var result: [Result<Commit, NSError>] = []
 		
