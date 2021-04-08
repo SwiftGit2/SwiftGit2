@@ -43,9 +43,14 @@ public extension Repository {
 	func HEAD() -> Result<Reference, NSError> {
 		var pointer: OpaquePointer? = nil
 		
-		return _result({ Reference(pointer!) }, pointOfFailure: "git_repository_head") {
+		return _result( { Reference(pointer!) }, pointOfFailure: "git_repository_head") {
 			git_repository_head(&pointer, self.pointer)
 		}
+	}
+	
+	var headIsDetached: Bool {
+		let result: Int32 = git_repository_head_detached(self.pointer)
+		return (result as NSNumber).boolValue
 	}
 	
 	func references(withPrefix prefix: String) -> Result<[Reference], NSError> {
