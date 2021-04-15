@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 46;
+	objectVersion = 52;
 	objects = {
 
 /* Begin PBXAggregateTarget section */
@@ -100,6 +100,7 @@
 		E60E36D2238960B8008A691E /* Diff+Status_OLD.swift in Sources */ = {isa = PBXBuildFile; fileRef = E60E36D1238960B8008A691E /* Diff+Status_OLD.swift */; };
 		E60E36D3238960B8008A691E /* Diff+Status_OLD.swift in Sources */ = {isa = PBXBuildFile; fileRef = E60E36D1238960B8008A691E /* Diff+Status_OLD.swift */; };
 		E61B443423CE4D670059650A /* Repository_OLD+Submodule_OLD.swift in Sources */ = {isa = PBXBuildFile; fileRef = E61B443323CE4D670059650A /* Repository_OLD+Submodule_OLD.swift */; };
+		E632D5C0262874990039FF01 /* Essentials in Frameworks */ = {isa = PBXBuildFile; productRef = E632D5BF262874990039FF01 /* Essentials */; };
 		E653907A23E7328200C08416 /* Diff+Delta.swift in Sources */ = {isa = PBXBuildFile; fileRef = E653907923E7328200C08416 /* Diff+Delta.swift */; };
 		E653907C23E73CDE00C08416 /* Patch.swift in Sources */ = {isa = PBXBuildFile; fileRef = E653907B23E73CDE00C08416 /* Patch.swift */; };
 		E65C767A23E6F4FF00FD14BE /* Index_OLD.swift in Sources */ = {isa = PBXBuildFile; fileRef = E65C767923E6F4FF00FD14BE /* Index_OLD.swift */; };
@@ -285,6 +286,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E632D5C0262874990039FF01 /* Essentials in Frameworks */,
 				BEB31FA01A0E595600F525B9 /* libz.dylib in Frameworks */,
 				BEB31F9E1A0E595100F525B9 /* libiconv.dylib in Frameworks */,
 			);
@@ -700,6 +702,9 @@
 				BEB31F951A0E56E200F525B9 /* PBXTargetDependency */,
 			);
 			name = "SwiftGit2-OSX";
+			packageProductDependencies = (
+				E632D5BF262874990039FF01 /* Essentials */,
+			);
 			productName = "SwiftGit2-OSX";
 			productReference = BEB31F231A0D6F7A00F525B9 /* SwiftGit2.framework */;
 			productType = "com.apple.product-type.framework";
@@ -779,6 +784,9 @@
 				Base,
 			);
 			mainGroup = BEB31F191A0D6F7A00F525B9;
+			packageReferences = (
+				E632D5BE262874990039FF01 /* XCRemoteSwiftPackageReference "essentials" */,
+			);
 			productRefGroup = BEB31F241A0D6F7A00F525B9 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -1393,6 +1401,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		E632D5BE262874990039FF01 /* XCRemoteSwiftPackageReference "essentials" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "git@gitlab.com:sergiy.vynnychenko/essentials.git";
+			requirement = {
+				branch = master;
+				kind = branch;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		E632D5BF262874990039FF01 /* Essentials */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = E632D5BE262874990039FF01 /* XCRemoteSwiftPackageReference "essentials" */;
+			productName = Essentials;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = BEB31F1A1A0D6F7A00F525B9 /* Project object */;
 }
