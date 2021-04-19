@@ -100,12 +100,23 @@ public extension Duo where T1 == Index, T2 == Repository {
 				}
 			}
 	}
+	
+	/// return OID of written tree
+	func writeIndex() -> Result<OID, NSError>  {
+		let (index, repo) = self.value
+		
+		var oid = git_oid() // out
+		
+		return _result( { OID(oid) } , pointOfFailure: "git_index_write_tree_to") {
+			git_index_write_tree_to(&oid, index.pointer, repo.pointer);
+		}
+	}
 }
 
 fileprivate extension Repository {
 	/// If no parents write "[]"
 	/// Perform a commit with arbitrary numbers of parent commits.
-	public func commit( tree treeOID: OID, parents: [Commit], message: String, signature: Signature ) -> Result<Commit, NSError> {
+	func commit( tree treeOID: OID, parents: [Commit], message: String, signature: Signature ) -> Result<Commit, NSError> {
 		// create commit signature
 		return signature.makeUnsafeSignature().flatMap { signature in
 			defer { git_signature_free(signature) }
