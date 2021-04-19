@@ -53,12 +53,11 @@ public extension Result where Failure == NSError {
 	}
 }
 
-extension Branch {
-	
+public extension Branch {
 	/// can be called only for local branch;
 	///
 	/// newName looks like "BrowserGridItemView" BUT NOT LIKE "refs/heads/BrowserGridItemView"
-	public func setUpstreamName(newName: String) -> Result<Branch, NSError> {
+	func setUpstreamName(newName: String) -> Result<Branch, NSError> {
 		let cleanedName = newName.replace(of: "refs/heads/", to: "")
 		
 		return _result({ self }, pointOfFailure: "git_branch_set_upstream" ) {
@@ -69,10 +68,30 @@ extension Branch {
 	}
 	
 	/// can be called only for local branch;
+	func getUpstreamName() -> Result<String, NSError> {
+		getUpstreamBranch().map{ $0.name }
+	}
+	
+	/// Can be used only on local branch
+	func getUpstreamBranch() -> Result<Branch, NSError> {
+		let localBranch = self
+		
+		var resolved: OpaquePointer? = nil
+		
+		let result = git_branch_upstream(&resolved, localBranch.pointer)
+		
+		if result == GIT_OK.rawValue {
+			return Reference(resolved!).asBranch()
+		}
+		
+		return Result.failure(NSError(gitError: result, pointOfFailure: "git_branch_upstream"))
+	}
+	
+	/// can be called only for local branch;
 	///
 	/// newNameWithPath MUST BE WITH "refs/heads/"
 	/// Will reset assigned upstream Name
-	public func setLocalName(newNameWithPath: String) -> Result<Branch, NSError> {
+	func setLocalName(newNameWithPath: String) -> Result<Branch, NSError> {
 		guard   newNameWithPath.contains("refs/heads/")
 		else { return .failure(BranchError.NameIsNotLocal as NSError) }
 		
@@ -93,15 +112,42 @@ public extension Duo where T1 == Branch, T2 == Repository {
 			.flatMap { Duo<OID,Repository>(($0, repo)).commit() }
 			.flatMap { commit in repo.createBranch(from: commit, withName: name)  }
 	}
+	
+	fileprivate func getRemoteName() -> Result<String, NSError> {
+		let (branch, repo) = self.value
+		
+		let buf_ptr = UnsafeMutablePointer<git_buf>.allocate(capacity: 1)
+		buf_ptr.pointee = git_buf(ptr: nil, asize: 0, size: 0)
+		
+		let result = {
+			branch.getLongName().withCString { fullBranchName in
+				git_branch_upstream_remote(buf_ptr, repo.pointer, fullBranchName);
+			}
+		}()
+		
+		if result == GIT_OK.rawValue {
+			return Buffer(pointer: &buf_ptr.pointee).asStringRez()
+		} else {
+			return Result.failure(NSError(gitError: result, pointOfFailure: "git_branch_upstream_remote"))
+		}
+	}
+	
+	///Gets REMOTE item from local branch. Doesn't works with remote branch
+	func getRemote() -> Result<Remote, NSError> {
+		let (_, repo) = self.value
+		
+		return getRemoteName()
+			.flatMap { remoteName in
+				repo.remoteRepo(named: remoteName, remoteType: .Original)
+			}
+		
+	}
 }
 
 public extension Duo where T1 == Branch, T2 == Remote {
 	/// Push local branch changes to remote branch
-	func push(credentials1: Credentials_OLD = .sshAgent) -> Result<(), NSError> {
+	func push(credentials: Credentials_OLD) -> Result<(), NSError> {
 		let (branch, remoteRepo) = self.value
-		
-		let credentials = Credentials_OLD
-			.plaintext(username: "skulptorrr@gmail.com", password: "Sr@mom!Hl3dr:gi")
 		
 		var opts = pushOptions(credentials: credentials)
 		
@@ -114,12 +160,16 @@ public extension Duo where T1 == Branch, T2 == Remote {
 
 // High Level code
 public extension Repository {
-	func push(remoteRepoName: String, localBranchName: String) -> Result<(), NSError> {
+	func push(remoteRepoName: String, localBranchName: String, credentials: Credentials_OLD) -> Result<(), NSError> {
 		let set = XR.Set()
 		
-		return set.with( self.remoteRepo(named: remoteRepoName) ) //Remote
+		//Huck, but works
+		//let remoteType  = credentials.isSsh() ? RemoteType.ForceSSH  : .ForceHttps
+		let remote = self.remoteRepo(named: remoteRepoName, remoteType: .ForceHttps )
+		
+		return set.with( remote )
 			.flatMap{ $0.with( self.reference(name: localBranchName).flatMap{ $0.asBranch() } ) } // branch
-			.flatMap{ set in Duo((set[Branch.self], set[Remote.self] )).push() }
+			.flatMap{ set in Duo((set[Branch.self], set[Remote.self] )).push(credentials: credentials) }
 	}
 }
 
@@ -178,10 +228,13 @@ private extension Branch {
 }
 
 fileprivate extension Remote {
+	///Branch name must be full - with "refs/heads/"
 	func push(branchName: String, options: UnsafePointer<git_push_options> ) -> Result<(), NSError> {
 		var dirPointer = UnsafeMutablePointer<Int8>(mutating: (branchName as NSString).utf8String)
 		var refs = git_strarray(strings: &dirPointer, count: 1)
 
+		print("Trying to push ''\(branchName)'' to remote ''\(self.name)'' with URL:''\(self.URL)''")
+		
 		return _result( (), pointOfFailure: "git_remote_push") {
 			git_remote_push(self.pointer, &refs, options)
 		}
@@ -229,4 +282,15 @@ extension BranchError: LocalizedError {
 //	  return "Name must be Remote. But it must not contain 'refs/remotes/'"
 	}
   }
+}
+
+extension Credentials_OLD {
+	func isSsh() -> Bool {
+		switch self {
+		case .ssh(_,_,_):
+			return true
+			default:
+			return false
+		}
+	}
 }

@@ -11,9 +11,16 @@ import Clibgit2
 
 public class Remote : InstanceProtocol {
 	public let pointer: OpaquePointer
+	private var remoteType: RemoteType
 	
 	public required init(_ pointer: OpaquePointer) {
 		self.pointer = pointer
+		self.remoteType = .Original
+	}
+	
+	public required init(_ pointer: OpaquePointer, remoteType: RemoteType) {
+		self.pointer = pointer
+		self.remoteType = remoteType
 	}
 	
 	deinit {
@@ -23,17 +30,24 @@ public class Remote : InstanceProtocol {
 
 public extension Remote {	
 	/// The name of the remote repo
-	public var name: String { String(validatingUTF8: git_remote_name(pointer))! }
+	var name: String { String(validatingUTF8: git_remote_name(pointer))! }
 	
 	/// The URL of the remote repo
 	///
 	/// This may be an SSH URL, which isn't representable using `NSURL`.
 	
 	//TODO:LAME HACK
-	public var URL: String {
+	var URL: String {
 		let url = String(validatingUTF8: git_remote_url(pointer))!
 		
-		return urlGetHttp(url: url)
+		switch remoteType{
+		case .Original:
+			return url
+		case .ForceSSH:
+			return urlGetSsh(url: url)
+		case .ForceHttps:
+			return urlGetHttp(url: url)
+		}
 	}
 	
 	// https://github.com/ukushu/PushTest.git
@@ -80,13 +94,8 @@ public extension Remote {
 		return newUrl.replacingOccurrences(of: ":", with: "/")
 	}
 	
-	/// Download new data and update tips
-	/// Input:  REMOTE (like an "Origin")
-	public func fetch(options: FetchOptions) -> Result<(), NSError> {
+	func fetch(options: FetchOptions) -> Result<(), NSError> {
 		var opts = options.fetch_options
-		
-		//let resultInit = git_fetch_init_options(&opts, UInt32(GIT_FETCH_OPTIONS_VERSION))
-		//assert(resultInit == GIT_OK.rawValue)
 		
 		return _result((), pointOfFailure: "git_remote_fetch") {
 			git_remote_fetch(pointer, nil, &opts, nil)
@@ -108,7 +117,5 @@ public class FetchOptions {
 		
 		fetch_options.callbacks.payload = self.credentials.toPointer()
 		fetch_options.callbacks.credentials = credentialsCallback
-
-		
 	}
 }

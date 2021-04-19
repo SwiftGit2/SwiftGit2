@@ -55,4 +55,8 @@ public extension Repository {
 			git_status_list_new(&pointer, self.pointer, &git_options)
 		}
 	}
+	
+	func statusCount(options: StatusOptions = StatusOptions(), filter: String? = nil) -> Result<Int, NSError> {
+		return status(options: options, filter: filter).map{ $0.endIndex}
+	}
 }

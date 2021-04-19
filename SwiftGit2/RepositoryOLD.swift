@@ -613,8 +613,8 @@ public final class RepositoryOLD {
 	///
 	/// :param: branch The branch to get all commits from
 	/// :returns: Returns a result with array of branches or the error that occurred
-	public func commits(in branch: BranchOLD) -> CommitIterator {
-		let iterator = CommitIterator(repo: self, root: branch.oid.oid)
+	public func commits(in branch: BranchOLD) -> CommitIterator_OLD {
+		let iterator = CommitIterator_OLD(repo: self, root: branch.oid.oid)
 		return iterator
 	}
 	

@@ -43,7 +43,7 @@ extension Repository {
 		return getRemotesNames()
 			.flatMap{ arr -> Result<Remote, NSError> in
 				if let first = arr.first {
-					return self.remoteRepo(named: first)
+					return self.remoteRepo(named: first, remoteType: .ForceHttps)
 				}
 				return .failure(NSError() )// TODO: Noone repo in the repository
 			}
@@ -51,7 +51,7 @@ extension Repository {
 	
 	public func getAllRemotes() -> Result<[Remote], NSError> {
 		return getRemotesNames()
-			.flatMap{ $0.map({ self.remoteRepo(named: $0) }).aggregateResult() }
+			.flatMap{ $0.map({ self.remoteRepo(named: $0, remoteType: .ForceHttps) }).aggregateResult() }
 	}
 	
 	private func getRemotesNames() -> Result<[String], NSError> {
@@ -112,8 +112,8 @@ extension Repository {
 		}
 	}
 	
-	public func remoteRepo(named name: String ) -> Result<Remote, NSError> {
-		return remoteLookup(named: name) { $0.map(Remote.init) }
+	public func remoteRepo(named name: String, remoteType: RemoteType) -> Result<Remote, NSError> {
+		return remoteLookup(named: name) { $0.map{ Remote($0, remoteType: remoteType) } }
 	}
 	
 	public func remoteLookup<A>(named name: String, _ callback: (Result<OpaquePointer, NSError>) -> A) -> A {
@@ -149,6 +149,21 @@ public extension Repository {
 	}
 }
 
+
+public extension Repository {
+	/// Method needed to collect not pushed or not pulled commits
+	func getChangedCommits(branchToHide: String, branchToPush: String) -> Result<[Commit], NSError> {
+		let revWalker = RevisionWalker(repo: self, localBranchToHide: branchToHide, remoteBranchToPush: branchToPush)
+		
+		var result: [Result<Commit, NSError>] = []
+		
+		while let elem = revWalker.next() {
+			result.append(elem)
+		}
+		
+		return result.aggregateResult()
+	}
+}
 
 // index
 public extension Repository {
@@ -341,4 +356,10 @@ extension RepositoryError: LocalizedError {
 			return "FailedToGetRepoUrl. Url is nil?"
 		}
 	}
+}
+
+public enum RemoteType {
+	case Original
+	case ForceSSH
+	case ForceHttps
 }
