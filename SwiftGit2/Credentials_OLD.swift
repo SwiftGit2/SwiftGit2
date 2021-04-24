@@ -8,7 +8,7 @@
 
 import Clibgit2
 
-private class Wrapper<T> {
+internal class Wrapper<T> {
 	let value: T
 
 	init(_ value: T) {

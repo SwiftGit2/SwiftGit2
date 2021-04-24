@@ -199,19 +199,21 @@ public extension Repository {
 	static func clone(from remoteURL: URL, to localURL: URL, isLocalClone: Bool = false, bare: Bool = false,
 							credentials: Credentials_OLD = .default, checkoutStrategy: CheckoutStrategy = .Safe,
 							checkoutProgress: CheckoutProgressBlock? = nil) -> Result<Repository, NSError> {
-		let fetchOptions = FetchOptions(credentials: credentials)
 		
+
+		var pointer: OpaquePointer? = nil
 		var options = cloneOptions(
 			bare: bare,
 			localClone: isLocalClone,
-			fetchOptions: fetchOptions.fetch_options,
+			fetchOptions: FetchOptions(credentials: credentials).fetch_options,
 			checkoutOptions: checkoutOptions(strategy: checkoutStrategy, progress: checkoutProgress))
 
-		var pointer: OpaquePointer? = nil
 		let remoteURLString = (remoteURL as NSURL).isFileReferenceURL() ? remoteURL.path : remoteURL.absoluteString
+
 		
 		return _result( { Repository(pointer!) } , pointOfFailure: "git_clone") {
-			localURL.withUnsafeFileSystemRepresentation { localPath in
+			
+			return localURL.withUnsafeFileSystemRepresentation { localPath in
 				return git_clone(&pointer, remoteURLString, localPath, &options)
 			}
 		}
