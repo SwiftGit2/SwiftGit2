@@ -238,6 +238,8 @@ fileprivate func fetchOptions(credentials: Credentials_OLD) -> git_fetch_options
 
 	pointer.deallocate()
 
+	//options.callbacks.
+	
 	options.callbacks.payload = credentials.toPointer()
 	options.callbacks.credentials = credentialsCallback
 

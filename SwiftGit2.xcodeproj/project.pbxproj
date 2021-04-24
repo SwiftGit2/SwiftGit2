@@ -101,6 +101,9 @@
 		E60E36D2238960B8008A691E /* Diff+Status_OLD.swift in Sources */ = {isa = PBXBuildFile; fileRef = E60E36D1238960B8008A691E /* Diff+Status_OLD.swift */; };
 		E60E36D3238960B8008A691E /* Diff+Status_OLD.swift in Sources */ = {isa = PBXBuildFile; fileRef = E60E36D1238960B8008A691E /* Diff+Status_OLD.swift */; };
 		E61B443423CE4D670059650A /* Repository_OLD+Submodule_OLD.swift in Sources */ = {isa = PBXBuildFile; fileRef = E61B443323CE4D670059650A /* Repository_OLD+Submodule_OLD.swift */; };
+		E623A308263486A500484E11 /* FetchOptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = E623A307263486A500484E11 /* FetchOptions.swift */; };
+		E623A3142634883100484E11 /* CloneOptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = E623A3132634883100484E11 /* CloneOptions.swift */; };
+		E623A31F2634885800484E11 /* CheckOutOptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = E623A31E2634885800484E11 /* CheckOutOptions.swift */; };
 		E632D5C0262874990039FF01 /* Essentials in Frameworks */ = {isa = PBXBuildFile; productRef = E632D5BF262874990039FF01 /* Essentials */; };
 		E653907A23E7328200C08416 /* Diff+Delta.swift in Sources */ = {isa = PBXBuildFile; fileRef = E653907923E7328200C08416 /* Diff+Delta.swift */; };
 		E653907C23E73CDE00C08416 /* Patch.swift in Sources */ = {isa = PBXBuildFile; fileRef = E653907B23E73CDE00C08416 /* Patch.swift */; };
@@ -245,6 +248,9 @@
 		DAC8143C1A99749D0063D88C /* Quick.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Quick.framework; path = "../../../../Library/Developer/Xcode/DerivedData/SwiftGit2-ezqqkevntxbroughwcioyxqriijk/Build/Products/Debug/Quick.framework"; sourceTree = "<group>"; };
 		E60E36D1238960B8008A691E /* Diff+Status_OLD.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Diff+Status_OLD.swift"; sourceTree = "<group>"; };
 		E61B443323CE4D670059650A /* Repository_OLD+Submodule_OLD.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Repository_OLD+Submodule_OLD.swift"; sourceTree = "<group>"; };
+		E623A307263486A500484E11 /* FetchOptions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FetchOptions.swift; sourceTree = "<group>"; };
+		E623A3132634883100484E11 /* CloneOptions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloneOptions.swift; sourceTree = "<group>"; };
+		E623A31E2634885800484E11 /* CheckOutOptions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckOutOptions.swift; sourceTree = "<group>"; };
 		E653907923E7328200C08416 /* Diff+Delta.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Diff+Delta.swift"; sourceTree = "<group>"; };
 		E653907B23E73CDE00C08416 /* Patch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Patch.swift; sourceTree = "<group>"; };
 		E65C767923E6F4FF00FD14BE /* Index_OLD.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Index_OLD.swift; sourceTree = "<group>"; };
@@ -525,6 +531,16 @@
 			name = Libraries;
 			sourceTree = "<group>";
 		};
+		E623A3122634881B00484E11 /* Options */ = {
+			isa = PBXGroup;
+			children = (
+				E623A307263486A500484E11 /* FetchOptions.swift */,
+				E623A3132634883100484E11 /* CloneOptions.swift */,
+				E623A31E2634885800484E11 /* CheckOutOptions.swift */,
+			);
+			path = Options;
+			sourceTree = "<group>";
+		};
 		E64A9DB124D78BF8005B643E /* Experimental */ = {
 			isa = PBXGroup;
 			children = (
@@ -554,6 +570,7 @@
 		E6AB53AF2575311600364E5F /* Struct */ = {
 			isa = PBXGroup;
 			children = (
+				E623A3122634881B00484E11 /* Options */,
 				E6927B5025897A7600C811A7 /* Credentials.swift */,
 				1D0AFF632534AC440045D68D /* Status.swift */,
 				AA89482E23F1671A0074288B /* Buffer.swift */,
@@ -948,6 +965,8 @@
 				E69D5CEE2573AC8E00AEBA28 /* Repository+Submodules.swift in Sources */,
 				1D991AE12518FA7900335255 /* Duo.swift in Sources */,
 				1DB0F84E24EFFB2D00637B9B /* RepositoryCheckout.swift in Sources */,
+				E623A308263486A500484E11 /* FetchOptions.swift in Sources */,
+				E623A3142634883100484E11 /* CloneOptions.swift in Sources */,
 				E61B443423CE4D670059650A /* Repository_OLD+Submodule_OLD.swift in Sources */,
 				E67D157224EF24A500DA3542 /* Repository+Status.swift in Sources */,
 				1DCEA37E2542364D0012BF38 /* Result.swift in Sources */,
@@ -959,6 +978,7 @@
 				622726341C84E52500C53D17 /* Credentials_OLD.swift in Sources */,
 				AA89482F23F1671A0074288B /* Buffer.swift in Sources */,
 				1D496A4225372FA800789177 /* StrArray.swift in Sources */,
+				E623A31F2634885800484E11 /* CheckOutOptions.swift in Sources */,
 				E6D4A92024DEACC000E8041E /* Repository.swift in Sources */,
 				E6927B5125897A7600C811A7 /* Credentials.swift in Sources */,
 				1D5B38A825228C790019E593 /* Repository+Diff.swift in Sources */,
