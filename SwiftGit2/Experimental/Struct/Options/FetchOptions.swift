@@ -31,6 +31,7 @@ public class FetchOptions {
 		let blockPointer = UnsafeMutablePointer<FetchOptions>.allocate(capacity: 1)
 		blockPointer.initialize(to: self)
 		fetch_options.callbacks.payload = UnsafeMutableRawPointer(blockPointer)
+		fetch_options.callbacks.credentials = credentialsCallback
 	}
 	
 	internal static func from(pointer: UnsafeMutableRawPointer) -> FetchOptions {
