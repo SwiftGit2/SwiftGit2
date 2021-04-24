@@ -199,10 +199,12 @@ public extension Repository {
 	static func clone(from remoteURL: URL, to localURL: URL, isLocalClone: Bool = false, bare: Bool = false,
 							credentials: Credentials_OLD = .default, checkoutStrategy: CheckoutStrategy = .Safe,
 							checkoutProgress: CheckoutProgressBlock? = nil) -> Result<Repository, NSError> {
+		let fetchOptions = FetchOptions(credentials: credentials)
+		
 		var options = cloneOptions(
 			bare: bare,
 			localClone: isLocalClone,
-			fetchOptions: fetchOptions(credentials: credentials),
+			fetchOptions: fetchOptions.fetch_options,
 			checkoutOptions: checkoutOptions(strategy: checkoutStrategy, progress: checkoutProgress))
 
 		var pointer: OpaquePointer? = nil
@@ -230,21 +232,6 @@ public extension Repository {
 /// HELPERS
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-fileprivate func fetchOptions(credentials: Credentials_OLD) -> git_fetch_options {
-	let pointer = UnsafeMutablePointer<git_fetch_options>.allocate(capacity: 1)
-	git_fetch_init_options(pointer, UInt32(GIT_FETCH_OPTIONS_VERSION))
-
-	var options = pointer.move()
-
-	pointer.deallocate()
-
-	//options.callbacks.
-	
-	options.callbacks.payload = credentials.toPointer()
-	options.callbacks.credentials = credentialsCallback
-
-	return options
-}
 
 fileprivate func cloneOptions(bare: Bool = false, localClone: Bool = false, fetchOptions: git_fetch_options? = nil,
 						  checkoutOptions: git_checkout_options? = nil) -> git_clone_options {
