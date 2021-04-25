@@ -22,7 +22,7 @@ public class RemoteCallbacks {
 		let result = git_remote_init_callbacks(&remote_callbacks, UInt32(GIT_REMOTE_CALLBACKS_VERSION))
 		assert(result == GIT_OK.rawValue)
 		
-		remote_callbacks.payload = self.toRetainedPointer()
+		remote_callbacks.payload = self.toRetainedPointer() // must be released on completion
 		remote_callbacks.credentials = credentialsCallback
 		remote_callbacks.transfer_progress = transferCallback
 	}
