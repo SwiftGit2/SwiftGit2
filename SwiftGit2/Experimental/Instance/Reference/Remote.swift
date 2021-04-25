@@ -102,20 +102,3 @@ public extension Remote {
 		}
 	}
 }
-
-
-public class FetchOptions {
-	private(set) var fetch_options : git_fetch_options
-	let credentials: Credentials_OLD
-	
-	public init(credentials: Credentials_OLD) {
-		self.credentials = credentials
-		self.fetch_options = git_fetch_options()
-		
-		let result = git_fetch_options_init(&fetch_options, UInt32(GIT_FETCH_OPTIONS_VERSION))
-		assert(result == GIT_OK.rawValue)
-		
-		fetch_options.callbacks.payload = self.credentials.toPointer()
-		fetch_options.callbacks.credentials = credentialsCallback
-	}
-}
