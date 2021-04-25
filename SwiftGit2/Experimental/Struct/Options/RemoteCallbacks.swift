@@ -11,10 +11,10 @@ import Clibgit2
 
 public typealias TransferProgressCB = (git_indexer_progress)->(Bool) // return false to cancel progree
 
-public struct RemoteCallbacks {
+public class RemoteCallbacks {
 	let credentials: Credentials_OLD
 	var remote_callbacks = git_remote_callbacks()
-	var transferProgress: TransferProgressCB?
+	public var transferProgress: TransferProgressCB?
 	
 	public init(credentials: Credentials_OLD = .default) {
 		self.credentials = credentials
@@ -22,16 +22,25 @@ public struct RemoteCallbacks {
 		let result = git_remote_init_callbacks(&remote_callbacks, UInt32(GIT_REMOTE_CALLBACKS_VERSION))
 		assert(result == GIT_OK.rawValue)
 		
-		remote_callbacks.payload = self.toPointer()
+		remote_callbacks.payload = self.toRetainedPointer()
 		remote_callbacks.credentials = credentialsCallback
 		remote_callbacks.transfer_progress = transferCallback
 	}
+	#if DEBUG
+	deinit {
+		print("RemoteCallbacks deinit")
+	}
+	#endif
 	
-	internal static func from(pointer: UnsafeMutableRawPointer) -> RemoteCallbacks {
-		return Unmanaged<Wrapper<RemoteCallbacks>>.fromOpaque(UnsafeRawPointer(pointer)).takeRetainedValue().value
+	internal static func unretained(pointer: UnsafeMutableRawPointer) -> RemoteCallbacks {
+		return Unmanaged<Wrapper<RemoteCallbacks>>.fromOpaque(UnsafeRawPointer(pointer)).takeUnretainedValue().value
+	}
+	
+	internal static func release(pointer: UnsafeMutableRawPointer) {
+		_ = Unmanaged<Wrapper<RemoteCallbacks>>.fromOpaque(UnsafeRawPointer(pointer)).takeRetainedValue()
 	}
 
-	internal func toPointer() -> UnsafeMutableRawPointer {
+	internal func toRetainedPointer() -> UnsafeMutableRawPointer {
 		return Unmanaged.passRetained(Wrapper(self)).toOpaque()
 	}
 
@@ -53,7 +62,7 @@ private func credentialsCallback(
 	
 	let result: Int32
 	
-	switch RemoteCallbacks.from(pointer: payload).credentials {
+	switch RemoteCallbacks.unretained(pointer: payload).credentials {
 	case .default:
 		result = git_credential_default_new(cred)
 	case .sshAgent:
@@ -71,12 +80,19 @@ private func credentialsCallback(
 
 // Return a value less than zero to cancel process
 internal func transferCallback(stats: UnsafePointer<git_indexer_progress>?, payload: UnsafeMutableRawPointer? ) -> Int32 {
-	guard let stats = stats else { return -1 }
+	guard let stats = stats?.pointee else { return -1 }
 	guard let payload = payload else { return -1 }
 	
+	defer {
+		// release payload pointer if transfer was finished
+		if stats.total_objects == stats.indexed_objects {
+			RemoteCallbacks.release(pointer: payload)
+		}
+	}
+	
 	// if progress callback didn't set just continue
-	guard let transferProgress = RemoteCallbacks.from(pointer: payload).transferProgress else { return 0 }
+	guard let transferProgress = RemoteCallbacks.unretained(pointer: payload).transferProgress else { return 0 }
 	
 	// if callback returns false return -1 to cancel transfer
-	return transferProgress(stats.pointee) ? 0 : -1
+	return transferProgress(stats) ? 0 : -1
 }
