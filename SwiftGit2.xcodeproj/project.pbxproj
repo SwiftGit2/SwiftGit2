@@ -103,7 +103,8 @@
 		E61B443423CE4D670059650A /* Repository_OLD+Submodule_OLD.swift in Sources */ = {isa = PBXBuildFile; fileRef = E61B443323CE4D670059650A /* Repository_OLD+Submodule_OLD.swift */; };
 		E623A308263486A500484E11 /* FetchOptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = E623A307263486A500484E11 /* FetchOptions.swift */; };
 		E623A3142634883100484E11 /* CloneOptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = E623A3132634883100484E11 /* CloneOptions.swift */; };
-		E623A31F2634885800484E11 /* CheckOutOptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = E623A31E2634885800484E11 /* CheckOutOptions.swift */; };
+		E623A31F2634885800484E11 /* CheckoutOptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = E623A31E2634885800484E11 /* CheckoutOptions.swift */; };
+		E623A35A2634D4AE00484E11 /* RemoteCallbacks.swift in Sources */ = {isa = PBXBuildFile; fileRef = E623A3592634D4AE00484E11 /* RemoteCallbacks.swift */; };
 		E632D5C0262874990039FF01 /* Essentials in Frameworks */ = {isa = PBXBuildFile; productRef = E632D5BF262874990039FF01 /* Essentials */; };
 		E653907A23E7328200C08416 /* Diff+Delta.swift in Sources */ = {isa = PBXBuildFile; fileRef = E653907923E7328200C08416 /* Diff+Delta.swift */; };
 		E653907C23E73CDE00C08416 /* Patch.swift in Sources */ = {isa = PBXBuildFile; fileRef = E653907B23E73CDE00C08416 /* Patch.swift */; };
@@ -250,7 +251,8 @@
 		E61B443323CE4D670059650A /* Repository_OLD+Submodule_OLD.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Repository_OLD+Submodule_OLD.swift"; sourceTree = "<group>"; };
 		E623A307263486A500484E11 /* FetchOptions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FetchOptions.swift; sourceTree = "<group>"; };
 		E623A3132634883100484E11 /* CloneOptions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloneOptions.swift; sourceTree = "<group>"; };
-		E623A31E2634885800484E11 /* CheckOutOptions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckOutOptions.swift; sourceTree = "<group>"; };
+		E623A31E2634885800484E11 /* CheckoutOptions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckoutOptions.swift; sourceTree = "<group>"; };
+		E623A3592634D4AE00484E11 /* RemoteCallbacks.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteCallbacks.swift; sourceTree = "<group>"; };
 		E653907923E7328200C08416 /* Diff+Delta.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Diff+Delta.swift"; sourceTree = "<group>"; };
 		E653907B23E73CDE00C08416 /* Patch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Patch.swift; sourceTree = "<group>"; };
 		E65C767923E6F4FF00FD14BE /* Index_OLD.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Index_OLD.swift; sourceTree = "<group>"; };
@@ -536,7 +538,8 @@
 			children = (
 				E623A307263486A500484E11 /* FetchOptions.swift */,
 				E623A3132634883100484E11 /* CloneOptions.swift */,
-				E623A31E2634885800484E11 /* CheckOutOptions.swift */,
+				E623A31E2634885800484E11 /* CheckoutOptions.swift */,
+				E623A3592634D4AE00484E11 /* RemoteCallbacks.swift */,
 			);
 			path = Options;
 			sourceTree = "<group>";
@@ -978,13 +981,14 @@
 				622726341C84E52500C53D17 /* Credentials_OLD.swift in Sources */,
 				AA89482F23F1671A0074288B /* Buffer.swift in Sources */,
 				1D496A4225372FA800789177 /* StrArray.swift in Sources */,
-				E623A31F2634885800484E11 /* CheckOutOptions.swift in Sources */,
+				E623A31F2634885800484E11 /* CheckoutOptions.swift in Sources */,
 				E6D4A92024DEACC000E8041E /* Repository.swift in Sources */,
 				E6927B5125897A7600C811A7 /* Credentials.swift in Sources */,
 				1D5B38A825228C790019E593 /* Repository+Diff.swift in Sources */,
 				E6D4A91A24DEA93E00E8041E /* Commit.swift in Sources */,
 				BEB31F6D1A0D78F300F525B9 /* RepositoryOLD.swift in Sources */,
 				1D764BD8252CD148008417A7 /* Submodule.swift in Sources */,
+				E623A35A2634D4AE00484E11 /* RemoteCallbacks.swift in Sources */,
 				BE2E3BE61A31261300C67092 /* Objects.swift in Sources */,
 				AA66039F23FAD9F60093E7AF /* Repository_OLD+Apply.swift in Sources */,
 				232861431F4A3A2E00276D65 /* Diff.swift in Sources */,

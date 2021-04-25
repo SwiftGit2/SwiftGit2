@@ -261,6 +261,35 @@ fileprivate func pushOptions(credentials: Credentials_OLD) -> git_push_options {
 	return options
 }
 
+private func credentialsCallback(
+	cred: UnsafeMutablePointer<UnsafeMutablePointer<git_cred>?>?,
+	url: UnsafePointer<CChar>?,
+	username: UnsafePointer<CChar>?,
+	_: UInt32,
+	payload: UnsafeMutableRawPointer? ) -> Int32 {
+	
+	guard let payload = payload else { return -1 }
+		
+	let name = username.map(String.init(cString:))
+	
+	let result: Int32
+	
+	switch Credentials_OLD.fromPointer(payload) {
+	case .default:
+		result = git_credential_default_new(cred)
+	case .sshAgent:
+		result = git_credential_ssh_key_from_agent(cred, name!)
+	case .plaintext(let username, let password):
+		result = git_credential_userpass_plaintext_new(cred, username, password)
+	case .sshMemory(let username, let publicKey, let privateKey, let passphrase):
+		result = git_credential_ssh_key_memory_new(cred, username, publicKey, privateKey, passphrase)
+	case .ssh(publicKey: let publicKey, privateKey: let privateKey, passphrase: let passphrase):
+		result = git_credential_ssh_key_new(cred, name, publicKey, privateKey, passphrase)
+	}
+
+	return (result != GIT_OK.rawValue) ? -1 : 0
+}
+
 ////////////////////////////////////////////////////////////////////
 ///ERRORS
 ////////////////////////////////////////////////////////////////////

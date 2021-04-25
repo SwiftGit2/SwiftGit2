@@ -205,7 +205,7 @@ public extension Repository {
 		var options = cloneOptions(
 			bare: bare,
 			localClone: isLocalClone,
-			fetchOptions: FetchOptions(credentials: credentials).fetch_options,
+			fetchOptions: FetchOptions(callbacks: RemoteCallbacks()).fetch_options,
 			checkoutOptions: checkoutOptions(strategy: checkoutStrategy, progress: checkoutProgress))
 
 		let remoteURLString = (remoteURL as NSURL).isFileReferenceURL() ? remoteURL.path : remoteURL.absoluteString
@@ -218,6 +218,20 @@ public extension Repository {
 			}
 		}
 	}
+	
+	static func clone(from remoteURL: URL, to localURL: URL, options: CloneOptions = CloneOptions()) -> Result<Repository, NSError> {
+		var pointer: OpaquePointer? = nil
+		let remoteURLString = (remoteURL as NSURL).isFileReferenceURL() ? remoteURL.path : remoteURL.absoluteString
+		
+		var options = options.clone_options
+		
+		return _result( { Repository(pointer!) } , pointOfFailure: "git_clone") {
+			return localURL.withUnsafeFileSystemRepresentation { localPath in
+				return git_clone(&pointer, remoteURLString, localPath, &options)
+			}
+		}
+	}
+	
 }
 
 

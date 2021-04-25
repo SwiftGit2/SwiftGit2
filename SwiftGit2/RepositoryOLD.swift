@@ -9,103 +9,7 @@
 import Foundation
 import Clibgit2
 
-public typealias CheckoutProgressBlock = (String?, Int, Int) -> Void
 
-/// Helper function used as the libgit2 progress callback in git_checkout_options.
-/// This is a function with a type signature of git_checkout_progress_cb.
-private func checkoutProgressCallback(path: UnsafePointer<Int8>?, completedSteps: Int, totalSteps: Int,
-                                      payload: UnsafeMutableRawPointer?) {
-	if let payload = payload {
-		let buffer = payload.assumingMemoryBound(to: CheckoutProgressBlock.self)
-		let block: CheckoutProgressBlock
-		if completedSteps < totalSteps {
-			block = buffer.pointee
-		} else {
-			block = buffer.move()
-			buffer.deallocate()
-		}
-		block(path.flatMap(String.init(validatingUTF8:)), completedSteps, totalSteps)
-	}
-}
-
-/// Helper function for initializing libgit2 git_checkout_options.
-///
-/// :param: strategy The strategy to be used when checking out the repo, see CheckoutStrategy
-/// :param: progress A block that's called with the progress of the checkout.
-/// :returns: Returns a git_checkout_options struct with the progress members set.
-private func checkoutOptions(strategy: CheckoutStrategy,
-                             progress: CheckoutProgressBlock? = nil) -> git_checkout_options {
-	// Do this because GIT_CHECKOUT_OPTIONS_INIT is unavailable in swift
-	let pointer = UnsafeMutablePointer<git_checkout_options>.allocate(capacity: 1)
-	git_checkout_init_options(pointer, UInt32(GIT_CHECKOUT_OPTIONS_VERSION))
-	var options = pointer.move()
-	pointer.deallocate()
-
-	options.checkout_strategy = strategy.gitCheckoutStrategy.rawValue
-
-	if progress != nil {
-		options.progress_cb = checkoutProgressCallback
-		let blockPointer = UnsafeMutablePointer<CheckoutProgressBlock>.allocate(capacity: 1)
-		blockPointer.initialize(to: progress!)
-		options.progress_payload = UnsafeMutableRawPointer(blockPointer)
-	}
-
-	return options
-}
-
-private func fetchOptions(credentials: Credentials_OLD) -> git_fetch_options {
-	let pointer = UnsafeMutablePointer<git_fetch_options>.allocate(capacity: 1)
-	git_fetch_init_options(pointer, UInt32(GIT_FETCH_OPTIONS_VERSION))
-
-	var options = pointer.move()
-
-	pointer.deallocate()
-
-	options.callbacks.payload = credentials.toPointer()
-	options.callbacks.credentials = credentialsCallback
-
-	return options
-}
-
-private func pushOptions(credentials: Credentials_OLD) -> git_push_options {
-	let pointer = UnsafeMutablePointer<git_push_options>.allocate(capacity: 1)
-	git_push_init_options(pointer, UInt32(GIT_PUSH_OPTIONS_VERSION))
-	
-	var options = pointer.move()
-	
-	pointer.deallocate()
-	
-	options.callbacks.payload = credentials.toPointer()
-	options.callbacks.credentials = credentialsCallback
-	
-	return options
-}
-
-private func cloneOptions(bare: Bool = false, localClone: Bool = false, fetchOptions: git_fetch_options? = nil,
-                          checkoutOptions: git_checkout_options? = nil) -> git_clone_options {
-	let pointer = UnsafeMutablePointer<git_clone_options>.allocate(capacity: 1)
-	git_clone_init_options(pointer, UInt32(GIT_CLONE_OPTIONS_VERSION))
-
-	var options = pointer.move()
-
-	pointer.deallocate()
-
-	options.bare = bare ? 1 : 0
-
-	if localClone {
-		options.local = GIT_CLONE_NO_LOCAL
-	}
-
-	if let checkoutOptions = checkoutOptions {
-		options.checkout_opts = checkoutOptions
-	}
-
-	if let fetchOptions = fetchOptions {
-		options.fetch_opts = fetchOptions
-	}
-
-	return options
-}
 
 /// A git repository.
 public final class RepositoryOLD {
@@ -150,39 +54,7 @@ public final class RepositoryOLD {
 		return Result.success(repository)
 	}
 
-	/// Clone the repository from a given URL.
-	///
-	/// remoteURL        - The URL of the remote repository
-	/// localURL         - The URL to clone the remote repository into
-	/// localClone       - Will not bypass the git-aware transport, even if remote is local.
-	/// bare             - Clone remote as a bare repository.
-	/// credentials      - Credentials to be used when connecting to the remote.
-	/// checkoutStrategy - The checkout strategy to use, if being checked out.
-	/// checkoutProgress - A block that's called with the progress of the checkout.
-	///
-	/// Returns a `Result` with a `Repository` or an error.
-	public class func clone(from remoteURL: URL, to localURL: URL, localClone: Bool = false, bare: Bool = false,
-	                        credentials: Credentials_OLD = .default, checkoutStrategy: CheckoutStrategy = .Safe,
-	                        checkoutProgress: CheckoutProgressBlock? = nil) -> Result<RepositoryOLD, NSError> {
-		var options = cloneOptions(
-			bare: bare,
-			localClone: localClone,
-			fetchOptions: fetchOptions(credentials: credentials),
-			checkoutOptions: checkoutOptions(strategy: checkoutStrategy, progress: checkoutProgress))
-
-		var pointer: OpaquePointer? = nil
-		let remoteURLString = (remoteURL as NSURL).isFileReferenceURL() ? remoteURL.path : remoteURL.absoluteString
-		let result = localURL.withUnsafeFileSystemRepresentation { localPath in
-			git_clone(&pointer, remoteURLString, localPath, &options)
-		}
-
-		guard result == GIT_OK.rawValue else {
-			return Result.failure(NSError(gitError: result, pointOfFailure: "git_clone"))
-		}
-
-		let repository = RepositoryOLD(pointer!)
-		return Result.success(repository)
-	}
+	
 
 	// MARK: - Initializers
 
@@ -426,26 +298,6 @@ public final class RepositoryOLD {
 			}
 		}
 	}
-	
-	/// Push local branch changes to remote branch
-	public func push(branch: BranchOLD, to remote: Remote_OLD, credentials: Credentials_OLD = .default) -> Result<(), NSError> {
-		return remoteLookup(named: remote.name) { remote in
-			remote.flatMap { pointer in
-				var opts = pushOptions(credentials: credentials)
-
-				let branchName = branch.longName
-				var dirPointer = UnsafeMutablePointer<Int8>(mutating: (branchName as NSString).utf8String)
-				var refs = git_strarray(strings: &dirPointer, count: 1)
-
-				let result = git_remote_push(pointer, &refs, &opts)
-				guard result == GIT_OK.rawValue else {
-					let err = NSError(gitError: result, pointOfFailure: "git_remote_push")
-					return .failure(err)
-				}
-				return .success(())
-			}
-		}
-	}
 
 	// MARK: - Reference Lookups
 
@@ -569,44 +421,6 @@ public final class RepositoryOLD {
 			return Result.failure(NSError(gitError: result, pointOfFailure: "git_repository_set_head"))
 		}
 		return Result.success(())
-	}
-
-	/// Check out HEAD.
-	///
-	/// :param: strategy The checkout strategy to use.
-	/// :param: progress A block that's called with the progress of the checkout.
-	/// :returns: Returns a result with void or the error that occurred.
-	public func checkout(strategy: CheckoutStrategy, progress: CheckoutProgressBlock? = nil) -> Result<(), NSError> {
-		var options = checkoutOptions(strategy: strategy, progress: progress)
-
-		let result = git_checkout_head(self.pointer, &options)
-		guard result == GIT_OK.rawValue else {
-			return Result.failure(NSError(gitError: result, pointOfFailure: "git_checkout_head"))
-		}
-
-		return Result.success(())
-	}
-
-	/// Check out the given OID.
-	///
-	/// :param: oid The OID of the commit to check out.
-	/// :param: strategy The checkout strategy to use.
-	/// :param: progress A block that's called with the progress of the checkout.
-	/// :returns: Returns a result with void or the error that occurred.
-	public func checkout(_ oid: OID, strategy: CheckoutStrategy,
-	                     progress: CheckoutProgressBlock? = nil) -> Result<(), NSError> {
-		return setHEAD(oid).flatMap { self.checkout(strategy: strategy, progress: progress) }
-	}
-
-	/// Check out the given reference.
-	///
-	/// :param: reference The reference to check out.
-	/// :param: strategy The checkout strategy to use.
-	/// :param: progress A block that's called with the progress of the checkout.
-	/// :returns: Returns a result with void or the error that occurred.
-	public func checkout(_ reference: ReferenceType, strategy: CheckoutStrategy,
-	                     progress: CheckoutProgressBlock? = nil) -> Result<(), NSError> {
-		return setHEAD(reference).flatMap { self.checkout(strategy: strategy, progress: progress) }
 	}
 
 	/// Load all commits in the specified branch in topological & time order descending
