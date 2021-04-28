@@ -22,10 +22,6 @@ DerivedData
 *.xcscmblueprint
 *.idea*
 
-External/ios-openssl
-External/libgit2-ios
-External/libssh2-ios
-
 ### fastlane ###
 # fastlane - A streamlined workflow tool for Cocoa deployment
 
