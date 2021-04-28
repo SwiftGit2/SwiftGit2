@@ -1236,12 +1236,12 @@
 					"$(inherited)",
 				);
 				OTHER_LDFLAGS = (
-					"-lgit2",
+					External/libgit2.a,
 					"-force_load",
 					External/libgit2.a,
-					/usr/local/lib/libssh2.a,
-					"-lcrypto",
-					"-lssl",
+					External/libssh2.a,
+					External/libcrypto.a,
+					External/libssl.a,
 					"-lcurl",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "org.libgit2.$(PRODUCT_NAME:rfc1034identifier)";
@@ -1267,12 +1267,12 @@
 					"$(inherited)",
 				);
 				OTHER_LDFLAGS = (
-					"-lgit2",
+					External/libgit2.a,
 					"-force_load",
 					External/libgit2.a,
-					/usr/local/lib/libssh2.a,
-					"-lcrypto",
-					"-lssl",
+					External/libssh2.a,
+					External/libcrypto.a,
+					External/libssl.a,
 					"-lcurl",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "org.libgit2.$(PRODUCT_NAME:rfc1034identifier)";
