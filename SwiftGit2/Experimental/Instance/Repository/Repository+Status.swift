@@ -38,7 +38,7 @@ extension StatusIterator : RandomAccessCollection {
 	public var startIndex	: Int { 0 }
 	public var endIndex		: Int {
 		if let pointer = pointer {
-			git_status_list_entrycount(pointer)
+			return git_status_list_entrycount(pointer)
 		}
 		
 		return 0
