@@ -42,17 +42,6 @@ extension Branch {
 	public var commitOID	: Result<OID, Error> { getCommitOid() }
 }
 
-public extension Result where Failure == Error {
-	func withSwiftError() -> Result<Success, Error> {
-		switch self {
-		case .success(let success):
-			return .success(success)
-		case .failure(let error):
-			return .failure(error)
-		}
-	}
-}
-
 public extension Branch {
 	/// can be called only for local branch;
 	///
