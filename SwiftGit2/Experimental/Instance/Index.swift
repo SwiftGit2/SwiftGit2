@@ -21,7 +21,7 @@ public final class Index : InstanceProtocol {
 }
 
 public extension Repository {
-	func index() -> Result<Index, NSError> {
+	func index() -> Result<Index, Error> {
 		var pointer: OpaquePointer? = nil
 		
 		return _result( { Index(pointer!) }, pointOfFailure: "git_repository_index") {
@@ -33,7 +33,7 @@ public extension Repository {
 public extension Index {
 	var entrycount : Int { git_index_entrycount(pointer) }
 
-	func entries() -> Result<[IndexOld.Entry], NSError> {
+	func entries() -> Result<[IndexOld.Entry], Error> {
 		var entries = [IndexOld.Entry]()
 		for i in 0..<entrycount {
 			if let entry = git_index_get_byindex(pointer, i) {
@@ -43,7 +43,7 @@ public extension Index {
 		return .success(entries)
 	}
 	
-	func add(path: String) -> Result<(), NSError> {
+	func add(path: String) -> Result<(), Error> {
 		let dir = path
 		var dirPointer = UnsafeMutablePointer<Int8>(mutating: (dir as NSString).utf8String)
 		var paths = git_strarray(strings: &dirPointer, count: 1)
@@ -54,7 +54,7 @@ public extension Index {
 		.flatMap { self.write() }
 	}
 	
-	func remove(path: String) -> Result<(), NSError> {
+	func remove(path: String) -> Result<(), Error> {
 		let dir = path
 		var dirPointer = UnsafeMutablePointer<Int8>(mutating: (dir as NSString).utf8String)
 		var paths = git_strarray(strings: &dirPointer, count: 1)
@@ -65,15 +65,15 @@ public extension Index {
 		.flatMap { self.write() }
 	}
 	
-	func clear() -> Result<(), NSError> {
+	func clear() -> Result<(), Error> {
 		_result((), pointOfFailure: "git_index_clear") { git_index_clear(pointer) }
 	}
 	
-	private func write() -> Result<(),NSError> {
+	private func write() -> Result<(),Error> {
 		_result((), pointOfFailure: "git_index_write") { git_index_write(pointer) }
 	}
 	
-	func getTreeOID() -> Result<git_oid, NSError> {
+	func getTreeOID() -> Result<git_oid, Error> {
 		var treeOID = git_oid() // out
 		
 		return _result({ treeOID }, pointOfFailure: "git_index_write_tree") {
@@ -83,7 +83,7 @@ public extension Index {
 }
 
 public extension Duo where T1 == Index, T2 == Repository {
-	func commit(message: String, signature: Signature) -> Result<Commit, NSError> {
+	func commit(message: String, signature: Signature) -> Result<Commit, Error> {
 		let (index,repo) = self.value
 		
 		return index.getTreeOID()
@@ -102,7 +102,7 @@ public extension Duo where T1 == Index, T2 == Repository {
 	}
 	
 	/// return OID of written tree
-	func writeIndex() -> Result<OID, NSError>  {
+	func writeIndex() -> Result<OID, Error>  {
 		let (index, repo) = self.value
 		
 		var oid = git_oid() // out
@@ -116,7 +116,7 @@ public extension Duo where T1 == Index, T2 == Repository {
 fileprivate extension Repository {
 	/// If no parents write "[]"
 	/// Perform a commit with arbitrary numbers of parent commits.
-	func commit( tree treeOID: OID, parents: [Commit], message: String, signature: Signature ) -> Result<Commit, NSError> {
+	func commit( tree treeOID: OID, parents: [Commit], message: String, signature: Signature ) -> Result<Commit, Error> {
 		// create commit signature
 		return signature.makeUnsafeSignature().flatMap { signature in
 			defer { git_signature_free(signature) }
@@ -148,7 +148,7 @@ fileprivate extension Repository {
 		}
 	}
 
-	private func gitTreeLookup(tree treeOID: OID) -> Result<Tree, NSError> {
+	private func gitTreeLookup(tree treeOID: OID) -> Result<Tree, Error> {
 		var tree: OpaquePointer? = nil
 		var treeOIDCopy = treeOID.oid
 		

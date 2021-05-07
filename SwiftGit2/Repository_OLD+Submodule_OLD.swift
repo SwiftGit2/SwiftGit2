@@ -10,7 +10,7 @@ import Foundation
 import Clibgit2
 
 public extension RepositoryOLD {
-	func submodules() -> Result<[Submodule_OLD], NSError> {
+	func submodules() -> Result<[Submodule_OLD], Error> {
 		var cb = SubmodeleEachCallback(repoPointer: self.pointer)
 		let result = git_submodule_foreach(self.pointer, cb.each_submodule_cb, &cb)
 		
@@ -70,7 +70,7 @@ public final class Submodule_OLD {
 		git_submodule_free(pointer)
 	}
 	
-	public func open() -> Result<RepositoryOLD, NSError>  {
+	public func open() -> Result<RepositoryOLD, Error>  {
 		var repoPointer: OpaquePointer? = nil
 		git_submodule_open(&repoPointer, pointer)
 		

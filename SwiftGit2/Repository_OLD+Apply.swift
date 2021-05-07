@@ -10,7 +10,7 @@ import Foundation
 import Clibgit2
 
 //public extension RepositoryOLD {
-//	func apply(diff: Diff, location: GitApplyLocation, options: GitApplyOptions? = nil) -> Result<(), NSError> {
+//	func apply(diff: Diff, location: GitApplyLocation, options: GitApplyOptions? = nil) -> Result<(), Error> {
 //		return _result((), pointOfFailure: "git_apply") {
 //			git_apply(pointer, diff.pointer, git_apply_location_t(rawValue: location.rawValue), options?.pointer)
 //		}

@@ -36,7 +36,7 @@ public extension Submodule {
 	
 	/// Open the repository for a submodule.
 	/// WILL WORK ONLY IF SUBMODULE IS CHECKED OUT INTO WORKING DIRECTORY
-	func repo() -> Result<Repository, NSError> {
+	func repo() -> Result<Repository, Error> {
 		var pointer: OpaquePointer? = nil
 		
 		return _result( { Repository(pointer!) }, pointOfFailure: "git_submodule_open") {
@@ -49,7 +49,7 @@ public extension Submodule {
 
 public extension Duo where T1 == Submodule, T2 == Repository {
 	///Repository must be PARENT of submodule
-	func getSubmoduleStatus() -> Result<SubmoduleStatusFlags, NSError> {
+	func getSubmoduleStatus() -> Result<SubmoduleStatusFlags, Error> {
 		let (submodule, parentRepo) = self.value
 		
 		let ignore = git_submodule_ignore_t.init(SubmoduleIgnore.none.rawValue)
@@ -63,7 +63,7 @@ public extension Duo where T1 == Submodule, T2 == Repository {
 		}
 	}
 	
-	func getSubmoduleAbsPath() -> Result<String, NSError> {
+	func getSubmoduleAbsPath() -> Result<String, Error> {
 		let (submodule, repo) = self.value
 		
 		return repo.directoryURL.flatMap { url in
@@ -71,7 +71,7 @@ public extension Duo where T1 == Submodule, T2 == Repository {
 		}
 	}
 	
-	func fetchRecurseValueSet(_ bool: Bool ) -> Result<(),NSError> {
+	func fetchRecurseValueSet(_ bool: Bool ) -> Result<(),Error> {
 		let (submodule, repo) = self.value
 		
 		let valToSet = git_submodule_recurse_t(rawValue:  bool ? 1 : 0 )
@@ -96,7 +96,7 @@ public extension Duo where T1 == Submodule, T2 == Repository {
 	
 	//TODO: Test Me
 	/// Set the branch for the submodule in the configuration
-	func branchSetAndSync(branchName: String) -> Result<(), NSError> {
+	func branchSetAndSync(branchName: String) -> Result<(), Error> {
 		let (submodule, repo) = self.value
 		
 		return _result( { () }, pointOfFailure: "git_submodule_set_branch" ) {
@@ -114,7 +114,7 @@ public extension Duo where T1 == Submodule, T2 == Repository {
 	//            .url -> "git@gitlab.com:sergiy.vynnychenko/AppCore.git"
 	//
 	//Resolve a submodule url relative to the given repository.
-	func resolveUrl() -> Result<String, NSError> {
+	func resolveUrl() -> Result<String, Error> {
 		let (submodule, repo) = self.value
 
 		let buf_ptr = UnsafeMutablePointer<git_buf>.allocate(capacity: 1)
@@ -131,7 +131,7 @@ public extension Duo where T1 == Submodule, T2 == Repository {
 	
 	//TODO: Test Me
 	/// Set the URL for the submodule in the configuration
-	func submoduleSetUrlAndSync(newRelativeUrl: String) -> Result<(), NSError> {
+	func submoduleSetUrlAndSync(newRelativeUrl: String) -> Result<(), Error> {
 		let (submodule, repo) = self.value
 		
 		return _result({()}, pointOfFailure: "git_submodule_set_url") {
@@ -148,7 +148,7 @@ public extension Duo where T1 == Submodule, T2 == Repository {
 }
 
 public extension Submodule {
-	func clone() -> Result<Repository, NSError> {
+	func clone() -> Result<Repository, Error> {
 		let pointer = UnsafeMutablePointer<OpaquePointer?>.allocate(capacity: 1)
 		
 		return _result( {Repository(pointer.pointee!)}, pointOfFailure:"git_submodule_clone" ){
@@ -163,7 +163,7 @@ public extension Submodule {
 	
 	//TODO: Test Me
 	///Copy submodule remote info into submodule repo.
-	func sync() -> Result<(), NSError> {
+	func sync() -> Result<(), Error> {
 		return _result( {()}, pointOfFailure:"git_submodule_sync" ){
 			git_submodule_sync(self.pointer);
 		}
@@ -172,7 +172,7 @@ public extension Submodule {
 	//TODO: Test Me. // don't know how to test
 	///Reread submodule info from config, index, and HEAD |
 	///Call this to reread cached submodule information for this submodule if you have reason to believe that it has changed.
-	func reload(force: Bool = false) -> Result<(), NSError> {
+	func reload(force: Bool = false) -> Result<(), Error> {
 		let forceInt: Int32 = force ? 1 : 0
 		
 		return _result( {()}, pointOfFailure: "git_submodule_reload") {
@@ -186,7 +186,7 @@ public extension Submodule {
 	///If the submodule repository doesn't contain the target commit (e.g. because fetchRecurseSubmodules isn't set),
 	///then the submodule is fetched using the fetch options supplied in options.
 	func update( options: UnsafeMutablePointer<git_submodule_update_options>?,
-				 initBeforeUpdate: Bool = false ) -> Result<(), NSError> {
+				 initBeforeUpdate: Bool = false ) -> Result<(), Error> {
 		let initBeforeUpdateInt: Int32 = initBeforeUpdate ? 1 : 0
 		
 		return _result({()}, pointOfFailure: "git_submodule_update") {
@@ -197,7 +197,7 @@ public extension Submodule {
 	//TODO: Test Me --- not sure how to test
 	///Add current submodule HEAD commit to index of superproject.
 	/// writeIndex -- if true - should immediately write the index file. If you pass this as false, you will have to get the git_index and explicitly call `git_index_write()` on it to save the change
-	func addToIndex( writeIndex: Bool = true) -> Result<(), NSError> {
+	func addToIndex( writeIndex: Bool = true) -> Result<(), Error> {
 		let writeIndex:Int32 = writeIndex ? 1 : 0
 		
 		return _result({()}, pointOfFailure: "git_submodule_add_to_index") {
@@ -210,14 +210,14 @@ public extension Submodule {
 	/// Resolve the setup of a new git submodule. |
 	///This should be called on a submodule once you have called add setup and done the clone of the submodule.
 	///This adds the .gitmodules file and the newly cloned submodule to the index to be ready to be committed (but doesn't actually do the commit).
-	func finalize () -> Result<(),NSError> {
+	func finalize () -> Result<(),Error> {
 		return _result( {()}, pointOfFailure: "git_submodule_add_finalize") {
 			git_submodule_add_finalize(self.pointer);
 		}
 	}
 	
 	//TODO: Test Me. Especially "overwrite"
-	func initSub (overwrite: Bool = false) -> Result<(),NSError> {
+	func initSub (overwrite: Bool = false) -> Result<(),Error> {
 		let overwriteInt: Int32 = overwrite ? 1 : 0
 		
 		return _result( {()}, pointOfFailure: "git_submodule_init") {
@@ -233,7 +233,7 @@ public class SubmoduleUpdateOptions {
 	
 	private let GIT_SUBMODULE_UPDATE_OPTIONS_VERSION = UInt32(1) //have no idea what is this
 	
-	func create() -> Result<SubmoduleUpdateOptions, NSError> {
+	func create() -> Result<SubmoduleUpdateOptions, Error> {
 		return _result( self , pointOfFailure: "git_submodule_update_options_init") {
 			git_submodule_update_options_init(optionsPointer, GIT_SUBMODULE_UPDATE_OPTIONS_VERSION )
 		}

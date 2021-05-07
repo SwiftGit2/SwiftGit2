@@ -23,7 +23,7 @@ public class Blob : Object {
 }
 
 public extension Repository {
-	func hunksBetweenBlobs(old: Blob?, new: Blob?, options: DiffOptions?) -> Result<[Diff.Hunk],NSError>{
+	func hunksBetweenBlobs(old: Blob?, new: Blob?, options: DiffOptions?) -> Result<[Diff.Hunk],Error>{
 		var cb = DiffEachCallbacks()
 		
 		return _result( { cb.deltas.first?.hunks ?? [] }, pointOfFailure: "git_diff_blobs") {

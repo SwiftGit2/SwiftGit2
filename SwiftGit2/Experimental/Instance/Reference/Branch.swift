@@ -19,7 +19,7 @@ public enum BranchLocation {
 public protocol Branch: InstanceProtocol {
 	var shortName	: String	{ get }
 	var name		: String	{ get }
-	var commitOID	: Result<OID, NSError> { get }
+	var commitOID	: Result<OID, Error> { get }
 }
 
 public extension Branch {
@@ -39,10 +39,10 @@ extension Reference : Branch {}
 extension Branch {
 	public var shortName 	: String 	{ ( try? getNameInternal().get() ) ?? "" }
 	public var name 		: String 	{ getLongName() }
-	public var commitOID	: Result<OID, NSError> { getCommitOid() }
+	public var commitOID	: Result<OID, Error> { getCommitOid() }
 }
 
-public extension Result where Failure == NSError {
+public extension Result where Failure == Error {
 	func withSwiftError() -> Result<Success, Error> {
 		switch self {
 		case .success(let success):
@@ -57,7 +57,7 @@ public extension Branch {
 	/// can be called only for local branch;
 	///
 	/// newName looks like "BrowserGridItemView" BUT NOT LIKE "refs/heads/BrowserGridItemView"
-	func setUpstreamName(newName: String) -> Result<Branch, NSError> {
+	func setUpstreamName(newName: String) -> Result<Branch, Error> {
 		let cleanedName = newName.replace(of: "refs/heads/", to: "")
 		
 		return _result({ self }, pointOfFailure: "git_branch_set_upstream" ) {
@@ -68,12 +68,12 @@ public extension Branch {
 	}
 	
 	/// can be called only for local branch;
-	func getUpstreamName() -> Result<String, NSError> {
+	func getUpstreamName() -> Result<String, Error> {
 		getUpstreamBranch().map{ $0.name }
 	}
 	
 	/// Can be used only on local branch
-	func getUpstreamBranch() -> Result<Branch, NSError> {
+	func getUpstreamBranch() -> Result<Branch, Error> {
 		let localBranch = self
 		
 		var resolved: OpaquePointer? = nil
@@ -91,21 +91,21 @@ public extension Branch {
 	///
 	/// newNameWithPath MUST BE WITH "refs/heads/"
 	/// Will reset assigned upstream Name
-	func setLocalName(newNameWithPath: String) -> Result<Branch, NSError> {
+	func setLocalName(newNameWithPath: String) -> Result<Branch, Error> {
 		guard   newNameWithPath.contains("refs/heads/")
-		else { return .failure(BranchError.NameIsNotLocal as NSError) }
+		else { return .failure(BranchError.NameIsNotLocal as Error) }
 		
 		return (self as! Reference).rename(newNameWithPath).flatMap { $0.asBranch() }
 	}
 }
 
 public extension Duo where T1 == Branch, T2 == Repository {
-	func commit() -> Result<Commit, NSError> {
+	func commit() -> Result<Commit, Error> {
 		let (branch, repo) = self.value
 		return branch.commitOID.flatMap { repo.instanciate($0) }
 	}
 	
-	func newBranch(withName name: String) -> Result<Reference, NSError> {
+	func newBranch(withName name: String) -> Result<Reference, Error> {
 		let (branch, repo) = self.value
 		
 		return branch.commitOID
@@ -113,7 +113,7 @@ public extension Duo where T1 == Branch, T2 == Repository {
 			.flatMap { commit in repo.createBranch(from: commit, withName: name)  }
 	}
 	
-	fileprivate func getRemoteName() -> Result<String, NSError> {
+	fileprivate func getRemoteName() -> Result<String, Error> {
 		let (branch, repo) = self.value
 		
 		let buf_ptr = UnsafeMutablePointer<git_buf>.allocate(capacity: 1)
@@ -133,7 +133,7 @@ public extension Duo where T1 == Branch, T2 == Repository {
 	}
 	
 	///Gets REMOTE item from local branch. Doesn't works with remote branch
-	func getRemote() -> Result<Remote, NSError> {
+	func getRemote() -> Result<Remote, Error> {
 		let (_, repo) = self.value
 		
 		return getRemoteName()
@@ -146,7 +146,7 @@ public extension Duo where T1 == Branch, T2 == Repository {
 
 public extension Duo where T1 == Branch, T2 == Remote {
 	/// Push local branch changes to remote branch
-	func push(credentials: Credentials_OLD) -> Result<(), NSError> {
+	func push(credentials: Credentials_OLD) -> Result<(), Error> {
 		let (branch, remoteRepo) = self.value
 		
 		var opts = pushOptions(credentials: credentials)
@@ -160,7 +160,7 @@ public extension Duo where T1 == Branch, T2 == Remote {
 
 // High Level code
 public extension Repository {
-	func push(remoteRepoName: String, localBranchName: String, credentials: Credentials_OLD) -> Result<(), NSError> {
+	func push(remoteRepoName: String, localBranchName: String, credentials: Credentials_OLD) -> Result<(), Error> {
 		let set = XR.Set()
 		
 		//Huck, but works
@@ -175,7 +175,7 @@ public extension Repository {
 
 // Low Level code
 public extension Repository {
-	func branches( _ location: BranchLocation) -> Result<[Branch], NSError> {		
+	func branches( _ location: BranchLocation) -> Result<[Branch], Error> {		
 		switch location {
 		case .local:		return references(withPrefix: "refs/heads/")
 										.flatMap { $0.map { $0.asBranch() }.aggregateResult() }
@@ -185,7 +185,7 @@ public extension Repository {
 	}
 	
 	/// Get upstream name by branchName
-	func upstreamName(branchName: String) -> Result<String, NSError> {
+	func upstreamName(branchName: String) -> Result<String, Error> {
 		let buf_ptr = UnsafeMutablePointer<git_buf>.allocate(capacity: 1)
 		buf_ptr.pointee = git_buf(ptr: nil, asize: 0, size: 0)
 		
@@ -199,7 +199,7 @@ public extension Repository {
 }
 
 private extension Branch {
-	private func getNameInternal() -> Result<String, NSError> {
+	private func getNameInternal() -> Result<String, Error> {
 		var namePointer: UnsafePointer<Int8>? = nil
 		
 		return _result( { String(validatingUTF8: namePointer!) ?? "" }, pointOfFailure: "git_branch_name") {
@@ -211,7 +211,7 @@ private extension Branch {
 		return String(validatingUTF8: git_reference_name(pointer)) ?? ""
 	}
 	
-	func getCommitOid() -> Result<OID, NSError> {
+	func getCommitOid() -> Result<OID, Error> {
 		if git_reference_type(pointer).rawValue == GIT_REFERENCE_SYMBOLIC.rawValue {
 			var resolved: OpaquePointer? = nil
 			defer {
@@ -229,7 +229,7 @@ private extension Branch {
 
 fileprivate extension Remote {
 	///Branch name must be full - with "refs/heads/"
-	func push(branchName: String, options: UnsafePointer<git_push_options> ) -> Result<(), NSError> {
+	func push(branchName: String, options: UnsafePointer<git_push_options> ) -> Result<(), Error> {
 		var dirPointer = UnsafeMutablePointer<Int8>(mutating: (branchName as NSString).utf8String)
 		var refs = git_strarray(strings: &dirPointer, count: 1)
 

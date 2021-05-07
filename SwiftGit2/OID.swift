@@ -70,7 +70,7 @@ extension OID: Hashable {
 }
 
 public extension Duo where T1 == OID, T2 == Repository {
-	func commit() -> Result<Commit, NSError> {
+	func commit() -> Result<Commit, Error> {
 		let (oid, repo) = self.value
 		return repo.instanciate(oid)
 	}

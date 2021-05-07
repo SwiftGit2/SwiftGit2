@@ -9,14 +9,14 @@
 import Clibgit2
 
 public extension Repository {
-	func hunksFrom(delta: Diff.Delta, options: DiffOptions? = nil) -> Result<[Diff.Hunk], NSError> {
+	func hunksFrom(delta: Diff.Delta, options: DiffOptions? = nil) -> Result<[Diff.Hunk], Error> {
 		let old = delta.oldFile != nil ? (try? blob(oid: delta.oldFile!.oid).get()) : nil
 		let new = delta.newFile != nil ? (try? blob(oid: delta.newFile!.oid).get()) : nil
 		
 		return hunksBetweenBlobs(old: old, new: new, options: options)
 	}
 	
-	func patchFrom(delta: Diff.Delta, options: DiffOptions? = nil, reverse: Bool = false) -> Result<Patch, NSError> {
+	func patchFrom(delta: Diff.Delta, options: DiffOptions? = nil, reverse: Bool = false) -> Result<Patch, Error> {
 		
 		var oldFile = delta.oldFile
 		var newFile = delta.newFile
@@ -30,7 +30,7 @@ public extension Repository {
 		return Patch.fromFiles(old: oldFile, new: newFile)
 	}
 	
-	func blob(oid: OID) -> Result<Blob, NSError> {
+	func blob(oid: OID) -> Result<Blob, Error> {
 		var oid = oid.oid
 		var blob_pointer: OpaquePointer? = nil
 		

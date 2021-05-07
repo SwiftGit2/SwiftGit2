@@ -42,11 +42,11 @@ public struct XR {
 			return Set(objects: _objects)
 		}
 		
-		public func with<ObjectType>(_ obj : Result<ObjectType, NSError>) -> Result<Self, NSError> {
+		public func with<ObjectType>(_ obj : Result<ObjectType, Error>) -> Result<Self, Error> {
 			obj.map { self.with($0) }
 		}
 		
-		public func with<ObjectType>(_ id: String, _ obj : Result<ObjectType, NSError>) -> Result<Self, NSError> {
+		public func with<ObjectType>(_ id: String, _ obj : Result<ObjectType, Error>) -> Result<Self, Error> {
 			obj.map { self.with(id, $0) }
 		}
 		
@@ -84,7 +84,7 @@ extension XR.Object {
 		return XR.ObjectTransform(object: self.object, block: block)
 	}
 	
-	func flatMap<OutputType>(block : (ObjectType) -> (Result<OutputType, NSError>)) -> Self {
+	func flatMap<OutputType>(block : (ObjectType) -> (Result<OutputType, Error>)) -> Self {
 		return self
 	}
 }

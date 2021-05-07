@@ -12,7 +12,7 @@ import Foundation
 ///Result
 /////////////////////////////////////////////////////////////////////////////////////////////////////
 internal extension Result {
-	func combine<T2>(with other: Result<T2, Failure>) -> Result<(Success,T2), Failure> {
+	func combine<T2>(with other: Result<T2, Error>) -> Result<(Success,T2), Error> {
 		switch self {
 		case .success(let selfRes):
 			switch other {
@@ -28,7 +28,7 @@ internal extension Result {
 }
 
 prefix operator ⌘
-public prefix func ⌘<T>(right: T) -> Result<T, NSError> {
+public prefix func ⌘<T>(right: T) -> Result<T, Error> {
 	return .success(right)
 }
 

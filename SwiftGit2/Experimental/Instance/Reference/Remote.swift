@@ -94,7 +94,7 @@ public extension Remote {
 		return newUrl.replacingOccurrences(of: ":", with: "/")
 	}
 	
-	func fetch(options: FetchOptions) -> Result<(), NSError> {
+	func fetch(options: FetchOptions) -> Result<(), Error> {
 		var opts = options.fetch_options
 		
 		return _result((), pointOfFailure: "git_remote_fetch") {

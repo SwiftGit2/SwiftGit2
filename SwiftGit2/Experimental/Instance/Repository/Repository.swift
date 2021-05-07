@@ -7,6 +7,7 @@
 //
 
 import Clibgit2
+import Essentials
 
 public class Repository : InstanceProtocol {
 	public var pointer: OpaquePointer
@@ -20,12 +21,12 @@ public class Repository : InstanceProtocol {
 		return nil
 	}
 	
-	public var directoryURL: Result<URL, NSError> {
+	public var directoryURL: Result<URL, Error> {
 		if let pathPointer = git_repository_workdir(self.pointer) {
 			return .success( URL(fileURLWithPath: String(cString: pathPointer) , isDirectory: true) )
 		}
 		
-		return .failure(RepositoryError.FailedToGetRepoUrl as NSError)
+		return .failure(RepositoryError.FailedToGetRepoUrl as Error)
 	}
 	
 	required public init(_ pointer: OpaquePointer) {
@@ -39,22 +40,22 @@ public class Repository : InstanceProtocol {
 
 //Remotes
 extension Repository {
-	public func getRemoteFirst() -> Result<Remote, NSError> {
+	public func getRemoteFirst() -> Result<Remote, Error> {
 		return getRemotesNames()
-			.flatMap{ arr -> Result<Remote, NSError> in
+			.flatMap{ arr -> Result<Remote, Error> in
 				if let first = arr.first {
 					return self.remoteRepo(named: first, remoteType: .ForceHttps)
 				}
-				return .failure(NSError() )// TODO: Noone repo in the repository
+				return .failure(WTF("can't get RemotesNames") )
 			}
 	}
 	
-	public func getAllRemotes() -> Result<[Remote], NSError> {
+	public func getAllRemotes() -> Result<[Remote], Error> {
 		return getRemotesNames()
 			.flatMap{ $0.map({ self.remoteRepo(named: $0, remoteType: .ForceHttps) }).aggregateResult() }
 	}
 	
-	private func getRemotesNames() -> Result<[String], NSError> {
+	private func getRemotesNames() -> Result<[String], Error> {
 		let strArrayPointer = UnsafeMutablePointer<git_strarray>.allocate(capacity: 1)
 		defer {
 			git_strarray_free(strArrayPointer)
@@ -68,19 +69,19 @@ extension Repository {
 }
 
 extension Repository {
-	public func headCommit() -> Result<Commit, NSError> {
+	public func headCommit() -> Result<Commit, Error> {
 		var oid = git_oid() //out
 		
 		return _result((), pointOfFailure: "git_reference_name_to_id") {
 			git_reference_name_to_id(&oid, self.pointer, "HEAD")
 		}
 		.flatMap { _ in
-			self.instanciate(OID(oid)) as Result<Commit, NSError>
+			self.instanciate(OID(oid)) as Result<Commit, Error>
 		}
 	}
 	
 	
-	public func createBranch(from commit: Commit, withName newName: String, overwriteExisting: Bool = false) -> Result<Reference, NSError> {
+	public func createBranch(from commit: Commit, withName newName: String, overwriteExisting: Bool = false) -> Result<Reference, Error> {
 		let force: Int32 = overwriteExisting ? 0 : 1
 		
 		var referenceToBranch : OpaquePointer? = nil
@@ -92,7 +93,7 @@ extension Repository {
 		}
 	}
 	
-	public func commit(message: String, signature: Signature) -> Result<Commit, NSError> {
+	public func commit(message: String, signature: Signature) -> Result<Commit, Error> {
 		return index().flatMap { index in
 			return Duo((index,self)).commit(message: message, signature: signature)
 		}
@@ -102,7 +103,7 @@ extension Repository {
 	
 
 	
-	public func mergeCommits(commitFrom: Commit, commitInto: Commit ) -> Result<Index, NSError> {
+	public func mergeCommits(commitFrom: Commit, commitInto: Commit ) -> Result<Index, Error> {
 		var mrgOptions = mergeOptions()
 		
 		var rezPointer : OpaquePointer? = nil
@@ -112,11 +113,11 @@ extension Repository {
 		}
 	}
 	
-	public func remoteRepo(named name: String, remoteType: RemoteType) -> Result<Remote, NSError> {
+	public func remoteRepo(named name: String, remoteType: RemoteType) -> Result<Remote, Error> {
 		return remoteLookup(named: name) { $0.map{ Remote($0, remoteType: remoteType) } }
 	}
 	
-	public func remoteLookup<A>(named name: String, _ callback: (Result<OpaquePointer, NSError>) -> A) -> A {
+	public func remoteLookup<A>(named name: String, _ callback: (Result<OpaquePointer, Error>) -> A) -> A {
 		var pointer: OpaquePointer? = nil
 		
 		let result = _result( () , pointOfFailure: "git_remote_lookup") {
@@ -128,7 +129,7 @@ extension Repository {
 }
 
 public extension Repository {
-	class func at(url: URL) -> Result<Repository, NSError> {
+	class func at(url: URL) -> Result<Repository, Error> {
 		var pointer: OpaquePointer? = nil
 		
 		return _result( { Repository(pointer!) }, pointOfFailure: "git_repository_open") {
@@ -138,7 +139,7 @@ public extension Repository {
 		}
 	}
 	
-	class func create(at url: URL) -> Result<Repository, NSError> {
+	class func create(at url: URL) -> Result<Repository, Error> {
 		var pointer: OpaquePointer? = nil
 		
 		return _result( { Repository(pointer!) }, pointOfFailure: "git_repository_init") {
@@ -152,10 +153,10 @@ public extension Repository {
 
 public extension Repository {
 	/// Method needed to collect not pushed or not pulled commits
-	func getChangedCommits(branchToHide: String, branchToPush: String) -> Result<[Commit], NSError> {
+	func getChangedCommits(branchToHide: String, branchToPush: String) -> Result<[Commit], Error> {
 		let revWalker = RevisionWalker(repo: self, localBranchToHide: branchToHide, remoteBranchToPush: branchToPush)
 		
-		var result: [Result<Commit, NSError>] = []
+		var result: [Result<Commit, Error>] = []
 		
 		while let elem = revWalker.next() {
 			result.append(elem)
@@ -167,13 +168,13 @@ public extension Repository {
 
 // index
 public extension Repository {
-	func reset(path: String) -> Result<(), NSError> {
+	func reset(path: String) -> Result<(), Error> {
 		let dir = path
 		var dirPointer = UnsafeMutablePointer<Int8>(mutating: (dir as NSString).utf8String)
 		var paths = git_strarray(strings: &dirPointer, count: 1)
 		
 		return HEAD()
-			.flatMap { self.instanciate($0.oid) as Result<Commit, NSError> }
+			.flatMap { self.instanciate($0.oid) as Result<Commit, Error> }
 			.flatMap { commit in
 				_result((), pointOfFailure: "git_reset_default") {
 					git_reset_default(self.pointer, commit.pointer, &paths)
@@ -198,7 +199,7 @@ public extension Repository {
 	/// Returns a `Result` with a `Repository` or an error.
 	static func clone(from remoteURL: URL, to localURL: URL, isLocalClone: Bool = false, bare: Bool = false,
 							credentials: Credentials_OLD = .default, checkoutStrategy: CheckoutStrategy = .Safe,
-							checkoutProgress: CheckoutProgressBlock? = nil) -> Result<Repository, NSError> {
+							checkoutProgress: CheckoutProgressBlock? = nil) -> Result<Repository, Error> {
 		
 
 		var pointer: OpaquePointer? = nil
@@ -219,7 +220,7 @@ public extension Repository {
 		}
 	}
 	
-	static func clone(from remoteURL: URL, to localURL: URL, options: CloneOptions = CloneOptions()) -> Result<Repository, NSError> {
+	static func clone(from remoteURL: URL, to localURL: URL, options: CloneOptions = CloneOptions()) -> Result<Repository, Error> {
 		var pointer: OpaquePointer? = nil
 		let remoteURLString = (remoteURL as NSURL).isFileReferenceURL() ? remoteURL.path : remoteURL.absoluteString
 		

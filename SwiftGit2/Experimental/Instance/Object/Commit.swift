@@ -37,7 +37,7 @@ public class Commit : Object {
 }
 
 public extension Commit {
-	func parents() -> Result<[Commit], NSError> {
+	func parents() -> Result<[Commit], Error> {
 		var result: [Commit] = []
 		let parentsCount = git_commit_parentcount(self.pointer)
 		
@@ -56,7 +56,7 @@ public extension Commit {
 		return .success(result)
 	}
 	
-	func getTree() -> Result<Tree, NSError> {
+	func getTree() -> Result<Tree, Error> {
 		var treePoint: OpaquePointer? = nil
 		
 		return  _result( { Tree(treePoint!) } , pointOfFailure: "git_commit_tree" ) {
