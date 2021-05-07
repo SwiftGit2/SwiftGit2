@@ -15,16 +15,16 @@ enum RefWriterError: Error {
 }
 
 public protocol ReferenceWriter : InstanceProtocol {
-	func rename(_ newName: String) -> Result<Reference,NSError>
+	func rename(_ newName: String) -> Result<Reference,Error>
 }
 
 extension Reference: ReferenceWriter {
-	public func rename(_ newName: String) -> Result<Reference, NSError> {
+	public func rename(_ newName: String) -> Result<Reference, Error> {
 		rename(newName, force: false) // Or true?
 	}
 	
 	/// If the force flag is not enabled, and there's already a reference with the given name, the renaming will fail.
-	public func rename(_ newName: String, force: Bool) -> Result<Reference,NSError> {
+	public func rename(_ newName: String, force: Bool) -> Result<Reference,Error> {
 		var newReference: OpaquePointer? = nil
 		
 		let oid = try? self.commitOID.get()
@@ -41,37 +41,37 @@ extension Reference: ReferenceWriter {
 
 public extension Branch {
 	///Need to use FULL name. ShortName will fail.
-	func rename(to newName: String ) -> Result<Reference, NSError> {
+	func rename(to newName: String ) -> Result<Reference, Error> {
 		if( !newName.starts(with: "refs/heads/") && !newName.starts(with: "refs/remotes/")) {
-			return .failure(RefWriterError.NameHaveNoCorrectPrefix as NSError)
+			return .failure(RefWriterError.NameHaveNoCorrectPrefix as Error)
 		}
 		
 		return (self as! Reference).rename(newName)
 	}
 	
-	func renameLocalUsingUnifiedName(to newName: String) -> Result<Reference, NSError> {
+	func renameLocalUsingUnifiedName(to newName: String) -> Result<Reference, Error> {
 		if self.isLocalBranch {
 			return (self as! Reference).rename("refs/heads/\(newName)")
 		}
-		return .failure(RefWriterError.BranchWasntFound as NSError)
+		return .failure(RefWriterError.BranchWasntFound as Error)
 	}
 	
-	func renameRemoteUsingUnifiedName(to newName: String ) -> Result<Reference, NSError> {
+	func renameRemoteUsingUnifiedName(to newName: String ) -> Result<Reference, Error> {
 		if self.isRemoteBranch {
 			let sections = self.name.split(separator: "/")
 			if sections.count < 3 {
-				return .failure(RefWriterError.Unknown as NSError)
+				return .failure(RefWriterError.Unknown as Error)
 			}
 			let origin = sections[2]
 			
 			return  (self as! Reference).rename("refs/remotes/\(origin)/\(newName)")
 		}
 		
-		return .failure(RefWriterError.BranchWasntFound as NSError)
+		return .failure(RefWriterError.BranchWasntFound as Error)
 	}
 	
 	
-	func delete() -> Result<(), NSError> {
+	func delete() -> Result<(), Error> {
 		return _result((), pointOfFailure: "git_branch_delete") {
 			git_branch_delete(self.pointer)
 		}
@@ -79,12 +79,12 @@ public extension Branch {
 }
 
 public extension Repository {
-	func rename(reference: String, to newName: String) -> Result<Reference, NSError> {
+	func rename(reference: String, to newName: String) -> Result<Reference, Error> {
 		return self.reference(name: reference)
 			.flatMap { $0.rename( newName) }
 	}
 	
-	func rename(remote: String, to newName: String) -> Result<(), NSError> {
+	func rename(remote: String, to newName: String) -> Result<(), Error> {
 		//WHAT DOES IT MEAN? What the problems?
 		let problems = UnsafeMutablePointer<git_strarray>.allocate(capacity: 1)
 		defer {

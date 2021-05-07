@@ -10,7 +10,7 @@ import Foundation
 import Clibgit2
 
 extension Diff {	
-	public func asDeltas() -> Result<[Delta],NSError> {
+	public func asDeltas() -> Result<[Delta],Error> {
 		var cb = DiffEachCallbacks()
 		
 		return _result( { cb.deltas } , pointOfFailure: "git_diff_foreach") {

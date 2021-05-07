@@ -36,7 +36,7 @@ public extension StatusEntry_OLD {
 }
 
 public extension RepositoryOLD {
-	func diffFor(delta: Diff.Delta) -> Result<Diff, NSError> {
+	func diffFor(delta: Diff.Delta) -> Result<Diff, Error> {
 		let diff: OpaquePointer? = nil
 		
 		if let oldFileOid = delta.oldFile?.oid {

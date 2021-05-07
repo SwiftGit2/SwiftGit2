@@ -10,7 +10,7 @@ import Foundation
 import Clibgit2
 
 public extension RepositoryOLD  {
-	func index() -> Result<IndexOld, NSError> {
+	func index() -> Result<IndexOld, Error> {
 		var index_pointer: OpaquePointer? = nil
 		
 		return _result( { IndexOld(pointer: index_pointer!) }, pointOfFailure: "git_repository_index") {
@@ -32,7 +32,7 @@ public final class IndexOld {
 		git_index_free(pointer)
 	}
 	
-	public func entries() -> Result<[IndexOld.Entry], NSError> {
+	public func entries() -> Result<[IndexOld.Entry], Error> {
 		var entries = [IndexOld.Entry]()
 		for i in 0..<entrycount {
 			if let entry = git_index_get_byindex(pointer, i) {
@@ -42,7 +42,7 @@ public final class IndexOld {
 		return .success(entries)
 	}
 	
-	public func add(path: String) -> Result<(), NSError> {
+	public func add(path: String) -> Result<(), Error> {
 		let dir = path
 		var dirPointer = UnsafeMutablePointer<Int8>(mutating: (dir as NSString).utf8String)
 		var paths = git_strarray(strings: &dirPointer, count: 1)
@@ -53,7 +53,7 @@ public final class IndexOld {
 		.flatMap { self.write() }
 	}
 	
-	public func remove(path: String) -> Result<(), NSError> {
+	public func remove(path: String) -> Result<(), Error> {
 		let dir = path
 		var dirPointer = UnsafeMutablePointer<Int8>(mutating: (dir as NSString).utf8String)
 		var paths = git_strarray(strings: &dirPointer, count: 1)
@@ -64,13 +64,13 @@ public final class IndexOld {
 		.flatMap { self.write() }
 	}
 	
-	public func clear() -> Result<(), NSError> {
+	public func clear() -> Result<(), Error> {
 		return _result((), pointOfFailure: "git_index_clear") {
 			git_index_clear(pointer)
 		}
 	}
 	
-	func write() -> Result<(),NSError> {
+	func write() -> Result<(),Error> {
 		return _result((), pointOfFailure: "git_index_write") {
 			git_index_write(pointer)
 		}

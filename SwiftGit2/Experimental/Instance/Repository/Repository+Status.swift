@@ -58,7 +58,7 @@ public extension Repository {
 	}
 	
 	
-	func status(options: StatusOptions = StatusOptions(), filter: String? = nil) -> Result<StatusIterator, NSError> {
+	func status(options: StatusOptions = StatusOptions(), filter: String? = nil) -> Result<StatusIterator, Error> {
 		var pointer: OpaquePointer? = nil
 		var git_options = options.git_options
 

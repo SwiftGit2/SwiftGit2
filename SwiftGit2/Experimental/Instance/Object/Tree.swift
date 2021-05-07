@@ -22,7 +22,7 @@ public class Tree : InstanceProtocol {
 
 //High level func's
 public extension Repository {
-	func headDiff() -> Result<[Diff], NSError> {
+	func headDiff() -> Result<[Diff], Error> {
 		let set = XR.Set(with: self)
 		
 		// diff with all parents
@@ -41,7 +41,7 @@ public extension Repository {
 
 //Low level func's
 public extension Repository {
-	func diffTreeToTree(oldTree: Tree, newTree: Tree, options: DiffOptions? = nil) -> Result<Diff, NSError> {
+	func diffTreeToTree(oldTree: Tree, newTree: Tree, options: DiffOptions? = nil) -> Result<Diff, Error> {
 		var diff: OpaquePointer? = nil
 		let result = git_diff_tree_to_tree(&diff, self.pointer, oldTree.pointer, newTree.pointer, options?.pointer)
 		
@@ -52,7 +52,7 @@ public extension Repository {
 		return .success(Diff(diff!))
 	}
 	
-	func diffTreeToIndex(tree: Tree, options: DiffOptions? = nil) -> Result<Diff, NSError> {
+	func diffTreeToIndex(tree: Tree, options: DiffOptions? = nil) -> Result<Diff, Error> {
 		var diff: OpaquePointer? = nil
 		let result = git_diff_tree_to_index(&diff, self.pointer, tree.pointer, nil /*index*/, options?.pointer)
 		

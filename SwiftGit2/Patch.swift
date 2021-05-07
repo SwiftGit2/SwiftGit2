@@ -20,7 +20,7 @@ public class Patch {
 		git_patch_free(pointer)
 	}
 	
-	public static func fromFiles(old: Diff.File?, new: Diff.File?, options: DiffOptions? = nil) -> Result<Patch, NSError> {
+	public static func fromFiles(old: Diff.File?, new: Diff.File?, options: DiffOptions? = nil) -> Result<Patch, Error> {
 		var patchPointer: OpaquePointer? = nil
 	
 		return _result({ Patch(patchPointer!) }, pointOfFailure: "git_patch_from_blobs") {
@@ -28,7 +28,7 @@ public class Patch {
 		}
 	}
 	
-	public static func fromBlobs(old: Blob?, new: Blob?, options: DiffOptions? = nil) -> Result<Patch, NSError> {
+	public static func fromBlobs(old: Blob?, new: Blob?, options: DiffOptions? = nil) -> Result<Patch, Error> {
 		var patchPointer: OpaquePointer? = nil
 		
 		return _result({ Patch(patchPointer!) }, pointOfFailure: "git_patch_from_blobs") {
@@ -43,7 +43,7 @@ public extension Patch {
 	}
 	
 	//DOESNT WORKS
-	func asHunks() -> Result<[Diff.Hunk],NSError> {
+	func asHunks() -> Result<[Diff.Hunk],Error> {
 		var hunks = [Diff.Hunk]()
 		
 		for i in 0..<numHunks() {
@@ -58,7 +58,7 @@ public extension Patch {
 		return .success(hunks)
 	}
 	
-	func asBuffer() -> Result<Buffer, NSError> {
+	func asBuffer() -> Result<Buffer, Error> {
 		let buff = UnsafeMutablePointer<git_buf>.allocate(capacity: 1)
 		buff.pointee = git_buf(ptr: nil, asize: 0, size: 0)
 		
@@ -77,7 +77,7 @@ public extension Patch {
 }
 
 extension Patch {
-	func hunkBy(idx: Int) -> Result<Diff.Hunk, NSError> { // TODO: initialize lines
+	func hunkBy(idx: Int) -> Result<Diff.Hunk, Error> { // TODO: initialize lines
 		var hunkPointer: UnsafePointer<git_diff_hunk>? = nil
 		var linesCount : Int = 0
 
@@ -90,7 +90,7 @@ extension Patch {
 			.map { Diff.Hunk(hunkPointer!.pointee, lines: $0) }
 	}
 	
-	func getLines(count: Int, inHunkIdx: Int) -> Result<[Diff.Line], NSError> {
+	func getLines(count: Int, inHunkIdx: Int) -> Result<[Diff.Line], Error> {
 		var lines = [Diff.Line]()
 		
 		for i in 0..<count {
@@ -111,11 +111,11 @@ extension Patch {
 		return .success(lines)
 	}
 	
-	public func getText() -> Result<String, NSError> {
+	public func getText() -> Result<String, Error> {
 		self.asBuffer().flatMap{ $0.asStringRez() }
 	}
 	
-	public func getTextHeader() -> Result<String, NSError> {
+	public func getTextHeader() -> Result<String, Error> {
 		getText().map{ $0.stringBefore("@") }
 	}
 }

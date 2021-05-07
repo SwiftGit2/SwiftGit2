@@ -10,7 +10,7 @@ import Foundation
 import Clibgit2
 
 public extension Repository {	
-	func diffIndexToWorkDir(options: DiffOptions? = nil) -> Result<Diff, NSError> {
+	func diffIndexToWorkDir(options: DiffOptions? = nil) -> Result<Diff, Error> {
 		var diff: OpaquePointer? = nil
 		let result = git_diff_index_to_workdir(&diff, self.pointer, nil /* git_index */, options?.pointer)
 		
@@ -21,7 +21,7 @@ public extension Repository {
 		return .success(Diff(diff!))
 	}
 	
-	func diffTreeToWorkdir(tree: Tree_Old, options: DiffOptions? = nil) -> Result<Diff, NSError> {
+	func diffTreeToWorkdir(tree: Tree_Old, options: DiffOptions? = nil) -> Result<Diff, Error> {
 		var diff: OpaquePointer? = nil
 		let result = git_diff_tree_to_workdir(&diff, self.pointer, tree.pointer, options?.pointer)
 		
@@ -32,7 +32,7 @@ public extension Repository {
 		return .success(Diff(diff!))
 	}
 	
-	func diffTreeToWorkdirWithIndex(tree: Tree_Old, options: DiffOptions? = nil) -> Result<Diff, NSError> {
+	func diffTreeToWorkdirWithIndex(tree: Tree_Old, options: DiffOptions? = nil) -> Result<Diff, Error> {
 		var diff: OpaquePointer? = nil
 		let result = git_diff_tree_to_workdir_with_index(&diff, self.pointer, tree.pointer, options?.pointer)
 		
@@ -43,14 +43,14 @@ public extension Repository {
 		return .success(Diff(diff!))
 	}
 	
-//	func hunksFrom(delta: Diff.Delta, options: DiffOptions? = nil) -> Result<[Diff.Hunk], NSError> {
+//	func hunksFrom(delta: Diff.Delta, options: DiffOptions? = nil) -> Result<[Diff.Hunk], Error> {
 //		let old = delta.oldFile != nil ? (try? blob(oid: delta.oldFile!.oid).get()) : nil
 //		let new = delta.newFile != nil ? (try? blob(oid: delta.newFile!.oid).get()) : nil
 //
 //		return hunksBetweenBlobs(old: old, new: new, options: options)
 //	}
 //
-//	func patchFrom(delta: Diff.Delta, options: DiffOptions? = nil, reverse: Bool = false) -> Result<Patch, NSError> {
+//	func patchFrom(delta: Diff.Delta, options: DiffOptions? = nil, reverse: Bool = false) -> Result<Patch, Error> {
 //
 //		var oldFile = delta.oldFile
 //		var newFile = delta.newFile
@@ -66,7 +66,7 @@ public extension Repository {
 }
 
 private extension RepositoryOLD {
-	func hunksBetweenBlobs(old: Blob?, new: Blob?, options: DiffOptions?) -> Result<[Diff.Hunk],NSError>{
+	func hunksBetweenBlobs(old: Blob?, new: Blob?, options: DiffOptions?) -> Result<[Diff.Hunk],Error>{
 		var cb = DiffEachCallbacks()
 		
 		return _result( { cb.deltas.first?.hunks ?? [] }, pointOfFailure: "git_diff_blobs") {

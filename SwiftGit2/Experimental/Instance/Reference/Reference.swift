@@ -22,7 +22,7 @@ public class Reference : InstanceProtocol {
 	var oid		: OID  { OID(git_reference_target(pointer).pointee) }
 	var isTag	: Bool { git_reference_is_tag(pointer) != 0 }
 	
-	public func asBranch() -> Result<Branch, NSError> {
+	public func asBranch() -> Result<Branch, Error> {
 		if isBranch || isRemote {
 			return .success(self as Branch)
 		}
@@ -40,7 +40,7 @@ public class Reference : InstanceProtocol {
 }
 
 public extension Repository {
-	func HEAD() -> Result<Reference, NSError> {
+	func HEAD() -> Result<Reference, Error> {
 		var pointer: OpaquePointer? = nil
 		
 		return _result( { Reference(pointer!) }, pointOfFailure: "git_repository_head") {
@@ -53,7 +53,7 @@ public extension Repository {
 		return (result as NSNumber).boolValue
 	}
 	
-	func references(withPrefix prefix: String) -> Result<[Reference], NSError> {
+	func references(withPrefix prefix: String) -> Result<[Reference], Error> {
 		let strArrayPointer = UnsafeMutablePointer<git_strarray>.allocate(capacity: 1)
 		defer {
 			git_strarray_free(strArrayPointer)
@@ -74,7 +74,7 @@ public extension Repository {
 		//.map { $0.compactMap { InstanceBranch(instance: $0) } }
 	}
 	
-	func reference(name: String) -> Result<Reference, NSError> {
+	func reference(name: String) -> Result<Reference, Error> {
 		var pointer: OpaquePointer? = nil
 		
 		return _result({ Reference(pointer!) }, pointOfFailure: "git_reference_lookup") {

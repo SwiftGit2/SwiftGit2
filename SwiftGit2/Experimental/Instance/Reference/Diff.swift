@@ -21,7 +21,7 @@ public class Diff : InstanceProtocol {
 		git_diff_free(pointer)
 	}
 	
-	public func findSimilar(options: FindOptions) -> Result<(), NSError> {
+	public func findSimilar(options: FindOptions) -> Result<(), Error> {
 		var opt = git_diff_find_options(version: 1, flags: options.rawValue, rename_threshold: 50, rename_from_rewrite_threshold: 50, copy_threshold: 50, break_rewrite_threshold: 60, rename_limit: 200, metric: nil)
 		
 		return _result((), pointOfFailure: "git_diff_find_options") {
@@ -29,7 +29,7 @@ public class Diff : InstanceProtocol {
 		}
 	}
 
-	public func patch() -> Result<Patch, NSError> {
+	public func patch() -> Result<Patch, Error> {
 		var pointer: OpaquePointer? = nil
 
 		return _result( { Patch(pointer!) }, pointOfFailure: "git_patch_from_diff") {
@@ -186,7 +186,7 @@ public enum GitApplyLocation : UInt32 {
 }
 
 public extension Repository {
-	func apply(diff: Diff, location: GitApplyLocation, options: GitApplyOptions? = nil) -> Result<(), NSError> {
+	func apply(diff: Diff, location: GitApplyLocation, options: GitApplyOptions? = nil) -> Result<(), Error> {
 		return _result((), pointOfFailure: "git_apply") {
 			git_apply(pointer, diff.pointer, git_apply_location_t(rawValue: location.rawValue), options?.pointer)
 		}

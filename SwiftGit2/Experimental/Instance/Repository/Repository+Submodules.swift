@@ -10,7 +10,7 @@ import Clibgit2
 
 
 extension Repository {
-	public func submodules() -> Result<[Submodule], NSError> {
+	public func submodules() -> Result<[Submodule], Error> {
 		var submodulePairs = SubmoduleCallbacks()
 		
 		return _result( { submodulePairs.submodulesNames }, pointOfFailure: "git_submodule_foreach") {
@@ -21,7 +21,7 @@ extension Repository {
 		}
 	}
 
-	public func submoduleLookup( named name: String ) -> Result<Submodule, NSError> {
+	public func submoduleLookup( named name: String ) -> Result<Submodule, Error> {
 		var subModPointer: OpaquePointer? = nil
 
 		return _result( { Submodule(subModPointer!) }, pointOfFailure: "git_submodule_lookup") {

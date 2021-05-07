@@ -8,14 +8,14 @@ import Clibgit2
 
 public class CommitIterator_OLD: IteratorProtocol, Sequence {
 	public typealias Iterator = CommitIterator_OLD
-	public typealias Element = Result<CommitOLD, NSError>
+	public typealias Element = Result<CommitOLD, Error>
 	let repo: RepositoryOLD
 	private var revisionWalker: OpaquePointer?
 
 	private enum Next {
 		case over
 		case okay
-		case error(NSError)
+		case error(Error)
 
 		init(_ result: Int32, name: String) {
 			switch result {
