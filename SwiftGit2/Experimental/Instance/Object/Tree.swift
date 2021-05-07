@@ -7,6 +7,7 @@
 //
 
 import Clibgit2
+import Essentials
 
 public class Tree : InstanceProtocol {
 	public var pointer: OpaquePointer
