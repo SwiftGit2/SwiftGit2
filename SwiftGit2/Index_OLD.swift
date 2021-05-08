@@ -43,9 +43,7 @@ public final class IndexOld {
 	}
 	
 	public func add(path: String) -> Result<(), Error> {
-		let dir = path
-		var dirPointer = UnsafeMutablePointer<Int8>(mutating: (dir as NSString).utf8String)
-		var paths = git_strarray(strings: &dirPointer, count: 1)
+		var paths = git_strarray(string: path)
 		
 		return _result((), pointOfFailure: "git_index_add_all") {
 			git_index_add_all(pointer, &paths, 0, nil, nil)
@@ -54,9 +52,7 @@ public final class IndexOld {
 	}
 	
 	public func remove(path: String) -> Result<(), Error> {
-		let dir = path
-		var dirPointer = UnsafeMutablePointer<Int8>(mutating: (dir as NSString).utf8String)
-		var paths = git_strarray(strings: &dirPointer, count: 1)
+		var paths = git_strarray(string: path)
 		
 		return _result((), pointOfFailure: "git_index_add_all") {
 			git_index_remove_all(pointer, &paths, nil, nil)
