@@ -18,12 +18,13 @@ func git_strarray(string: String) -> git_strarray {
 
 // TODO: NOT TESTED
 func git_strarray(strings: [String]) -> git_strarray {
+	//let test = strdup(strings.first!.cString(using: .utf8))
 	
-	var cStrings = strings.map { strdup($0) }
-	cStrings.append(nil)
-	defer {
-		cStrings.forEach { free($0) }
-	}
+	var cStrings = strings.map { strdup(($0 as NSString).utf8String) }
+	//cStrings.append(nil)
+//	defer {
+//		cStrings.forEach { free($0) }
+//	}
 
 	return cStrings.withUnsafeMutableBufferPointer { cStrings in
 		return git_strarray(strings: cStrings.baseAddress, count: strings.count)
