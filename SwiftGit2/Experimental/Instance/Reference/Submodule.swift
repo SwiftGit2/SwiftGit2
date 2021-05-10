@@ -20,6 +20,20 @@ public class Submodule: InstanceProtocol {
 	}
 }
 
+public extension Repository {
+	func CloneSubmodules( credentials: Credentials_OLD ) -> Result<(), NSError>{
+		let submodules = self.submodules()
+		
+		let callbacks = RemoteCallbacks(credentials: credentials)
+		let fetchOptions = FetchOptions(callbacks: callbacks)
+		let options = SubmoduleUpdateOptions(fetchOptions: fetchOptions)
+		
+		return submodules
+			.flatMap { $0.map{ $0.update(options: options, initBeforeUpdate: true) }.aggregateResult() }
+			.flatMap { _ in return .success(()) }
+	}
+}
+
 public extension Submodule {
 	var name 	 : String { String(cString: git_submodule_name(self.pointer)) }
 	///Get the path to the submodule. RELATIVE! Almost allways the same as "name" parameter
@@ -149,9 +163,11 @@ public extension Duo where T1 == Submodule, T2 == Repository {
 
 public extension Submodule {
 	func clone() -> Result<Repository, NSError> {
+		print("Submodule_Clone \(self.path)")
+		
 		let pointer = UnsafeMutablePointer<OpaquePointer?>.allocate(capacity: 1)
 		
-		return _result( {Repository(pointer.pointee!)}, pointOfFailure:"git_submodule_clone" ){
+		return _result( {Repository(pointer.pointee!)}, pointOfFailure:"git_submodule_clone" ) {
 			git_submodule_clone(pointer, self.pointer, nil);
 		}
 	}
@@ -185,12 +201,12 @@ public extension Submodule {
 	///This will clone a missing submodule and checkout the subrepository to the commit specified in the index of the containing repository.
 	///If the submodule repository doesn't contain the target commit (e.g. because fetchRecurseSubmodules isn't set),
 	///then the submodule is fetched using the fetch options supplied in options.
-	func update( options: UnsafeMutablePointer<git_submodule_update_options>?,
+	func update( options: SubmoduleUpdateOptions,
 				 initBeforeUpdate: Bool = false ) -> Result<(), NSError> {
 		let initBeforeUpdateInt: Int32 = initBeforeUpdate ? 1 : 0
 		
 		return _result({()}, pointOfFailure: "git_submodule_update") {
-			git_submodule_update(self.pointer, initBeforeUpdateInt, options )
+			git_submodule_update(self.pointer, initBeforeUpdateInt, options.optionsPointer )
 		}
 	}
 	
@@ -228,15 +244,23 @@ public extension Submodule {
 
 //TODO: Test Me
 public class SubmoduleUpdateOptions {
-	private var optionsPointer = UnsafeMutablePointer<git_submodule_update_options>.allocate(capacity: 1)
+	var optionsPointer = UnsafeMutablePointer<git_submodule_update_options>.allocate(capacity: 1)
 	public var options: git_submodule_update_options { optionsPointer.pointee }
+
+	let GIT_SUBMODULE_UPDATE_OPTIONS_VERSION = UInt32(1) //have no idea what is this
 	
-	private let GIT_SUBMODULE_UPDATE_OPTIONS_VERSION = UInt32(1) //have no idea what is this
+	private var fetchOpts: FetchOptions!
 	
-	func create() -> Result<SubmoduleUpdateOptions, NSError> {
-		return _result( self , pointOfFailure: "git_submodule_update_options_init") {
-			git_submodule_update_options_init(optionsPointer, GIT_SUBMODULE_UPDATE_OPTIONS_VERSION )
-		}
+	init () {
+		git_submodule_update_options_init(optionsPointer, GIT_SUBMODULE_UPDATE_OPTIONS_VERSION )
+	}
+	
+	init (fetchOptions: FetchOptions) {
+		fetchOpts = fetchOptions
+		
+		git_submodule_update_options_init(optionsPointer, GIT_SUBMODULE_UPDATE_OPTIONS_VERSION )
+		
+		fetchOpts.fetch_options = fetchOpts.fetch_options
 	}
 	
 	deinit {
