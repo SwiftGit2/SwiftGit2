@@ -206,7 +206,7 @@ public extension Submodule {
 		let initBeforeUpdateInt: Int32 = initBeforeUpdate ? 1 : 0
 		
 		return _result({()}, pointOfFailure: "git_submodule_update") {
-			git_submodule_update(self.pointer, initBeforeUpdateInt, options.optionsPointer )
+			git_submodule_update(self.pointer, initBeforeUpdateInt, &options.options )
 		}
 	}
 	
@@ -243,30 +243,7 @@ public extension Submodule {
 }
 
 //TODO: Test Me
-public class SubmoduleUpdateOptions {
-	var optionsPointer = UnsafeMutablePointer<git_submodule_update_options>.allocate(capacity: 1)
-	public var options: git_submodule_update_options { optionsPointer.pointee }
 
-	let GIT_SUBMODULE_UPDATE_OPTIONS_VERSION = UInt32(1) //have no idea what is this
-	
-	private var fetchOpts: FetchOptions!
-	
-	init () {
-		git_submodule_update_options_init(optionsPointer, GIT_SUBMODULE_UPDATE_OPTIONS_VERSION )
-	}
-	
-	init (fetchOptions: FetchOptions) {
-		fetchOpts = fetchOptions
-		
-		git_submodule_update_options_init(optionsPointer, GIT_SUBMODULE_UPDATE_OPTIONS_VERSION )
-		
-		fetchOpts.fetch_options = fetchOpts.fetch_options
-	}
-	
-	deinit {
-		optionsPointer.deallocate()
-	}
-}
 
 /// git_submodule_ignore_t;
 public enum SubmoduleIgnore : Int32 {

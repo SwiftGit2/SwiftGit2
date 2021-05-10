@@ -106,6 +106,7 @@
 		E623A31F2634885800484E11 /* CheckoutOptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = E623A31E2634885800484E11 /* CheckoutOptions.swift */; };
 		E623A35A2634D4AE00484E11 /* RemoteCallbacks.swift in Sources */ = {isa = PBXBuildFile; fileRef = E623A3592634D4AE00484E11 /* RemoteCallbacks.swift */; };
 		E632D5C0262874990039FF01 /* Essentials in Frameworks */ = {isa = PBXBuildFile; productRef = E632D5BF262874990039FF01 /* Essentials */; };
+		E6332B9126496F95004990E7 /* SubmoduleUpdateOptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6332B9026496F95004990E7 /* SubmoduleUpdateOptions.swift */; };
 		E653907A23E7328200C08416 /* Diff+Delta.swift in Sources */ = {isa = PBXBuildFile; fileRef = E653907923E7328200C08416 /* Diff+Delta.swift */; };
 		E653907C23E73CDE00C08416 /* Patch.swift in Sources */ = {isa = PBXBuildFile; fileRef = E653907B23E73CDE00C08416 /* Patch.swift */; };
 		E65C767A23E6F4FF00FD14BE /* Index_OLD.swift in Sources */ = {isa = PBXBuildFile; fileRef = E65C767923E6F4FF00FD14BE /* Index_OLD.swift */; };
@@ -221,6 +222,7 @@
 		E623A3132634883100484E11 /* CloneOptions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloneOptions.swift; sourceTree = "<group>"; };
 		E623A31E2634885800484E11 /* CheckoutOptions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckoutOptions.swift; sourceTree = "<group>"; };
 		E623A3592634D4AE00484E11 /* RemoteCallbacks.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteCallbacks.swift; sourceTree = "<group>"; };
+		E6332B9026496F95004990E7 /* SubmoduleUpdateOptions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubmoduleUpdateOptions.swift; sourceTree = "<group>"; };
 		E653907923E7328200C08416 /* Diff+Delta.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Diff+Delta.swift"; sourceTree = "<group>"; };
 		E653907B23E73CDE00C08416 /* Patch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Patch.swift; sourceTree = "<group>"; };
 		E65C767923E6F4FF00FD14BE /* Index_OLD.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Index_OLD.swift; sourceTree = "<group>"; };
@@ -504,6 +506,7 @@
 				E623A3132634883100484E11 /* CloneOptions.swift */,
 				E623A31E2634885800484E11 /* CheckoutOptions.swift */,
 				E623A3592634D4AE00484E11 /* RemoteCallbacks.swift */,
+				E6332B9026496F95004990E7 /* SubmoduleUpdateOptions.swift */,
 			);
 			path = Options;
 			sourceTree = "<group>";
@@ -842,6 +845,7 @@
 				BE7A753F1A4A2BCC002DA7E3 /* Pointers.swift in Sources */,
 				E6D4A92224DF1B4300E8041E /* Object.swift in Sources */,
 				1DDFC0FB261B4DBD00EBBDE9 /* RevisionWalker.swift in Sources */,
+				E6332B9126496F95004990E7 /* SubmoduleUpdateOptions.swift in Sources */,
 				E653907A23E7328200C08416 /* Diff+Delta.swift in Sources */,
 				E6914C77227A2D6B00F8039C /* RepositoryOLD+Diff.swift in Sources */,
 				E6D4A91E24DEAA3000E8041E /* Reference.swift in Sources */,
