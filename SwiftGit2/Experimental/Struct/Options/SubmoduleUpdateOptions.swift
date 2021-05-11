@@ -12,11 +12,11 @@ import Clibgit2
 public class SubmoduleUpdateOptions {
 	var options = git_submodule_update_options()
 	
-	init () {
+	public init () {
 		git_submodule_update_options_init(&options, UInt32(GIT_SUBMODULE_UPDATE_OPTIONS_VERSION) )
 	}
 	
-	init (fetchOptions: FetchOptions) {
+	public init (fetchOptions: FetchOptions) {
 		git_submodule_update_options_init(&options, UInt32(GIT_SUBMODULE_UPDATE_OPTIONS_VERSION) )
 		
 		options.fetch_opts = fetchOptions.fetch_options

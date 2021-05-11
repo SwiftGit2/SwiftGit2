@@ -20,20 +20,6 @@ public class Submodule: InstanceProtocol {
 	}
 }
 
-public extension Repository {
-	func CloneSubmodules( credentials: Credentials_OLD ) -> Result<(), NSError>{
-		let submodules = self.submodules()
-		
-		let callbacks = RemoteCallbacks(credentials: credentials)
-		let fetchOptions = FetchOptions(callbacks: callbacks)
-		let options = SubmoduleUpdateOptions(fetchOptions: fetchOptions)
-		
-		return submodules
-			.flatMap { $0.map{ $0.update(options: options, initBeforeUpdate: true) }.aggregateResult() }
-			.flatMap { _ in return .success(()) }
-	}
-}
-
 public extension Submodule {
 	var name 	 : String { String(cString: git_submodule_name(self.pointer)) }
 	///Get the path to the submodule. RELATIVE! Almost allways the same as "name" parameter
