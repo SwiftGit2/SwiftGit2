@@ -148,15 +148,15 @@ public extension Duo where T1 == Submodule, T2 == Repository {
 }
 
 public extension Submodule {
-	func clone() -> Result<Repository, NSError> {
-		print("Submodule_Clone \(self.path)")
-		
-		let pointer = UnsafeMutablePointer<OpaquePointer?>.allocate(capacity: 1)
-		
-		return _result( {Repository(pointer.pointee!)}, pointOfFailure:"git_submodule_clone" ) {
-			git_submodule_clone(pointer, self.pointer, nil);
-		}
-	}
+//	func clone() -> Result<Repository, NSError> {
+//		print("Submodule_Clone \(self.path)")
+//		
+//		let pointer = UnsafeMutablePointer<OpaquePointer?>.allocate(capacity: 1)
+//		
+//		return _result( {Repository(pointer.pointee!)}, pointOfFailure:"git_submodule_clone" ) {
+//			git_submodule_clone(pointer, self.pointer, nil);
+//		}
+//	}
 	
 	func fetchRecurseValueGet() -> Bool {
 		//"result == 1"
