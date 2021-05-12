@@ -16,9 +16,7 @@ extension Repository {
 		return _result( { submodulePairs.submodulesNames }, pointOfFailure: "git_submodule_foreach") {
 			git_submodule_foreach( self.pointer, submodulePairs.submodule_cb, &submodulePairs )
 		}
-		.map { names in
-			names.map { try! self.submoduleLookup(named: $0).get() }
-		}
+		.flatMap { names in names.flatMap { self.submoduleLookup(named: $0) } }
 	}
 
 	public func submoduleLookup( named name: String ) -> Result<Submodule, Error> {

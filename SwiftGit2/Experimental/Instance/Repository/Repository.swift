@@ -12,15 +12,6 @@ import Essentials
 public class Repository : InstanceProtocol {
 	public var pointer: OpaquePointer
 	
-	//TODO: DELETE ME
-	public var directoryURLold: URL? {
-		if let pathPointer = git_repository_workdir(self.pointer) {
-			URL(fileURLWithPath: String(cString: pathPointer) , isDirectory: true)
-		}
-		
-		return nil
-	}
-	
 	public var directoryURL: Result<URL, Error> {
 		if let pathPointer = git_repository_workdir(self.pointer) {
 			return .success( URL(fileURLWithPath: String(cString: pathPointer) , isDirectory: true) )
