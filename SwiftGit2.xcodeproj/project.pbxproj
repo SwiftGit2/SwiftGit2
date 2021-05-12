@@ -6,20 +6,6 @@
 	objectVersion = 52;
 	objects = {
 
-/* Begin PBXAggregateTarget section */
-		C9CE0DD21E0710BD0053205D /* SwiftLint */ = {
-			isa = PBXAggregateTarget;
-			buildConfigurationList = C9CE0DD31E0710BD0053205D /* Build configuration list for PBXAggregateTarget "SwiftLint" */;
-			buildPhases = (
-				C9CE0DD61E0710C20053205D /* Lint Sources */,
-			);
-			dependencies = (
-			);
-			name = SwiftLint;
-			productName = SwiftLint;
-		};
-/* End PBXAggregateTarget section */
-
 /* Begin PBXBuildFile section */
 		1D0AFF642534AC440045D68D /* Status.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D0AFF632534AC440045D68D /* Status.swift */; };
 		1D496A4225372FA800789177 /* git_strarray.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D496A4125372FA800789177 /* git_strarray.swift */; };
@@ -689,10 +675,6 @@
 						CreatedOnToolsVersion = 6.1;
 						LastSwiftMigration = 1020;
 					};
-					C9CE0DD21E0710BD0053205D = {
-						CreatedOnToolsVersion = 8.2;
-						ProvisioningStyle = Automatic;
-					};
 				};
 			};
 			buildConfigurationList = BEB31F1D1A0D6F7A00F525B9 /* Build configuration list for PBXProject "SwiftGit2" */;
@@ -715,7 +697,6 @@
 				BEB31F2D1A0D6F7A00F525B9 /* SwiftGit2-OSXTests */,
 				621E66611C72958800A0F352 /* SwiftGit2-iOS */,
 				621E66B61C72958D00A0F352 /* SwiftGit2-iOSTests */,
-				C9CE0DD21E0710BD0053205D /* SwiftLint */,
 			);
 		};
 /* End PBXProject section */
@@ -744,23 +725,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
-
-/* Begin PBXShellScriptBuildPhase section */
-		C9CE0DD61E0710C20053205D /* Lint Sources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "Lint Sources";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "if which swiftlint >/dev/null; then\n    swiftlint --lenient\nelse\n    echo \"warning: SwiftLint is not installed\"\nfi";
-		};
-/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		621E669F1C72958800A0F352 /* Sources */ = {
@@ -1080,20 +1044,6 @@
 			};
 			name = Release;
 		};
-		C9CE0DD41E0710BD0053205D /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				PRODUCT_NAME = "$(TARGET_NAME)";
-			};
-			name = Debug;
-		};
-		C9CE0DD51E0710BD0053205D /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				PRODUCT_NAME = "$(TARGET_NAME)";
-			};
-			name = Release;
-		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -1138,15 +1088,6 @@
 			buildConfigurations = (
 				BEB31F3D1A0D6F7A00F525B9 /* Debug */,
 				BEB31F3E1A0D6F7A00F525B9 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		C9CE0DD31E0710BD0053205D /* Build configuration list for PBXAggregateTarget "SwiftLint" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				C9CE0DD41E0710BD0053205D /* Debug */,
-				C9CE0DD51E0710BD0053205D /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
