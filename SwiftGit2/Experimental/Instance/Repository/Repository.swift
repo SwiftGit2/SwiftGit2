@@ -130,21 +130,6 @@ public extension Repository {
 }
 
 
-public extension Repository {
-	/// Method needed to collect not pushed or not pulled commits
-	func getChangedCommits(branchToHide: String, branchToPush: String) -> Result<[Commit], Error> {
-		let revWalker = RevisionWalker(repo: self, localBranchToHide: branchToHide, remoteBranchToPush: branchToPush)
-		
-		var result: [Result<Commit, Error>] = []
-		
-		while let elem = revWalker.next() {
-			result.append(elem)
-		}
-		
-		return result.aggregateResult()
-	}
-}
-
 // index
 public extension Repository {
 	func reset(path: String) -> Result<(), Error> {
