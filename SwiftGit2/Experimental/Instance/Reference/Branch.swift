@@ -59,8 +59,12 @@ public extension Branch {
 	}
 	
 	/// can be called only for local branch;
-	func getUpstreamName() -> Result<String, Error> {
-		getUpstreamBranch().map{ $0.name }
+	func getUpstreamName(cleanup: Bool = false) -> Result<String, Error> {
+		if cleanup {
+			return getUpstreamBranch().map{ $0.name.replace(of: "refs/heads/", to: "") }
+		}
+		
+		return getUpstreamBranch().map{ $0.name }
 	}
 	
 	/// Can be used only on local branch
