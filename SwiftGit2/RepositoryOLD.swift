@@ -433,9 +433,7 @@ public final class RepositoryOLD {
 	}
 	
 	public func reset(path: String) -> Result<(), Error> {
-		let dir = path
-		var dirPointer = UnsafeMutablePointer<Int8>(mutating: (dir as NSString).utf8String)
-		var paths = git_strarray(strings: &dirPointer, count: 1)
+		var paths = git_strarray(string: path)
 		
 		return HEAD().flatMap { self.commit($0.oid) }.flatMap { comit in
 				

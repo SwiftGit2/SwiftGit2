@@ -169,10 +169,8 @@ public extension Repository {
 // index
 public extension Repository {
 	func reset(path: String) -> Result<(), Error> {
-		let dir = path
-		var dirPointer = UnsafeMutablePointer<Int8>(mutating: (dir as NSString).utf8String)
-		var paths = git_strarray(strings: &dirPointer, count: 1)
-		
+		var paths = git_strarray(string: path)
+				
 		return HEAD()
 			.flatMap { self.instanciate($0.oid) as Result<Commit, Error> }
 			.flatMap { commit in

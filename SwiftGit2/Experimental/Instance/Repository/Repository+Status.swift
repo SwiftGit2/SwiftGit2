@@ -69,8 +69,7 @@ public extension Repository {
 		//TODO: Ugly hack. Need to move to StatusOptions() but it's a little bit difficult
 		if let filter = filter {
 			if filter.count > 0 {
-				var dirPointer = UnsafeMutablePointer<Int8>(mutating: (filter as NSString).utf8String)
-				git_options.pathspec = git_strarray(strings: &dirPointer, count: 1)
+				git_options.pathspec = git_strarray(string: filter)
 			}
 		}
 
