@@ -16,7 +16,7 @@ func git_strarray(string: String) -> git_strarray {
 	}
 }
 
-// TODO: NOT TESTED
+// TODO: NOT WORKING
 func git_strarray(strings: [String]) -> git_strarray {
 	
 	var cStrings = strings.map { strdup($0) }
