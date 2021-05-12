@@ -92,6 +92,7 @@
 		E623A35A2634D4AE00484E11 /* RemoteCallbacks.swift in Sources */ = {isa = PBXBuildFile; fileRef = E623A3592634D4AE00484E11 /* RemoteCallbacks.swift */; };
 		E632D5C0262874990039FF01 /* Essentials in Frameworks */ = {isa = PBXBuildFile; productRef = E632D5BF262874990039FF01 /* Essentials */; };
 		E6332B9126496F95004990E7 /* SubmoduleUpdateOptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6332B9026496F95004990E7 /* SubmoduleUpdateOptions.swift */; };
+		E6332C2B264BEFA1004990E7 /* MergeOptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6332C2A264BEFA1004990E7 /* MergeOptions.swift */; };
 		E653907A23E7328200C08416 /* Diff+Delta.swift in Sources */ = {isa = PBXBuildFile; fileRef = E653907923E7328200C08416 /* Diff+Delta.swift */; };
 		E653907C23E73CDE00C08416 /* Patch.swift in Sources */ = {isa = PBXBuildFile; fileRef = E653907B23E73CDE00C08416 /* Patch.swift */; };
 		E65C767A23E6F4FF00FD14BE /* Index_OLD.swift in Sources */ = {isa = PBXBuildFile; fileRef = E65C767923E6F4FF00FD14BE /* Index_OLD.swift */; };
@@ -207,6 +208,7 @@
 		E623A31E2634885800484E11 /* CheckoutOptions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckoutOptions.swift; sourceTree = "<group>"; };
 		E623A3592634D4AE00484E11 /* RemoteCallbacks.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteCallbacks.swift; sourceTree = "<group>"; };
 		E6332B9026496F95004990E7 /* SubmoduleUpdateOptions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubmoduleUpdateOptions.swift; sourceTree = "<group>"; };
+		E6332C2A264BEFA1004990E7 /* MergeOptions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MergeOptions.swift; sourceTree = "<group>"; };
 		E653907923E7328200C08416 /* Diff+Delta.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Diff+Delta.swift"; sourceTree = "<group>"; };
 		E653907B23E73CDE00C08416 /* Patch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Patch.swift; sourceTree = "<group>"; };
 		E65C767923E6F4FF00FD14BE /* Index_OLD.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Index_OLD.swift; sourceTree = "<group>"; };
@@ -491,6 +493,7 @@
 				E623A31E2634885800484E11 /* CheckoutOptions.swift */,
 				E623A3592634D4AE00484E11 /* RemoteCallbacks.swift */,
 				E6332B9026496F95004990E7 /* SubmoduleUpdateOptions.swift */,
+				E6332C2A264BEFA1004990E7 /* MergeOptions.swift */,
 			);
 			path = Options;
 			sourceTree = "<group>";
@@ -775,6 +778,7 @@
 				1DB0F84E24EFFB2D00637B9B /* Repository+Checkout.swift in Sources */,
 				E623A308263486A500484E11 /* FetchOptions.swift in Sources */,
 				E623A3142634883100484E11 /* CloneOptions.swift in Sources */,
+				E6332C2B264BEFA1004990E7 /* MergeOptions.swift in Sources */,
 				E61B443423CE4D670059650A /* Repository_OLD+Submodule_OLD.swift in Sources */,
 				E67D157224EF24A500DA3542 /* Repository+Status.swift in Sources */,
 				1DCEA37E2542364D0012BF38 /* Result.swift in Sources */,

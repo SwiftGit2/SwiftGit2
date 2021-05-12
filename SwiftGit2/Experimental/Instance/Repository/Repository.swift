@@ -84,12 +84,11 @@ extension Repository {
 	}
 	
 	public func mergeCommits(commitFrom: Commit, commitInto: Commit ) -> Result<Index, Error> {
-		var mrgOptions = mergeOptions()
+		var options = MergeOptions()
+		var indexPointer : OpaquePointer? = nil
 		
-		var rezPointer : OpaquePointer? = nil
-		
-		return _result( { Index(rezPointer!) } , pointOfFailure: "git_merge_commits") {
-			git_merge_commits(&rezPointer, self.pointer , commitFrom.pointer, commitInto.pointer, &mrgOptions)
+		return _result( { Index(indexPointer!) } , pointOfFailure: "git_merge_commits") {
+			git_merge_commits(&indexPointer, self.pointer , commitFrom.pointer, commitInto.pointer, &options.merge_options)
 		}
 	}
 	
@@ -294,35 +293,6 @@ fileprivate func checkoutProgressCallback(path: UnsafePointer<Int8>?, completedS
 		}
 		block(path.flatMap(String.init(validatingUTF8:)), completedSteps, totalSteps)
 	}
-}
-
-
-
-fileprivate func mergeOptions( mergeFlags: git_merge_flag_t? = nil,
-							   fileFlags: git_merge_file_flag_t? = nil,
-							   renameTheshold: Int = 50 ) -> git_merge_options {
-
-	let pointer = UnsafeMutablePointer<git_merge_options>.allocate(capacity: 1)
-
-	git_merge_init_options(pointer, UInt32(GIT_MERGE_OPTIONS_VERSION))
-
-	var options = pointer.move()
-
-	pointer.deallocate()
-
-	if let mergeFlags = mergeFlags {
-		options.flags = mergeFlags.rawValue
-	}
-
-	if let fileFlags = fileFlags {
-		options.file_flags	= fileFlags.rawValue
-	}
-
-	options.rename_threshold = UInt32( renameTheshold )
-
-	//options.
-
-	return options
 }
 
 ////////////////////////////////////////////////////////////////////
