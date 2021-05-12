@@ -44,7 +44,7 @@ extension Repository {
 		return getRemotesNames()
 			.flatMap{ arr -> Result<Remote, Error> in
 				if let first = arr.first {
-					return self.remoteRepo(named: first, remoteType: .ForceHttps)
+					return self.remoteRepo(named: first, remoteType: .Original)
 				}
 				return .failure(WTF("can't get RemotesNames") )
 			}
@@ -52,7 +52,7 @@ extension Repository {
 	
 	public func getAllRemotes() -> Result<[Remote], Error> {
 		return getRemotesNames()
-			.flatMap{ $0.map({ self.remoteRepo(named: $0, remoteType: .ForceHttps) }).aggregateResult() }
+			.flatMap{ $0.map({ self.remoteRepo(named: $0, remoteType: .Original) }).aggregateResult() }
 	}
 	
 	private func getRemotesNames() -> Result<[String], Error> {
