@@ -29,3 +29,16 @@ func git_strarray(strings: [String]) -> git_strarray {
 		return git_strarray(strings: cStrings.baseAddress, count: strings.count)
 	}
 }
+
+extension git_strarray {
+	func filter(_ isIncluded: (String) -> Bool) -> [String] {
+		return map { $0 }.filter(isIncluded)
+	}
+
+	func map<T>(_ transform: (String) -> T) -> [T] {
+		return (0..<self.count).map {
+			let string = String(validatingUTF8: self.strings[$0]!)!
+			return transform(string)
+		}
+	}
+}

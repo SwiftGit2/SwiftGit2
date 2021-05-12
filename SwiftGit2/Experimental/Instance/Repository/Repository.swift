@@ -47,28 +47,22 @@ extension Repository {
 	}
 	
 	private func getRemotesNames() -> Result<[String], Error> {
-		let strArrayPointer = UnsafeMutablePointer<git_strarray>.allocate(capacity: 1)
-		defer {
-			git_strarray_free(strArrayPointer)
-			strArrayPointer.deallocate()
-		}
-		
-		return _result( { strArrayPointer.pointee.map{ $0 } } , pointOfFailure: "git_remote_list") {
-			git_remote_list(strArrayPointer, self.pointer)
+		var strarray = git_strarray()
+
+		return _result( { strarray.map{ $0 } } , pointOfFailure: "git_remote_list") {
+			git_remote_list(&strarray, self.pointer)
 		}
 	}
 }
 
 extension Repository {
 	public func headCommit() -> Result<Commit, Error> {
-		var oid = git_oid() //out
+		var oid = git_oid()
 		
-		return _result((), pointOfFailure: "git_reference_name_to_id") {
+		return _result( { oid }, pointOfFailure: "git_reference_name_to_id") {
 			git_reference_name_to_id(&oid, self.pointer, "HEAD")
 		}
-		.flatMap { _ in
-			self.instanciate(OID(oid)) as Result<Commit, Error>
-		}
+		.flatMap { instanciate(OID($0)) }
 	}
 	
 	
@@ -85,14 +79,9 @@ extension Repository {
 	}
 	
 	public func commit(message: String, signature: Signature) -> Result<Commit, Error> {
-		return index().flatMap { index in
-			return Duo((index,self)).commit(message: message, signature: signature)
-		}
+		return index()
+			.flatMap { index in Duo((index,self)).commit(message: message, signature: signature) }
 	}
-
-
-	
-
 	
 	public func mergeCommits(commitFrom: Commit, commitInto: Commit ) -> Result<Index, Error> {
 		var mrgOptions = mergeOptions()
