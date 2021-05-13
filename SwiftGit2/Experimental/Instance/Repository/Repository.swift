@@ -135,12 +135,12 @@ public extension Repository {
 public extension Repository {
 	func reset(path: String) -> Result<(), Error> {
 		
-		return [path].with_git_strarray { _git_strarray in
+		return [path].with_git_strarray { strarray in
 			return HEAD()
 				.flatMap { self.instanciate($0.oid) as Result<Commit, Error> }
 				.flatMap { commit in
 					_result((), pointOfFailure: "git_reset_default") {
-						git_reset_default(self.pointer, commit.pointer, &_git_strarray)
+						git_reset_default(self.pointer, commit.pointer, &strarray)
 					}
 			}
 		}

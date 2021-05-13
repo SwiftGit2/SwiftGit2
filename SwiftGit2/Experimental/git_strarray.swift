@@ -11,7 +11,7 @@ import Clibgit2
 extension Array where Element == String {
 	func with_git_strarray<T>(_ body: (inout git_strarray) -> T) -> T {
 		return withArrayOfCStrings(self) { strings in
-			var arr = git_strarray(strings: &strings, count: 1)
+			var arr = git_strarray(strings: &strings, count: self.count)
 			return body(&arr)
 		}
 	}
@@ -22,7 +22,6 @@ public func withArrayOfCStrings<T>(
 	_ body: (inout [UnsafeMutablePointer<CChar>?]) -> T
 ) -> T {
 	var cStrings = args.map { strdup($0) }
-	cStrings.append(nil)
 	defer {
 		cStrings.forEach { free($0) }
 	}

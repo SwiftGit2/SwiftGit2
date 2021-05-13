@@ -220,13 +220,13 @@ private extension Branch {
 
 fileprivate extension Remote {
 	///Branch name must be full - with "refs/heads/"
-	func push(branchName: String, options: UnsafePointer<git_push_options> ) -> Result<(), Error> {
-		var refs = git_strarray(string: branchName)
-
+	func push(branchName: String, options: UnsafePointer<git_push_options> ) -> Result<(), Error> {		
 		print("Trying to push ''\(branchName)'' to remote ''\(self.name)'' with URL:''\(self.URL)''")
 		
-		return _result( (), pointOfFailure: "git_remote_push") {
-			git_remote_push(self.pointer, &refs, options)
+		return [branchName].with_git_strarray { strarray in
+			return _result( (), pointOfFailure: "git_remote_push") {
+				git_remote_push(self.pointer, &strarray, options)
+			}
 		}
 	}
 }

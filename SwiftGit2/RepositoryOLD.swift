@@ -724,7 +724,7 @@ public final class RepositoryOLD {
 	public func status(options: StatusOptions = StatusOptions()) -> Result<[StatusEntry], Error> {
 		var returnArray = [StatusEntry]()
 		
-		var git_options = options.git_options
+		var git_options = git_status_options()
 
 		var unsafeStatus: OpaquePointer? = nil
 		defer { git_status_list_free(unsafeStatus) }

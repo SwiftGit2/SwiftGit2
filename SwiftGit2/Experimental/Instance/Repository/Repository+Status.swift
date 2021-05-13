@@ -57,24 +57,22 @@ public extension Repository {
 		return a == 1 ? true : false
 	}
 	
-	
+	// TODO: remove filter
 	func status(options: StatusOptions = StatusOptions(), filter: String? = nil) -> Result<StatusIterator, Error> {
 		var pointer: OpaquePointer? = nil
-		var git_options = options.git_options
+		
 
 		if repoIsBare() {
 			return .success( StatusIterator(nil) )
 		}
 
-		//TODO: Ugly hack. Need to move to StatusOptions() but it's a little bit difficult
-		if let filter = filter {
-			if filter.count > 0 {
-				git_options.pathspec = git_strarray(string: filter)
+		var git_options = options
+		//git_options.pathspec = ["TaoGit/TaoGit/Services/TaoSync.swift"]
+		
+		return git_options.with_git_status_options { options in
+			return _result( { StatusIterator(pointer!) }, pointOfFailure: "git_status_list_new") {
+				git_status_list_new(&pointer, self.pointer, &options)
 			}
-		}
-
-		return _result( { StatusIterator(pointer!) }, pointOfFailure: "git_status_list_new") {
-			git_status_list_new(&pointer, self.pointer, &git_options)
 		}
 	}
 }
