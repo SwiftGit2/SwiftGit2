@@ -23,10 +23,6 @@ public struct StatusOptions {
 		let result = git_status_init_options(&git_options, UInt32(GIT_STATUS_OPTIONS_VERSION))
 		assert(result == GIT_OK.rawValue)
 		
-		if !pathspec.isEmpty {
-			git_options.pathspec = git_strarray(strings: pathspec)
-		}
-		
 		if let flags = flags {
 			git_options.flags = flags.rawValue
 		}

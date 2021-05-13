@@ -28,42 +28,6 @@ public func withArrayOfCStrings<T>(
 	return body(&cStrings)
 }
 
-func git_strarray(string: String) -> git_strarray {
-	var param = UnsafeMutablePointer<Int8>(mutating: (string as NSString).utf8String)
-	
-	return withUnsafeMutablePointer(to: &param) { pointerToPointer in
-		return git_strarray(strings: pointerToPointer, count: 1)
-	}
-}
-
-// TODO: NOT WORKING
-func git_strarray(strings: [String]) -> git_strarray {
-	
-	var cStrings = strings.map { strdup($0) }
-	cStrings.append(nil)
-//	defer {
-//		cStrings.forEach { free($0) }
-//	}
-	
-	return withUnsafeMutableBytes(of: &cStrings) { bytes -> git_strarray in
-		let p = bytes.bindMemory(to: UnsafeMutablePointer<Int8>?.self)
-		let strArrayPointer = UnsafeMutablePointer<UnsafeMutablePointer<Int8>?>.allocate(capacity: strings.count)
-		
-		strArrayPointer.initialize(from: p.baseAddress!, count: strings.count)
-		
-		//strArrayPointer.pointee = bytes.b
-		
-		return git_strarray(strings: strArrayPointer, count: strings.count)
-		//bytes.
-		
-		//strArrayPointer.pointee = bytes.baseAddress
-		
-		
-		//let b = git_strarray(strings: p.baseAddress, count: strings.count)
-		//return b
-	}
-}
-
 extension git_strarray {
 	func filter(_ isIncluded: (String) -> Bool) -> [String] {
 		return map { $0 }.filter(isIncluded)

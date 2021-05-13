@@ -44,21 +44,21 @@ public extension Index {
 	}
 	
 	func add(path: String) -> Result<(), Error> {
-		var paths = git_strarray(string: path)
-		
-		return _result((), pointOfFailure: "git_index_add_all") {
-			git_index_add_all(pointer, &paths, 0, nil, nil)
+		return [path].with_git_strarray { strarray in
+			return _result((), pointOfFailure: "git_index_add_all") {
+				git_index_add_all(pointer, &strarray, 0, nil, nil)
+			}
+			.flatMap { self.write() }
 		}
-		.flatMap { self.write() }
 	}
 	
 	func remove(path: String) -> Result<(), Error> {
-		var paths = git_strarray(string: path)
-		
-		return _result((), pointOfFailure: "git_index_add_all") {
-			git_index_remove_all(pointer, &paths, nil, nil)
+		return [path].with_git_strarray { strarray in
+			return _result((), pointOfFailure: "git_index_add_all") {
+				git_index_remove_all(pointer, &strarray, nil, nil)
+			}
+			.flatMap { self.write() }
 		}
-		.flatMap { self.write() }
 	}
 	
 	func clear() -> Result<(), Error> {
