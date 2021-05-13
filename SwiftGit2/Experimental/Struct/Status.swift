@@ -99,50 +99,7 @@ public extension StatusEntry {
 // STATUS OPTIONS
 //////////////////////////////////////////////
 
-public struct StatusOptions {
-	var git_options : git_status_options
-	
-	let version		: UInt32
-	let show		: StatusOptions.Show
-	let flags		: StatusOptions.Flags
-	let pathspec	: [String]
-	let baseline	: Tree_Old?
-	
-	public init(options: git_status_options) {
-		git_options = options
-		
-		version 	= options.version
-		show    	= Show(rawValue: options.show.rawValue)!
-		flags		= Flags(rawValue: options.flags)
-		pathspec	= options.pathspec.map { $0 }
-		if let baseline = options.baseline {
-			self.baseline	= Tree_Old(baseline)
-		} else {
-			self.baseline	= nil
-		}
-	}
-	
-	public init(flags: StatusOptions.Flags? = nil, show: StatusOptions.Show? = nil) {
-		let pointer = UnsafeMutablePointer<git_status_options>.allocate(capacity: 1)
-		let optionsResult = git_status_init_options(pointer, UInt32(GIT_STATUS_OPTIONS_VERSION))
-		guard optionsResult == GIT_OK.rawValue else {
-			fatalError("git_status_init_options")
-		}
-		
-		var options = pointer.move()
-		pointer.deallocate()
-		
-		if let flags = flags {
-			options.flags = flags.rawValue
-		}
-		
-		if let show = show {
-			options.show = git_status_show_t(rawValue: show.rawValue)
-		}
-		
-		self.init(options: options)
-	}
-}
+
 
 public extension StatusOptions {
 	/**

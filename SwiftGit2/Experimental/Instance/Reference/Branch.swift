@@ -137,7 +137,7 @@ public extension Duo where T1 == Branch, T2 == Repository {
 
 public extension Duo where T1 == Branch, T2 == Remote {
 	/// Push local branch changes to remote branch
-	func push(credentials: Credentials_OLD) -> Result<(), Error> {
+	func push(credentials: Credentials) -> Result<(), Error> {
 		let (branch, remoteRepo) = self.value
 		
 		var opts = pushOptions(credentials: credentials)
@@ -151,7 +151,7 @@ public extension Duo where T1 == Branch, T2 == Remote {
 
 // High Level code
 public extension Repository {
-	func push(remoteRepoName: String, localBranchName: String, credentials: Credentials_OLD) -> Result<(), Error> {
+	func push(remoteRepoName: String, localBranchName: String, credentials: Credentials) -> Result<(), Error> {
 		let set = XR.Set()
 		
 		//Huck, but works
@@ -237,7 +237,7 @@ fileprivate extension String {
 	}
 }
 
-fileprivate func pushOptions(credentials: Credentials_OLD) -> git_push_options {
+fileprivate func pushOptions(credentials: Credentials) -> git_push_options {
 	let pointer = UnsafeMutablePointer<git_push_options>.allocate(capacity: 1)
 	git_push_init_options(pointer, UInt32(GIT_PUSH_OPTIONS_VERSION))
 	
@@ -264,7 +264,7 @@ private func credentialsCallback(
 	
 	let result: Int32
 	
-	switch Credentials_OLD.fromPointer(payload) {
+	switch Credentials.fromPointer(payload) {
 	case .default:
 		result = git_credential_default_new(cred)
 	case .sshAgent:
@@ -303,7 +303,7 @@ extension BranchError: LocalizedError {
   }
 }
 
-extension Credentials_OLD {
+extension Credentials {
 	func isSsh() -> Bool {
 		switch self {
 		case .ssh(_,_,_):

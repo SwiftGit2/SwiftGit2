@@ -12,11 +12,11 @@ import Clibgit2
 public typealias TransferProgressCB = (git_indexer_progress)->(Bool) // return false to cancel progree
 
 public class RemoteCallbacks {
-	let credentials: Credentials_OLD
+	let credentials: Credentials
 	var remote_callbacks = git_remote_callbacks()
 	public var transferProgress: TransferProgressCB?
 	
-	public init(credentials: Credentials_OLD = .default) {
+	public init(credentials: Credentials = .default) {
 		self.credentials = credentials
 		
 		let result = git_remote_init_callbacks(&remote_callbacks, UInt32(GIT_REMOTE_CALLBACKS_VERSION))

@@ -160,7 +160,7 @@ public extension Repository {
 	///
 	/// Returns a `Result` with a `Repository` or an error.
 	static func clone(from remoteURL: URL, to localURL: URL, isLocalClone: Bool = false, bare: Bool = false,
-							credentials: Credentials_OLD = .default, checkoutStrategy: CheckoutStrategy = .Safe,
+							credentials: Credentials = .default, checkoutStrategy: CheckoutStrategy = .Safe,
 							checkoutProgress: CheckoutProgressBlock? = nil) -> Result<Repository, Error> {
 		
 
@@ -173,12 +173,11 @@ public extension Repository {
 
 		let remoteURLString = (remoteURL as NSURL).isFileReferenceURL() ? remoteURL.path : remoteURL.absoluteString
 
-		
-		return _result( { Repository(pointer!) } , pointOfFailure: "git_clone") {
-			
-			return localURL.withUnsafeFileSystemRepresentation { localPath in
+		return localURL.withUnsafeFileSystemRepresentation { localPath in
+			return _result( { Repository(pointer!) } , pointOfFailure: "git_clone") {
 				return git_clone(&pointer, remoteURLString, localPath, &options)
 			}
+			
 		}
 	}
 	
@@ -187,11 +186,11 @@ public extension Repository {
 		let remoteURLString = (remoteURL as NSURL).isFileReferenceURL() ? remoteURL.path : remoteURL.absoluteString
 		
 		var options = options.clone_options
-		
-		return _result( { Repository(pointer!) } , pointOfFailure: "git_clone") {
-			return localURL.withUnsafeFileSystemRepresentation { localPath in
+		return localURL.withUnsafeFileSystemRepresentation { localPath in
+			return _result( { Repository(pointer!) } , pointOfFailure: "git_clone") {
 				return git_clone(&pointer, remoteURLString, localPath, &options)
 			}
+			
 		}
 	}
 	

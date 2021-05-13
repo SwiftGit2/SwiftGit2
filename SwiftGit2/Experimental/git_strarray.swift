@@ -24,9 +24,10 @@ func git_strarray(strings: [String]) -> git_strarray {
 	defer {
 		cStrings.forEach { free($0) }
 	}
-
-	return cStrings.withUnsafeMutableBufferPointer { cStrings in
-		return git_strarray(strings: cStrings.baseAddress, count: strings.count)
+	
+	return withUnsafeMutableBytes(of: &cStrings) { bytes -> git_strarray in
+		let p = bytes.bindMemory(to: UnsafeMutablePointer<Int8>?.self)
+		return git_strarray(strings: p.baseAddress, count: strings.count)
 	}
 }
 
