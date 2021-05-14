@@ -11,13 +11,15 @@ import Clibgit2
 extension Array where Element == String {
 	func with_git_strarray<T>(_ body: (inout git_strarray) -> T) -> T {
 		return withArrayOfCStrings(self) { strings in
-			var arr = git_strarray(strings: &strings, count: self.count)
-			return body(&arr)
+			return strings.withUnsafeMutableBufferPointer { p -> T in
+				var arr = git_strarray(strings: p.baseAddress!, count: self.count)
+				return body(&arr)
+			}
 		}
 	}
 }
 
-public func withArrayOfCStrings<T>(
+private func withArrayOfCStrings<T>(
 	_ args: [String],
 	_ body: (inout [UnsafeMutablePointer<CChar>?]) -> T
 ) -> T {
