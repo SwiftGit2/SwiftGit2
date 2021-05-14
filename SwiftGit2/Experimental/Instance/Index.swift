@@ -33,11 +33,11 @@ public extension Repository {
 public extension Index {
 	var entrycount : Int { git_index_entrycount(pointer) }
 
-	func entries() -> Result<[IndexOld.Entry], Error> {
-		var entries = [IndexOld.Entry]()
+	func entries() -> Result<[Index.Entry], Error> {
+		var entries = [Index.Entry]()
 		for i in 0..<entrycount {
 			if let entry = git_index_get_byindex(pointer, i) {
-				entries.append(IndexOld.Entry(entry: entry.pointee))
+				entries.append(Index.Entry(entry: entry.pointee))
 			}
 		}
 		return .success(entries)
