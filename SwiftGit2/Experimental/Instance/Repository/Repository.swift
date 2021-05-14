@@ -80,7 +80,7 @@ extension Repository {
 	
 	public func commit(message: String, signature: Signature) -> Result<Commit, Error> {
 		return index()
-			.flatMap { index in Duo((index,self)).commit(message: message, signature: signature) }
+			.flatMap { index in Duo(index,self).commit(message: message, signature: signature) }
 	}
 	
 	public func mergeCommits(commitFrom: Commit, commitInto: Commit ) -> Result<Index, Error> {

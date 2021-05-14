@@ -68,7 +68,7 @@ fileprivate class RevisionWalker: IteratorProtocol, Sequence {
 			return nil
 			
 		case .okay(let oid):
-			return Duo((oid, repo) ).commit()
+			return Duo(oid, repo).commit()
 		}
 	}
 	

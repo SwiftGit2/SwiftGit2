@@ -164,7 +164,7 @@ public extension Repository {
 		
 		return set.with( remote )
 			.flatMap{ $0.with( self.reference(name: localBranchName).flatMap{ $0.asBranch() } ) } // branch
-			.flatMap{ set in Duo((set[Branch.self], set[Remote.self] )).push(credentials: credentials) }
+			.flatMap{ set in Duo(set[Branch.self], set[Remote.self]).push(credentials: credentials) }
 	}
 }
 
