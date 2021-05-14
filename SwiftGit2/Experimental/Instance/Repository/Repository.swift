@@ -83,15 +83,6 @@ extension Repository {
 			.flatMap { index in Duo(index,self).commit(message: message, signature: signature) }
 	}
 	
-	public func mergeCommits(commitFrom: Commit, commitInto: Commit ) -> Result<Index, Error> {
-		var options = MergeOptions()
-		var indexPointer : OpaquePointer? = nil
-		
-		return _result( { Index(indexPointer!) } , pointOfFailure: "git_merge_commits") {
-			git_merge_commits(&indexPointer, self.pointer , commitFrom.pointer, commitInto.pointer, &options.merge_options)
-		}
-	}
-	
 	public func remoteRepo(named name: String, remoteType: RemoteType) -> Result<Remote, Error> {
 		return remoteLookup(named: name) { $0.map{ Remote($0, remoteType: remoteType) } }
 	}
