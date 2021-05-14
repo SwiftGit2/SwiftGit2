@@ -1,6 +1,17 @@
 import Foundation
 import Clibgit2
 
+
+public extension Error {
+	var fullDescription: String {
+		if let reason = (self as NSError).userInfo[NSLocalizedFailureReasonErrorKey]  {
+			return "\(localizedDescription) - \(reason)"
+		} else {
+			return localizedDescription
+		}
+	}
+}
+
 public let libGit2ErrorDomain = "org.libgit2.libgit2"
 
 internal extension NSError {
