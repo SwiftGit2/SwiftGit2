@@ -54,24 +54,18 @@ public extension Repository {
 	}
 	
 	func references(withPrefix prefix: String) -> Result<[Reference], Error> {
-		let strArrayPointer = UnsafeMutablePointer<git_strarray>.allocate(capacity: 1)
+		var strarray = git_strarray()
 		defer {
-			git_strarray_free(strArrayPointer)
-			strArrayPointer.deallocate()
+			// free results of the git_reference_list call
+			git_strarray_free(&strarray)
 		}
 		
-		let result = git_reference_list(strArrayPointer, self.pointer)
-		guard result == GIT_OK.rawValue else {
-			return Result.failure(NSError(gitError: result, pointOfFailure: "git_reference_list"))
+		return _result({ strarray }, pointOfFailure: "git_reference_list") {
+			git_reference_list(&strarray, self.pointer)
+		}.flatMap {
+			$0.filter { $0.hasPrefix(prefix) }
+			.flatMap { self.reference(name: $0) }
 		}
-
-		let strArray = strArrayPointer.pointee
-		let references = strArray
-			.filter { $0.hasPrefix(prefix) }
-			.map { self.reference(name: $0) }
-		
-		return references.aggregateResult()
-		//.map { $0.compactMap { InstanceBranch(instance: $0) } }
 	}
 	
 	func reference(name: String) -> Result<Reference, Error> {

@@ -43,7 +43,7 @@ extension Repository {
 	
 	public func getAllRemotes() -> Result<[Remote], Error> {
 		return getRemotesNames()
-			.flatMap{ $0.map({ self.remoteRepo(named: $0, remoteType: .Original) }).aggregateResult() }
+			.flatMap{ $0.flatMap { self.remoteRepo(named: $0, remoteType: .Original) } }
 	}
 	
 	private func getRemotesNames() -> Result<[String], Error> {

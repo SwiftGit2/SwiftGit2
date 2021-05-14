@@ -172,10 +172,13 @@ public extension Repository {
 public extension Repository {
 	func branches( _ location: BranchLocation) -> Result<[Branch], Error> {		
 		switch location {
-		case .local:		return references(withPrefix: "refs/heads/")
-										.flatMap { $0.map { $0.asBranch() }.aggregateResult() }
-		case .remote: 		return references(withPrefix: "refs/remotes/")
-										.flatMap { $0.map { $0.asBranch() }.aggregateResult() }
+		case .local:
+			return references(withPrefix: "refs/heads/")
+				.flatMap { $0.flatMap { $0.asBranch() } }
+			
+		case .remote:
+			return references(withPrefix: "refs/remotes/")
+				.flatMap { $0.flatMap { $0.asBranch() } }
 		}
 	}
 	
