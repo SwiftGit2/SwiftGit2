@@ -85,7 +85,7 @@ public extension Repository {
 	}
 	
 	func rename(remote: String, to newName: String) -> Result<(), Error> {
-		//WHAT DOES IT MEAN? What the problems?
+		//TODO: return list of problems
 		let problems = UnsafeMutablePointer<git_strarray>.allocate(capacity: 1)
 		defer {
 			git_strarray_free(problems)

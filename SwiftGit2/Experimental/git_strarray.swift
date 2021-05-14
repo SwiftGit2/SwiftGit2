@@ -8,24 +8,35 @@
 //
 import Clibgit2
 
-func git_strarray(string: String) -> git_strarray {
-	var param = UnsafeMutablePointer<Int8>(mutating: (string as NSString).utf8String)
-	
-	return withUnsafeMutablePointer(to: &param) { pointerToPointer in
-		return git_strarray(strings: pointerToPointer, count: 1)
+extension Array where Element == String {
+	func with_git_strarray<T>(_ body: (inout git_strarray) -> T) -> T {
+		return withArrayOfCStrings(self) { strings in
+			var arr = git_strarray(strings: &strings, count: self.count)
+			return body(&arr)
+		}
 	}
 }
 
-// TODO: NOT WORKING
-func git_strarray(strings: [String]) -> git_strarray {
-	
-	var cStrings = strings.map { strdup($0) }
-	cStrings.append(nil)
+public func withArrayOfCStrings<T>(
+	_ args: [String],
+	_ body: (inout [UnsafeMutablePointer<CChar>?]) -> T
+) -> T {
+	var cStrings = args.map { strdup($0) }
 	defer {
 		cStrings.forEach { free($0) }
 	}
+	return body(&cStrings)
+}
 
-	return cStrings.withUnsafeMutableBufferPointer { cStrings in
-		return git_strarray(strings: cStrings.baseAddress, count: strings.count)
+extension git_strarray {
+	func filter(_ isIncluded: (String) -> Bool) -> [String] {
+		return map { $0 }.filter(isIncluded)
+	}
+
+	func map<T>(_ transform: (String) -> T) -> [T] {
+		return (0..<self.count).map {
+			let string = String(validatingUTF8: self.strings[$0]!)!
+			return transform(string)
+		}
 	}
 }

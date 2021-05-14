@@ -8,19 +8,6 @@
 
 import Clibgit2
 
-extension git_strarray {
-	func filter(_ isIncluded: (String) -> Bool) -> [String] {
-		return map { $0 }.filter(isIncluded)
-	}
-
-	func map<T>(_ transform: (String) -> T) -> [T] {
-		return (0..<self.count).map {
-			let string = String(validatingUTF8: self.strings[$0]!)!
-			return transform(string)
-		}
-	}
-}
-
 public func _result<T>(_ value: T, pointOfFailure: String, block: () -> Int32) -> Result<T, Error> {
 	let result = block()
 	if result == GIT_OK.rawValue {

@@ -12,15 +12,6 @@ import Essentials
 public class Repository : InstanceProtocol {
 	public var pointer: OpaquePointer
 	
-	//TODO: DELETE ME
-	public var directoryURLold: URL? {
-		if let pathPointer = git_repository_workdir(self.pointer) {
-			URL(fileURLWithPath: String(cString: pathPointer) , isDirectory: true)
-		}
-		
-		return nil
-	}
-	
 	public var directoryURL: Result<URL, Error> {
 		if let pathPointer = git_repository_workdir(self.pointer) {
 			return .success( URL(fileURLWithPath: String(cString: pathPointer) , isDirectory: true) )
@@ -56,28 +47,22 @@ extension Repository {
 	}
 	
 	private func getRemotesNames() -> Result<[String], Error> {
-		let strArrayPointer = UnsafeMutablePointer<git_strarray>.allocate(capacity: 1)
-		defer {
-			git_strarray_free(strArrayPointer)
-			strArrayPointer.deallocate()
-		}
-		
-		return _result( { strArrayPointer.pointee.map{ $0 } } , pointOfFailure: "git_remote_list") {
-			git_remote_list(strArrayPointer, self.pointer)
+		var strarray = git_strarray()
+
+		return _result( { strarray.map{ $0 } } , pointOfFailure: "git_remote_list") {
+			git_remote_list(&strarray, self.pointer)
 		}
 	}
 }
 
 extension Repository {
 	public func headCommit() -> Result<Commit, Error> {
-		var oid = git_oid() //out
+		var oid = git_oid()
 		
-		return _result((), pointOfFailure: "git_reference_name_to_id") {
+		return _result( { oid }, pointOfFailure: "git_reference_name_to_id") {
 			git_reference_name_to_id(&oid, self.pointer, "HEAD")
 		}
-		.flatMap { _ in
-			self.instanciate(OID(oid)) as Result<Commit, Error>
-		}
+		.flatMap { instanciate(OID($0)) }
 	}
 	
 	
@@ -94,22 +79,16 @@ extension Repository {
 	}
 	
 	public func commit(message: String, signature: Signature) -> Result<Commit, Error> {
-		return index().flatMap { index in
-			return Duo((index,self)).commit(message: message, signature: signature)
-		}
+		return index()
+			.flatMap { index in Duo((index,self)).commit(message: message, signature: signature) }
 	}
-
-
-	
-
 	
 	public func mergeCommits(commitFrom: Commit, commitInto: Commit ) -> Result<Index, Error> {
-		var mrgOptions = mergeOptions()
+		var options = MergeOptions()
+		var indexPointer : OpaquePointer? = nil
 		
-		var rezPointer : OpaquePointer? = nil
-		
-		return _result( { Index(rezPointer!) } , pointOfFailure: "git_merge_commits") {
-			git_merge_commits(&rezPointer, self.pointer , commitFrom.pointer, commitInto.pointer, &mrgOptions)
+		return _result( { Index(indexPointer!) } , pointOfFailure: "git_merge_commits") {
+			git_merge_commits(&indexPointer, self.pointer , commitFrom.pointer, commitInto.pointer, &options.merge_options)
 		}
 	}
 	
@@ -151,32 +130,19 @@ public extension Repository {
 }
 
 
-public extension Repository {
-	/// Method needed to collect not pushed or not pulled commits
-	func getChangedCommits(branchToHide: String, branchToPush: String) -> Result<[Commit], Error> {
-		let revWalker = RevisionWalker(repo: self, localBranchToHide: branchToHide, remoteBranchToPush: branchToPush)
-		
-		var result: [Result<Commit, Error>] = []
-		
-		while let elem = revWalker.next() {
-			result.append(elem)
-		}
-		
-		return result.aggregateResult()
-	}
-}
 
 // index
 public extension Repository {
 	func reset(path: String) -> Result<(), Error> {
-		var paths = git_strarray(string: path)
-				
-		return HEAD()
-			.flatMap { self.instanciate($0.oid) as Result<Commit, Error> }
-			.flatMap { commit in
-				_result((), pointOfFailure: "git_reset_default") {
-					git_reset_default(self.pointer, commit.pointer, &paths)
-				}
+		
+		return [path].with_git_strarray { strarray in
+			return HEAD()
+				.flatMap { self.instanciate($0.oid) as Result<Commit, Error> }
+				.flatMap { commit in
+					_result((), pointOfFailure: "git_reset_default") {
+						git_reset_default(self.pointer, commit.pointer, &strarray)
+					}
+			}
 		}
 	}
 }
@@ -196,7 +162,7 @@ public extension Repository {
 	///
 	/// Returns a `Result` with a `Repository` or an error.
 	static func clone(from remoteURL: URL, to localURL: URL, isLocalClone: Bool = false, bare: Bool = false,
-							credentials: Credentials_OLD = .default, checkoutStrategy: CheckoutStrategy = .Safe,
+							credentials: Credentials = .default, checkoutStrategy: CheckoutStrategy = .Safe,
 							checkoutProgress: CheckoutProgressBlock? = nil) -> Result<Repository, Error> {
 		
 
@@ -209,12 +175,11 @@ public extension Repository {
 
 		let remoteURLString = (remoteURL as NSURL).isFileReferenceURL() ? remoteURL.path : remoteURL.absoluteString
 
-		
-		return _result( { Repository(pointer!) } , pointOfFailure: "git_clone") {
-			
-			return localURL.withUnsafeFileSystemRepresentation { localPath in
+		return localURL.withUnsafeFileSystemRepresentation { localPath in
+			return _result( { Repository(pointer!) } , pointOfFailure: "git_clone") {
 				return git_clone(&pointer, remoteURLString, localPath, &options)
 			}
+			
 		}
 	}
 	
@@ -223,11 +188,11 @@ public extension Repository {
 		let remoteURLString = (remoteURL as NSURL).isFileReferenceURL() ? remoteURL.path : remoteURL.absoluteString
 		
 		var options = options.clone_options
-		
-		return _result( { Repository(pointer!) } , pointOfFailure: "git_clone") {
-			return localURL.withUnsafeFileSystemRepresentation { localPath in
+		return localURL.withUnsafeFileSystemRepresentation { localPath in
+			return _result( { Repository(pointer!) } , pointOfFailure: "git_clone") {
 				return git_clone(&pointer, remoteURLString, localPath, &options)
 			}
+			
 		}
 	}
 	
@@ -314,35 +279,6 @@ fileprivate func checkoutProgressCallback(path: UnsafePointer<Int8>?, completedS
 		}
 		block(path.flatMap(String.init(validatingUTF8:)), completedSteps, totalSteps)
 	}
-}
-
-
-
-fileprivate func mergeOptions( mergeFlags: git_merge_flag_t? = nil,
-							   fileFlags: git_merge_file_flag_t? = nil,
-							   renameTheshold: Int = 50 ) -> git_merge_options {
-
-	let pointer = UnsafeMutablePointer<git_merge_options>.allocate(capacity: 1)
-
-	git_merge_init_options(pointer, UInt32(GIT_MERGE_OPTIONS_VERSION))
-
-	var options = pointer.move()
-
-	pointer.deallocate()
-
-	if let mergeFlags = mergeFlags {
-		options.flags = mergeFlags.rawValue
-	}
-
-	if let fileFlags = fileFlags {
-		options.file_flags	= fileFlags.rawValue
-	}
-
-	options.rename_threshold = UInt32( renameTheshold )
-
-	//options.
-
-	return options
 }
 
 ////////////////////////////////////////////////////////////////////

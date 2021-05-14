@@ -423,28 +423,8 @@ public final class RepositoryOLD {
 		return Result.success(())
 	}
 
-	/// Load all commits in the specified branch in topological & time order descending
-	///
-	/// :param: branch The branch to get all commits from
-	/// :returns: Returns a result with array of branches or the error that occurred
-	public func commits(in branch: BranchOLD) -> CommitIterator_OLD {
-		let iterator = CommitIterator_OLD(repo: self, root: branch.oid.oid)
-		return iterator
-	}
 	
-	public func reset(path: String) -> Result<(), Error> {
-		var paths = git_strarray(string: path)
-		
-		return HEAD().flatMap { self.commit($0.oid) }.flatMap { comit in
-				
-			let result = git_reset_default(self.pointer, comit.pointer, &paths)
-			guard result == GIT_OK.rawValue else {
-				return .failure(NSError(gitError: result, pointOfFailure: "git_reset_default"))
-			}
-				
-			return .success(())
-		}
-	}
+
 
 	/// Perform a commit with arbitrary numbers of parent commits.
 	public func commit(
@@ -511,28 +491,7 @@ public final class RepositoryOLD {
 		}
 	}
 
-	/// Perform a commit of the staged files with the specified message and signature,
-	/// assuming we are not doing a merge and using the current tip as the parent.
-	public func commit(message: String, signature: Signature) -> Result<CommitOLD, Error> {
-		return index().flatMap { index in
-			var treeOID = git_oid() // out
-			let treeResult = git_index_write_tree(&treeOID, index.pointer)
-			guard treeResult == GIT_OK.rawValue else {
-				let err = NSError(gitError: treeResult, pointOfFailure: "git_index_write_tree")
-				return .failure(err)
-			}
-			var parentID = git_oid()
-			let nameToIDResult = git_reference_name_to_id(&parentID, self.pointer, "HEAD")
-			if nameToIDResult == GIT_OK.rawValue {
-				return commit(OID(parentID)).flatMap { parentCommit in
-					commit(tree: OID(treeOID), parents: [parentCommit], message: message, signature: signature)
-				}
-			}
-			
-			// if there are no parents: initial commit
-			return commit(tree: OID(treeOID), parents: [], message: message, signature: signature)
-		}
-	}
+	
 
 	// MARK: - Diffs
 
@@ -731,7 +690,7 @@ public final class RepositoryOLD {
 	public func status(options: StatusOptions = StatusOptions()) -> Result<[StatusEntry], Error> {
 		var returnArray = [StatusEntry]()
 		
-		var git_options = options.git_options
+		var git_options = git_status_options()
 
 		var unsafeStatus: OpaquePointer? = nil
 		defer { git_status_list_free(unsafeStatus) }
