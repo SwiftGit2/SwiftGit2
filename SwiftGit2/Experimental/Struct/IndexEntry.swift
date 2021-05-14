@@ -1,19 +1,15 @@
 //
-//  Repository+Index.swift
+//  IndexEntry.swift
 //  SwiftGit2-OSX
 //
-//  Created by Loki on 02.02.2020.
-//  Copyright © 2020 GitHub, Inc. All rights reserved.
+//  Created by loki on 14.05.2021.
+//  Copyright © 2021 GitHub, Inc. All rights reserved.
 //
 
 import Foundation
 import Clibgit2
-public class IndexOld {
-	
-}
 
-
-public extension IndexOld {
+public extension Index {
 	struct Time {
 		let seconds : Int32
 		let nanoseconds : UInt32
@@ -65,7 +61,10 @@ public extension IndexOld {
 	}
 }
 
-public extension IndexOld.Entry {
+
+
+
+public extension Index.Entry {
 	struct Flags: OptionSet {
 
 		public let rawValue: UInt32
