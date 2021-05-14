@@ -40,7 +40,7 @@ public extension Remote {
 	var URL: String {
 		let url = String(validatingUTF8: git_remote_url(pointer))!
 		
-		switch remoteType{
+		switch remoteType {
 		case .Original:
 			return url
 		case .ForceSSH:
