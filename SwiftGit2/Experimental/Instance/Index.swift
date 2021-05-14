@@ -43,8 +43,8 @@ public extension Index {
 		return .success(entries)
 	}
 	
-	func add(path: String) -> Result<(), Error> {
-		return [path].with_git_strarray { strarray in
+	func add(paths: [String]) -> Result<(), Error> {
+		return paths.with_git_strarray { strarray in
 			return _result((), pointOfFailure: "git_index_add_all") {
 				git_index_add_all(pointer, &strarray, 0, nil, nil)
 			}
