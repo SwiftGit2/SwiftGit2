@@ -1,10 +1,3 @@
-//
-//  Duos.swift
-//  SwiftGit2-OSX
-//
-//  Created by UKS on 21.09.2020.
-//  Copyright © 2020 GitHub, Inc. All rights reserved.
-//
 
 import Foundation
 
