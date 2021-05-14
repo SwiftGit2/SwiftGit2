@@ -10,9 +10,9 @@ import Foundation
 import Clibgit2
 
 public extension Repository {	
-	func diffIndexToWorkDir(options: DiffOptions? = nil) -> Result<Diff, Error> {
+	func diffIndexToWorkDir(options: DiffOptions = DiffOptions()) -> Result<Diff, Error> {
 		var diff: OpaquePointer? = nil
-		let result = git_diff_index_to_workdir(&diff, self.pointer, nil /* git_index */, options?.pointer)
+		let result = git_diff_index_to_workdir(&diff, self.pointer, nil /* git_index */, &options.diff_options)
 		
 		guard result == GIT_OK.rawValue else {
 			return Result.failure(NSError(gitError: result, pointOfFailure: "git_diff_index_to_workdir"))
@@ -21,9 +21,9 @@ public extension Repository {
 		return .success(Diff(diff!))
 	}
 	
-	func diffTreeToWorkdir(tree: Tree_Old, options: DiffOptions? = nil) -> Result<Diff, Error> {
+	func diffTreeToWorkdir(tree: Tree_Old, options: DiffOptions = DiffOptions()) -> Result<Diff, Error> {
 		var diff: OpaquePointer? = nil
-		let result = git_diff_tree_to_workdir(&diff, self.pointer, tree.pointer, options?.pointer)
+		let result = git_diff_tree_to_workdir(&diff, self.pointer, tree.pointer, &options.diff_options)
 		
 		guard result == GIT_OK.rawValue else {
 			return Result.failure(NSError(gitError: result, pointOfFailure: "git_diff_tree_to_workdir"))
@@ -32,9 +32,9 @@ public extension Repository {
 		return .success(Diff(diff!))
 	}
 	
-	func diffTreeToWorkdirWithIndex(tree: Tree_Old, options: DiffOptions? = nil) -> Result<Diff, Error> {
+	func diffTreeToWorkdirWithIndex(tree: Tree_Old, options: DiffOptions = DiffOptions()) -> Result<Diff, Error> {
 		var diff: OpaquePointer? = nil
-		let result = git_diff_tree_to_workdir_with_index(&diff, self.pointer, tree.pointer, options?.pointer)
+		let result = git_diff_tree_to_workdir_with_index(&diff, self.pointer, tree.pointer, &options.diff_options)
 		
 		guard result == GIT_OK.rawValue else {
 			return Result.failure(NSError(gitError: result, pointOfFailure: "git_diff_tree_to_workdir_with_index"))
@@ -66,11 +66,11 @@ public extension Repository {
 }
 
 private extension RepositoryOLD {
-	func hunksBetweenBlobs(old: Blob?, new: Blob?, options: DiffOptions?) -> Result<[Diff.Hunk],Error>{
+	func hunksBetweenBlobs(old: Blob?, new: Blob?, options: DiffOptions = DiffOptions()) -> Result<[Diff.Hunk],Error>{
 		var cb = DiffEachCallbacks()
 		
 		return _result( { cb.deltas.first?.hunks ?? [] }, pointOfFailure: "git_diff_blobs") {
-			git_diff_blobs(old?.pointer, nil, new?.pointer, nil, options?.pointer, cb.each_file_cb, nil, cb.each_hunk_cb, cb.each_line_cb, &cb)
+			git_diff_blobs(old?.pointer, nil, new?.pointer, nil, &options.diff_options, cb.each_file_cb, nil, cb.each_hunk_cb, cb.each_line_cb, &cb)
 		}
 	}
 	
