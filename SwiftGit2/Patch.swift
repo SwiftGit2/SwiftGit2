@@ -20,19 +20,19 @@ public class Patch {
 		git_patch_free(pointer)
 	}
 	
-	public static func fromFiles(old: Diff.File?, new: Diff.File?, options: DiffOptions? = nil) -> Result<Patch, Error> {
+	public static func fromFiles(old: Diff.File?, new: Diff.File?, options: DiffOptions = DiffOptions()) -> Result<Patch, Error> {
 		var patchPointer: OpaquePointer? = nil
 	
 		return _result({ Patch(patchPointer!) }, pointOfFailure: "git_patch_from_blobs") {
-			git_patch_from_blobs(&patchPointer, old?.blob?.pointer, old?.path, new?.blob?.pointer, new?.path, options?.pointer)
+			git_patch_from_blobs(&patchPointer, old?.blob?.pointer, old?.path, new?.blob?.pointer, new?.path, &options.diff_options)
 		}
 	}
 	
-	public static func fromBlobs(old: Blob?, new: Blob?, options: DiffOptions? = nil) -> Result<Patch, Error> {
+	public static func fromBlobs(old: Blob?, new: Blob?, options: DiffOptions = DiffOptions()) -> Result<Patch, Error> {
 		var patchPointer: OpaquePointer? = nil
 		
 		return _result({ Patch(patchPointer!) }, pointOfFailure: "git_patch_from_blobs") {
-			git_patch_from_blobs(&patchPointer, old?.pointer, nil, new?.pointer, nil, options?.pointer)
+			git_patch_from_blobs(&patchPointer, old?.pointer, nil, new?.pointer, nil, &options.diff_options)
 		}
 	}
 }

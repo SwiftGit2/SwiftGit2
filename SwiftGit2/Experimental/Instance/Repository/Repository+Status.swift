@@ -57,8 +57,7 @@ public extension Repository {
 		return a == 1 ? true : false
 	}
 	
-	// TODO: remove filter
-	func status(options: StatusOptions = StatusOptions(), filter: String? = nil) -> Result<StatusIterator, Error> {
+	func status(options: StatusOptions = StatusOptions()) -> Result<StatusIterator, Error> {
 		var pointer: OpaquePointer? = nil
 		
 
