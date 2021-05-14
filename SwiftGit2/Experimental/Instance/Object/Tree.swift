@@ -31,10 +31,10 @@ public extension Repository {
 			.flatMap { $0.with( $0[Commit.self].getTree()) }        // assigns set[Tree.self] to refer Tree of HEAD commit
 			.flatMap { $0.with( $0[Commit.self]                     // assigns set[[Tree].self] to refer parent trees of HEAD commit
 									.parents()
-									.flatMap { $0.mapResult { $0.getTree() } }
+									.flatMap { $0.flatMap { $0.getTree() } }
 							   ) }
 			//call diffTreeToTree for each parent tree
-			.flatMap { set in set[[Tree].self].mapResult { parent in set[Repository.self].diffTreeToTree(oldTree: parent, newTree: set[Tree.self]) } }
+			.flatMap { set in set[[Tree].self].flatMap { parent in set[Repository.self].diffTreeToTree(oldTree: parent, newTree: set[Tree.self]) } }
 		// diff with first parent would be
 		//  .flatMap { $0[Repository.self].diffTreeToTree(oldTree: $0[[Tree].self][0], newTree: $0[Tree.self]) }
 	}
