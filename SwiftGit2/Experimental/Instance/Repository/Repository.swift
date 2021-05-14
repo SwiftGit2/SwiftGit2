@@ -133,9 +133,9 @@ public extension Repository {
 
 // index
 public extension Repository {
-	func reset(path: String) -> Result<(), Error> {
+	func reset(paths: [String]) -> Result<(), Error> {
 		
-		return [path].with_git_strarray { strarray in
+		return paths.with_git_strarray { strarray in
 			return HEAD()
 				.flatMap { self.instanciate($0.oid) as Result<Commit, Error> }
 				.flatMap { commit in
