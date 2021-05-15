@@ -18,4 +18,8 @@ public struct FetchOptions {
 		
 		fetch_options.callbacks = callbacks.remote_callbacks
 	}
+	
+	public init(credentials: Credentials) {
+		self.init(callbacks: RemoteCallbacks(credentials: credentials))
+	}
 }
