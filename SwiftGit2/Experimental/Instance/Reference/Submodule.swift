@@ -117,15 +117,15 @@ public extension Duo where T1 == Submodule, T2 == Repository {
 	func resolveUrl() -> Result<String, Error> {
 		let (submodule, repo) = self.value
 
-		let buf_ptr = UnsafeMutablePointer<git_buf>.allocate(capacity: 1)
-		buf_ptr.pointee = git_buf(ptr: nil, asize: 0, size: 0)
+		//let buf_ptr = UnsafeMutablePointer<git_buf>.allocate(capacity: 1)
+		var buf = git_buf(ptr: nil, asize: 0, size: 0)
 
-		return _result( { Buffer(pointer: buf_ptr) }, pointOfFailure: "git_submodule_resolve_url") {
+		return _result( { Buffer(buf: buf) }, pointOfFailure: "git_submodule_resolve_url") {
 			submodule.url.withCString { relativeUrl in
-				git_submodule_resolve_url(buf_ptr, repo.pointer, relativeUrl)
+				git_submodule_resolve_url(&buf, repo.pointer, relativeUrl)
 			}
 		}
-		.flatMap { $0.asStringRez() }
+		.flatMap { $0.asString() }
 	}
 	
 	

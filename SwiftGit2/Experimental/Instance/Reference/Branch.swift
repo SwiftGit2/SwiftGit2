@@ -104,34 +104,35 @@ public extension Duo where T1 == Branch, T2 == Repository {
 		let (branch, repo) = self.value
 		
 		return branch.commitOID
-			.flatMap { Duo<OID,Repository>(($0, repo)).commit() }
+			.flatMap { Duo<OID,Repository>($0, repo).commit() }
 			.flatMap { commit in repo.createBranch(from: commit, withName: name)  }
 	}
 	
-	fileprivate func getRemoteName() -> Result<String, Error> {
+	fileprivate func remoteName() -> Result<String, Error> {
 		let (branch, repo) = self.value
+		var buf = git_buf(ptr: nil, asize: 0, size: 0)
 		
-		let buf_ptr = UnsafeMutablePointer<git_buf>.allocate(capacity: 1)
-		buf_ptr.pointee = git_buf(ptr: nil, asize: 0, size: 0)
+		//let buf_ptr = UnsafeMutablePointer<git_buf>.allocate(capacity: 1)
+		//buf_ptr.pointee = git_buf(ptr: nil, asize: 0, size: 0)
 		
 		let result = {
 			branch.getLongName().withCString { fullBranchName in
-				git_branch_upstream_remote(buf_ptr, repo.pointer, fullBranchName);
+				git_branch_upstream_remote(&buf, repo.pointer, fullBranchName);
 			}
 		}()
 		
 		if result == GIT_OK.rawValue {
-			return Buffer(pointer: &buf_ptr.pointee).asStringRez()
+			return Buffer(buf: buf).asString()
 		} else {
 			return Result.failure(NSError(gitError: result, pointOfFailure: "git_branch_upstream_remote"))
 		}
 	}
 	
 	///Gets REMOTE item from local branch. Doesn't works with remote branch
-	func getRemote() -> Result<Remote, Error> {
+	func remote() -> Result<Remote, Error> {
 		let (_, repo) = self.value
 		
-		return getRemoteName()
+		return remoteName()
 			.flatMap { remoteName in
 				repo.remoteRepo(named: remoteName, remoteType: .Original)
 			}
@@ -184,15 +185,14 @@ public extension Repository {
 	
 	/// Get upstream name by branchName
 	func upstreamName(branchName: String) -> Result<String, Error> {
-		let buf_ptr = UnsafeMutablePointer<git_buf>.allocate(capacity: 1)
-		buf_ptr.pointee = git_buf(ptr: nil, asize: 0, size: 0)
+		var buf = git_buf(ptr: nil, asize: 0, size: 0)
 		
-		return  _result({Buffer(pointer: buf_ptr)}, pointOfFailure: "" ) {
+		return  _result({Buffer(buf: buf)}, pointOfFailure: "" ) {
 			branchName.withCString { refname in
-				git_branch_upstream_name(buf_ptr, self.pointer, refname)
+				git_branch_upstream_name(&buf, self.pointer, refname)
 			}
 		}
-		.flatMap { $0.asStringRez() }
+		.flatMap { $0.asString() }
 	}
 }
 

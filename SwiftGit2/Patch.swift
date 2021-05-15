@@ -59,11 +59,10 @@ public extension Patch {
 	}
 	
 	func asBuffer() -> Result<Buffer, Error> {
-		let buff = UnsafeMutablePointer<git_buf>.allocate(capacity: 1)
-		buff.pointee = git_buf(ptr: nil, asize: 0, size: 0)
+		var buff = git_buf(ptr: nil, asize: 0, size: 0)
 		
-		return _result({ Buffer(pointer: buff) }, pointOfFailure: "git_patch_to_buf") {
-			git_patch_to_buf(buff, pointer)
+		return _result({ Buffer(buf: buff) }, pointOfFailure: "git_patch_to_buf") {
+			git_patch_to_buf(&buff, pointer)
 		}
 	}
 	
@@ -112,7 +111,7 @@ extension Patch {
 	}
 	
 	public func getText() -> Result<String, Error> {
-		self.asBuffer().flatMap{ $0.asStringRez() }
+		self.asBuffer().flatMap{ $0.asString() }
 	}
 	
 	public func getTextHeader() -> Result<String, Error> {

@@ -8,36 +8,35 @@
 
 import Foundation
 import Clibgit2
+import Essentials
 
 public final class Buffer {
-	let pointer : UnsafeMutablePointer<git_buf>
+	var buf : git_buf
 	
-	public init(pointer: UnsafeMutablePointer<git_buf>) {
-		self.pointer = pointer
+	public init(buf: git_buf) {
+		self.buf = buf
 	}
 	
 	public init?(_ str : String) {
-		self.pointer = UnsafeMutablePointer.allocate(capacity: 1)
-		self.pointer.pointee = git_buf(ptr: nil, asize: 0, size: 0)
+		buf = git_buf(ptr: nil, asize: 0, size: 0)
 		
 		guard let _ = try? set(string: str).get() else { return nil }
 	}
 	
 	deinit {
 		dispose()
-		pointer.deallocate()
 	}
 	
 	public func dispose() {
-		git_buf_dispose(pointer)
+		git_buf_dispose(&buf)
 	}
 }
 
 public extension Buffer {
-	var isBinary 	: Bool { 1 == git_buf_is_binary(pointer) }
-	var containsNul 	: Bool { 1 == git_buf_contains_nul(pointer) }
-	var size			: Int  { pointer.pointee.size }
-	var ptr			: UnsafeMutablePointer<Int8> { pointer.pointee.ptr }
+	var isBinary 		: Bool { 1 == git_buf_is_binary(&buf) }
+	var containsNul 	: Bool { 1 == git_buf_contains_nul(&buf) }
+	var size			: Int  { buf.size }
+	var ptr				: UnsafeMutablePointer<Int8> { buf.ptr }
 	
 	func set(string: String) -> Result<(),Error> {
 		guard let data = string.data(using: .utf8) else {
@@ -49,16 +48,21 @@ public extension Buffer {
 	func set(data: Data) -> Result<(),Error> {
 		let nsData = data as NSData
 		
-		return _result( { () }, pointOfFailure: "git_buf_set", block: {git_buf_set(pointer, nsData.bytes, nsData.length)})
+		return _result( { () }, pointOfFailure: "git_buf_set"){
+			git_buf_set(&buf, nsData.bytes, nsData.length)
+		}
 	}
 	
-	func asStringRez() -> Result<String, Error> {
-		guard !isBinary else { return .failure(BufferError.BufferIsNotBinary as Error) }
+	func asString() -> Result<String, Error> {
+		guard !isBinary else {
+			return .failure(WTF("can't get string from binary buffer"))
+		}
 		
-		let data = Data(bytesNoCopy: pointer.pointee.ptr, count: pointer.pointee.size, deallocator: .none)
+		let data = Data(bytesNoCopy: buf.ptr, count: buf.size, deallocator: .none)
 		
-		guard let str = String(data: data, encoding: .utf8)
-		else { return .failure(BufferError.FailedCastBufferToString as Error)}
+		guard let str = String(data: data, encoding: .utf8) else {
+			return .failure(WTF("can't read utf8 from buffer"))
+		}
 		
 		return .success( str )
 	}
@@ -69,24 +73,4 @@ public extension Buffer {
 			git_diff_from_buffer(&diff, ptr, size)
 		}
 	}
-}
-
-////////////////////////////////////////////////////////////////////
-///ERRORS
-////////////////////////////////////////////////////////////////////
-
-enum BufferError: Error {
-	case BufferIsNotBinary
-	case FailedCastBufferToString
-}
-
-extension BufferError: LocalizedError {
-  public var errorDescription: String? {
-	switch self {
-	case .BufferIsNotBinary:
-	  return "BufferIsNotBinary"
-	case .FailedCastBufferToString:
-	  return "Failed to Cast Buffer To String"
-	}
-  }
 }

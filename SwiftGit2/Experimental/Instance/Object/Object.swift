@@ -14,13 +14,12 @@ public extension Object {
 	var oid : OID { OID(git_object_id(pointer).pointee) }
 	
 	var oidShort: Result<String, Error> {
-		let buf_ptr = UnsafeMutablePointer<git_buf>.allocate(capacity: 1)
-		buf_ptr.pointee = git_buf(ptr: nil, asize: 0, size: 0)
+		var buf = git_buf(ptr: nil, asize: 0, size: 0)
 		
-		return _result( { Buffer(pointer: buf_ptr) }, pointOfFailure: "git_object_short_id") {
-			git_object_short_id(buf_ptr, self.pointer );
+		return _result( { Buffer(buf: buf) }, pointOfFailure: "git_object_short_id") {
+			git_object_short_id(&buf, self.pointer );
 		}
-		.flatMap { $0.asStringRez() }
+		.flatMap { $0.asString() }
 	}
 }
 
