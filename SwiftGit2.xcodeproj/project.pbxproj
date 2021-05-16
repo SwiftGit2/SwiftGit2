@@ -18,7 +18,6 @@
 		1DCEA37E2542364D0012BF38 /* Result.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DCEA37D2542364D0012BF38 /* Result.swift */; };
 		1DDFC0FB261B4DBD00EBBDE9 /* RevisionWalker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DDFC0FA261B4DBD00EBBDE9 /* RevisionWalker.swift */; };
 		232861431F4A3A2E00276D65 /* Diff.swift in Sources */ = {isa = PBXBuildFile; fileRef = 232861421F4A3A2E00276D65 /* Diff.swift */; };
-		237731C71F46542B0020A3FE /* repository-with-status.zip in Resources */ = {isa = PBXBuildFile; fileRef = 237731C61F46542B0020A3FE /* repository-with-status.zip */; };
 		621E66A01C72958800A0F352 /* OID.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE70B3E41A1ACB1A002C3F4E /* OID.swift */; };
 		621E66A21C72958800A0F352 /* CheckoutStrategy.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE276B281ACCD3CF00D6DAD7 /* CheckoutStrategy.swift */; };
 		621E66A41C72958800A0F352 /* Objects.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE2E3BE51A31261300C67092 /* Objects.swift */; };
@@ -44,34 +43,19 @@
 		621E66FE1C72A5FF00A0F352 /* libiconv.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 621E66FD1C72A5FF00A0F352 /* libiconv.tbd */; };
 		621E67001C72A60B00A0F352 /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 621E66FF1C72A60B00A0F352 /* libz.tbd */; };
 		622726341C84E52500C53D17 /* Credentials.swift in Sources */ = {isa = PBXBuildFile; fileRef = 622726331C84E52500C53D17 /* Credentials.swift */; };
-		62E6FD8F1C727E9C00A312B0 /* ZipArchive.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 62E6FD8E1C727E9C00A312B0 /* ZipArchive.framework */; };
 		8F9A51F2209596A40037C3A6 /* repository-with-status.zip in Resources */ = {isa = PBXBuildFile; fileRef = 237731C61F46542B0020A3FE /* repository-with-status.zip */; };
 		AA89482F23F1671A0074288B /* Buffer.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA89482E23F1671A0074288B /* Buffer.swift */; };
-		BE0991F71A578FB1007D4E6A /* Mantle.zip in Resources */ = {isa = PBXBuildFile; fileRef = BE0991F61A578FB1007D4E6A /* Mantle.zip */; };
-		BE0B1C5D1A9978890004726D /* detached-head.zip in Resources */ = {isa = PBXBuildFile; fileRef = BE0B1C5C1A9978890004726D /* detached-head.zip */; };
 		BE14AA501A1974010015B439 /* SwiftGit2.m in Sources */ = {isa = PBXBuildFile; fileRef = BE14AA4F1A1974010015B439 /* SwiftGit2.m */; };
-		BE14AA551A1984550015B439 /* Fixtures.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE14AA541A1984550015B439 /* Fixtures.swift */; };
-		BE14AA571A198C6E0015B439 /* simple-repository.zip in Resources */ = {isa = PBXBuildFile; fileRef = BE14AA561A198C6E0015B439 /* simple-repository.zip */; };
-		BE14AA591A1996B70015B439 /* FixturesSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE14AA581A1996B70015B439 /* FixturesSpec.swift */; };
 		BE276B291ACCD3CF00D6DAD7 /* CheckoutStrategy.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE276B281ACCD3CF00D6DAD7 /* CheckoutStrategy.swift */; };
 		BE2E3BE61A31261300C67092 /* Objects.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE2E3BE51A31261300C67092 /* Objects.swift */; };
-		BE2E3BE81A31262800C67092 /* ObjectsSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE2E3BE71A31262800C67092 /* ObjectsSpec.swift */; };
 		BE36354C1A632C9700D37EC8 /* Libgit2.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE36354B1A632C9700D37EC8 /* Libgit2.swift */; };
 		BE70B3E51A1ACB1A002C3F4E /* OID.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE70B3E41A1ACB1A002C3F4E /* OID.swift */; };
-		BE70B3E71A1ACB37002C3F4E /* OIDSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE70B3E61A1ACB37002C3F4E /* OIDSpec.swift */; };
 		BE7A753F1A4A2BCC002DA7E3 /* Pointers.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE7A753E1A4A2BCC002DA7E3 /* Pointers.swift */; };
 		BEB31F291A0D6F7A00F525B9 /* SwiftGit2.h in Headers */ = {isa = PBXBuildFile; fileRef = BEB31F281A0D6F7A00F525B9 /* SwiftGit2.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		BEB31F2F1A0D6F7A00F525B9 /* SwiftGit2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BEB31F231A0D6F7A00F525B9 /* SwiftGit2.framework */; };
-		BEB31F361A0D6F7A00F525B9 /* RepositorySpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEB31F351A0D6F7A00F525B9 /* RepositorySpec.swift */; };
 		BEB31F9E1A0E595100F525B9 /* libiconv.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = BEB31F9D1A0E595100F525B9 /* libiconv.dylib */; };
 		BEB31FA01A0E595600F525B9 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = BEB31F9F1A0E595600F525B9 /* libz.dylib */; };
-		BECB5F6C1A56F1B400999413 /* ReferencesSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = BECB5F6B1A56F1B400999413 /* ReferencesSpec.swift */; };
-		BECB5F701A57286200999413 /* RemotesSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = BECB5F6F1A57286200999413 /* RemotesSpec.swift */; };
-		C98A2BA22263FDB9007A4E3A /* ResultShims.swift in Sources */ = {isa = PBXBuildFile; fileRef = C98A2B9F2263E017007A4E3A /* ResultShims.swift */; };
 		C98A2BA32263FDBA007A4E3A /* ResultShims.swift in Sources */ = {isa = PBXBuildFile; fileRef = C98A2B9F2263E017007A4E3A /* ResultShims.swift */; };
-		DA5023A01A969F1A004175D7 /* Nimble.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DA50239F1A969F1A004175D7 /* Nimble.framework */; };
 		DA5914761A94579000AED74C /* Errors.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA5914751A94579000AED74C /* Errors.swift */; };
-		DAC8143D1A99749D0063D88C /* Quick.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DAC8143C1A99749D0063D88C /* Quick.framework */; };
 		E623A308263486A500484E11 /* FetchOptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = E623A307263486A500484E11 /* FetchOptions.swift */; };
 		E623A3142634883100484E11 /* CloneOptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = E623A3132634883100484E11 /* CloneOptions.swift */; };
 		E623A31F2634885800484E11 /* CheckoutOptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = E623A31E2634885800484E11 /* CheckoutOptions.swift */; };
@@ -107,13 +91,6 @@
 			proxyType = 1;
 			remoteGlobalIDString = 621E66611C72958800A0F352;
 			remoteInfo = "SwiftGit2-iOS";
-		};
-		BEB31F301A0D6F7A00F525B9 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = BEB31F1A1A0D6F7A00F525B9 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = BEB31F221A0D6F7A00F525B9;
-			remoteInfo = "SwiftGit2-OSX";
 		};
 /* End PBXContainerItemProxy section */
 
@@ -153,7 +130,6 @@
 		BEB31F231A0D6F7A00F525B9 /* SwiftGit2.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SwiftGit2.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		BEB31F271A0D6F7A00F525B9 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		BEB31F281A0D6F7A00F525B9 /* SwiftGit2.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SwiftGit2.h; sourceTree = "<group>"; };
-		BEB31F2E1A0D6F7A00F525B9 /* SwiftGit2-OSXTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "SwiftGit2-OSXTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		BEB31F341A0D6F7A00F525B9 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		BEB31F351A0D6F7A00F525B9 /* RepositorySpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RepositorySpec.swift; sourceTree = "<group>"; };
 		BEB31F431A0D75EE00F525B9 /* Common.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = Common.xcconfig; sourceTree = "<group>"; };
@@ -239,17 +215,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		BEB31F2B1A0D6F7A00F525B9 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				62E6FD8F1C727E9C00A312B0 /* ZipArchive.framework in Frameworks */,
-				DA5023A01A969F1A004175D7 /* Nimble.framework in Frameworks */,
-				DAC8143D1A99749D0063D88C /* Quick.framework in Frameworks */,
-				BEB31F2F1A0D6F7A00F525B9 /* SwiftGit2.framework in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -322,7 +287,6 @@
 			isa = PBXGroup;
 			children = (
 				BEB31F231A0D6F7A00F525B9 /* SwiftGit2.framework */,
-				BEB31F2E1A0D6F7A00F525B9 /* SwiftGit2-OSXTests.xctest */,
 				621E66B41C72958800A0F352 /* SwiftGit2.framework */,
 				621E66CE1C72958D00A0F352 /* SwiftGit2-iOSTests.xctest */,
 			);
@@ -611,24 +575,6 @@
 			productReference = BEB31F231A0D6F7A00F525B9 /* SwiftGit2.framework */;
 			productType = "com.apple.product-type.framework";
 		};
-		BEB31F2D1A0D6F7A00F525B9 /* SwiftGit2-OSXTests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = BEB31F3C1A0D6F7A00F525B9 /* Build configuration list for PBXNativeTarget "SwiftGit2-OSXTests" */;
-			buildPhases = (
-				BEB31F2A1A0D6F7A00F525B9 /* Sources */,
-				BEB31F2B1A0D6F7A00F525B9 /* Frameworks */,
-				BEB31F2C1A0D6F7A00F525B9 /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				BEB31F311A0D6F7A00F525B9 /* PBXTargetDependency */,
-			);
-			name = "SwiftGit2-OSXTests";
-			productName = "SwiftGit2-OSXTests";
-			productReference = BEB31F2E1A0D6F7A00F525B9 /* SwiftGit2-OSXTests.xctest */;
-			productType = "com.apple.product-type.bundle.unit-test";
-		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -646,10 +592,6 @@
 						LastSwiftMigration = 1020;
 					};
 					BEB31F221A0D6F7A00F525B9 = {
-						CreatedOnToolsVersion = 6.1;
-						LastSwiftMigration = 1020;
-					};
-					BEB31F2D1A0D6F7A00F525B9 = {
 						CreatedOnToolsVersion = 6.1;
 						LastSwiftMigration = 1020;
 					};
@@ -672,7 +614,6 @@
 			projectRoot = "";
 			targets = (
 				BEB31F221A0D6F7A00F525B9 /* SwiftGit2-OSX */,
-				BEB31F2D1A0D6F7A00F525B9 /* SwiftGit2-OSXTests */,
 				621E66611C72958800A0F352 /* SwiftGit2-iOS */,
 				621E66B61C72958D00A0F352 /* SwiftGit2-iOSTests */,
 			);
@@ -688,17 +629,6 @@
 				8F9A51F2209596A40037C3A6 /* repository-with-status.zip in Resources */,
 				621E66C91C72958D00A0F352 /* Mantle.zip in Resources */,
 				621E66CA1C72958D00A0F352 /* simple-repository.zip in Resources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		BEB31F2C1A0D6F7A00F525B9 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				BE0B1C5D1A9978890004726D /* detached-head.zip in Resources */,
-				237731C71F46542B0020A3FE /* repository-with-status.zip in Resources */,
-				BE0991F71A578FB1007D4E6A /* Mantle.zip in Resources */,
-				BE14AA571A198C6E0015B439 /* simple-repository.zip in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -786,21 +716,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		BEB31F2A1A0D6F7A00F525B9 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				BEB31F361A0D6F7A00F525B9 /* RepositorySpec.swift in Sources */,
-				BE2E3BE81A31262800C67092 /* ObjectsSpec.swift in Sources */,
-				BECB5F701A57286200999413 /* RemotesSpec.swift in Sources */,
-				BE14AA591A1996B70015B439 /* FixturesSpec.swift in Sources */,
-				BE14AA551A1984550015B439 /* Fixtures.swift in Sources */,
-				BECB5F6C1A56F1B400999413 /* ReferencesSpec.swift in Sources */,
-				BE70B3E71A1ACB37002C3F4E /* OIDSpec.swift in Sources */,
-				C98A2BA22263FDB9007A4E3A /* ResultShims.swift in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -808,11 +723,6 @@
 			isa = PBXTargetDependency;
 			target = 621E66611C72958800A0F352 /* SwiftGit2-iOS */;
 			targetProxy = 621E66E41C729D8A00A0F352 /* PBXContainerItemProxy */;
-		};
-		BEB31F311A0D6F7A00F525B9 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = BEB31F221A0D6F7A00F525B9 /* SwiftGit2-OSX */;
-			targetProxy = BEB31F301A0D6F7A00F525B9 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -988,28 +898,6 @@
 			};
 			name = Release;
 		};
-		BEB31F3D1A0D6F7A00F525B9 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = BEB31F531A0D75EE00F525B9 /* macOS-Application.xcconfig */;
-			buildSettings = {
-				INFOPLIST_FILE = SwiftGit2Tests/Info.plist;
-				MACOSX_DEPLOYMENT_TARGET = 10.10;
-				PRODUCT_BUNDLE_IDENTIFIER = "org.libgit2.$(PRODUCT_NAME:rfc1034identifier)";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-			};
-			name = Debug;
-		};
-		BEB31F3E1A0D6F7A00F525B9 /* Release */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = BEB31F531A0D75EE00F525B9 /* macOS-Application.xcconfig */;
-			buildSettings = {
-				INFOPLIST_FILE = SwiftGit2Tests/Info.plist;
-				MACOSX_DEPLOYMENT_TARGET = 10.10;
-				PRODUCT_BUNDLE_IDENTIFIER = "org.libgit2.$(PRODUCT_NAME:rfc1034identifier)";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-			};
-			name = Release;
-		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -1045,15 +933,6 @@
 			buildConfigurations = (
 				BEB31F3A1A0D6F7A00F525B9 /* Debug */,
 				BEB31F3B1A0D6F7A00F525B9 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		BEB31F3C1A0D6F7A00F525B9 /* Build configuration list for PBXNativeTarget "SwiftGit2-OSXTests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				BEB31F3D1A0D6F7A00F525B9 /* Debug */,
-				BEB31F3E1A0D6F7A00F525B9 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

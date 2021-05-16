@@ -1,0 +1,16 @@
+{
+  "object": {
+    "pins": [
+      {
+        "package": "Essentials",
+        "repositoryURL": "git@gitlab.com:sergiy.vynnychenko/essentials.git",
+        "state": {
+          "branch": "master",
+          "revision": "38dc074ab7ffcc2db84389f13abdeb8ec62bae00",
+          "version": null
+        }
+      }
+    ]
+  },
+  "version": 1
+}
