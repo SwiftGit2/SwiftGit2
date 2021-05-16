@@ -39,9 +39,9 @@ public extension Branch {
 extension Reference : Branch {}
 	
 extension Branch {
-	public var shortName 	: String 	{ ( try? getNameInternal().get() ) ?? "" }
-	public var name 		: String 	{ getLongName() }
-	public var commitOID	: Result<OID, Error> { getCommitOid() }
+	public var shortName 	: String 	{ ( try? nameInternal().get() ) ?? "" }
+	public var name 		: String 	{ longName() }
+	public var commitOID	: Result<OID, Error> { commitOid() }
 }
 
 public extension Branch {
@@ -59,27 +59,20 @@ public extension Branch {
 	}
 	
 	/// can be called only for local branch;
-	func getUpstreamName(cleanup: Bool = false) -> Result<String, Error> {
-		if cleanup {
-			return getUpstreamBranch().map{ $0.name.replace(of: "refs/remotes/", to: "") }
+	func upstreamName(clean: Bool = false) -> Result<String, Error> {
+		if clean {
+			return upstream().map{ $0.name.replace(of: "refs/remotes/", to: "") }
 		}
 		
-		return getUpstreamBranch().map{ $0.name }
+		return upstream().map{ $0.name }
 	}
 	
 	/// Can be used only on local branch
-	func getUpstreamBranch() -> Result<Branch, Error> {
-		let localBranch = self
-		
+	func upstream() -> Result<Branch, Error> {
 		var resolved: OpaquePointer? = nil
 		
-		let result = git_branch_upstream(&resolved, localBranch.pointer)
-		
-		if result == GIT_OK.rawValue {
-			return Reference(resolved!).asBranch()
-		}
-		
-		return Result.failure(NSError(gitError: result, pointOfFailure: "git_branch_upstream"))
+		return git_try("git_branch_upstream") { git_branch_upstream(&resolved, self.pointer) }
+			.flatMap { Reference(resolved!).asBranch() }
 	}
 	
 	/// can be called only for local branch;
@@ -112,20 +105,12 @@ public extension Duo where T1 == Branch, T2 == Repository {
 		let (branch, repo) = self.value
 		var buf = git_buf(ptr: nil, asize: 0, size: 0)
 		
-		//let buf_ptr = UnsafeMutablePointer<git_buf>.allocate(capacity: 1)
-		//buf_ptr.pointee = git_buf(ptr: nil, asize: 0, size: 0)
-		
-		let result = {
-			branch.getLongName().withCString { fullBranchName in
-				git_branch_upstream_remote(&buf, repo.pointer, fullBranchName);
+		return git_try("git_branch_upstream_remote") {
+			return branch.longName().withCString { branchName in
+				git_branch_upstream_remote(&buf, repo.pointer, branchName);
 			}
-		}()
+		}.flatMap { Buffer(buf: buf).asString() }
 		
-		if result == GIT_OK.rawValue {
-			return Buffer(buf: buf).asString()
-		} else {
-			return Result.failure(NSError(gitError: result, pointOfFailure: "git_branch_upstream_remote"))
-		}
 	}
 	
 	///Gets REMOTE item from local branch. Doesn't works with remote branch
@@ -197,7 +182,7 @@ public extension Repository {
 }
 
 private extension Branch {
-	private func getNameInternal() -> Result<String, Error> {
+	private func nameInternal() -> Result<String, Error> {
 		var namePointer: UnsafePointer<Int8>? = nil
 		
 		return _result( { String(validatingUTF8: namePointer!) ?? "" }, pointOfFailure: "git_branch_name") {
@@ -205,11 +190,11 @@ private extension Branch {
 		}
 	}
 	
-	func getLongName() -> String {
+	func longName() -> String {
 		return String(validatingUTF8: git_reference_name(pointer)) ?? ""
 	}
 	
-	func getCommitOid() -> Result<OID, Error> {
+	func commitOid() -> Result<OID, Error> {
 		if git_reference_type(pointer).rawValue == GIT_REFERENCE_SYMBOLIC.rawValue {
 			var resolved: OpaquePointer? = nil
 			defer {

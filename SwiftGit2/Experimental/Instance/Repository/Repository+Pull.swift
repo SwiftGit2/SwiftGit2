@@ -10,15 +10,26 @@ import Foundation
 import Clibgit2
 import Essentials
 
-extension Repository {
+public extension Repository {
 	func currentRemote() -> Result<Remote,Error> {
 		return self.HEAD()
 			.flatMap{ $0.asBranch() }
 			.flatMap{ Duo($0, self).remote() }
 	}
-
 	
-	func pull() {
-		
+	func mergeAnalysis() -> Result<MergeAnalysis, Error> {
+		return self.HEAD()
+			.flatMap { $0.asBranch() }
+			.flatMap { $0.upstream() }
+			.flatMap { $0.commitOID }
+			.flatMap { self.annotatedCommit(oid: $0) }
+			.flatMap { self.mergeAnalysis(their_head: $0) }
+	}
+	
+	func pull(credentials: Credentials) {
+		// 1. fetch remote
+		// 2.
+		currentRemote()
+			.flatMap { $0.fetch(options: FetchOptions(credentials: credentials)) }
 	}
 }

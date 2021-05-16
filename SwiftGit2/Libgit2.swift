@@ -25,3 +25,12 @@ func _result<T>(_ value: () -> T, pointOfFailure: String, block: () -> Int32) ->
 		return Result.failure(NSError(gitError: result, pointOfFailure: pointOfFailure))
 	}
 }
+
+func git_try(_ id: String, block: () -> Int32) -> Result<(), Error> {
+	let result = block()
+	if result == GIT_OK.rawValue {
+		return .success(())
+	} else {
+		return Result.failure(NSError(gitError: result, pointOfFailure: id))
+	}
+}

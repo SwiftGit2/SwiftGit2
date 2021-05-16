@@ -12,10 +12,13 @@ import Clibgit2
 public struct FetchOptions {
 	var fetch_options = git_fetch_options()
 	
+	//let callbacks : RemoteCallbacks
+	
 	public init(callbacks: RemoteCallbacks = RemoteCallbacks()) {
 		let result = git_fetch_options_init(&fetch_options, UInt32(GIT_FETCH_OPTIONS_VERSION))
 		assert(result == GIT_OK.rawValue)
 		
+		//self.callbacks = callbacks
 		fetch_options.callbacks = callbacks.remote_callbacks
 	}
 	
