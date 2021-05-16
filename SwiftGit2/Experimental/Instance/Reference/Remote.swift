@@ -95,10 +95,10 @@ public extension Remote {
 	}
 	
 	func fetch(options: FetchOptions) -> Result<(), Error> {
-		var opts = options.fetch_options
-		
-		return _result((), pointOfFailure: "git_remote_fetch") {
-			git_remote_fetch(pointer, nil, &opts, nil)
+		return git_try("git_remote_fetch") {
+			options.with_git_fetch_options {
+				git_remote_fetch(pointer, nil, &$0, nil)
+			}
 		}
 	}
 }

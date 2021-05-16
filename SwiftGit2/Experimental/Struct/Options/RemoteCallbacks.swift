@@ -37,7 +37,7 @@ public class RemoteCallbacks {
 	}
 	
 	internal static func release(pointer: UnsafeMutableRawPointer) {
-		_ = Unmanaged<Wrapper<RemoteCallbacks>>.fromOpaque(UnsafeRawPointer(pointer)).takeRetainedValue()
+		Unmanaged<Wrapper<RemoteCallbacks>>.fromOpaque(UnsafeRawPointer(pointer)).release()
 	}
 
 	internal func toRetainedPointer() -> UnsafeMutableRawPointer {

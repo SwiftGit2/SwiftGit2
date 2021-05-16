@@ -9,9 +9,9 @@
 import Foundation
 import Clibgit2
 
-public struct StatusOptions {
+public class StatusOptions {
 	private var git_options = git_status_options()
-	var pathspec = [String]()
+	let pathspec : [String]
 	
 	var version		: UInt32 { git_options.version }
 	var show		: StatusOptions.Show { StatusOptions.Show(rawValue: git_options.show.rawValue)! }
@@ -34,7 +34,7 @@ public struct StatusOptions {
 }
 
 extension StatusOptions {
-	mutating func with_git_status_options<T>(_ body: (inout git_status_options) -> T) -> T {
+	func with_git_status_options<T>(_ body: (inout git_status_options) -> T) -> T {
 		if pathspec.isEmpty {
 			return body(&git_options)
 		} else {

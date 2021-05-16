@@ -9,10 +9,8 @@
 import Foundation
 import Clibgit2
 
-public struct FetchOptions {
-	var fetch_options = git_fetch_options()
-	
-	//let callbacks : RemoteCallbacks
+public class FetchOptions {
+	private var fetch_options = git_fetch_options()
 	
 	public init(callbacks: RemoteCallbacks = RemoteCallbacks()) {
 		let result = git_fetch_options_init(&fetch_options, UInt32(GIT_FETCH_OPTIONS_VERSION))
@@ -22,7 +20,14 @@ public struct FetchOptions {
 		fetch_options.callbacks = callbacks.remote_callbacks
 	}
 	
-	public init(credentials: Credentials) {
+	public convenience init(credentials: Credentials) {
 		self.init(callbacks: RemoteCallbacks(credentials: credentials))
+	}
+}
+
+extension FetchOptions {
+	func with_git_fetch_options<T>(_ body: (inout git_fetch_options) -> T) -> T {
+
+		return body(&fetch_options)
 	}
 }

@@ -60,15 +60,12 @@ public extension Repository {
 	func status(options: StatusOptions = StatusOptions()) -> Result<StatusIterator, Error> {
 		var pointer: OpaquePointer? = nil
 		
-
+		
 		if repoIsBare() {
 			return .success( StatusIterator(nil) )
 		}
-
-		var git_options = options
-		//git_options.pathspec = ["TaoGit/TaoGit/Services/TaoSync.swift"]
 		
-		return git_options.with_git_status_options { options in
+		return options.with_git_status_options { options in
 			return _result( { StatusIterator(pointer!) }, pointOfFailure: "git_status_list_new") {
 				git_status_list_new(&pointer, self.pointer, &options)
 			}
