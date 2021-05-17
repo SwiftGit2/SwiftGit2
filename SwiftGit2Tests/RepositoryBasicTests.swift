@@ -28,11 +28,11 @@ class RepositoryBasicTests: XCTestCase {
     }
     
     func testClone() {
-        let remoteURL = remoteURL_test_public_ssh
+        let remoteURL = remoteURL_test_public_https
         let localURL = root.appendingPathComponent(remoteURL.lastPathComponent).deletingPathExtension()
         localURL.rm().assertFailure("rm")
         print("goint to clone into \(localURL)")
-        let opt = CloneOptions(fetch: FetchOptions(credentials: sshCredentials))
+        let opt = CloneOptions(fetch: FetchOptions(credentials: .default))
         Repository.clone(from: remoteURL, to: localURL, options: opt)
             .assertFailure("clone")
     }
@@ -54,30 +54,5 @@ extension Result {
     }
 }
 
-public extension URL {
-    func mkdir() -> Result<URL,Error> {
-        let fileManager = FileManager.default
-        do {
-            try fileManager.createDirectory(atPath: path, withIntermediateDirectories: true, attributes: nil)
-        } catch {
-            return .failure(error)
-        }
-        
-        return .success(self)
-    }
-    
-    static var userHome : URL   { FileManager.default.homeDirectoryForCurrentUser }
-    
-    var exists   : Bool  { FileManager.default.fileExists(atPath: self.path) }
-    
-    func rm() -> Result<(),Error> {
-        do {
-            try FileManager.default.removeItem(atPath: self.path)
-        } catch {
-            return .failure(error)
-        }
-        
-        return .success(())
-    }
-}
+
 
