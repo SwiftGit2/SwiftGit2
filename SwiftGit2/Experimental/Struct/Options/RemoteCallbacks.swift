@@ -11,7 +11,7 @@ import Clibgit2
 
 public typealias TransferProgressCB = (git_indexer_progress)->(Bool) // return false to cancel progree
 
-public class RemoteCallbacks {
+public class RemoteCallbacks : GitPayload {
     let credentials: Credentials
     private var remote_callbacks = git_remote_callbacks()
     public var transferProgress: TransferProgressCB?
@@ -34,6 +34,7 @@ extension RemoteCallbacks {
     func with_git_remote_callbacks<T>(_ body: (inout git_remote_callbacks) -> T) -> T {
         
         remote_callbacks.payload = self.toRetainedPointer()
+        
         remote_callbacks.credentials = credentialsCallback
         remote_callbacks.transfer_progress = transferCallback
         
@@ -93,18 +94,4 @@ private func transferCallback(stats: UnsafePointer<git_indexer_progress>?, paylo
     }
     
     return 0
-}
-
-private extension RemoteCallbacks {
-    static func unretained(pointer: UnsafeMutableRawPointer) -> RemoteCallbacks {
-        return Unmanaged<Wrapper<RemoteCallbacks>>.fromOpaque(UnsafeRawPointer(pointer)).takeUnretainedValue().value
-    }
-    
-    func toRetainedPointer() -> UnsafeMutableRawPointer {
-        return Unmanaged.passRetained(Wrapper(self)).toOpaque()
-    }
-    
-    static func release(pointer: UnsafeMutableRawPointer) {
-        Unmanaged<Wrapper<RemoteCallbacks>>.fromOpaque(UnsafeRawPointer(pointer)).release()
-    }
 }

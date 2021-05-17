@@ -8,14 +8,6 @@
 
 import Clibgit2
 
-internal class Wrapper<T> {
-	let value: T
-
-	init(_ value: T) {
-		self.value = value
-	}
-}
-
 public enum Credentials {
 	case `default`
 	case sshAgent
