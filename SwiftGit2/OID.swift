@@ -7,9 +7,21 @@
 //
 
 import Clibgit2
+import Essentials
 
 /// An identifier for a Git object.
 public struct OID {
+	
+	public static func create(from string: String) -> Result<OID,Error> {
+		if string.lengthOfBytes(using: String.Encoding.ascii) > 40 {
+			return .failure(WTF("string length > 40"))
+		}
+		
+		var oid = git_oid()
+		
+		return git_try("git_oid_fromstr") { git_oid_fromstr(&oid, string) }
+			.map { OID(oid) }
+	}
 
 	// MARK: - Initializers
 
@@ -22,6 +34,8 @@ public struct OID {
 			return nil
 		}
 
+		
+		
 		let pointer = UnsafeMutablePointer<git_oid>.allocate(capacity: 1)
 		let result = git_oid_fromstr(pointer, string)
 
