@@ -24,10 +24,12 @@ public class CloneOptions {
 extension CloneOptions {
     func with_git_clone_options<T>(_ body: (inout git_clone_options) -> T) -> T {
         return fetch.with_git_fetch_options { fetch_options in
-            clone_options.fetch_opts = fetch_options
-            clone_options.checkout_opts = checkout.checkout_options
-            
-            return body(&clone_options)
+            checkout.with_git_checkout_options { checkout_options in
+                clone_options.fetch_opts = fetch_options
+                clone_options.checkout_opts = checkout_options
+                
+                return body(&clone_options)
+            }
         }
     }
 }

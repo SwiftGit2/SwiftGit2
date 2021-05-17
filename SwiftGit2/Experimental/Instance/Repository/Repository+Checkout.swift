@@ -35,10 +35,9 @@ private extension Repository {
 	}
 	
 	func checkoutHead(strategy: CheckoutStrategy, progress: CheckoutProgressBlock? = nil) -> Result<(), Error> {
-		var options = CheckoutOptions(strategy: strategy, progress: progress)
-
-		return _result((), pointOfFailure: "git_checkout_head") {
-			git_checkout_head(self.pointer, &options.checkout_options)
+		return git_try("git_checkout_head") {
+			CheckoutOptions(strategy: strategy, progress: progress)
+				.with_git_checkout_options { git_checkout_head(self.pointer, &$0) }
 		}
 	}
 	
