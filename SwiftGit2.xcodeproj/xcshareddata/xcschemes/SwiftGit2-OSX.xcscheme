@@ -52,6 +52,16 @@
                ReferencedContainer = "container:SwiftGit2.xcodeproj">
             </BuildableReference>
          </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "E6332DCB265167F0004990E7"
+               BuildableName = "SwiftGit2Tests.xctest"
+               BlueprintName = "SwiftGit2Tests"
+               ReferencedContainer = "container:SwiftGit2.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
       </Testables>
    </TestAction>
    <LaunchAction

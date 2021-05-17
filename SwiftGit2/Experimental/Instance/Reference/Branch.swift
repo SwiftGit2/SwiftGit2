@@ -128,11 +128,8 @@ public extension Duo where T1 == Branch, T2 == Repository {
 public extension Duo where T1 == Branch, T2 == Remote {
 	/// Push local branch changes to remote branch
 	func push(credentials: Credentials) -> Result<(), Error> {
-		let (branch, remoteRepo) = self.value
-		
-		var opts = pushOptions(credentials: credentials)
-		
-		return remoteRepo.push(branchName: branch.name, options: &opts )
+		let (branch, remote) = self.value
+		return remote.push(branchName: branch.name, options: PushOptions(credentials: credentials) )
 	}
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -212,12 +209,14 @@ private extension Branch {
 
 fileprivate extension Remote {
 	///Branch name must be full - with "refs/heads/"
-	func push(branchName: String, options: UnsafePointer<git_push_options> ) -> Result<(), Error> {		
+	func push(branchName: String, options: PushOptions ) -> Result<(), Error> {
 		print("Trying to push ''\(branchName)'' to remote ''\(self.name)'' with URL:''\(self.URL)''")
 		
-		return [branchName].with_git_strarray { strarray in
-			return _result( (), pointOfFailure: "git_remote_push") {
-				git_remote_push(self.pointer, &strarray, options)
+		return git_try("git_remote_push") {
+			options.with_git_push_options { push_options in
+				[branchName].with_git_strarray { strarray in
+					git_remote_push(self.pointer, &strarray, &push_options)
+				}
 			}
 		}
 	}
@@ -227,49 +226,6 @@ fileprivate extension String {
 	func replace(of: String, to: String) -> String {
 		return self.replacingOccurrences(of: of, with: to, options: .regularExpression, range: nil)
 	}
-}
-
-fileprivate func pushOptions(credentials: Credentials) -> git_push_options {
-	let pointer = UnsafeMutablePointer<git_push_options>.allocate(capacity: 1)
-	git_push_init_options(pointer, UInt32(GIT_PUSH_OPTIONS_VERSION))
-	
-	var options = pointer.move()
-	
-	pointer.deallocate()
-	
-	options.callbacks.payload = credentials.toPointer()
-	options.callbacks.credentials = credentialsCallback
-	
-	return options
-}
-
-private func credentialsCallback(
-	cred: UnsafeMutablePointer<UnsafeMutablePointer<git_cred>?>?,
-	url: UnsafePointer<CChar>?,
-	username: UnsafePointer<CChar>?,
-	_: UInt32,
-	payload: UnsafeMutableRawPointer? ) -> Int32 {
-	
-	guard let payload = payload else { return -1 }
-		
-	let name = username.map(String.init(cString:))
-	
-	let result: Int32
-	
-	switch Credentials.fromPointer(payload) {
-	case .default:
-		result = git_credential_default_new(cred)
-	case .sshAgent:
-		result = git_credential_ssh_key_from_agent(cred, name!)
-	case .plaintext(let username, let password):
-		result = git_credential_userpass_plaintext_new(cred, username, password)
-	case .sshMemory(let username, let publicKey, let privateKey, let passphrase):
-		result = git_credential_ssh_key_memory_new(cred, username, publicKey, privateKey, passphrase)
-	case .ssh(publicKey: let publicKey, privateKey: let privateKey, passphrase: let passphrase):
-		result = git_credential_ssh_key_new(cred, name, publicKey, privateKey, passphrase)
-	}
-
-	return (result != GIT_OK.rawValue) ? -1 : 0
 }
 
 ////////////////////////////////////////////////////////////////////

@@ -12,6 +12,9 @@ import Essentials
 
 class RepositoryBasicTests: XCTestCase {
     let root = URL(fileURLWithPath: "/tmp/tao_test", isDirectory: true)
+    let remoteURL_test_public_ssh   = URL(string: "git@gitlab.com:sergiy.vynnychenko/test_public.git")!
+    let remoteURL_test_public_https = URL(string: "https://gitlab.com/sergiy.vynnychenko/test_public.git")!
+    let sshCredentials = Credentials.ssh(publicKey: "/Users/loki/.ssh/id_rsa.pub", privateKey: "/Users/loki/.ssh/id_rsa", passphrase: "")
     
     override func setUpWithError() throws {
         root.mkdir()
@@ -25,9 +28,12 @@ class RepositoryBasicTests: XCTestCase {
     }
     
     func testClone() {
-        let remoteURL = URL(string: "git@github.com:libgit2/libgit2.git")!
-        let localURL = root.appendingPathComponent("libgit2")
-        Repository.clone(from: remoteURL, to: localURL)
+        let remoteURL = remoteURL_test_public_https
+        let localURL = root.appendingPathComponent(remoteURL.lastPathComponent).deletingPathExtension()
+        localURL.rm().assertFailure("rm")
+        print("goint to clone into \(localURL)")
+        let opt = CloneOptions(fetch: FetchOptions(credentials: .default))
+        Repository.clone(from: remoteURL, to: localURL, options: opt)
             .assertFailure("clone")
     }
     
@@ -48,16 +54,5 @@ extension Result {
     }
 }
 
-extension URL {
-    func mkdir() -> Result<URL,Error> {
-        let fileManager = FileManager.default
-        do {
-            try fileManager.createDirectory(atPath: path, withIntermediateDirectories: true, attributes: nil)
-        } catch {
-            return .failure(error)
-        }
-        
-        return .success(self)
-    }
-}
+
 
