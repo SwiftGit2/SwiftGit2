@@ -20,8 +20,8 @@ public enum Credentials {
 extension Credentials {
 	static var sshDefault : Credentials {
 		let sshDir = URL.userHome.appendingPathComponent(".ssh")
-		let publicKey = sshDir.appendingPathComponent("id_rsa")
-		let privateKey = sshDir.appendingPathComponent("id_rsa.pub")
+		let publicKey = sshDir.appendingPathComponent("id_rsa.pub")
+		let privateKey = sshDir.appendingPathComponent("id_rsa")
 		
 		guard publicKey.exists else { return .none }
 		guard privateKey.exists else { return .none }
