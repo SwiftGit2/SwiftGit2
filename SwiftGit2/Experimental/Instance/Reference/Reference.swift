@@ -48,6 +48,10 @@ public extension Repository {
 		}
 	}
 	
+	var headIsUnborn: Bool {
+		git_repository_head_unborn(self.pointer) == 1 ? true : false
+	}
+	
 	var headIsDetached: Bool {
 		let result: Int32 = git_repository_head_detached(self.pointer)
 		return (result as NSNumber).boolValue

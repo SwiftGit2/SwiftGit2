@@ -51,17 +51,15 @@ extension StatusIterator : RandomAccessCollection {
 public extension Repository {
 	
 	// CheckThatRepoIsEmpty
-	func repoIsBare() -> Bool {
-		let a = git_repository_is_bare(self.pointer)
-		
-		return a == 1 ? true : false
+	var repoIsBare: Bool {
+		git_repository_is_bare(self.pointer)  == 1 ? true : false
 	}
 	
 	func status(options: StatusOptions = StatusOptions()) -> Result<StatusIterator, Error> {
 		var pointer: OpaquePointer? = nil
 		
 		
-		if repoIsBare() {
+		if repoIsBare {
 			return .success( StatusIterator(nil) )
 		}
 		
