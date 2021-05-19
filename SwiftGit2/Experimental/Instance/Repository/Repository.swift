@@ -114,7 +114,7 @@ public extension Repository {
 		
 		return _result( { Repository(pointer!) }, pointOfFailure: "git_repository_init") {
 			url.path.withCString { path in
-				git_repository_init(&pointer, path, 1)
+				git_repository_init(&pointer, path, 0)
 			}
 		}
 	}
