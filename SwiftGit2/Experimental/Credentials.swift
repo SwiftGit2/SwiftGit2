@@ -9,18 +9,23 @@
 import Clibgit2
 
 public enum Credentials {
+	case none 		// always fail
 	case `default`
 	case sshAgent
 	case plaintext(username: String, password: String)
 	case sshMemory(username: String, publicKey: String, privateKey: String, passphrase: String)
 	case ssh(publicKey: String, privateKey: String, passphrase: String)
-
-	internal static func fromPointer(_ pointer: UnsafeMutableRawPointer) -> Credentials {
-		return Unmanaged<Wrapper<Credentials>>.fromOpaque(UnsafeRawPointer(pointer)).takeRetainedValue().value
-	}
-
-	internal func toPointer() -> UnsafeMutableRawPointer {
-		return Unmanaged.passRetained(Wrapper(self)).toOpaque()
-	}
 }
 
+extension Credentials {
+	static var sshDefault : Credentials {
+		let sshDir = URL.userHome.appendingPathComponent(".ssh")
+		let publicKey = sshDir.appendingPathComponent("id_rsa.pub")
+		let privateKey = sshDir.appendingPathComponent("id_rsa")
+		
+		guard publicKey.exists else { return .none }
+		guard privateKey.exists else { return .none }
+		
+		return .ssh(publicKey: publicKey.path, privateKey: privateKey.path, passphrase: "")
+	}
+}

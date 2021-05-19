@@ -26,10 +26,10 @@ public extension Repository {
 			.flatMap { self.mergeAnalysis(their_head: $0) }
 	}
 	
-	func pull(credentials: Credentials) {
+	func pull(auth: Auth) {
 		// 1. fetch remote
 		// 2.
 		currentRemote()
-			.flatMap { $0.fetch(options: FetchOptions(credentials: credentials)) }
+			.flatMap { $0.fetch(options: FetchOptions(auth: auth)) }
 	}
 }

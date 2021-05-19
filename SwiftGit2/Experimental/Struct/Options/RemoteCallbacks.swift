@@ -10,14 +10,21 @@ import Foundation
 import Clibgit2
 
 public typealias TransferProgressCB = (git_indexer_progress)->(Bool) // return false to cancel progree
+public typealias AuthCB = (_ url:String?, _ username: String?)->(Credentials)
+
+public enum Auth {
+    case match(AuthCB)
+    case auto
+}
+
 
 public class RemoteCallbacks : GitPayload {
-    let credentials: Credentials
+    let auth: Auth
     private var remote_callbacks = git_remote_callbacks()
     public var transferProgress: TransferProgressCB?
     
-    public init(credentials: Credentials = .default) {
-        self.credentials = credentials
+    public init(auth: Auth = .auto) {
+        self.auth = auth
         
         let result = git_remote_init_callbacks(&remote_callbacks, UInt32(GIT_REMOTE_CALLBACKS_VERSION))
         assert(result == GIT_OK.rawValue)
@@ -59,11 +66,14 @@ private func credentialsCallback(
     
     guard let payload = payload else { return -1 }
     
+    let url = url.map(String.init(cString:))
     let name = username.map(String.init(cString:))
     
     let result: Int32
     
-    switch RemoteCallbacks.unretained(pointer: payload).credentials {
+    switch RemoteCallbacks.unretained(pointer: payload).auth.credentials(url: url, name: name) {
+    case .none:
+        return -1
     case .default:
         result = git_credential_default_new(cred)
     case .sshAgent:
@@ -94,4 +104,18 @@ private func transferCallback(stats: UnsafePointer<git_indexer_progress>?, paylo
     }
     
     return 0
+}
+
+extension Auth {
+    func credentials(url: String?, name: String?) -> Credentials {
+        switch self {
+        case .auto:
+            if url?.starts(with: "http") ?? false {
+                return .default
+            }
+            return Credentials.sshDefault
+        case .match(let callback):
+            return callback(url,name)
+        }
+    }
 }

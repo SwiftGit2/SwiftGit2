@@ -27,13 +27,23 @@ class RepositoryBasicTests: XCTestCase {
         // Put teardown code here. This method is called after the invocation of each test method in the class.
     }
     
-    func testClone() {
+    func testHttpsAnonymouseClone() {
         let remoteURL = remoteURL_test_public_https
         let localURL = root.appendingPathComponent(remoteURL.lastPathComponent).deletingPathExtension()
         localURL.rm().assertFailure("rm")
         print("goint to clone into \(localURL)")
-        let opt = CloneOptions(fetch: FetchOptions(credentials: .default))
-        Repository.clone(from: remoteURL, to: localURL, options: opt)
+
+        Repository.clone(from: remoteURL, to: localURL, options: CloneOptions(fetch: FetchOptions(auth: .auto)))
+            .assertFailure("clone")
+    }
+    
+    func testSSHDefaultClone() {
+        let remoteURL = remoteURL_test_public_ssh
+        let localURL = root.appendingPathComponent(remoteURL.lastPathComponent).deletingPathExtension()
+        localURL.rm().assertFailure("rm")
+        print("goint to clone into \(localURL)")
+
+        Repository.clone(from: remoteURL, to: localURL, options: CloneOptions(fetch: FetchOptions(auth: .auto)))
             .assertFailure("clone")
     }
     
@@ -53,6 +63,3 @@ extension Result {
         }
     }
 }
-
-
-

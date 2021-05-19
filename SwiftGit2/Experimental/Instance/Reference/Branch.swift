@@ -127,9 +127,9 @@ public extension Duo where T1 == Branch, T2 == Repository {
 
 public extension Duo where T1 == Branch, T2 == Remote {
 	/// Push local branch changes to remote branch
-	func push(credentials: Credentials) -> Result<(), Error> {
+	func push(auth: Auth = .auto) -> Result<(), Error> {
 		let (branch, remote) = self.value
-		return remote.push(branchName: branch.name, options: PushOptions(credentials: credentials) )
+		return remote.push(branchName: branch.name, options: PushOptions(auth: auth) )
 	}
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -138,7 +138,7 @@ public extension Duo where T1 == Branch, T2 == Remote {
 
 // High Level code
 public extension Repository {
-	func push(remoteRepoName: String, localBranchName: String, credentials: Credentials) -> Result<(), Error> {
+	func push(remoteRepoName: String, localBranchName: String, auth: Auth) -> Result<(), Error> {
 		let set = XR.Set()
 		
 		//Huck, but works
@@ -147,7 +147,7 @@ public extension Repository {
 		
 		return set.with( remote )
 			.flatMap{ $0.with( self.reference(name: localBranchName).flatMap{ $0.asBranch() } ) } // branch
-			.flatMap{ set in Duo(set[Branch.self], set[Remote.self]).push(credentials: credentials) }
+			.flatMap{ set in Duo(set[Branch.self], set[Remote.self]).push(auth: auth) }
 	}
 }
 
