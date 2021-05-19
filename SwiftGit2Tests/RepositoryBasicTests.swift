@@ -47,10 +47,30 @@ class RepositoryBasicTests: XCTestCase {
             .assertFailure("clone")
     }
     
+    func testCreateRepo() {
+        let url = root.appendingPathComponent("NewRepo")
+        
+        url.rm().assertFailure("rm")
+        
+        guard let repo = Repository.create(at: url).assertFailure("Repository.create") else { fatalError() }
+        
+        let file = url.appendingPathComponent("README.md")
+        "# test repository".write(to: file).assertFailure("write file")
+        
+        if let status = repo.status().assertFailure("status") { XCTAssert(status.count == 1) } else { fatalError() }
+        
+        //repo.reset(paths: <#T##[String]#>)
+        
+        
+        
+    }
+    
 }
 
 extension Result {
-    func assertFailure(_ topic: String? = nil) {
+    
+    @discardableResult
+    func assertFailure(_ topic: String? = nil) -> Success? {
         self.onSuccess {
             if let topic = topic {
                 print("\(topic) succeeded with: \($0)")
@@ -60,6 +80,23 @@ extension Result {
                 print("\(topic) failed with: \($0.fullDescription)")
             }
             XCTAssert(false)
+        }
+        switch self {
+        case .success(let s):
+            return s
+        default:
+            return nil
+        }
+    }
+}
+
+extension String {
+    func write(to file: URL) -> Result<(),Error> {
+        do {
+            try self.write(toFile: file.path, atomically: true, encoding: .utf8)
+            return .success(())
+        } catch {
+            return .failure(error)
         }
     }
 }
