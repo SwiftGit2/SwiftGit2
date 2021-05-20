@@ -120,8 +120,6 @@ public extension Repository {
 	}
 }
 
-
-
 // index
 public extension Repository {
 	func reset(paths: [String]) -> Result<(), Error> {
@@ -136,6 +134,21 @@ public extension Repository {
 			}
 		}
 	}
+}
+
+//Remote
+public extension Repository {
+    func createRemote(str: String) -> Result<Remote, Error> {
+        var pointer: OpaquePointer? = nil
+        
+        return _result( { Remote(pointer!) }, pointOfFailure: "git_remote_create") {
+            "tempName".withCString { tempName in
+                str.withCString { url in
+                    return git_remote_create(&pointer, self.pointer, tempName, url);
+                }
+            }
+        }
+    }
 }
 
 
