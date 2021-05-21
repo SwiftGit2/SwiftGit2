@@ -166,7 +166,7 @@
 		E6332CDC264E80FD004990E7 /* DiffOptions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiffOptions.swift; sourceTree = "<group>"; };
 		E6332D06264EA35D004990E7 /* IndexEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IndexEntry.swift; sourceTree = "<group>"; };
 		E6332D50264EF48B004990E7 /* Repository+Merge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Repository+Merge.swift"; sourceTree = "<group>"; };
-		E6332D7226501055004990E7 /* Repository+Pull.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Repository+Pull.swift"; sourceTree = "<group>"; };
+		E6332D7226501055004990E7 /* Repository+Pull.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Repository+Pull.swift"; sourceTree = "<group>"; usesTabs = 0; };
 		E6332DCC265167F0004990E7 /* SwiftGit2Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SwiftGit2Tests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		E6332DCE265167F0004990E7 /* RepositoryBasicTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RepositoryBasicTests.swift; sourceTree = "<group>"; usesTabs = 0; };
 		E6332DD0265167F0004990E7 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
