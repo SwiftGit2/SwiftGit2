@@ -28,22 +28,16 @@ class RepositoryBasicTests: XCTestCase {
     }
     
     func testHttpsAnonymouseClone() {
-        let remoteURL = remoteURL_test_public_https
-        let localURL = root.appendingPathComponent(remoteURL.lastPathComponent).deletingPathExtension()
-        localURL.rm().assertFailure("rm")
-        print("goint to clone into \(localURL)")
+        let info = PublicTestRepo()
 
-        Repository.clone(from: remoteURL, to: localURL, options: CloneOptions(fetch: FetchOptions(auth: .auto)))
+        Repository.clone(from: info.urlHttps, to: info.localPath, options: CloneOptions(fetch: FetchOptions(auth: .auto)))
             .assertFailure("clone")
     }
     
     func testSSHDefaultClone() {
-        let remoteURL = remoteURL_test_public_ssh
-        let localURL = root.appendingPathComponent(remoteURL.lastPathComponent).deletingPathExtension()
-        localURL.rm().assertFailure("rm")
-        print("goint to clone into \(localURL)")
+        let info = PublicTestRepo()
 
-        Repository.clone(from: remoteURL, to: localURL, options: CloneOptions(fetch: FetchOptions(auth: .auto)))
+        Repository.clone(from: info.urlSsh, to: info.localPath, options: CloneOptions(fetch: FetchOptions(auth: .auto)))
             .assertFailure("clone")
     }
     
@@ -72,36 +66,4 @@ class RepositoryBasicTests: XCTestCase {
     
 }
 
-extension Result {
-    
-    @discardableResult
-    func assertFailure(_ topic: String? = nil) -> Success? {
-        self.onSuccess {
-            if let topic = topic {
-                print("\(topic) succeeded with: \($0)")
-            }
-        }.onFailure {
-            if let topic = topic {
-                print("\(topic) failed with: \($0.fullDescription)")
-            }
-            XCTAssert(false)
-        }
-        switch self {
-        case .success(let s):
-            return s
-        default:
-            return nil
-        }
-    }
-}
 
-extension String {
-    func write(to file: URL) -> Result<(),Error> {
-        do {
-            try self.write(toFile: file.path, atomically: true, encoding: .utf8)
-            return .success(())
-        } catch {
-            return .failure(error)
-        }
-    }
-}
