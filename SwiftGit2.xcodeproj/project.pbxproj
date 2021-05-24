@@ -50,7 +50,7 @@
 		E6332E082652D20E004990E7 /* GitPayload.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6332E072652D20E004990E7 /* GitPayload.swift */; };
 		E6332E0D265302AD004990E7 /* PushOptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6332E0C265302AD004990E7 /* PushOptions.swift */; };
 		E63EDF6C265BC0F200A3D048 /* MergeAnalysisTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E63EDF6B265BC0F200A3D048 /* MergeAnalysisTests.swift */; };
-		E63EDF6E265BC30800A3D048 /* TaoTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = E63EDF6D265BC30800A3D048 /* TaoTest.swift */; };
+		E63EDF6E265BC30800A3D048 /* GitTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = E63EDF6D265BC30800A3D048 /* GitTest.swift */; };
 		E653907A23E7328200C08416 /* Diff+Delta.swift in Sources */ = {isa = PBXBuildFile; fileRef = E653907923E7328200C08416 /* Diff+Delta.swift */; };
 		E653907C23E73CDE00C08416 /* Patch.swift in Sources */ = {isa = PBXBuildFile; fileRef = E653907B23E73CDE00C08416 /* Patch.swift */; };
 		E67D157224EF24A500DA3542 /* Repository+Status.swift in Sources */ = {isa = PBXBuildFile; fileRef = E67D157124EF24A500DA3542 /* Repository+Status.swift */; };
@@ -154,7 +154,7 @@
 		E6332E072652D20E004990E7 /* GitPayload.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GitPayload.swift; sourceTree = "<group>"; };
 		E6332E0C265302AD004990E7 /* PushOptions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PushOptions.swift; sourceTree = "<group>"; usesTabs = 0; };
 		E63EDF6B265BC0F200A3D048 /* MergeAnalysisTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MergeAnalysisTests.swift; sourceTree = "<group>"; };
-		E63EDF6D265BC30800A3D048 /* TaoTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaoTest.swift; sourceTree = "<group>"; };
+		E63EDF6D265BC30800A3D048 /* GitTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GitTest.swift; sourceTree = "<group>"; };
 		E653907923E7328200C08416 /* Diff+Delta.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Diff+Delta.swift"; sourceTree = "<group>"; };
 		E653907B23E73CDE00C08416 /* Patch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Patch.swift; sourceTree = "<group>"; };
 		E67D157124EF24A500DA3542 /* Repository+Status.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Repository+Status.swift"; sourceTree = "<group>"; };
@@ -379,7 +379,7 @@
 				E63EDF6B265BC0F200A3D048 /* MergeAnalysisTests.swift */,
 				E6332DCE265167F0004990E7 /* RepositoryBasicTests.swift */,
 				E6332DD0265167F0004990E7 /* Info.plist */,
-				E63EDF6D265BC30800A3D048 /* TaoTest.swift */,
+				E63EDF6D265BC30800A3D048 /* GitTest.swift */,
 			);
 			path = SwiftGit2Tests;
 			sourceTree = "<group>";
@@ -622,7 +622,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				E6332DCF265167F0004990E7 /* RepositoryBasicTests.swift in Sources */,
-				E63EDF6E265BC30800A3D048 /* TaoTest.swift in Sources */,
+				E63EDF6E265BC30800A3D048 /* GitTest.swift in Sources */,
 				E63EDF6C265BC0F200A3D048 /* MergeAnalysisTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

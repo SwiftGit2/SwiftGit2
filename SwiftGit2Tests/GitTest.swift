@@ -1,26 +1,11 @@
-//
-//  TaoTest.swift
-//  SwiftGit2Tests
-//
-//  Created by loki on 24.05.2021.
-//  Copyright © 2021 GitHub, Inc. All rights reserved.
-//
 
 import Foundation
 import XCTest
 import Essentials
+@testable import SwiftGit2
 
-struct TaoTest {
-	static let localRoot = URL(fileURLWithPath: "/tmp/tao_test", isDirectory: true)
-	//let remoteURL_test_public_ssh   = URL(string: "git@gitlab.com:sergiy.vynnychenko/test_public.git")!
-	//let remoteURL_test_public_https = URL(string: "https://gitlab.com/sergiy.vynnychenko/test_public.git")!
-	
-	func bla() {
-		//let remoteURL = remoteURL_test_public_https
-		//let localURL = localRoot.appendingPathComponent(remoteURL.lastPathComponent).deletingPathExtension()
-		//localURL.rm().assertFailure("rm")
-		//print("goint to clone into \(localURL)")
-	}
+struct GitTest {
+	static let localRoot = URL(fileURLWithPath: "/tmp/git_test", isDirectory: true)
 }
 
 struct PublicTestRepo {
@@ -30,7 +15,7 @@ struct PublicTestRepo {
 	let localPath : URL
 	
 	init() {
-		localPath = TaoTest.localRoot.appendingPathComponent(urlSsh.lastPathComponent).deletingPathExtension()
+		localPath = GitTest.localRoot.appendingPathComponent(urlSsh.lastPathComponent).deletingPathExtension()
 		localPath.rm().assertFailure("rm")
 	}
 }
@@ -66,4 +51,24 @@ extension String {
 			return .failure(error)
 		}
 	}
+}
+
+extension Repository {
+	static func createTestRepo() -> Result<Repository,Error>  {
+		URL.randomTempDirectory()
+			.flatMap { Repository.create(at: $0) }
+	}
+	
+//	func makeInitialCommit() {
+//		self.createTest(file: fileName)
+//		_ = self.add(path: fileName).wait()
+//		self.waitStatusUpdate()
+//
+//		_ = self.commit(description: "initial commit", signature: testSignature).wait()
+//		self.waitStatusUpdate()
+//
+//		self.createTest(file: fileName, idx: 1)
+//		_ = self.add(path: fileName).wait()
+//		self.forceRefresh()
+//	}
 }
