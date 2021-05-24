@@ -8,30 +8,6 @@
 
 import Foundation
 
-
-public func combine<T1,T2>(_ r1: Result<T1,Error>, _ r2: Result<T2,Error>) -> Result<(T1,T2), Error> {
-	return r1.combine(with: r2)
-}
-
-/////////////////////////////////////////////////////////////////////////////////////////////////////
-///Result
-/////////////////////////////////////////////////////////////////////////////////////////////////////
-private extension Result {
-	func combine<T2>(with other: Result<T2, Error>) -> Result<(Success,T2), Error> {
-		switch self {
-		case .success(let selfRes):
-			switch other {
-				case .success(let otherRes):
-					return .success( (selfRes, otherRes) )
-				case .failure(let error):
-					return .failure(error)
-			}
-		case .failure(let error):
-			return .failure(error)
-		}
-	 }
-}
-
 prefix operator ⌘
 public prefix func ⌘<T>(right: T) -> Result<T, Error> {
 	return .success(right)

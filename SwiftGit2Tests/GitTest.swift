@@ -6,6 +6,7 @@ import Essentials
 
 struct GitTest {
 	static let localRoot = URL(fileURLWithPath: "/tmp/git_test", isDirectory: true)
+	static let signature = Signature(name: "name", email: "email@domain.com")
 }
 
 struct PublicTestRepo {
@@ -53,22 +54,3 @@ extension String {
 	}
 }
 
-extension Repository {
-	static func createTestRepo() -> Result<Repository,Error>  {
-		URL.randomTempDirectory()
-			.flatMap { Repository.create(at: $0) }
-	}
-	
-//	func makeInitialCommit() {
-//		self.createTest(file: fileName)
-//		_ = self.add(path: fileName).wait()
-//		self.waitStatusUpdate()
-//
-//		_ = self.commit(description: "initial commit", signature: testSignature).wait()
-//		self.waitStatusUpdate()
-//
-//		self.createTest(file: fileName, idx: 1)
-//		_ = self.add(path: fileName).wait()
-//		self.forceRefresh()
-//	}
-}
