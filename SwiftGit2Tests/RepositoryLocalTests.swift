@@ -1,10 +1,3 @@
-//
-//  RepositoryLocalTests.swift
-//  SwiftGit2Tests
-//
-//  Created by loki on 24.05.2021.
-//  Copyright © 2021 GitHub, Inc. All rights reserved.
-//
 
 import Foundation
 import XCTest
@@ -14,11 +7,17 @@ import Essentials
 
 class RepositoryLocalTests: XCTestCase {
 	func testCreateOpenRepo() {
-		let url = try? URL.randomTempDirectory().get()
-		print(url ?? "nil")
-		URL.randomTempDirectory()
+		GitTest.tmpURL
 			.flatMap { Repository.create(at: $0) }
 			.assertFailure("create repo")
 	}
 
+	func testCreateAddFile() {
+		GitTest.tmpURL
+			.flatMap { Repository.create(at: $0) }
+			.flatMap { $0.t_commit(msg: "initial commit") }
+			.assertFailure("initial commit")
+	}
+
 }
+

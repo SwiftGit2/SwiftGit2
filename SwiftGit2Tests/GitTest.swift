@@ -5,7 +5,9 @@ import Essentials
 @testable import SwiftGit2
 
 struct GitTest {
-	static let localRoot = URL(fileURLWithPath: "/tmp/git_test", isDirectory: true)
+	static let prefix = "git_test"
+	static var localRoot = URL(fileURLWithPath: "/tmp/\(prefix)", isDirectory: true)
+	static var tmpURL 	 : Result<URL, Error> { URL.tmp(.systemUnique, prefix: GitTest.prefix) }
 	static let signature = Signature(name: "name", email: "email@domain.com")
 }
 
@@ -17,7 +19,7 @@ struct PublicTestRepo {
 	
 	init() {
 		localPath = GitTest.localRoot.appendingPathComponent(urlSsh.lastPathComponent).deletingPathExtension()
-		localPath.rm().assertFailure("rm")
+		localPath.rm().assertFailure()
 	}
 }
 
@@ -25,6 +27,27 @@ extension Result {
 	@discardableResult
 	func assertFailure(_ topic: String? = nil) -> Success? {
 		self.onSuccess {
+			if let topic = topic {
+				print("\(topic) succeeded with: \($0)")
+			}
+		}.onFailure {
+			if let topic = topic {
+				print("\(topic) failed with: \($0.fullDescription)")
+			}
+			XCTAssert(false)
+		}
+		switch self {
+		case .success(let s):
+			return s
+		default:
+			return nil
+		}
+	}
+
+	@discardableResult
+	func assertEqual(to: Success, _ topic: String? = nil) -> Success? where Success: Equatable {
+		self.onSuccess {
+			XCTAssert(to == $0)
 			if let topic = topic {
 				print("\(topic) succeeded with: \($0)")
 			}

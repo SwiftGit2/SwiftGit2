@@ -5,18 +5,18 @@ import Essentials
 @testable import SwiftGit2
 
 extension Repository {
-	static func createTestRepo() -> Result<Repository,Error>  {
+	static func t_randomRepo() -> Result<Repository,Error>  {
 		URL.randomTempDirectory()
 			.flatMap { Repository.create(at: $0) }
 	}
 	
-	func makeInitialCommit(file: TestFile = .fileA, with content: TestFileContent = .oneLine1) -> Result<Commit,Error> {
-		createTest(file: file, with: content)
+	func t_commit(file: TestFile = .fileA, with content: TestFileContent = .oneLine1, msg: String) -> Result<Commit,Error> {
+		t_create(file: file, with: content)
 			.flatMap { url in self.index().flatMap { $0.add(paths: [url.path]) } }
-			.flatMap { _ in self.commit(message: "initial commit", signature: GitTest.signature) }
+			.flatMap { _ in self.commit(message: msg, signature: GitTest.signature) }
 	}
 	
-	func createTest(file: TestFile, with content: TestFileContent) -> Result<URL, Error> {
+	func t_create(file: TestFile, with content: TestFileContent) -> Result<URL, Error> {
 		return self.directoryURL
 			.map { $0.appendingPathComponent(file.rawValue) }
 			.flatMap { $0.write(content: content.rawValue) }

@@ -29,6 +29,17 @@ public class Repository : InstanceProtocol {
 	}
 }
 
+extension Repository : CustomDebugStringConvertible {
+    public var debugDescription: String {
+        switch self.directoryURL {
+        case .success(let url):
+            return "Git2.Repository: " + url.path
+        case .failure(let error):
+            return "Git2.Repository: ERROR " + error.fullDescription
+        }
+    }
+}
+
 //Remotes
 extension Repository {
 	public func getRemoteFirst() -> Result<Remote, Error> {

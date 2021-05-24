@@ -7,27 +7,25 @@
 //
 
 import XCTest
+@testable import SwiftGit2
+import Essentials
+
 
 class MergeAnalysisTests: XCTestCase {
 
-    override func setUpWithError() throws {
-        // Put setup code here. This method is called before the invocation of each test method in the class.
-    }
+    func testUpToDate() throws {
+		let info = PublicTestRepo()
 
-    override func tearDownWithError() throws {
-        // Put teardown code here. This method is called after the invocation of each test method in the class.
-    }
-
-    func testExample() throws {
-        // This is an example of a functional test case.
-        // Use XCTAssert and related functions to verify your tests produce the correct results.
-    }
-
-    func testPerformanceExample() throws {
-        // This is an example of a performance test case.
-        self.measure {
-            // Put the code you want to measure the time of here.
-        }
+		guard let repo = Repository.clone(from: info.urlSsh, to: info.localPath)
+				.assertFailure("clone") else { fatalError() }
+		
+		repo.HEAD()
+			.flatMap { $0.asBranch() }
+			.flatMap { $0.upstream() }
+			.flatMap { $0.commitOID }
+			.flatMap { repo.annotatedCommit(oid: $0) }
+			.flatMap { repo.mergeAnalysis(their_head: $0) }
+			.assertEqual(to: .upToDate, "merge analysis")
     }
 
 }
