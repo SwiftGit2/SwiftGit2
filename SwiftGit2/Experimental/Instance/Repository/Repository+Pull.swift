@@ -26,7 +26,25 @@ public extension Repository {
 			.flatMap { self.mergeAnalysis(their_head: $0) }
 	}
 	
+	func localCommit() -> Result<Commit, Error> {
+		self.HEAD()
+			.flatMap { $0.asBranch() }
+			.flatMap { $0.commitOID }
+			.flatMap { self.instanciate($0) }
+	}
+	
+	func upstreamCommit() -> Result<Commit, Error> {
+        self.HEAD()
+            .flatMap { $0.asBranch() }
+            .flatMap { $0.upstream() }
+            .flatMap { $0.commitOID }
+            .flatMap { self.instanciate($0) }
+	}
+	
 	func pull(auth: Auth) {
+		//let branchUpstream = branch
+		//	.flatMap { $0.upstream() }
+
 		// 1. fetch remote
 		// 2.
 		currentRemote()
