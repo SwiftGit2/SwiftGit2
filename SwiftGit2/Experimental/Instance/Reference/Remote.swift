@@ -122,3 +122,9 @@ public enum Direction : Int32 {
     case fetch = 0	// GIT_DIRECTION_FETCH
     case push = 1	// GIT_DIRECTION_PUSH
 }
+
+extension Remote : CustomDebugStringConvertible {
+    public var debugDescription: String {
+        return "Git2.Remote: \(self.name) - \(self.URL)" 
+    }
+}

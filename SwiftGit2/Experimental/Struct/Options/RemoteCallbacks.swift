@@ -15,6 +15,7 @@ public typealias AuthCB = (_ url:String?, _ username: String?)->(Credentials)
 public enum Auth {
     case match(AuthCB)
     case auto
+    case credentials(Credentials)
 }
 
 
@@ -116,6 +117,8 @@ extension Auth {
             return Credentials.sshDefault
         case .match(let callback):
             return callback(url,name)
+        case .credentials(let c):
+            return c
         }
     }
 }

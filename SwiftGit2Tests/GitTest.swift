@@ -43,6 +43,26 @@ extension Result {
 			return nil
 		}
 	}
+    
+    @discardableResult
+    func assertSuccess(_ topic: String? = nil) -> Success? {
+        self.onSuccess {
+            if let topic = topic {
+                print("\(topic) succeeded with: \($0)")
+            }
+            XCTAssert(false)
+        }.onFailure {
+            if let topic = topic {
+                print("\(topic) failed with: \($0.fullDescription)")
+            }
+        }
+        switch self {
+        case .success(let s):
+            return s
+        default:
+            return nil
+        }
+    }
 
 	@discardableResult
 	func assertEqual(to: Success, _ topic: String? = nil) -> Success? where Success: Equatable {
