@@ -39,18 +39,7 @@ public class Reference : InstanceProtocol {
 	}
 }
 
-public extension Repository {
-	func HEAD() -> Result<Reference, Error> {
-		var pointer: OpaquePointer? = nil
-		
-		return _result( { Reference(pointer!) }, pointOfFailure: "git_repository_head") {
-			git_repository_head(&pointer, self.pointer)
-		}
-	}
-	
-	var headIsUnborn: Bool 		{ git_repository_head_unborn(self.pointer) == 1 }
-	var headIsDetached: Bool 	{ git_repository_head_detached(self.pointer) == 1 }
-	
+public extension Repository {	
 	func references(withPrefix prefix: String) -> Result<[Reference], Error> {
 		var strarray = git_strarray()
 		defer {
