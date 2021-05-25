@@ -107,6 +107,12 @@ public struct BranchInfo {
 	}
 }
 
+extension BranchInfo : Equatable {
+	public static func == (lhs: BranchInfo, rhs: BranchInfo) -> Bool {
+		return lhs.localName == rhs.localName && lhs.upstreamName == lhs.upstreamName
+	}
+}
+
 public extension BranchInfo {
 	var isLocal: Bool { return type == .local || type == .localAndRemote}
 	var isLocalOnly: Bool { return type == .local}

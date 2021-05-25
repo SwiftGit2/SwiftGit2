@@ -20,8 +20,8 @@ public extension Repository {
 	}
 }
 
-private extension Repository {
-	func setHEAD(_ oid: OID) -> Result<(), Error> {
+internal extension Repository {
+	func setHEAD_detached(_ oid: OID) -> Result<(), Error> {
 		var oid = oid.oid
 		return _result((), pointOfFailure: "git_repository_set_head_detached") {
 			git_repository_set_head_detached(self.pointer, &oid)
@@ -42,7 +42,7 @@ private extension Repository {
 	}
 	
 	func checkout(_ oid: OID, strategy: CheckoutStrategy, progress: CheckoutProgressBlock? = nil) -> Result<(), Error> {
-		setHEAD(oid)
+		setHEAD_detached(oid)
 			.flatMap { checkoutHead(strategy: strategy, progress: progress) }
 	}
 
