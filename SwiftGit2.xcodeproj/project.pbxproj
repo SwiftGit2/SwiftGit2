@@ -159,7 +159,7 @@
 		E63EDF6B265BC0F200A3D048 /* MergeAnalysisTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MergeAnalysisTests.swift; sourceTree = "<group>"; };
 		E63EDF6D265BC30800A3D048 /* GitTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GitTest.swift; sourceTree = "<group>"; };
 		E63EDF6F265BF7FD00A3D048 /* Repository+Test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Repository+Test.swift"; sourceTree = "<group>"; };
-		E63EDF73265C0A6B00A3D048 /* RepositoryLocalTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RepositoryLocalTests.swift; sourceTree = "<group>"; };
+		E63EDF73265C0A6B00A3D048 /* RepositoryLocalTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RepositoryLocalTests.swift; sourceTree = "<group>"; usesTabs = 0; };
 		E63EDF75265D255500A3D048 /* Repository+HEAD.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Repository+HEAD.swift"; sourceTree = "<group>"; usesTabs = 0; };
 		E653907923E7328200C08416 /* Diff+Delta.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Diff+Delta.swift"; sourceTree = "<group>"; };
 		E653907B23E73CDE00C08416 /* Patch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Patch.swift; sourceTree = "<group>"; };
