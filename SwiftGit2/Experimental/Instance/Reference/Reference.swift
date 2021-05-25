@@ -39,37 +39,18 @@ public class Reference : InstanceProtocol {
 	}
 }
 
-public extension Repository {
-	func HEAD() -> Result<Reference, Error> {
-		var pointer: OpaquePointer? = nil
-		
-		return _result( { Reference(pointer!) }, pointOfFailure: "git_repository_head") {
-			git_repository_head(&pointer, self.pointer)
-		}
-	}
-	
-	var headIsUnborn: Bool {
-		git_repository_head_unborn(self.pointer) == 1 ? true : false
-	}
-	
-	var headIsDetached: Bool {
-		let result: Int32 = git_repository_head_detached(self.pointer)
-		return (result as NSNumber).boolValue
-	}
-	
+public extension Repository {	
 	func references(withPrefix prefix: String) -> Result<[Reference], Error> {
 		var strarray = git_strarray()
 		defer {
-			// free results of the git_reference_list call
-			git_strarray_free(&strarray)
+			git_strarray_free(&strarray) // free results of the git_reference_list call
 		}
 		
-		return _result({ strarray }, pointOfFailure: "git_reference_list") {
+		return git_try("git_reference_list") {
 			git_reference_list(&strarray, self.pointer)
-		}.flatMap {
-			$0.filter { $0.hasPrefix(prefix) }
-			.flatMap { self.reference(name: $0) }
 		}
+		.map { strarray.filter { $0.hasPrefix(prefix) } }
+		.flatMap { $0.flatMap { self.reference(name: $0) } }
 	}
 	
 	func reference(name: String) -> Result<Reference, Error> {

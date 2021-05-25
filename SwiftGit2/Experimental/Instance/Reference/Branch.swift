@@ -92,15 +92,7 @@ public extension Duo where T1 == Branch, T2 == Repository {
 		let (branch, repo) = self.value
 		return branch.commitOID.flatMap { repo.instanciate($0) }
 	}
-	
-	func newBranch(withName name: String) -> Result<Reference, Error> {
-		let (branch, repo) = self.value
-		
-		return branch.commitOID
-			.flatMap { Duo<OID,Repository>($0, repo).commit() }
-			.flatMap { commit in repo.createBranch(from: commit, withName: name)  }
-	}
-	
+
 	fileprivate func remoteName() -> Result<String, Error> {
 		let (branch, repo) = self.value
 		var buf = git_buf(ptr: nil, asize: 0, size: 0)

@@ -66,8 +66,22 @@ extension Repository {
 	}
 }
 
-extension Repository {
-	public func headCommit() -> Result<Commit, Error> {
+public enum BranchBase {
+    case head
+    case commit(Commit)
+    case branch(Branch)
+}
+
+public extension Repository {
+    func createBranch(from base: BranchBase, name: String, checkout: Bool) -> Result<Reference, Error> {
+        switch base {
+        case .head:             return headCommit().flatMap { createBranch(from: $0, name: name, checkout: checkout) }
+        case .commit(let c):    return createBranch(from: c, name: name, checkout: checkout)
+        case .branch(let b):    return Duo(b,self).commit().flatMap { c in createBranch(from: c, name: name, checkout: checkout) }
+        }
+    }
+    
+    func headCommit() -> Result<Commit, Error> {
 		var oid = git_oid()
 		
 		return _result( { oid }, pointOfFailure: "git_reference_name_to_id") {
@@ -76,29 +90,30 @@ extension Repository {
 		.flatMap { instanciate(OID($0)) }
 	}
 	
-	
-	public func createBranch(from commit: Commit, withName newName: String, overwriteExisting: Bool = false) -> Result<Reference, Error> {
-		let force: Int32 = overwriteExisting ? 0 : 1
+    internal func createBranch(from commit: Commit, name: String, checkout: Bool, force: Bool = false) -> Result<Reference, Error> {
 		
-		var referenceToBranch : OpaquePointer? = nil
+        var pointer : OpaquePointer? = nil
 		
-		return _result( { Reference(referenceToBranch!) }, pointOfFailure: "git_branch_create") {
-			newName.withCString { new_name in
-				git_branch_create(&referenceToBranch, self.pointer, new_name, commit.pointer, force);
-			}
-		}
+        return git_try("git_branch_create") {
+            name.withCString { name in
+                git_branch_create(&pointer, self.pointer, name, commit.pointer, force ? 0 : 1);
+            }
+        }.map { Reference(pointer!) }
+        .flatMap(if: { _ in checkout },
+                 then: { self.checkout(reference: $0, strategy: .Safe) },
+                 else: { .success($0) })
 	}
 	
-	public func commit(message: String, signature: Signature) -> Result<Commit, Error> {
+    func commit(message: String, signature: Signature) -> Result<Commit, Error> {
 		return index()
 			.flatMap { index in Duo(index,self).commit(message: message, signature: signature) }
 	}
 	
-	public func remoteRepo(named name: String, remoteType: RemoteType) -> Result<Remote, Error> {
+    func remoteRepo(named name: String, remoteType: RemoteType) -> Result<Remote, Error> {
 		return remoteLookup(named: name) { $0.map{ Remote($0, remoteType: remoteType) } }
 	}
 	
-	public func remoteLookup<A>(named name: String, _ callback: (Result<OpaquePointer, Error>) -> A) -> A {
+    func remoteLookup<A>(named name: String, _ callback: (Result<OpaquePointer, Error>) -> A) -> A {
 		var pointer: OpaquePointer? = nil
 		
 		let result = _result( () , pointOfFailure: "git_remote_lookup") {
