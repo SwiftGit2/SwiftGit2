@@ -55,8 +55,6 @@ class RepositoryBasicTests: XCTestCase {
         guard let repo = Repository.clone(from: info.urlHttps, to: info.localPath, options: CloneOptions(fetch: FetchOptions(auth: .auto)))
                 .assertFailure("clone") else { fatalError() }
         
-        print(repo)
-        
         repo.getRemoteFirst()
             .flatMap { $0.connect(direction: .fetch, auth: .credentials(.default)) } // shoud succeed
             .assertFailure("retmote.connect .fetch")
