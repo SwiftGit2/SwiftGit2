@@ -39,17 +39,14 @@ public extension Repository {
 			.flatMap(  if: { $0.count == 1 },
 					 then: { $0.checkoutFirst(in: self).map { _ in DetachedHeadFix.fixed } },
 					 else: { .success(.ambiguous(branches: $0.map { $0.branch.name })) })
-		
-	}
-}
-private extension Array where Element == Branch_Info {
-	func checkoutFirst(in repo: Repository) -> Result<(), Error> {
-		guard let first = self.first else { return .failure(WTF("checkoutFirst: zero elements")) }
-		
-		return repo.checkout(branch: first.branch, strategy: .Safe, progress: nil)
 	}
 }
 
+private extension Array where Element == Branch_Info {
+	func checkoutFirst(in repo: Repository) -> Result<(), Error> {
+		first.asResult { repo.checkout(branch: $0.branch) }
+	}
+}
 
 private struct Branch_Info {
 	let branch : Branch

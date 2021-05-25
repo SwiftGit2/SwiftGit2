@@ -46,9 +46,10 @@ internal extension Repository {
 			.flatMap { checkoutHead(strategy: strategy, progress: progress) }
 	}
 
-	func checkout(_ reference: Reference, strategy: CheckoutStrategy, progress: CheckoutProgressBlock? = nil) -> Result<(), Error> {
+	func checkout(reference: Reference, strategy: CheckoutStrategy, progress: CheckoutProgressBlock? = nil) -> Result<Reference, Error> {
 		setHEAD(reference)
 			.flatMap { checkoutHead(strategy: strategy, progress: progress) }
+			.map { reference }
 	}
 }
 

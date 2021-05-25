@@ -39,14 +39,28 @@ class RepositoryLocalTests: XCTestCase {
 		guard let fixResultWCommit = repo.detachedHeadFix().assertFailure("detached HEAD fix on commit1") else { fatalError() }
 		XCTAssert(fixResultWCommit == .notNecessary)
 		
-		// detach head
-		repo.HEAD()
-			.flatMap { $0.commitOID }
-			.flatMap { repo.setHEAD_detached($0) }
+		repo.detachHEAD()
 			.assertFailure("set HEAD detached")
 		
 		guard let fixResultDetached = repo.detachedHeadFix().assertFailure("detached HEAD fix") else { fatalError() }
 		XCTAssert(fixResultDetached == .fixed)
+		
+		repo.createBranch(from: .head, name: "branch1", checkout: false)
+			.assertFailure("create branch1")
+		
+		repo.detachHEAD()
+			.assertFailure("set HEAD detached")
+
+		guard let fixResultAmbigues = repo.detachedHeadFix().assertFailure("detached HEAD fix") else { fatalError() }
+		
+		XCTAssert(fixResultAmbigues == .ambiguous(branches: ["refs/heads/branch1", "refs/heads/master"]))
 	}
 }
 
+extension Repository {
+	func detachHEAD() -> Result<(), Error> {
+		HEAD()
+			.flatMap { $0.commitOID }
+			.flatMap { self.setHEAD_detached($0) }
+	}
+}
