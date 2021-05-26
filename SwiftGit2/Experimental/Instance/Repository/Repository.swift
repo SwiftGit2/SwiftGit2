@@ -128,11 +128,15 @@ public extension Repository {
 	class func at(url: URL) -> Result<Repository, Error> {
 		var pointer: OpaquePointer? = nil
 		
-		return _result( { Repository(pointer!) }, pointOfFailure: "git_repository_open") {
+        let result: Result<Repository, Error> = _result( { Repository(pointer!) }, pointOfFailure: "git_repository_open") {
 			url.withUnsafeFileSystemRepresentation {
 				git_repository_open(&pointer, $0)
 			}
 		}
+        
+        return result
+            .map{ $0.detachedHeadFix() }
+            .flatMap{ _ in result }
 	}
 	
 	class func create(at url: URL) -> Result<Repository, Error> {
