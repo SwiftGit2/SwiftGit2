@@ -125,18 +125,20 @@ public extension Repository {
 }
 
 public extension Repository {
-	class func at(url: URL) -> Result<Repository, Error> {
+    class func at(url: URL, fixDetachedHead: Bool = true) -> Result<Repository, Error> {
 		var pointer: OpaquePointer? = nil
 		
-        let result: Result<Repository, Error> = _result( { Repository(pointer!) }, pointOfFailure: "git_repository_open") {
-			url.withUnsafeFileSystemRepresentation {
-				git_repository_open(&pointer, $0)
-			}
-		}
-        
-        return result
-            .map{ $0.detachedHeadFix() }
-            .flatMap{ _ in result }
+        return git_try("git_repository_open") {
+            url.withUnsafeFileSystemRepresentation {
+                git_repository_open(&pointer, $0)
+            }
+        }
+        .map { _ in Repository(pointer!) }
+        .flatMap (
+            if:   { _ in fixDetachedHead },
+            then: { repo in repo.detachedHeadFix().map{ _ in repo } },
+            else: { .success( $0 ) }
+        )
 	}
 	
 	class func create(at url: URL) -> Result<Repository, Error> {
