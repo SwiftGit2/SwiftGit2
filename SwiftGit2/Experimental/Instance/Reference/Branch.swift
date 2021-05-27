@@ -136,13 +136,6 @@ public extension Duo where T1 == Branch, T2 == Remote {
 /// Repository
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-
-extension Duo where T1 == Branch, T2 == Remote {
-    func push() {
-        
-    }
-}
-
 // High Level code
 public extension Repository {
     func push(options: PushOptions = PushOptions()) -> Result<(), Error> {
