@@ -20,7 +20,7 @@ public class RemoteRepoAccessChecker {
 		
 		let remote = try? remoteRez.get()
 		
-		print("ZZZA \(remote?.URL)")
+		print("ZZZA \(remote?.url)")
 		print("ZZZA \(remote?.name)")
 		
 		

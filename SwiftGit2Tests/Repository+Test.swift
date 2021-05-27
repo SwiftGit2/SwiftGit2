@@ -19,40 +19,52 @@ extension Repository {
 	func t_create(file: TestFile, with content: TestFileContent) -> Result<URL, Error> {
 		return self.directoryURL
 			.map { $0.appendingPathComponent(file.rawValue) }
-			.flatMap { $0.write(content: content.rawValue) }
+            .flatMap { $0.write(content: content.get()) }
 	}
 }
 
 enum TestFile : String {
-	case fileA = "fileA.txt"
-	case fileB = "fileB.txt"
+    case fileA = "fileA.txt"
+    case fileB = "fileB.txt"
 }
 
 enum TestFileContent: String {
-	case oneLine1 = "oneLine1"
-	case oneLine2 = "oneLine2"
-	
-	case content1 = """
-		01 The White Rabbit put on his spectacles.  "Where shall I begin,
-		02 please your Majesty?" he asked.
-		03
-		04 "Begin at the beginning," the King said gravely, "and go on
-		05 till you come to the end; then stop."
-		06
-		07
-		08
-		09
-		"""
+    case random
+    case oneLine1 = "oneLine1"
+    case oneLine2 = "oneLine2"
+    
+    case content1 = """
+        01 The White Rabbit put on his spectacles.  "Where shall I begin,
+        02 please your Majesty?" he asked.
+        03
+        04 "Begin at the beginning," the King said gravely, "and go on
+        05 till you come to the end; then stop."
+        06
+        07
+        08
+        09
+        """
+    
+    case content2 = """
+        01 << LINE REPLACEMENT >>
+        02 please your Majesty?" he asked.
+        03
+        04 "Begin at the beginning," the King said gravely, "and go on
+        05 till you come to the end; then stop."
+        06
+        07
+        08
+        09  << LINE INSERTION >>
+        """
+}
 
-	case content2 = """
-		01 << LINE REPLACEMENT >>
-		02 please your Majesty?" he asked.
-		03
-		04 "Begin at the beginning," the King said gravely, "and go on
-		05 till you come to the end; then stop."
-		06
-		07
-		08
-		09  << LINE INSERTION >>
-		"""
+extension TestFileContent {
+    func get() -> String {
+        switch self {
+        case .random:
+            return UUID().uuidString
+        default:
+            return self.rawValue
+        }
+    }
 }

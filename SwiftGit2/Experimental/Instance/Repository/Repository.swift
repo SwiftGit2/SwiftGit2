@@ -46,7 +46,7 @@ extension Repository {
 		return getRemotesNames()
 			.flatMap{ arr -> Result<Remote, Error> in
 				if let first = arr.first {
-					return self.remoteRepo(named: first, remoteType: .Original)
+					return self.remoteRepo(named: first)
 				}
 				return .failure(WTF("can't get RemotesNames") )
 			}
@@ -54,7 +54,7 @@ extension Repository {
 	
 	public func getAllRemotes() -> Result<[Remote], Error> {
 		return getRemotesNames()
-			.flatMap{ $0.flatMap { self.remoteRepo(named: $0, remoteType: .Original) } }
+			.flatMap{ $0.flatMap { self.remoteRepo(named: $0) } }
 	}
 	
 	private func getRemotesNames() -> Result<[String], Error> {
@@ -109,8 +109,8 @@ public extension Repository {
 			.flatMap { index in Duo(index,self).commit(message: message, signature: signature) }
 	}
 	
-    func remoteRepo(named name: String, remoteType: RemoteType) -> Result<Remote, Error> {
-		return remoteLookup(named: name) { $0.map{ Remote($0, remoteType: remoteType) } }
+    func remoteRepo(named name: String) -> Result<Remote, Error> {
+		return remoteLookup(named: name) { $0.map{ Remote($0) } }
 	}
 	
     func remoteLookup<A>(named name: String, _ callback: (Result<OpaquePointer, Error>) -> A) -> A {
@@ -122,6 +122,14 @@ public extension Repository {
 		
 		return callback(result)
 	}
+    
+    func remote(name: String) -> Result<Remote, Error> {
+        var pointer: OpaquePointer? = nil
+        
+        return git_try("git_remote_lookup") {
+            git_remote_lookup(&pointer, self.pointer, name)
+        }.map{ Remote(pointer!) }
+    }
 }
 
 public extension Repository {
@@ -213,10 +221,4 @@ extension RepositoryError: LocalizedError {
 			return "FailedToGetRepoUrl. Url is nil?"
 		}
 	}
-}
-
-public enum RemoteType {
-	case Original
-	case ForceSSH
-	case ForceHttps
 }
