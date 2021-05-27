@@ -89,7 +89,7 @@ public extension Branch {
 
 public extension Duo where T1 == Branch, T2 == Repository {
 	func commit() -> Result<Commit, Error> {
-		let (branch, repo) = self.value
+		let (branch, repo) = value
 		return branch.commitOID.flatMap { repo.instanciate($0) }
 	}
 
