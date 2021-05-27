@@ -29,17 +29,7 @@ public extension Remote {
     
 
     
-    func push(branchName: String, options: PushOptions ) -> Result<(), Error> {
-        print("Trying to push ''\(branchName)'' to remote ''\(self.name)'' with URL:''\(self.url)''")
-        
-        return git_try("git_remote_push") {
-            options.with_git_push_options { push_options in
-                [branchName].with_git_strarray { strarray in
-                    git_remote_push(self.pointer, &strarray, &push_options)
-                }
-            }
-        }
-    }
+
 
     func fetch(options: FetchOptions) -> Result<(), Error> {
         return git_try("git_remote_fetch") {

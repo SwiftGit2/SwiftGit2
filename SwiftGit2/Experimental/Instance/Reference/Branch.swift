@@ -40,7 +40,6 @@ extension Reference : Branch {}
 	
 extension Branch {
 	public var shortName 	: String 	{ ( try? nameInternal().get() ) ?? "" }
-	public var name 		: String 	{ longName() }
 	public var commitOID	: Result<OID, Error> { commitOid() }
 }
 
@@ -98,7 +97,7 @@ public extension Duo where T1 == Branch, T2 == Repository {
 		var buf = git_buf(ptr: nil, asize: 0, size: 0)
 		
 		return git_try("git_branch_upstream_remote") {
-			return branch.longName().withCString { branchName in
+			return branch.name.withCString { branchName in
 				git_branch_upstream_remote(&buf, repo.pointer, branchName);
 			}
 		}.flatMap { Buffer(buf: buf).asString() }
@@ -116,36 +115,12 @@ public extension Duo where T1 == Branch, T2 == Repository {
 	}
 }
 
-public extension Duo where T1 == Branch, T2 == Remote {
-    /// Push local branch changes to remote branch
-    func push(auth: Auth = .auto) -> Result<(), Error> {
-        let (branch, remote) = value
-        return remote.push(branchName: branch.name, options: PushOptions(auth: auth) )
-    }
-}
-
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /// Repository
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // High Level code
-public extension Repository {
-    func push(options: PushOptions = PushOptions()) -> Result<(), Error> {
-        let branch = self.HEAD()
-            .flatMap { $0.asBranch() }
-            
-        let remote = branch
-            .flatMap { Duo($0,self).remote() }
-        
-        return combine(branch, remote)
-            .flatMap { b,r in r.push(branchName: b.longName(), options: options) }
-    }
-    
-    func push(remoteName: String, branchName: String, auth: Auth) -> Result<(), Error> {
-        remote(name: remoteName)
-            .flatMap { $0.push(branchName: branchName, options: PushOptions(auth: auth)) }
-    }
-}
+
 
 // Low Level code
 public extension Repository {
@@ -183,9 +158,7 @@ private extension Branch {
 		}
 	}
 	
-	func longName() -> String {
-		return String(validatingUTF8: git_reference_name(pointer)) ?? ""
-	}
+
 	
 	func commitOid() -> Result<OID, Error> {
 		if git_reference_type(pointer).rawValue == GIT_REFERENCE_SYMBOLIC.rawValue {
