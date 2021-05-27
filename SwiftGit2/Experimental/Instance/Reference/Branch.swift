@@ -75,14 +75,6 @@ public extension Branch {
 			.flatMap { Reference(resolved!).asBranch() }
 	}
     
-    
-    
-//    func upstreamRemote() -> Result<Remote, Error> {
-//        var pointer: OpaquePointer? = nil
-//
-//        return git_try("", block: <#T##() -> Int32#>)
-//    }
-	
 	/// can be called only for local branch;
 	///
 	/// newNameWithPath MUST BE WITH "refs/heads/"
