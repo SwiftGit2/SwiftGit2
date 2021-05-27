@@ -55,6 +55,7 @@
 		E63EDF74265C0A6B00A3D048 /* RepositoryLocalTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E63EDF73265C0A6B00A3D048 /* RepositoryLocalTests.swift */; };
 		E63EDF76265D255500A3D048 /* Repository+HEAD.swift in Sources */ = {isa = PBXBuildFile; fileRef = E63EDF75265D255500A3D048 /* Repository+HEAD.swift */; };
 		E63EDF7C265DBAE500A3D048 /* ProxyOptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = E63EDF7B265DBAE500A3D048 /* ProxyOptions.swift */; };
+		E63EDF7E265FF5A300A3D048 /* UrlSshHttp.swift in Sources */ = {isa = PBXBuildFile; fileRef = E63EDF7D265FF5A300A3D048 /* UrlSshHttp.swift */; };
 		E653907A23E7328200C08416 /* Diff+Delta.swift in Sources */ = {isa = PBXBuildFile; fileRef = E653907923E7328200C08416 /* Diff+Delta.swift */; };
 		E653907C23E73CDE00C08416 /* Patch.swift in Sources */ = {isa = PBXBuildFile; fileRef = E653907B23E73CDE00C08416 /* Patch.swift */; };
 		E67D157224EF24A500DA3542 /* Repository+Status.swift in Sources */ = {isa = PBXBuildFile; fileRef = E67D157124EF24A500DA3542 /* Repository+Status.swift */; };
@@ -163,6 +164,7 @@
 		E63EDF73265C0A6B00A3D048 /* RepositoryLocalTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RepositoryLocalTests.swift; sourceTree = "<group>"; usesTabs = 0; };
 		E63EDF75265D255500A3D048 /* Repository+HEAD.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Repository+HEAD.swift"; sourceTree = "<group>"; usesTabs = 0; };
 		E63EDF7B265DBAE500A3D048 /* ProxyOptions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProxyOptions.swift; sourceTree = "<group>"; usesTabs = 0; };
+		E63EDF7D265FF5A300A3D048 /* UrlSshHttp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UrlSshHttp.swift; sourceTree = "<group>"; };
 		E653907923E7328200C08416 /* Diff+Delta.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Diff+Delta.swift"; sourceTree = "<group>"; };
 		E653907B23E73CDE00C08416 /* Patch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Patch.swift; sourceTree = "<group>"; };
 		E67D157124EF24A500DA3542 /* Repository+Status.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Repository+Status.swift"; sourceTree = "<group>"; };
@@ -278,6 +280,7 @@
 				BE70B3E41A1ACB1A002C3F4E /* OID.swift */,
 				BE7A753E1A4A2BCC002DA7E3 /* Pointers.swift */,
 				E653907B23E73CDE00C08416 /* Patch.swift */,
+				E63EDF7D265FF5A300A3D048 /* UrlSshHttp.swift */,
 			);
 			path = SwiftGit2;
 			sourceTree = "<group>";
@@ -591,6 +594,7 @@
 				1DCEA37E2542364D0012BF38 /* Result.swift in Sources */,
 				BE70B3E51A1ACB1A002C3F4E /* OID.swift in Sources */,
 				E6AB53BA2575377B00364E5F /* Blob.swift in Sources */,
+				E63EDF7E265FF5A300A3D048 /* UrlSshHttp.swift in Sources */,
 				E6332CDD264E80FD004990E7 /* DiffOptions.swift in Sources */,
 				E63EDF76265D255500A3D048 /* Repository+HEAD.swift in Sources */,
 				BE276B291ACCD3CF00D6DAD7 /* CheckoutStrategy.swift in Sources */,

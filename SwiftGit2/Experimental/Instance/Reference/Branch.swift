@@ -110,7 +110,7 @@ public extension Duo where T1 == Branch, T2 == Repository {
 		
 		return remoteName()
 			.flatMap { remoteName in
-				repo.remoteRepo(named: remoteName, remoteType: .Original)
+				repo.remoteRepo(named: remoteName)
 			}
 		
 	}
