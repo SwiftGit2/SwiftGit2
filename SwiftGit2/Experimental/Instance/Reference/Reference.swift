@@ -19,8 +19,8 @@ public class Reference : InstanceProtocol {
         git_reference_free(pointer)
     }
     
-    public var oid		: OID  { OID(git_reference_target(pointer).pointee) }
-    public var isTag	: Bool { git_reference_is_tag(pointer) != 0 }
+    public var oid      : OID  { OID(git_reference_target(pointer).pointee) }
+    public var isTag    : Bool { git_reference_is_tag(pointer) != 0 }
     public var name     : String { String(validatingUTF8: git_reference_name(pointer)) ?? "" }
     
     public func asBranch() -> Result<Branch, Error> {
