@@ -122,6 +122,14 @@ public extension Repository {
 		
 		return callback(result)
 	}
+    
+    func remote(name: String) -> Result<Remote, Error> {
+        var pointer: OpaquePointer? = nil
+        
+        return git_try("git_remote_lookup") {
+            git_remote_lookup(&pointer, self.pointer, name)
+        }.map{ Remote(pointer!) }
+    }
 }
 
 public extension Repository {

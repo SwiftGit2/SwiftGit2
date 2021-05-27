@@ -74,6 +74,14 @@ public extension Branch {
 		return git_try("git_branch_upstream") { git_branch_upstream(&resolved, self.pointer) }
 			.flatMap { Reference(resolved!).asBranch() }
 	}
+    
+    
+    
+//    func upstreamRemote() -> Result<Remote, Error> {
+//        var pointer: OpaquePointer? = nil
+//
+//        return git_try("", block: <#T##() -> Int32#>)
+//    }
 	
 	/// can be called only for local branch;
 	///
@@ -102,7 +110,6 @@ public extension Duo where T1 == Branch, T2 == Repository {
 				git_branch_upstream_remote(&buf, repo.pointer, branchName);
 			}
 		}.flatMap { Buffer(buf: buf).asString() }
-		
 	}
 	
 	///Gets REMOTE item from local branch. Doesn't works with remote branch
@@ -118,29 +125,41 @@ public extension Duo where T1 == Branch, T2 == Repository {
 }
 
 public extension Duo where T1 == Branch, T2 == Remote {
-	/// Push local branch changes to remote branch
-	func push(auth: Auth = .auto) -> Result<(), Error> {
-		let (branch, remote) = self.value
-		return remote.push(branchName: branch.name, options: PushOptions(auth: auth) )
-	}
+    /// Push local branch changes to remote branch
+    func push(auth: Auth = .auto) -> Result<(), Error> {
+        let (branch, remote) = self.value
+        return remote.push(branchName: branch.name, options: PushOptions(auth: auth) )
+    }
 }
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /// Repository
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+
+extension Duo where T1 == Branch, T2 == Remote {
+    func push() {
+        
+    }
+}
+
 // High Level code
 public extension Repository {
-	func push(remoteRepoName: String, localBranchName: String, auth: Auth) -> Result<(), Error> {
-		let set = XR.Set()
-		
-		//Huck, but works
-		//let remoteType  = credentials.isSsh() ? RemoteType.ForceSSH  : .ForceHttps
-		let remote = self.remoteRepo(named: remoteRepoName, remoteType: .ForceHttps )
-		
-		return set.with( remote )
-			.flatMap{ $0.with( self.reference(name: localBranchName).flatMap{ $0.asBranch() } ) } // branch
-			.flatMap{ set in Duo(set[Branch.self], set[Remote.self]).push(auth: auth) }
-	}
+    func push(options: PushOptions = PushOptions()) -> Result<(), Error> {
+        let branch = self.HEAD()
+            .flatMap { $0.asBranch() }
+            
+        let remote = branch
+            .flatMap { Duo($0,self).remote() }
+        
+        return combine(branch, remote)
+            .flatMap { b,r in r.push(branchName: b.longName(), options: options) }
+    }
+    
+    func push(remoteName: String, branchName: String, auth: Auth) -> Result<(), Error> {
+        remote(name: remoteName)
+            .flatMap { $0.push(branchName: branchName, options: PushOptions(auth: auth)) }
+    }
 }
 
 // Low Level code
@@ -201,17 +220,6 @@ private extension Branch {
 
 fileprivate extension Remote {
 	///Branch name must be full - with "refs/heads/"
-	func push(branchName: String, options: PushOptions ) -> Result<(), Error> {
-		print("Trying to push ''\(branchName)'' to remote ''\(self.name)'' with URL:''\(self.URL)''")
-		
-		return git_try("git_remote_push") {
-			options.with_git_push_options { push_options in
-				[branchName].with_git_strarray { strarray in
-					git_remote_push(self.pointer, &strarray, &push_options)
-				}
-			}
-		}
-	}
 }
 
 fileprivate extension String {

@@ -31,15 +31,15 @@ public class Remote : InstanceProtocol {
 public extension Remote {	
     /// The name of the remote repo
     var name: String { String(validatingUTF8: git_remote_name(pointer))! }
+    var url : String { String(validatingUTF8: git_remote_url(pointer))! }
+    
     
     /// The URL of the remote repo
     ///
     /// This may be an SSH URL, which isn't representable using `NSURL`.
     
     //TODO:LAME HACK
-    var URL: String {
-        let url = String(validatingUTF8: git_remote_url(pointer))!
-        
+    var URL: String {        
         switch remoteType {
         case .Original:
             return url
@@ -94,6 +94,18 @@ public extension Remote {
         return newUrl.replacingOccurrences(of: ":", with: "/")
     }
     
+    func push(branchName: String, options: PushOptions ) -> Result<(), Error> {
+        print("Trying to push ''\(branchName)'' to remote ''\(self.name)'' with URL:''\(self.URL)''")
+        
+        return git_try("git_remote_push") {
+            options.with_git_push_options { push_options in
+                [branchName].with_git_strarray { strarray in
+                    git_remote_push(self.pointer, &strarray, &push_options)
+                }
+            }
+        }
+    }
+
     func fetch(options: FetchOptions) -> Result<(), Error> {
         return git_try("git_remote_fetch") {
             options.with_git_fetch_options {
