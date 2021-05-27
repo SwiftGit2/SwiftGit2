@@ -10,6 +10,12 @@ import Clibgit2
 
 // SetHEAD and Checkout
 public extension Repository {
+    func checkout(branch name: String, strategy: CheckoutStrategy = .Safe, progress: CheckoutProgressBlock? = nil) -> Result<(), Error> {
+        reference(name: name)
+            .flatMap { $0.asBranch() }
+            .flatMap { self.checkout(branch: $0, strategy: strategy, progress: progress) }
+    }
+    
 	func checkout(branch: Branch, strategy: CheckoutStrategy = .Safe, progress: CheckoutProgressBlock? = nil) -> Result<(), Error> {
 		setHEAD(branch)
 			.flatMap { self.checkoutHead(strategy: strategy, progress: progress) }

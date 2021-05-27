@@ -36,15 +36,36 @@ public extension Repository {
         
         return combine(br_infos, headOID)
             .map { br_infos, headOid in br_infos.filter { $0.oid == headOid } }
+            .map { $0.map { $0.branch.name } }
             .flatMap(  if  : { $0.count == 1 },
                        then: { $0.checkoutFirst(in: self).map { _ in DetachedHeadFix.fixed } },
-                       else: { .success(.ambiguous(branches: $0.map { $0.branch.name })) })
+                       else: { .success(.ambiguous(branches: $0)) })
+    }
+    
+    
+    // possible solution
+    // not in use yet
+    private func resolveAmbiguity(branches: [String]) -> Result<DetachedHeadFix, Error> {
+        // if there are two branches
+        // then checkout NOT master
+        guard branches.count == 2,
+              let masterIdx = branches.masterIdx else { return .success(.ambiguous(branches: branches))}
+        
+        if masterIdx == 0 {
+            return self.checkout(branch: branches[1]).map { .fixed }
+        } else {
+            return self.checkout(branch: branches[0]).map { .fixed }
+        }
     }
 }
 
-private extension Array where Element == Branch_Info {
+private extension Array where Element == String {
+    var masterIdx : Int? {
+        self.firstIndex(of: "refs/heads/master")
+    }
+
     func checkoutFirst(in repo: Repository) -> Result<(), Error> {
-        first.asResult { repo.checkout(branch: $0.branch) }
+        first.asResult { repo.checkout(branch: $0) }
     }
 }
 
