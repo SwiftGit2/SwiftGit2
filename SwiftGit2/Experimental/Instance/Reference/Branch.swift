@@ -119,7 +119,7 @@ public extension Duo where T1 == Branch, T2 == Repository {
 public extension Duo where T1 == Branch, T2 == Remote {
     /// Push local branch changes to remote branch
     func push(auth: Auth = .auto) -> Result<(), Error> {
-        let (branch, remote) = self.value
+        let (branch, remote) = value
         return remote.push(branchName: branch.name, options: PushOptions(auth: auth) )
     }
 }
