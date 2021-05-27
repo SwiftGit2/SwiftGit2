@@ -21,4 +21,21 @@ class MergeAnalysisTests: XCTestCase {
             .assertEqual(to: .upToDate, "merge analysis")
     }
     
+    func testNormal() throws {
+        let info = PublicTestRepo()
+        
+        guard let repo1 = Repository.clone(from: info.urlSsh, to: info.localPath)
+                .assertFailure("clone 1") else { fatalError() }
+        
+        guard let repo2 = Repository.clone(from: info.urlSsh, to: info.localPath2)
+                .assertFailure("clone 2") else { fatalError() }
+        
+        repo2.t_create(file: .fileA, with: .random)
+            .assertFailure("t_create")
+        
+        //repo2.push(remoteRepoName: <#T##String#>, localBranchName: <#T##String#>, auth: <#T##Auth#>)
+        
+        print(repo1, repo2)
+    }
+    
 }
