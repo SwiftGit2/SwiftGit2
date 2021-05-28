@@ -8,6 +8,7 @@
 
 import Foundation
 import Clibgit2
+import Essentials
 
 public extension Repository {
     func merge(our: Commit, their: Commit ) -> Result<Index, Error> {
@@ -42,8 +43,14 @@ public extension Repository {
         var pref = git_merge_preference_t.init(0)
         var their_heads : OpaquePointer? = their_head.pointer
         
-        return _result({ MergeAnalysis(rawValue: anal.rawValue)! }, pointOfFailure: "git_merge_analysis") {
+        return git_try("git_merge_analysis") {
             git_merge_analysis(&anal, &pref, self.pointer, &their_heads, 1)
+        }.flatMap {
+            if let anal = MergeAnalysis(rawValue: anal.rawValue) {
+                return .success(anal)
+            } else {
+                return .failure(WTF("can't crate MergeAnalysis from raw value: \(anal.rawValue)"))
+            }
         }
     }
 }

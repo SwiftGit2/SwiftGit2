@@ -35,7 +35,7 @@ extension Repository : CustomDebugStringConvertible {
         case .success(let url):
             return "Git2.Repository: " + url.path
         case .failure(let error):
-            return "Git2.Repository: ERROR " + error.fullDescription
+            return "Git2.Repository: ERROR " + error.localizedDescription
         }
     }
 }

@@ -35,7 +35,7 @@ extension Result {
             }
         }.onFailure {
             if let topic = topic {
-                print("\(topic) failed with: \($0.fullDescription)")
+                print("\(topic) failed with: \($0.localizedDescription)")
             }
             XCTAssert(false)
         }
@@ -56,7 +56,7 @@ extension Result {
             XCTAssert(false)
         }.onFailure {
             if let topic = topic {
-                print("\(topic) failed with: \($0.fullDescription)")
+                print("\(topic) failed with: \($0.localizedDescription)")
             }
         }
         switch self {
@@ -66,37 +66,37 @@ extension Result {
             return nil
         }
     }
-
-	@discardableResult
-	func assertEqual(to: Success, _ topic: String? = nil) -> Success? where Success: Equatable {
-		self.onSuccess {
-			XCTAssert(to == $0)
-			if let topic = topic {
-				print("\(topic) succeeded with: \($0)")
-			}
-		}.onFailure {
-			if let topic = topic {
-				print("\(topic) failed with: \($0.fullDescription)")
-			}
-			XCTAssert(false)
-		}
-		switch self {
-		case .success(let s):
-			return s
-		default:
-			return nil
-		}
-	}
+    
+    @discardableResult
+    func assertEqual(to: Success, _ topic: String? = nil) -> Success? where Success: Equatable {
+        self.onSuccess {
+            XCTAssert(to == $0)
+            if let topic = topic {
+                print("\(topic) succeeded with: \($0)")
+            }
+        }.onFailure {
+            if let topic = topic {
+                print("\(topic) failed with: \($0.localizedDescription)")
+            }
+            XCTAssert(false)
+        }
+        switch self {
+        case .success(let s):
+            return s
+        default:
+            return nil
+        }
+    }
 }
 
 extension String {
-	func write(to file: URL) -> Result<(),Error> {
-		do {
-			try self.write(toFile: file.path, atomically: true, encoding: .utf8)
-			return .success(())
-		} catch {
-			return .failure(error)
-		}
-	}
+    func write(to file: URL) -> Result<(),Error> {
+        do {
+            try self.write(toFile: file.path, atomically: true, encoding: .utf8)
+            return .success(())
+        } catch {
+            return .failure(error)
+        }
+    }
 }
 
