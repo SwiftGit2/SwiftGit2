@@ -20,6 +20,26 @@ class RepositoryLocalTests: XCTestCase {
             .assertFailure("initial commit")
     }
     
+    func testCreateRepo() {
+        let url = GitTest.localRoot.appendingPathComponent("NewRepo")
+        let README_md = "README.md"
+        url.rm().assertFailure("rm")
+        
+        guard let repo = Repository.create(at: url).assertFailure("Repository.create") else { fatalError() }
+        
+        let file = url.appendingPathComponent(README_md)
+        "# test repository".write(to: file).assertFailure("write file")
+        
+        //if let status = repo.status().assertFailure("status") { XCTAssert(status.count == 1) } else { fatalError() }
+        
+        //repo.reset(paths: )
+        repo.index().flatMap { $0.add(paths: [README_md]) }
+            .assertFailure("index add \(README_md)")
+        
+        repo.commit(message: "initial commit", signature: Signature(name: "name", email: "email@domain.com"))
+            .assertFailure("initial commit")
+    }
+    
     func testDetachedHead() throws {
         let repo_ = GitTest.tmpURL
             .flatMap { Repository.create(at: $0) }
