@@ -27,6 +27,15 @@ public extension Repository {
             }
     }
     
+    func mergeAnalysis() -> Result<MergeAnalysis, Error> {
+        HEAD()
+            .flatMap { $0.asBranch() }
+            .flatMap { $0.upstream() }
+            .flatMap { $0.commitOID }
+            .flatMap { self.annotatedCommit(oid: $0) }
+            .flatMap { self.mergeAnalysis(their_head: $0) }
+    }
+    
     // Analyzes the given branch(es) and determines the opportunities for merging them into the HEAD of the repository.
     func mergeAnalysis(their_head: AnnotatedCommit) -> Result<MergeAnalysis, Error> {
         var anal = git_merge_analysis_t.init(0)
