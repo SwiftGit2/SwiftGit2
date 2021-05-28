@@ -8,7 +8,7 @@ struct GitTest {
     static let prefix = "git_test"
     static var localRoot = URL(fileURLWithPath: "/tmp/\(prefix)", isDirectory: true)
     static var tmpURL 	 : Result<URL, Error> { URL.tmp(.systemUnique, prefix: GitTest.prefix) }
-    static let signature = Signature(name: "name", email: "email@domain.com")
+    static let signature = Signature(name: "XCode Unit Test", email: "email@domain.com")
 }
 
 struct PublicTestRepo {

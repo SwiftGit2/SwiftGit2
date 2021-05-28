@@ -37,7 +37,7 @@ class MergeAnalysisTests: XCTestCase {
             .assertFailure("fetch")
         
         repo1.mergeAnalysis()
-            .assertEqual(to: .upToDate, "merge analysis")
+            .assertEqual(to: [.fastForward, .normal], "merge analysis")
         
         //repo1
         //repo2.push(remoteRepoName: <#T##String#>, localBranchName: <#T##String#>, auth: <#T##Auth#>)
