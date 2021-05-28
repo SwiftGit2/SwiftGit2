@@ -5,22 +5,23 @@ import Essentials
 @testable import SwiftGit2
 
 extension Repository {
-	static func t_randomRepo() -> Result<Repository,Error>  {
-		URL.randomTempDirectory()
-			.flatMap { Repository.create(at: $0) }
-	}
-	
-	func t_commit(file: TestFile = .fileA, with content: TestFileContent = .oneLine1, msg: String) -> Result<Commit,Error> {
-		t_create(file: file, with: content)
-			.flatMap { url in self.index().flatMap { $0.add(paths: [url.path]) } }
-			.flatMap { _ in self.commit(message: msg, signature: GitTest.signature) }
-	}
-	
-	func t_create(file: TestFile, with content: TestFileContent) -> Result<URL, Error> {
-		return self.directoryURL
-			.map { $0.appendingPathComponent(file.rawValue) }
+    static func t_randomRepo() -> Result<Repository,Error>  {
+        URL.randomTempDirectory()
+            .flatMap { Repository.create(at: $0) }
+    }
+    
+    func t_commit(file: TestFile = .fileA, with content: TestFileContent = .oneLine1, msg: String) -> Result<Commit,Error> {
+        t_write(file: file, with: content)
+            .flatMap { file in self.index().flatMap { $0.add(paths: [file]) } }
+            .flatMap { _ in self.commit(message: msg, signature: GitTest.signature) }
+    }
+    
+    func t_write(file: TestFile, with content: TestFileContent) -> Result<String, Error> {
+        return self.directoryURL
+            .map { $0.appendingPathComponent(file.rawValue) }
             .flatMap { $0.write(content: content.get()) }
-	}
+            .map { _ in file.rawValue }
+    }
 }
 
 enum TestFile : String {

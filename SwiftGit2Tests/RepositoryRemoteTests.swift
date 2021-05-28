@@ -10,7 +10,7 @@ import XCTest
 @testable import SwiftGit2
 import Essentials
 
-class RepositoryBasicTests: XCTestCase {
+class RepositoryRemoteTests: XCTestCase {
 
     override func setUpWithError()      throws { }
     override func tearDownWithError()   throws { }
@@ -62,6 +62,26 @@ class RepositoryBasicTests: XCTestCase {
         repo.getRemoteFirst()
             .flatMap { $0.connect(direction: .push, auth: .credentials(.default)) } // should fail
             .assertSuccess("retmote.connect .push")
+    }
+    
+    func testPush() {
+        let info = PublicTestRepo()
+        
+        guard let repo = Repository.clone(from: info.urlSsh, to: info.localPath, options: CloneOptions(fetch: FetchOptions(auth: .auto)))
+                .assertFailure("clone") else { fatalError() }
+        
+        repo.t_commit(file: .fileA, with: .random, msg: "fileA random content")
+            .assertFailure("t_commit")
+        
+        repo.detachHEAD().assertFailure("detachHEAD")
+        
+        repo.push()
+            .assertSuccess("push")
+        
+        repo.detachedHeadFix().assertFailure("detachedHeadFix")
+
+        repo.push()
+            .assertFailure("push")
     }
     
 }

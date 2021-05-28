@@ -43,7 +43,7 @@
 		E6332D07264EA35D004990E7 /* IndexEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6332D06264EA35D004990E7 /* IndexEntry.swift */; };
 		E6332D51264EF48B004990E7 /* Repository+Merge.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6332D50264EF48B004990E7 /* Repository+Merge.swift */; };
 		E6332D7326501055004990E7 /* Repository+Pull.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6332D7226501055004990E7 /* Repository+Pull.swift */; };
-		E6332DCF265167F0004990E7 /* RepositoryBasicTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6332DCE265167F0004990E7 /* RepositoryBasicTests.swift */; };
+		E6332DCF265167F0004990E7 /* RepositoryRemoteTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6332DCE265167F0004990E7 /* RepositoryRemoteTests.swift */; };
 		E6332DD1265167F0004990E7 /* SwiftGit2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BEB31F231A0D6F7A00F525B9 /* SwiftGit2.framework */; };
 		E6332DEF265179C7004990E7 /* Essentials in Frameworks */ = {isa = PBXBuildFile; productRef = E6332DEE265179C7004990E7 /* Essentials */; };
 		E6332DF1265179C7004990E7 /* Essentials in Embed Frameworks */ = {isa = PBXBuildFile; productRef = E6332DEE265179C7004990E7 /* Essentials */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
@@ -155,7 +155,7 @@
 		E6332D50264EF48B004990E7 /* Repository+Merge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Repository+Merge.swift"; sourceTree = "<group>"; };
 		E6332D7226501055004990E7 /* Repository+Pull.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Repository+Pull.swift"; sourceTree = "<group>"; usesTabs = 0; };
 		E6332DCC265167F0004990E7 /* SwiftGit2Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SwiftGit2Tests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		E6332DCE265167F0004990E7 /* RepositoryBasicTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RepositoryBasicTests.swift; sourceTree = "<group>"; usesTabs = 0; };
+		E6332DCE265167F0004990E7 /* RepositoryRemoteTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RepositoryRemoteTests.swift; sourceTree = "<group>"; usesTabs = 0; };
 		E6332DD0265167F0004990E7 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		E6332E072652D20E004990E7 /* GitPayload.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GitPayload.swift; sourceTree = "<group>"; };
 		E6332E0C265302AD004990E7 /* PushOptions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PushOptions.swift; sourceTree = "<group>"; usesTabs = 0; };
@@ -394,7 +394,7 @@
 			children = (
 				E63EDF73265C0A6B00A3D048 /* RepositoryLocalTests.swift */,
 				E63EDF6B265BC0F200A3D048 /* MergeAnalysisTests.swift */,
-				E6332DCE265167F0004990E7 /* RepositoryBasicTests.swift */,
+				E6332DCE265167F0004990E7 /* RepositoryRemoteTests.swift */,
 				E6332DD0265167F0004990E7 /* Info.plist */,
 				E63EDF6D265BC30800A3D048 /* GitTest.swift */,
 				E63EDF6F265BF7FD00A3D048 /* Repository+Test.swift */,
@@ -643,7 +643,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E6332DCF265167F0004990E7 /* RepositoryBasicTests.swift in Sources */,
+				E6332DCF265167F0004990E7 /* RepositoryRemoteTests.swift in Sources */,
 				E63EDF74265C0A6B00A3D048 /* RepositoryLocalTests.swift in Sources */,
 				E63EDF6E265BC30800A3D048 /* GitTest.swift in Sources */,
 				E63EDF6C265BC0F200A3D048 /* MergeAnalysisTests.swift in Sources */,

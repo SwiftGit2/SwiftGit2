@@ -30,8 +30,8 @@ class MergeAnalysisTests: XCTestCase {
         guard let repo2 = Repository.clone(from: info.urlSsh, to: info.localPath2)
                 .assertFailure("clone 2") else { fatalError() }
         
-        repo2.t_create(file: .fileA, with: .random)
-            .assertFailure("t_create")
+        repo2.t_write(file: .fileA, with: .random)
+            .assertFailure("t_write")
         
         //repo2.push(remoteRepoName: <#T##String#>, localBranchName: <#T##String#>, auth: <#T##Auth#>)
         
