@@ -22,6 +22,7 @@ struct PublicTestRepo {
         localPath  = GitTest.localRoot.appendingPathComponent(urlSsh.lastPathComponent).deletingPathExtension()
         localPath2 = GitTest.localRoot.appendingPathComponent(localPath.lastPathComponent + "2")
         localPath.rm().assertFailure()
+        localPath2.rm().assertFailure()
     }
 }
 

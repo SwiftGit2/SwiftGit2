@@ -26,19 +26,6 @@ public extension Remote {
     var name: String { String(validatingUTF8: git_remote_name(pointer))! }
     var url : String { String(validatingUTF8: git_remote_url(pointer))! }
     
-    
-
-    
-
-
-    func fetch(options: FetchOptions) -> Result<(), Error> {
-        return git_try("git_remote_fetch") {
-            options.with_git_fetch_options {
-                git_remote_fetch(pointer, nil, &$0, nil)
-            }
-        }
-    }
-    
     var connected : Bool { git_remote_connected(pointer) == 1 }
     
     func connect(direction: Direction, auth: Auth) -> Result<Remote, Error>  {
