@@ -22,9 +22,11 @@ public class Reference : InstanceProtocol {
 }
 
 public extension Reference {
-    var oid      : OID  { OID(git_reference_target(pointer).pointee) }
-    var isTag    : Bool { git_reference_is_tag(pointer) != 0 }
-    var name     : String { String(validatingUTF8: git_reference_name(pointer)) ?? "" }
+    var oid         : OID  { OID(git_reference_target(pointer).pointee) }
+    var isTag       : Bool { git_reference_is_tag(pointer) != 0 }
+    var name        : String { String(validatingUTF8: git_reference_name(pointer)) ?? "" }
+    var isDirect    : Bool { git_reference_type(pointer) == GIT_REFERENCE_DIRECT }
+    var isSymbolic  : Bool { git_reference_type(pointer) == GIT_REFERENCE_SYMBOLIC }
     
     func asBranch() -> Result<Branch, Error> {
         if isBranch || isRemote {
