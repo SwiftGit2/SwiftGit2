@@ -25,10 +25,13 @@ public protocol Branch: InstanceProtocol {
 }
 
 public extension Branch {
-	var isBranch : Bool { git_reference_is_branch(pointer) != 0 }
-	var isRemote : Bool { git_reference_is_remote(pointer) != 0 }
+    // TODO: move to the Reference
+    var isBranch : Bool { git_reference_is_branch(pointer) != 0 }   // 1 when the reference lives in the refs/heads namespace; 0 otherwise.
+	var isRemote : Bool { git_reference_is_remote(pointer) != 0 }   // 1 when the reference lives in the refs/remotes namespace; 0 otherwise.
 
+    @available(*, deprecated, message: "use 'isBranch' instead")
 	var isLocalBranch	: Bool { self.name.starts(with: "refs/heads/") }
+    @available(*, deprecated, message: "use 'isRemote' instead")
 	var isRemoteBranch	: Bool { self.name.starts(with: "refs/remotes/") }
 }
 
