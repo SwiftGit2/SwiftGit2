@@ -19,12 +19,14 @@ public class Reference : InstanceProtocol {
     deinit {
         git_reference_free(pointer)
     }
+}
+
+public extension Reference {
+    var oid      : OID  { OID(git_reference_target(pointer).pointee) }
+    var isTag    : Bool { git_reference_is_tag(pointer) != 0 }
+    var name     : String { String(validatingUTF8: git_reference_name(pointer)) ?? "" }
     
-    public var oid      : OID  { OID(git_reference_target(pointer).pointee) }
-    public var isTag    : Bool { git_reference_is_tag(pointer) != 0 }
-    public var name     : String { String(validatingUTF8: git_reference_name(pointer)) ?? "" }
-    
-    public func asBranch() -> Result<Branch, Error> {
+    func asBranch() -> Result<Branch, Error> {
         if isBranch || isRemote {
             return .success(self as Branch)
         }
@@ -32,12 +34,13 @@ public class Reference : InstanceProtocol {
     }
     
     @available(*, deprecated, message: "use asBranch() instead")
-    public var asBranch_ : Branch? {
+    var asBranch_ : Branch? {
         if isBranch || isRemote {
             return self as Branch
         }
         return nil
     }
+
 }
 
 public extension Repository {	
