@@ -36,18 +36,21 @@ public extension Repository {
         mergeAnalysis()
             //.flatMap(if: <#T##(MergeAnalysis) -> Bool#>, then: <#T##(MergeAnalysis) -> Result<NewSuccess, Error>#>, else: <#T##(MergeAnalysis) -> Result<NewSuccess, Error>#>)
     }
-}
-
-extension MergeAnalysis {
-    func pull() {
-        if self == .upToDate {
-            return
-        } else if contains(.fastForward) || contains(.unborn) {
-            return
-        } else if contains(.normal) {
-            return
+    
+    func pull(anal: MergeAnalysis, branch: Reference, commit: Commit) -> Result<(), Error>  {
+        
+        if anal == .upToDate {
+            return .success(())
+        } else if anal.contains(.fastForward) || anal.contains(.unborn) {
+            return branch.set(target: commit.oid, message: "Fast-forward merge: REMOTE NAME -> \(branch.name)")
+                .flatMap { $0.asBranch() }
+                .flatMap { self.checkout(branch: $0) }
+            
+        } else if anal.contains(.normal) {
+            return .success(())
         }
         
-        return
+        return .failure(WTF("pull: unexpected MergeAnalysis value: \(anal.rawValue)"))
+        
     }
 }
