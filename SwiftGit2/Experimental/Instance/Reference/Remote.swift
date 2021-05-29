@@ -52,3 +52,20 @@ extension Remote : CustomDebugStringConvertible {
         return "Git2.Remote: \(self.name) - \(self.url)" 
     }
 }
+
+public extension Repository {    
+    func rename(remote: String, to newName: String) -> Result<[String], Error> {
+        var problems = git_strarray()
+        defer {
+            git_strarray_free(&problems)
+        }
+        
+        return git_try("git_remote_rename") {
+            remote.withCString { name in
+                newName.withCString { new_name in
+                    git_remote_rename(&problems, self.pointer, name, new_name)
+                }
+            }
+        }.map { problems.map { $0 } }
+    }
+}
