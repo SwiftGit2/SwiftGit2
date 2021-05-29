@@ -26,19 +26,6 @@ public extension Remote {
     var name: String { String(validatingUTF8: git_remote_name(pointer))! }
     var url : String { String(validatingUTF8: git_remote_url(pointer))! }
     
-    
-
-    
-
-
-    func fetch(options: FetchOptions) -> Result<(), Error> {
-        return git_try("git_remote_fetch") {
-            options.with_git_fetch_options {
-                git_remote_fetch(pointer, nil, &$0, nil)
-            }
-        }
-    }
-    
     var connected : Bool { git_remote_connected(pointer) == 1 }
     
     func connect(direction: Direction, auth: Auth) -> Result<Remote, Error>  {
@@ -63,5 +50,22 @@ public enum Direction : Int32 {
 extension Remote : CustomDebugStringConvertible {
     public var debugDescription: String {
         return "Git2.Remote: \(self.name) - \(self.url)" 
+    }
+}
+
+public extension Repository {    
+    func rename(remote: String, to newName: String) -> Result<[String], Error> {
+        var problems = git_strarray()
+        defer {
+            git_strarray_free(&problems)
+        }
+        
+        return git_try("git_remote_rename") {
+            remote.withCString { name in
+                newName.withCString { new_name in
+                    git_remote_rename(&problems, self.pointer, name, new_name)
+                }
+            }
+        }.map { problems.map { $0 } }
     }
 }

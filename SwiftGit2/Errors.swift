@@ -1,50 +1,37 @@
 import Foundation
 import Clibgit2
 
-
-public extension Error {
-	var fullDescription: String {
-		if let reason = (self as NSError).userInfo[NSLocalizedFailureReasonErrorKey]  {
-			return "\(localizedDescription) - \(reason)"
-		} else {
-			return localizedDescription
-		}
-	}
-}
-
-public let libGit2ErrorDomain = "org.libgit2.libgit2"
-
 internal extension NSError {
-	/// Returns an NSError with an error domain and message for libgit2 errors.
-	///
-	/// :param: errorCode An error code returned by a libgit2 function.
-	/// :param: libGit2PointOfFailure The name of the libgit2 function that produced the
-	///         error code.
-	/// :returns: An NSError with a libgit2 error domain, code, and message.
-	convenience init(gitError errorCode: Int32, pointOfFailure: String? = nil) {
-		let code = Int(errorCode)
-		var userInfo: [String: String] = [:]
-
-		var domain = "lib."
-		if let pointOfFailure = pointOfFailure {
-			userInfo[NSLocalizedFailureReasonErrorKey] = "\(pointOfFailure) failed."
-			domain += "\(pointOfFailure) failed: "
-		}
-		
-		
-		if let message = errorMessage(errorCode) {
-			userInfo[NSLocalizedDescriptionKey] = message
-			domain += message
-		} else {
-			userInfo[NSLocalizedDescriptionKey] = "Unknown libgit2 error."
-			domain += "unknown"
-		}
-
-		
-
-		
-		self.init(domain: domain, code: code, userInfo: userInfo)
-	}
+    /// Returns an NSError with an error domain and message for libgit2 errors.
+    ///
+    /// :param: errorCode An error code returned by a libgit2 function.
+    /// :param: libGit2PointOfFailure The name of the libgit2 function that produced the
+    ///         error code.
+    /// :returns: An NSError with a libgit2 error domain, code, and message.
+    convenience init(gitError errorCode: Int32, pointOfFailure: String? = nil) {
+        let code = Int(errorCode)
+        var userInfo: [String: String] = [:]
+        
+        var domain = "lib."
+        if let pointOfFailure = pointOfFailure {
+            userInfo[NSLocalizedFailureReasonErrorKey] = "\(pointOfFailure) failed."
+            domain += "\(pointOfFailure) failed: "
+        }
+        
+        
+        if let message = errorMessage(errorCode) {
+            userInfo[NSLocalizedDescriptionKey] = message + "(\(pointOfFailure ?? "")"
+            domain += message
+        } else {
+            userInfo[NSLocalizedDescriptionKey] = "Unknown libgit2 error."
+            domain += "unknown"
+        }
+        
+        
+        
+        
+        self.init(domain: domain, code: code, userInfo: userInfo)
+    }
 }
 
 /// Returns the libgit2 error message for the given error code.
@@ -58,12 +45,12 @@ internal extension NSError {
 ///           corresponding string representation of that error. Otherwise, it returns
 ///           nil.
 private func errorMessage(_ errorCode: Int32) -> String? {
-	let last = giterr_last()
-	if let lastErrorPointer = last {
-		return String(validatingUTF8: lastErrorPointer.pointee.message)
-	} else if Int32(errorCode) == GIT_ERROR_OS.rawValue {
-		return String(validatingUTF8: strerror(errno))
-	} else {
-		return nil
-	}
+    let last = giterr_last()
+    if let lastErrorPointer = last {
+        return String(validatingUTF8: lastErrorPointer.pointee.message)
+    } else if Int32(errorCode) == GIT_ERROR_OS.rawValue {
+        return String(validatingUTF8: strerror(errno))
+    } else {
+        return nil
+    }
 }
