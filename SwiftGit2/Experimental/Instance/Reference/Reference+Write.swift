@@ -1,10 +1,3 @@
-//
-//  Reference+Write.swift
-//  SwiftGit2-OSX
-//
-//  Created by loki on 09.08.2020.
-//  Copyright © 2020 GitHub, Inc. All rights reserved.
-//
 
 import Clibgit2
 import Essentials
