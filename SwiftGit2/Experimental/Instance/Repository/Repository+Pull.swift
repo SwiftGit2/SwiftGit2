@@ -41,13 +41,17 @@ public extension Repository {
         
         if anal == .upToDate {
             return .success(())
+            
         } else if anal.contains(.fastForward) || anal.contains(.unborn) {
-            return branch.set(target: commit.oid, message: "Fast-forward merge: REMOTE NAME -> \(branch.name)")
+            
+            return branch
+                .set(target: commit.oid, message: "Fast-forward merge: REMOTE NAME -> \(branch.name)")
                 .flatMap { $0.asBranch() }
                 .flatMap { self.checkout(branch: $0) }
             
         } else if anal.contains(.normal) {
-            return .success(())
+            
+            return .failure(WTF("three way merge didn't implemented"))
         }
         
         return .failure(WTF("pull: unexpected MergeAnalysis value: \(anal.rawValue)"))
