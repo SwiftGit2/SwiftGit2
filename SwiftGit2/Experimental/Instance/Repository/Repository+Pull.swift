@@ -33,12 +33,21 @@ public extension Repository {
     }
     
     func pull(auth: Auth) {
-        //let branchUpstream = branch
-        //	.flatMap { $0.upstream() }
+        mergeAnalysis()
+            //.flatMap(if: <#T##(MergeAnalysis) -> Bool#>, then: <#T##(MergeAnalysis) -> Result<NewSuccess, Error>#>, else: <#T##(MergeAnalysis) -> Result<NewSuccess, Error>#>)
+    }
+}
+
+extension MergeAnalysis {
+    func pull() {
+        if self == .upToDate {
+            return
+        } else if contains(.fastForward) || contains(.unborn) {
+            return
+        } else if contains(.normal) {
+            return
+        }
         
-        // 1. fetch remote
-        // 2.
-        currentRemote()
-            .flatMap { $0.fetch(options: FetchOptions(auth: auth)) }
+        return
     }
 }
