@@ -14,25 +14,25 @@ import Essentials
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 public enum BranchLocation {
-	case local
-	case remote
+    case local
+    case remote
 }
 
 public protocol Branch: InstanceProtocol {
-	var shortName	: String	{ get }
-	var name		: String	{ get }
-	var commitOID	: Result<OID, Error> { get }
+    var shortName	: String	{ get }
+    var name		: String	{ get }
+    var commitOID	: Result<OID, Error> { get }
 }
 
 public extension Branch {
     // TODO: move to the Reference
     var isBranch : Bool { git_reference_is_branch(pointer) != 0 }   // 1 when the reference lives in the refs/heads namespace; 0 otherwise.
-	var isRemote : Bool { git_reference_is_remote(pointer) != 0 }   // 1 when the reference lives in the refs/remotes namespace; 0 otherwise.
-
+    var isRemote : Bool { git_reference_is_remote(pointer) != 0 }   // 1 when the reference lives in the refs/remotes namespace; 0 otherwise.
+    
     @available(*, deprecated, message: "use 'isBranch' instead")
-	var isLocalBranch	: Bool { self.name.starts(with: "refs/heads/") }
+    var isLocalBranch	: Bool { self.name.starts(with: "refs/heads/") }
     @available(*, deprecated, message: "use 'isRemote' instead")
-	var isRemoteBranch	: Bool { self.name.starts(with: "refs/remotes/") }
+    var isRemoteBranch	: Bool { self.name.starts(with: "refs/remotes/") }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -40,82 +40,82 @@ public extension Branch {
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 extension Reference : Branch {}
-	
+
 extension Branch {
-	public var shortName 	: String 	{ ( try? nameInternal().get() ) ?? "" }
-	public var commitOID	: Result<OID, Error> { commitOid() }
+    public var shortName 	: String 	{ ( try? nameInternal().get() ) ?? "" }
+    public var commitOID	: Result<OID, Error> { commitOid() }
 }
 
 public extension Branch {
-	/// can be called only for local branch;
-	///
-	/// newName looks like "BrowserGridItemView" BUT NOT LIKE "refs/heads/BrowserGridItemView"
-	func setUpstreamName(newName: String) -> Result<Branch, Error> {
-		let cleanedName = newName.replace(of: "refs/heads/", to: "")
-		
-		return _result({ self }, pointOfFailure: "git_branch_set_upstream" ) {
-			cleanedName.withCString { newBrName in
-				git_branch_set_upstream(self.pointer, newBrName);
-			}
-		}
-	}
-	
-	/// can be called only for local branch;
-	func upstreamName(clean: Bool = false) -> Result<String, Error> {
-		if clean {
-			return upstream().map{ $0.name.replace(of: "refs/remotes/", to: "") }
-		}
-		
-		return upstream().map{ $0.name }
-	}
-	
-	/// Can be used only on local branch
-	func upstream() -> Result<Branch, Error> {
-		var resolved: OpaquePointer? = nil
-		
-		return git_try("git_branch_upstream") { git_branch_upstream(&resolved, self.pointer) }
-			.flatMap { Reference(resolved!).asBranch() }
-	}
+    /// can be called only for local branch;
+    ///
+    /// newName looks like "BrowserGridItemView" BUT NOT LIKE "refs/heads/BrowserGridItemView"
+    func setUpstreamName(newName: String) -> Result<Branch, Error> {
+        let cleanedName = newName.replace(of: "refs/heads/", to: "")
+        
+        return _result({ self }, pointOfFailure: "git_branch_set_upstream" ) {
+            cleanedName.withCString { newBrName in
+                git_branch_set_upstream(self.pointer, newBrName);
+            }
+        }
+    }
     
-	/// can be called only for local branch;
-	///
-	/// newNameWithPath MUST BE WITH "refs/heads/"
-	/// Will reset assigned upstream Name
-	func setLocalName(newNameWithPath: String) -> Result<Branch, Error> {
-		guard   newNameWithPath.contains("refs/heads/")
-		else { return .failure(BranchError.NameIsNotLocal as Error) }
-		
+    /// can be called only for local branch;
+    func upstreamName(clean: Bool = false) -> Result<String, Error> {
+        if clean {
+            return upstream().map{ $0.name.replace(of: "refs/remotes/", to: "") }
+        }
+        
+        return upstream().map{ $0.name }
+    }
+    
+    /// Can be used only on local branch
+    func upstream() -> Result<Branch, Error> {
+        var resolved: OpaquePointer? = nil
+        
+        return git_try("git_branch_upstream") { git_branch_upstream(&resolved, self.pointer) }
+            .flatMap { Reference(resolved!).asBranch() }
+    }
+    
+    /// can be called only for local branch;
+    ///
+    /// newNameWithPath MUST BE WITH "refs/heads/"
+    /// Will reset assigned upstream Name
+    func setLocalName(newNameWithPath: String) -> Result<Branch, Error> {
+        guard   newNameWithPath.contains("refs/heads/")
+        else { return .failure(BranchError.NameIsNotLocal as Error) }
+        
         return (self as! Reference).rename(.full(newNameWithPath)).flatMap { $0.asBranch() }
-	}
+    }
 }
 
 public extension Duo where T1 == Branch, T2 == Repository {
-	func commit() -> Result<Commit, Error> {
-		let (branch, repo) = value
-		return branch.commitOID.flatMap { repo.instanciate($0) }
-	}
-
-	fileprivate func remoteName() -> Result<String, Error> {
-		let (branch, repo) = self.value
-		var buf = git_buf(ptr: nil, asize: 0, size: 0)
-		
-		return git_try("git_branch_upstream_remote") {
-			return branch.name.withCString { branchName in
-				git_branch_upstream_remote(&buf, repo.pointer, branchName);
-			}
-		}.flatMap { Buffer(buf: buf).asString() }
-	}
-	
-	///Gets REMOTE item from local branch. Doesn't works with remote branch
-	func remote() -> Result<Remote, Error> {
-		let (_, repo) = self.value
-		
-		return remoteName()
-			.flatMap { remoteName in
-				repo.remoteRepo(named: remoteName)
-			}
-		
-	}
+    func commit() -> Result<Commit, Error> {
+        let (branch, repo) = value
+        return branch.commitOID.flatMap { repo.instanciate($0) }
+    }
+    
+    fileprivate func remoteName() -> Result<String, Error> {
+        let (branch, repo) = self.value
+        var buf = git_buf(ptr: nil, asize: 0, size: 0)
+        
+        return git_try("git_branch_upstream_remote") {
+            return branch.name.withCString { branchName in
+                git_branch_upstream_remote(&buf, repo.pointer, branchName);
+            }
+        }.flatMap { Buffer(buf: buf).asString() }
+    }
+    
+    ///Gets REMOTE item from local branch. Doesn't works with remote branch
+    func remote() -> Result<Remote, Error> {
+        let (_, repo) = self.value
+        
+        return remoteName()
+            .flatMap { remoteName in
+                repo.remoteRepo(named: remoteName)
+            }
+        
+    }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -127,66 +127,66 @@ public extension Duo where T1 == Branch, T2 == Repository {
 
 // Low Level code
 public extension Repository {
-	func branches( _ location: BranchLocation) -> Result<[Branch], Error> {		
-		switch location {
-		case .local:
-			return references(withPrefix: "refs/heads/")
-				.flatMap { $0.flatMap { $0.asBranch() } }
-			
-		case .remote:
-			return references(withPrefix: "refs/remotes/")
-				.flatMap { $0.flatMap { $0.asBranch() } }
-		}
-	}
-	
-	/// Get upstream name by branchName
-	func upstreamName(branchName: String) -> Result<String, Error> {
-		var buf = git_buf(ptr: nil, asize: 0, size: 0)
-		
-		return  _result({Buffer(buf: buf)}, pointOfFailure: "" ) {
-			branchName.withCString { refname in
-				git_branch_upstream_name(&buf, self.pointer, refname)
-			}
-		}
-		.flatMap { $0.asString() }
-	}
+    func branches( _ location: BranchLocation) -> Result<[Branch], Error> {
+        switch location {
+        case .local:
+            return references(withPrefix: "refs/heads/")
+                .flatMap { $0.flatMap { $0.asBranch() } }
+            
+        case .remote:
+            return references(withPrefix: "refs/remotes/")
+                .flatMap { $0.flatMap { $0.asBranch() } }
+        }
+    }
+    
+    /// Get upstream name by branchName
+    func upstreamName(branchName: String) -> Result<String, Error> {
+        var buf = git_buf(ptr: nil, asize: 0, size: 0)
+        
+        return  _result({Buffer(buf: buf)}, pointOfFailure: "" ) {
+            branchName.withCString { refname in
+                git_branch_upstream_name(&buf, self.pointer, refname)
+            }
+        }
+        .flatMap { $0.asString() }
+    }
 }
 
 private extension Branch {
-	private func nameInternal() -> Result<String, Error> {
-		var namePointer: UnsafePointer<Int8>? = nil
-		
-		return _result( { String(validatingUTF8: namePointer!) ?? "" }, pointOfFailure: "git_branch_name") {
-			git_branch_name(&namePointer, pointer)
-		}
-	}
-	
-
-	
-	func commitOid() -> Result<OID, Error> {
-		if git_reference_type(pointer).rawValue == GIT_REFERENCE_SYMBOLIC.rawValue {
-			var resolved: OpaquePointer? = nil
-			defer {
-				git_reference_free(resolved)
-			}
-			
-			return _result( { resolved }, pointOfFailure: "git_reference_resolve") {
-				git_reference_resolve(&resolved, self.pointer)
-			}.map { OID(git_reference_target($0).pointee) }
-		} else {
-			return .success( OID(git_reference_target(pointer).pointee) )
-		}
-	}
+    private func nameInternal() -> Result<String, Error> {
+        var namePointer: UnsafePointer<Int8>? = nil
+        
+        return _result( { String(validatingUTF8: namePointer!) ?? "" }, pointOfFailure: "git_branch_name") {
+            git_branch_name(&namePointer, pointer)
+        }
+    }
+    
+    
+    
+    func commitOid() -> Result<OID, Error> {
+        if git_reference_type(pointer).rawValue == GIT_REFERENCE_SYMBOLIC.rawValue {
+            var resolved: OpaquePointer? = nil
+            defer {
+                git_reference_free(resolved)
+            }
+            
+            return _result( { resolved }, pointOfFailure: "git_reference_resolve") {
+                git_reference_resolve(&resolved, self.pointer)
+            }.map { OID(git_reference_target($0).pointee) }
+        } else {
+            return .success( OID(git_reference_target(pointer).pointee) )
+        }
+    }
 }
 
 fileprivate extension Remote {
-	///Branch name must be full - with "refs/heads/"
+    ///Branch name must be full - with "refs/heads/"
 }
 
 fileprivate extension String {
-	func replace(of: String, to: String) -> String {
-		return self.replacingOccurrences(of: of, with: to, options: .regularExpression, range: nil)
-	}
+    func replace(of: String, to: String) -> String {
+        return self.replacingOccurrences(of: of, with: to, options: .regularExpression, range: nil)
+    }
 }
 
 ////////////////////////////////////////////////////////////////////
@@ -194,31 +194,31 @@ fileprivate extension String {
 ////////////////////////////////////////////////////////////////////
 
 enum BranchError: Error {
-	//case BranchNameIncorrectFormat
-	case NameIsNotLocal
-	//case NameMustNotContainsRefsRemotes
+    //case BranchNameIncorrectFormat
+    case NameIsNotLocal
+    //case NameMustNotContainsRefsRemotes
 }
 
 extension BranchError: LocalizedError {
-  public var errorDescription: String? {
-	switch self {
-//	case .BranchNameIncorrectFormat:
-//	  return "Name must include 'refs' or 'home' block"
-	case .NameIsNotLocal:
-	  return "Name must be Local. It must have include 'refs/heads/'"
-//	case .NameMustNotContainsRefsRemotes:
-//	  return "Name must be Remote. But it must not contain 'refs/remotes/'"
-	}
-  }
+    public var errorDescription: String? {
+        switch self {
+        //	case .BranchNameIncorrectFormat:
+        //	  return "Name must include 'refs' or 'home' block"
+        case .NameIsNotLocal:
+            return "Name must be Local. It must have include 'refs/heads/'"
+        //	case .NameMustNotContainsRefsRemotes:
+        //	  return "Name must be Remote. But it must not contain 'refs/remotes/'"
+        }
+    }
 }
 
 extension Credentials {
-	func isSsh() -> Bool {
-		switch self {
-		case .ssh(_,_,_):
-			return true
-			default:
-			return false
-		}
-	}
+    func isSsh() -> Bool {
+        switch self {
+        case .ssh(_,_,_):
+            return true
+        default:
+            return false
+        }
+    }
 }
