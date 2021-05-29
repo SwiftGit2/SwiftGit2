@@ -7,6 +7,7 @@
 //
 
 import Clibgit2
+import Essentials
 
 public class Reference : InstanceProtocol {
     public var pointer: OpaquePointer
@@ -27,11 +28,10 @@ public class Reference : InstanceProtocol {
         if isBranch || isRemote {
             return .success(self as Branch)
         }
-        
-        
-        return Result.failure(NSError(gitError: 0, pointOfFailure: "asBranch"))
+        return .failure(WTF("asBranch() failed for \(name)"))
     }
     
+    @available(*, deprecated, message: "use asBranch() instead")
     public var asBranch_ : Branch? {
         if isBranch || isRemote {
             return self as Branch
