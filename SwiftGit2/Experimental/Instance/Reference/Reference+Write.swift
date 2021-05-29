@@ -15,19 +15,14 @@ public enum ReferenceName {
     case remote(String)
 }
 
-public extension Reference {
-    func rename(_ newName: String, force: Bool = false) -> Result<Reference,Error> {
-        var pointer: OpaquePointer? = nil
-        
-        return commitOID.flatMap { oid in
-            let logMsg = "Reference.rename: [OID: \(oid)] \(self.name) -> \(newName)"
-            
-            return git_try("git_reference_rename") {
-                git_reference_rename(&pointer, self.pointer, newName, force ? 1 : 0, logMsg)
-            }
-        }.map { Reference(pointer!) }
+public extension Repository {
+    func rename(reference: String, to newName: ReferenceName) -> Result<Reference, Error> {
+        return self.reference(name: reference)
+            .flatMap { $0.rename( newName) }
     }
-    
+}
+
+public extension Reference {
     func rename( _ name: ReferenceName, force: Bool = false) -> Result<Reference,Error> {
         switch name {
         case let .full(name):
@@ -51,6 +46,18 @@ public extension Reference {
             }
         }
     }
+    
+    private func rename(_ newName: String, force: Bool = false) -> Result<Reference,Error> {
+        var pointer: OpaquePointer? = nil
+        
+        return commitOID.flatMap { oid in
+            let logMsg = "Reference.rename: [OID: \(oid)] \(self.name) -> \(newName)"
+            
+            return git_try("git_reference_rename") {
+                git_reference_rename(&pointer, self.pointer, newName, force ? 1 : 0, logMsg)
+            }
+        }.map { Reference(pointer!) }
+    }
 }
 
 public extension Branch {
@@ -58,12 +65,5 @@ public extension Branch {
         return git_try("git_branch_delete") {
             git_branch_delete(self.pointer)
         }
-    }
-}
-
-public extension Repository {
-    func rename(reference: String, to newName: String) -> Result<Reference, Error> {
-        return self.reference(name: reference)
-            .flatMap { $0.rename( newName) }
     }
 }

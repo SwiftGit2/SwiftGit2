@@ -85,7 +85,7 @@ public extension Branch {
 		guard   newNameWithPath.contains("refs/heads/")
 		else { return .failure(BranchError.NameIsNotLocal as Error) }
 		
-		return (self as! Reference).rename(newNameWithPath).flatMap { $0.asBranch() }
+        return (self as! Reference).rename(.full(newNameWithPath)).flatMap { $0.asBranch() }
 	}
 }
 
