@@ -22,17 +22,8 @@ public protocol Branch: InstanceProtocol {
     var shortName	: String	{ get }
     var name		: String	{ get }
     var targetOID   : Result<OID, Error> { get }
-}
-
-public extension Branch {
-    // TODO: move to the Reference
-    var isBranch : Bool { git_reference_is_branch(pointer) != 0 }   // 1 when the reference lives in the refs/heads namespace; 0 otherwise.
-    var isRemote : Bool { git_reference_is_remote(pointer) != 0 }   // 1 when the reference lives in the refs/remotes namespace; 0 otherwise.
-    
-    @available(*, deprecated, message: "use 'isBranch' instead")
-    var isLocalBranch	: Bool { self.name.starts(with: "refs/heads/") }
-    @available(*, deprecated, message: "use 'isRemote' instead")
-    var isRemoteBranch	: Bool { self.name.starts(with: "refs/remotes/") }
+    var isBranch    : Bool      { get }
+    var isRemote    : Bool      { get }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -41,7 +32,6 @@ public extension Branch {
 
 extension Branch {
     public var shortName 	: String 	{ ( try? nameInternal().get() ) ?? "" }
-    //public var commitOID	: Result<OID, Error> { commitOid() }
 }
 
 public extension Branch {
