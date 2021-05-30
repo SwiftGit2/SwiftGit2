@@ -32,20 +32,29 @@ public extension Repository {
             .flatMap { self.commit(oid: $0) }
     }
     
-    func pull(auth: Auth) {
-        mergeAnalysis()
-            //.flatMap(if: <#T##(MergeAnalysis) -> Bool#>, then: <#T##(MergeAnalysis) -> Result<NewSuccess, Error>#>, else: <#T##(MergeAnalysis) -> Result<NewSuccess, Error>#>)
+    func pull(auth: Auth) -> Result<(), Error> {
+        let branch = self.HEAD()
+            .flatMap { $0.asBranch() }
+        
+        return combine(mergeAnalysis(), branch)
+            .flatMap { anal, branch in self.pull(anal: anal, ourLocal: branch)}
     }
     
-    func pull(anal: MergeAnalysis, branch: Reference, commit: Commit) -> Result<(), Error>  {
+    func pull(anal: MergeAnalysis, ourLocal: Branch) -> Result<(), Error>  {
         
         if anal == .upToDate {
-            return .success(())
             
+            return .success(())
         } else if anal.contains(.fastForward) || anal.contains(.unborn) {
             
-            return branch
-                .set(target: commit.oid, message: "Fast-forward merge: REMOTE NAME -> \(branch.nameAsReference)")
+            let theirReference = ourLocal
+                .upstream()
+            
+            let targetOID = theirReference
+                .flatMap { $0.targetOID }
+            
+            return combine(theirReference, targetOID)
+                .flatMap { their, oid in ourLocal.set(target: oid, message: "Fast Forward MERGE \(their.nameAsReference) -> \(ourLocal.nameAsReference)") }
                 .flatMap { $0.asBranch() }
                 .flatMap { self.checkout(branch: $0) }
             
