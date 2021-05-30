@@ -20,7 +20,7 @@ public extension Repository {
     func localCommit() -> Result<Commit, Error> {
         self.HEAD()
             .flatMap { $0.asBranch() }
-            .flatMap { $0.commitOID }
+            .flatMap { $0.targetOID }
             .flatMap { self.instanciate($0) }
     }
     
@@ -28,8 +28,8 @@ public extension Repository {
         self.HEAD()
             .flatMap { $0.asBranch() }
             .flatMap { $0.upstream() }
-            .flatMap { $0.commitOID }
-            .flatMap { self.instanciate($0) }
+            .flatMap { $0.targetOID }
+            .flatMap { self.commit(oid: $0) }
     }
     
     func pull(auth: Auth) {

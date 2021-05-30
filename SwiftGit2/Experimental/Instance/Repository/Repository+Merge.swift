@@ -32,7 +32,7 @@ public extension Repository {
         HEAD()
             .flatMap { $0.asBranch() }
             .flatMap { $0.upstream() }
-            .flatMap { $0.commitOID }
+            .flatMap { $0.targetOID }
             .flatMap { self.annotatedCommit(oid: $0) }
             .flatMap { self.mergeAnalysis(their_head: $0) }
     }

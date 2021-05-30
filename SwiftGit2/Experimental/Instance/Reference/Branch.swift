@@ -21,7 +21,7 @@ public enum BranchLocation {
 public protocol Branch: InstanceProtocol {
     var shortName	: String	{ get }
     var name		: String	{ get }
-    var commitOID	: Result<OID, Error> { get }
+    var targetOID   : Result<OID, Error> { get }
 }
 
 public extension Branch {
@@ -39,11 +39,9 @@ public extension Branch {
 /// Reference
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-extension Reference : Branch {}
-
 extension Branch {
     public var shortName 	: String 	{ ( try? nameInternal().get() ) ?? "" }
-    public var commitOID	: Result<OID, Error> { commitOid() }
+    //public var commitOID	: Result<OID, Error> { commitOid() }
 }
 
 public extension Branch {
@@ -92,7 +90,7 @@ public extension Branch {
 public extension Duo where T1 == Branch, T2 == Repository {
     func commit() -> Result<Commit, Error> {
         let (branch, repo) = value
-        return branch.commitOID.flatMap { repo.instanciate($0) }
+        return branch.targetOID.flatMap { repo.instanciate($0) }
     }
     
     fileprivate func remoteName() -> Result<String, Error> {
@@ -163,20 +161,20 @@ private extension Branch {
     
     
     
-    func commitOid() -> Result<OID, Error> {
-        if git_reference_type(pointer).rawValue == GIT_REFERENCE_SYMBOLIC.rawValue {
-            var resolved: OpaquePointer? = nil
-            defer {
-                git_reference_free(resolved)
-            }
-            
-            return _result( { resolved }, pointOfFailure: "git_reference_resolve") {
-                git_reference_resolve(&resolved, self.pointer)
-            }.map { OID(git_reference_target($0).pointee) }
-        } else {
-            return .success( OID(git_reference_target(pointer).pointee) )
-        }
-    }
+//    func commitOid() -> Result<OID, Error> {
+//        if git_reference_type(pointer).rawValue == GIT_REFERENCE_SYMBOLIC.rawValue {
+//            var resolved: OpaquePointer? = nil
+//            defer {
+//                git_reference_free(resolved)
+//            }
+//
+//            return _result( { resolved }, pointOfFailure: "git_reference_resolve") {
+//                git_reference_resolve(&resolved, self.pointer)
+//            }.map { OID(git_reference_target($0).pointee) }
+//        } else {
+//            return .success( OID(git_reference_target(pointer).pointee) )
+//        }
+//    }
 }
 
 fileprivate extension Remote {

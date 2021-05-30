@@ -29,7 +29,7 @@ public extension Repository {
         }
         
         let headOID = HEAD()
-            .flatMap{ $0.commitOID }
+            .flatMap{ $0.targetOID }
         
         let br_infos = branches(.local)
             .flatMap { $0.flatMap { Branch_Info.create(from: $0) } }
@@ -74,7 +74,7 @@ private struct Branch_Info {
     let oid : OID
     
     static func create(from branch: Branch) -> Result<Branch_Info,Error> {
-        branch.commitOID
+        branch.targetOID
             .map { Branch_Info(branch: branch, oid: $0) }
     }
 }
