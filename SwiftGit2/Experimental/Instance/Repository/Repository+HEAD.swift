@@ -29,14 +29,14 @@ public extension Repository {
         }
         
         let headOID = HEAD()
-            .flatMap{ $0.commitOID }
+            .flatMap{ $0.targetOID }
         
         let br_infos = branches(.local)
             .flatMap { $0.flatMap { Branch_Info.create(from: $0) } }
         
         return combine(br_infos, headOID)
             .map { br_infos, headOid in br_infos.filter { $0.oid == headOid } }
-            .map { $0.map { $0.branch.name } }
+            .map { $0.map { $0.branch.nameAsReference } }
             .flatMap(  if  : { $0.count == 1 },
                        then: { $0.checkoutFirst(in: self).map { _ in DetachedHeadFix.fixed } },
                        else: { .success(.ambiguous(branches: $0)) })
@@ -74,7 +74,7 @@ private struct Branch_Info {
     let oid : OID
     
     static func create(from branch: Branch) -> Result<Branch_Info,Error> {
-        branch.commitOID
+        branch.targetOID
             .map { Branch_Info(branch: branch, oid: $0) }
     }
 }

@@ -25,17 +25,17 @@ public extension Reference {
             if isBranch {
                 return rename("refs/heads/\(name)", force: force)
             } else {
-                return .failure(WTF("can't rename reference in 'refs/heads' namespace: \(self.name)"))
+                return .failure(WTF("can't rename reference in 'refs/heads' namespace: \(self.nameAsReference)"))
             }
             
         case let .remote(name):
-            let sections = self.name.split(separator: "/")
+            let sections = self.nameAsReference.split(separator: "/")
             
             if isRemote && sections.count >= 3 {
                 let origin = sections[2]
                 return rename("refs/remotes/\(origin)/\(name)", force: force)
             } else {
-                return .failure(WTF("can't rename reference in 'refs/remotes' namespace: \(self.name)"))
+                return .failure(WTF("can't rename reference in 'refs/remotes' namespace: \(self.nameAsReference)"))
             }
         }
     }
@@ -43,8 +43,8 @@ public extension Reference {
     private func rename(_ newName: String, force: Bool = false) -> Result<Reference,Error> {
         var pointer: OpaquePointer? = nil
         
-        return commitOID.flatMap { oid in
-            let logMsg = "Reference.rename: [OID: \(oid)] \(self.name) -> \(newName)"
+        return targetOID.flatMap { oid in
+            let logMsg = "Reference.rename: [OID: \(oid)] \(self.nameAsReference) -> \(newName)"
             
             return git_try("git_reference_rename") {
                 git_reference_rename(&pointer, self.pointer, newName, force ? 1 : 0, logMsg)
@@ -53,7 +53,7 @@ public extension Reference {
     }
     
     func set(target: OID, message: String) -> Result<Reference,Error> {
-        guard isDirect else { return .failure(WTF("can't set target OID for symbolic reference: \(name)"))}
+        guard isDirect else { return .failure(WTF("can't set target OID for symbolic reference: \(nameAsReference)"))}
         
         var pointer: OpaquePointer? = nil
         var oid : git_oid = target.oid
@@ -64,7 +64,7 @@ public extension Reference {
     }
     
     func set(target: String, message: String) -> Result<Reference,Error> {
-        guard isSymbolic else { return .failure(WTF("can't set target string for direct reference: \(name)"))}
+        guard isSymbolic else { return .failure(WTF("can't set target string for direct reference: \(nameAsReference)"))}
         
         var pointer: OpaquePointer? = nil
         

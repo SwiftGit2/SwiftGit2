@@ -162,18 +162,18 @@ public extension Repository {
 
 // index
 public extension Repository {
-	func reset(paths: [String]) -> Result<(), Error> {
-		
-		return paths.with_git_strarray { strarray in
-			return HEAD()
-				.flatMap { self.instanciate($0.oid) as Result<Commit, Error> }
-				.flatMap { commit in
-					_result((), pointOfFailure: "git_reset_default") {
-						git_reset_default(self.pointer, commit.pointer, &strarray)
-					}
-			}
-		}
-	}
+    func reset(paths: [String]) -> Result<(), Error> {
+        return HEAD()
+            .flatMap { $0.targetOID }
+            .flatMap { self.commit(oid: $0) }
+            .flatMap { commit in
+                git_try("git_reset_default") {
+                    paths.with_git_strarray { strarray in
+                        git_reset_default(self.pointer, commit.pointer, &strarray)
+                    }
+                }
+            }
+    }
 }
 
 //Remote

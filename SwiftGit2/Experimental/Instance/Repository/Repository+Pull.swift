@@ -20,7 +20,7 @@ public extension Repository {
     func localCommit() -> Result<Commit, Error> {
         self.HEAD()
             .flatMap { $0.asBranch() }
-            .flatMap { $0.commitOID }
+            .flatMap { $0.targetOID }
             .flatMap { self.instanciate($0) }
     }
     
@@ -28,17 +28,33 @@ public extension Repository {
         self.HEAD()
             .flatMap { $0.asBranch() }
             .flatMap { $0.upstream() }
-            .flatMap { $0.commitOID }
-            .flatMap { self.instanciate($0) }
+            .flatMap { $0.targetOID }
+            .flatMap { self.commit(oid: $0) }
     }
     
     func pull(auth: Auth) {
-        //let branchUpstream = branch
-        //	.flatMap { $0.upstream() }
+        mergeAnalysis()
+            //.flatMap(if: <#T##(MergeAnalysis) -> Bool#>, then: <#T##(MergeAnalysis) -> Result<NewSuccess, Error>#>, else: <#T##(MergeAnalysis) -> Result<NewSuccess, Error>#>)
+    }
+    
+    func pull(anal: MergeAnalysis, branch: Reference, commit: Commit) -> Result<(), Error>  {
         
-        // 1. fetch remote
-        // 2.
-        currentRemote()
-            .flatMap { $0.fetch(options: FetchOptions(auth: auth)) }
+        if anal == .upToDate {
+            return .success(())
+            
+        } else if anal.contains(.fastForward) || anal.contains(.unborn) {
+            
+            return branch
+                .set(target: commit.oid, message: "Fast-forward merge: REMOTE NAME -> \(branch.nameAsReference)")
+                .flatMap { $0.asBranch() }
+                .flatMap { self.checkout(branch: $0) }
+            
+        } else if anal.contains(.normal) {
+            
+            return .failure(WTF("three way merge didn't implemented"))
+        }
+        
+        return .failure(WTF("pull: unexpected MergeAnalysis value: \(anal.rawValue)"))
+        
     }
 }

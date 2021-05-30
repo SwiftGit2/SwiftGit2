@@ -36,7 +36,7 @@ internal extension Repository {
 	
 	func setHEAD(_ reference: Branch) -> Result<(), Error> {
 		return _result((), pointOfFailure: "git_repository_set_head") {
-			return git_repository_set_head(self.pointer, reference.name)
+			return git_repository_set_head(self.pointer, reference.nameAsReference)
 		}
 	}
 	

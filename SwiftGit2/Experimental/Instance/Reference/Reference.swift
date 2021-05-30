@@ -9,7 +9,7 @@
 import Clibgit2
 import Essentials
 
-public class Reference : InstanceProtocol {
+public class Reference : Branch { // Branch: InstanceProtocol
     public var pointer: OpaquePointer
     
     public required init(_ pointer: OpaquePointer) {
@@ -21,18 +21,23 @@ public class Reference : InstanceProtocol {
     }
 }
 
-public extension Reference {
-    var oid         : OID  { OID(git_reference_target(pointer).pointee) }
-    var isTag       : Bool { git_reference_is_tag(pointer) != 0 }
-    var name        : String { String(validatingUTF8: git_reference_name(pointer)) ?? "" }
+public extension Reference  {
+    var nameAsReference        : String { String(validatingUTF8: git_reference_name(pointer)) ?? "" }
+    
+
     var isDirect    : Bool { git_reference_type(pointer) == GIT_REFERENCE_DIRECT }
     var isSymbolic  : Bool { git_reference_type(pointer) == GIT_REFERENCE_SYMBOLIC }
+
+    var isTag       : Bool { git_reference_is_tag(pointer) != 0 }      // 1 when the reference lives in the refs/tags* namespace; 0 otherwise.
+    var isBranch    : Bool { git_reference_is_branch(pointer) != 0 }   // 1 when the reference lives in the refs/heads namespace; 0 otherwise.
+    var isRemote    : Bool { git_reference_is_remote(pointer) != 0 }   // 1 when the reference lives in the refs/remotes namespace; 0 otherwise.
+
     
     func asBranch() -> Result<Branch, Error> {
         if isBranch || isRemote {
             return .success(self as Branch)
         }
-        return .failure(WTF("asBranch() failed for \(name)"))
+        return .failure(WTF("asBranch() failed for \(nameAsReference)"))
     }
     
     @available(*, deprecated, message: "use asBranch() instead")
@@ -43,6 +48,21 @@ public extension Reference {
         return nil
     }
 
+    var targetOID : Result<OID, Error> {
+        if isSymbolic {
+            var resolved: OpaquePointer? = nil
+            defer {
+                git_reference_free(resolved)
+            }
+            
+            return git_try("git_reference_resolve")
+                { git_reference_resolve(&resolved, self.pointer) }
+                .map { OID(git_reference_target(resolved).pointee) }
+        } else {
+            return .success( OID(git_reference_target(pointer).pointee) )
+        }
+
+    }
 }
 
 public extension Repository {	
