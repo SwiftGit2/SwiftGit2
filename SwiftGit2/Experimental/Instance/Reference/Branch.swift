@@ -19,11 +19,12 @@ public enum BranchLocation {
 }
 
 public protocol Branch: InstanceProtocol {
-    var shortName	: String	{ get }
-    var name		: String	{ get }
-    var targetOID   : Result<OID, Error> { get }
-    var isBranch    : Bool      { get }
-    var isRemote    : Bool      { get }
+    var nameAsBranch        : String?   { get }
+    var nameAsReference     : String    { get }
+    var isBranch            : Bool      { get }
+    var isRemote            : Bool      { get }
+    
+    var targetOID           : Result<OID, Error> { get }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -31,7 +32,7 @@ public protocol Branch: InstanceProtocol {
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 extension Branch {
-    public var shortName 	: String 	{ ( try? nameInternal().get() ) ?? "" }
+    public var nameAsBranch 	: String? 	{ ( try? branchName.get() ) }
 }
 
 public extension Branch {
@@ -51,10 +52,10 @@ public extension Branch {
     /// can be called only for local branch;
     func upstreamName(clean: Bool = false) -> Result<String, Error> {
         if clean {
-            return upstream().map{ $0.name.replace(of: "refs/remotes/", to: "") }
+            return upstream().map{ $0.nameAsReference.replace(of: "refs/remotes/", to: "") }
         }
         
-        return upstream().map{ $0.name }
+        return upstream().map{ $0.nameAsReference }
     }
     
     /// Can be used only on local branch
@@ -74,35 +75,6 @@ public extension Branch {
         else { return .failure(BranchError.NameIsNotLocal as Error) }
         
         return (self as! Reference).rename(.full(newNameWithPath)).flatMap { $0.asBranch() }
-    }
-}
-
-public extension Duo where T1 == Branch, T2 == Repository {
-    func commit() -> Result<Commit, Error> {
-        let (branch, repo) = value
-        return branch.targetOID.flatMap { repo.instanciate($0) }
-    }
-    
-    fileprivate func remoteName() -> Result<String, Error> {
-        let (branch, repo) = self.value
-        var buf = git_buf(ptr: nil, asize: 0, size: 0)
-        
-        return git_try("git_branch_upstream_remote") {
-            return branch.name.withCString { branchName in
-                git_branch_upstream_remote(&buf, repo.pointer, branchName);
-            }
-        }.flatMap { Buffer(buf: buf).asString() }
-    }
-    
-    ///Gets REMOTE item from local branch. Doesn't works with remote branch
-    func remote() -> Result<Remote, Error> {
-        let (_, repo) = self.value
-        
-        return remoteName()
-            .flatMap { remoteName in
-                repo.remoteRepo(named: remoteName)
-            }
-        
     }
 }
 
@@ -141,34 +113,14 @@ public extension Repository {
 }
 
 private extension Branch {
-    private func nameInternal() -> Result<String, Error> {
-        var namePointer: UnsafePointer<Int8>? = nil
+    private var branchName : Result<String, Error> {
+        var pointer: UnsafePointer<Int8>? = nil // Pointer to the abbreviated reference name. Owned by ref, do not free.
         
-        return _result( { String(validatingUTF8: namePointer!) ?? "" }, pointOfFailure: "git_branch_name") {
-            git_branch_name(&namePointer, pointer)
+        return git_try("git_branch_name") {
+            git_branch_name(&pointer, self.pointer)
         }
+        .flatMap { String.validatingUTF8(cString: pointer!) }
     }
-    
-    
-    
-//    func commitOid() -> Result<OID, Error> {
-//        if git_reference_type(pointer).rawValue == GIT_REFERENCE_SYMBOLIC.rawValue {
-//            var resolved: OpaquePointer? = nil
-//            defer {
-//                git_reference_free(resolved)
-//            }
-//
-//            return _result( { resolved }, pointOfFailure: "git_reference_resolve") {
-//                git_reference_resolve(&resolved, self.pointer)
-//            }.map { OID(git_reference_target($0).pointee) }
-//        } else {
-//            return .success( OID(git_reference_target(pointer).pointee) )
-//        }
-//    }
-}
-
-fileprivate extension Remote {
-    ///Branch name must be full - with "refs/heads/"
 }
 
 fileprivate extension String {

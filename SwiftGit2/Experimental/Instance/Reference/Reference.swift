@@ -22,7 +22,7 @@ public class Reference : Branch { // Branch: InstanceProtocol
 }
 
 public extension Reference  {
-    var name        : String { String(validatingUTF8: git_reference_name(pointer)) ?? "" }
+    var nameAsReference        : String { String(validatingUTF8: git_reference_name(pointer)) ?? "" }
     
 
     var isDirect    : Bool { git_reference_type(pointer) == GIT_REFERENCE_DIRECT }
@@ -37,7 +37,7 @@ public extension Reference  {
         if isBranch || isRemote {
             return .success(self as Branch)
         }
-        return .failure(WTF("asBranch() failed for \(name)"))
+        return .failure(WTF("asBranch() failed for \(nameAsReference)"))
     }
     
     @available(*, deprecated, message: "use asBranch() instead")

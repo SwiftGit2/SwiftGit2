@@ -45,7 +45,7 @@ public extension Repository {
         } else if anal.contains(.fastForward) || anal.contains(.unborn) {
             
             return branch
-                .set(target: commit.oid, message: "Fast-forward merge: REMOTE NAME -> \(branch.name)")
+                .set(target: commit.oid, message: "Fast-forward merge: REMOTE NAME -> \(branch.nameAsReference)")
                 .flatMap { $0.asBranch() }
                 .flatMap { self.checkout(branch: $0) }
             

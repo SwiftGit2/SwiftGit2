@@ -18,7 +18,7 @@ public extension Repository {
             .flatMap { Duo($0,self).remote() }
         
         return combine(remote, branch)
-            .flatMap { $0.push(branchName: $1.name, options: options) }
+            .flatMap { $0.push(branchName: $1.nameAsReference, options: options) }
     }
     
     func push(remoteName: String, branchName: String, options: PushOptions) -> Result<(), Error> {
@@ -45,6 +45,6 @@ public extension Duo where T1 == Branch, T2 == Remote {
     /// Push local branch changes to remote branch
     func push(auth: Auth = .auto) -> Result<(), Error> {
         let (branch, remote) = value
-        return remote.push(branchName: branch.name, options: PushOptions(auth: auth) )
+        return remote.push(branchName: branch.nameAsReference, options: PushOptions(auth: auth) )
     }
 }
