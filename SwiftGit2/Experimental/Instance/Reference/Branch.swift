@@ -199,14 +199,3 @@ extension BranchError: LocalizedError {
         }
     }
 }
-
-extension Credentials {
-    func isSsh() -> Bool {
-        switch self {
-        case .ssh(_,_,_):
-            return true
-        default:
-            return false
-        }
-    }
-}
