@@ -40,6 +40,12 @@ public extension Repository {
             
         } else if anal.contains(.normal) {
             
+            let theirTree = ourLocal.upstream()
+                .flatMap { $0.targetOID }
+                .flatMap { self.commit(oid: $0) }
+                .flatMap { $0.tree() }
+            
+            
             return .failure(WTF("three way merge didn't implemented"))
         }
         

@@ -9,28 +9,38 @@
 import Clibgit2
 
 public func _result<T>(_ value: T, pointOfFailure: String, block: () -> Int32) -> Result<T, Error> {
-	let result = block()
-	if result == GIT_OK.rawValue {
-		return .success(value)
-	} else {
-		return Result.failure(NSError(gitError: result, pointOfFailure: pointOfFailure))
-	}
+    let result = block()
+    if result == GIT_OK.rawValue {
+        return .success(value)
+    } else {
+        return Result.failure(NSError(gitError: result, pointOfFailure: pointOfFailure))
+    }
 }
 
 func _result<T>(_ value: () -> T, pointOfFailure: String, block: () -> Int32) -> Result<T, Error> {
-	let result = block()
-	if result == GIT_OK.rawValue {
-		return .success(value())
-	} else {
-		return Result.failure(NSError(gitError: result, pointOfFailure: pointOfFailure))
-	}
+    let result = block()
+    if result == GIT_OK.rawValue {
+        return .success(value())
+    } else {
+        return Result.failure(NSError(gitError: result, pointOfFailure: pointOfFailure))
+    }
 }
 
 func git_try(_ id: String, block: () -> Int32) -> Result<(), Error> {
-	let result = block()
-	if result == GIT_OK.rawValue {
-		return .success(())
-	} else {
-		return Result.failure(NSError(gitError: result, pointOfFailure: id))
-	}
+    let result = block()
+    if result == GIT_OK.rawValue {
+        return .success(())
+    } else {
+        return Result.failure(NSError(gitError: result, pointOfFailure: id))
+    }
+}
+
+func git_instance<T:InstanceProtocol>(of type:T.Type, _ id: String, block: (_ pointer: inout OpaquePointer?) -> Int32) -> Result<T, Error> {
+    var pointer: OpaquePointer? = nil
+    let result = block(&pointer)
+    if result == GIT_OK.rawValue {
+        return .success(T(pointer!))
+    } else {
+        return Result.failure(NSError(gitError: result, pointOfFailure: id))
+    }
 }

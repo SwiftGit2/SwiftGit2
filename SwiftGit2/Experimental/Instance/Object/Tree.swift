@@ -34,16 +34,16 @@ public extension Repository {
 					
 				case .oneCommit: // Logic for 1 commit in history
 					let repo = self
-					return self.headCommit().flatMap { $0.getTree() }
+					return self.headCommit().flatMap { $0.tree() }
 						.flatMap { repo.diffTreeToTree(oldTree: $0, newTree: nil) }
 						.map{ [$0] }
 					
 				case .manyCommits: // Logic for 2 and more commits in history
 					return set.with( set[Repository.self].headCommit() )        // assigns set[Commit.self] to refer HEAD commit
-						.flatMap { $0.with( $0[Commit.self].getTree()) }        // assigns set[Tree.self] to refer Tree of HEAD commit
+						.flatMap { $0.with( $0[Commit.self].tree()) }        // assigns set[Tree.self] to refer Tree of HEAD commit
 						.flatMap { $0.with( $0[Commit.self]                     // assigns set[[Tree].self] to refer parent trees of HEAD commit
 									.parents()
-									.flatMap { $0.flatMap { $0.getTree() } }
+									.flatMap { $0.flatMap { $0.tree() } }
 							   ) }
 						//call diffTreeToTree for each parent tree
 						.flatMap { set in set[[Tree].self].flatMap { parent in set[Repository.self].diffTreeToTree(oldTree: parent, newTree: set[Tree.self]) }
