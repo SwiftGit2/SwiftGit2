@@ -11,15 +11,26 @@ import Clibgit2
 import Essentials
 
 public extension Repository {
+    func merge(our: Tree, their: Tree, ancestor: Tree) -> Result<Index, Error> {
+        var options = MergeOptions()
+        var indexPointer : OpaquePointer? = nil
+        
+        return git_try("git_merge_trees") {
+            git_merge_trees(&indexPointer, self.pointer, ancestor.pointer, our.pointer, their.pointer, &options.merge_options)
+        }.map { Index(indexPointer!) }
+    }
+    
     func merge(our: Commit, their: Commit ) -> Result<Index, Error> {
         var options = MergeOptions()
         var indexPointer : OpaquePointer? = nil
         
-        return _result( { Index(indexPointer!) } , pointOfFailure: "git_merge_commits") {
+        return git_try("git_merge_commits") {
             git_merge_commits(&indexPointer, self.pointer , our.pointer, their.pointer, &options.merge_options)
-        }
+        }.map { Index(indexPointer!) }
     }
     
+    
+    @available(*, deprecated, message: "Commit messaged should be: Fast Forward MERGE theirReference.nameAsReference -> ourReference.nameAsReference ")
     func mergeAndCommit(our: Commit, their: Commit, signature: Signature) -> Result<Commit, Error> {
         return merge(our: our, their: their)
             .flatMap { index in

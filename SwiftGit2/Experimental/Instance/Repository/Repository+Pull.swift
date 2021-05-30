@@ -11,26 +11,6 @@ import Clibgit2
 import Essentials
 
 public extension Repository {
-    func currentRemote() -> Result<Remote,Error> {
-        return self.HEAD()
-            .flatMap{ $0.asBranch() }
-            .flatMap{ Duo($0, self).remote() }
-    }
-    
-    func localCommit() -> Result<Commit, Error> {
-        self.HEAD()
-            .flatMap { $0.asBranch() }
-            .flatMap { $0.targetOID }
-            .flatMap { self.instanciate($0) }
-    }
-    
-    func upstreamCommit() -> Result<Commit, Error> {
-        self.HEAD()
-            .flatMap { $0.asBranch() }
-            .flatMap { $0.upstream() }
-            .flatMap { $0.targetOID }
-            .flatMap { self.commit(oid: $0) }
-    }
     
     func pull(auth: Auth) -> Result<(), Error> {
         let branch = self.HEAD()
