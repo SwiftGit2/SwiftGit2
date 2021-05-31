@@ -58,13 +58,13 @@ public extension Repository {
             
             return [ourOID, theirOID, baseOID]
                 .flatMap { $0.tree(self) }
-                .flatMap { self.merge(our: $0[0], their: $0[1], ancestor: $0[2]) }
-                .flatMap(if:   { index in index.hasConflicts },
-                         then: { _ in .failure(WTF("three way merge didn't implemented")) },
-                         else: { index in
-                            combine(message, parents)
-                                .flatMap { index.commit(into: self, signature: signature, message: $0, parents: $1)}
-                         }
+                .flatMap { self.merge(our: $0[0], their: $0[1], ancestor: $0[2]) } // -> Index
+                .if(\.hasConflicts,
+                    then: { _ in .failure(WTF("three way merge didn't implemented")) },
+                    else: { index in
+                        combine(message, parents)
+                            .flatMap { index.commit(into: self, signature: signature, message: $0, parents: $1)}
+                    }
                 )
         }
         

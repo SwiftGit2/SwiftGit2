@@ -37,9 +37,9 @@ public extension Repository {
         return combine(br_infos, headOID)
             .map { br_infos, headOid in br_infos.filter { $0.oid == headOid } }
             .map { $0.map { $0.branch.nameAsReference } }
-            .flatMap(  if  : { $0.count == 1 },
-                       then: { $0.checkoutFirst(in: self).map { _ in DetachedHeadFix.fixed } },
-                       else: { .success(.ambiguous(branches: $0)) })
+            .if({ $0.count == 1 },
+                then: { $0.checkoutFirst(in: self).map { _ in DetachedHeadFix.fixed } },
+                else: { .success(.ambiguous(branches: $0)) })
     }
     
     

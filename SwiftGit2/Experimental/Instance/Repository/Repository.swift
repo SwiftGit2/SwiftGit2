@@ -91,18 +91,16 @@ public extension Repository {
 	}
 	
     internal func createBranch(from commit: Commit, name: String, checkout: Bool, force: Bool = false) -> Result<Reference, Error> {
-		
+        
         var pointer : OpaquePointer? = nil
-		
+        
         return git_try("git_branch_create") {
-            name.withCString { name in
-                git_branch_create(&pointer, self.pointer, name, commit.pointer, force ? 0 : 1);
-            }
-        }.map { Reference(pointer!) }
-        .flatMap(if: { _ in checkout },
-                 then: { self.checkout(reference: $0, strategy: .Safe) },
-                 else: { .success($0) })
-	}
+            git_branch_create(&pointer, self.pointer, name, commit.pointer, force ? 0 : 1);
+        }
+        .map { Reference(pointer!) }
+        .if(checkout,
+            then: { self.checkout(reference: $0, strategy: .Safe) })
+    }
 	
     func commit(message: String, signature: Signature) -> Result<Commit, Error> {
 		return index()
@@ -142,11 +140,8 @@ public extension Repository {
             }
         }
         .map { _ in Repository(pointer!) }
-        .flatMap (
-            if:   { _ in fixDetachedHead },
-            then: { repo in repo.detachedHeadFix().map{ _ in repo } },
-            else: { .success( $0 ) }
-        )
+        .if(fixDetachedHead,
+            then: { repo in repo.detachedHeadFix().map{ _ in repo } })
 	}
 	
 	class func create(at url: URL) -> Result<Repository, Error> {
