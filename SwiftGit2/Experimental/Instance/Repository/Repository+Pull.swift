@@ -70,3 +70,10 @@ private extension Result where Success == OID, Failure == Error {
             .flatMap { $0.tree() }
     }
 }
+
+internal extension Index {
+    func commit(into repo: Repository, signature: Signature, message: String, parents: [Commit]) -> Result<Commit, Error> {
+        self.writeTree(to: repo)
+            .flatMap { tree in repo.commitCreate(signature: signature, message: message, tree: tree, parents: parents) }
+    }
+}
