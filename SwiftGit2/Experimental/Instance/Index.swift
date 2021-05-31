@@ -116,12 +116,8 @@ fileprivate extension Repository {
     /// If no parents write "[]"
     /// Perform a commit with arbitrary numbers of parent commits.
     func commit( tree treeOID: OID, parents: [Commit], message: String, signature: Signature ) -> Result<Commit, Error> {
-        return combine(gitTreeLookup(tree: treeOID), signature.make()).flatMap { tree, signature in
-            // Clean up excess whitespace
-            // + make sure there is a trailing newline in the message
-            var msgBuf = git_buf()
-            defer { git_buf_free(&msgBuf) }
-            git_message_prettify(&msgBuf, message, 0, /* ascii for # */ 35)
+        return combine(gitTreeLookup(tree: treeOID), signature.make(), Buffer.prettify(message: message))
+            .flatMap { tree, signature, msgBuffer in
             
             // libgit2 expects a C-like array of parent git_commit pointer
             let parentGitCommits: [OpaquePointer?] = parents.map { $0.pointer }
@@ -133,7 +129,7 @@ fileprivate extension Repository {
                 
                 return _result( { OID(commitOID) } , pointOfFailure: "git_commit_create") {
                     git_commit_create( &commitOID, self.pointer, "HEAD", signature.pointer, signature.pointer,
-                                       "UTF-8", msgBuf.ptr, tree.pointer, parents.count, parentsPtr )
+                                       "UTF-8", msgBuffer.buf.ptr, tree.pointer, parents.count, parentsPtr )
                 }
                 .flatMap{ currOID in
                     self.instanciate(currOID)
