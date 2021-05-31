@@ -56,8 +56,9 @@ public extension Repository {
             let parents = combine(ourCommit, theirCommit)
                 .map { [$0,$1] }
             
-            return combine(ourOID.tree(self), theirOID.tree(self), baseOID.tree(self))
-                .flatMap { self.merge(our: $0, their: $1, ancestor: $2) }
+            return [ourOID, theirOID, baseOID]
+                .flatMap { $0.tree(self) }
+                .flatMap { self.merge(our: $0[0], their: $0[1], ancestor: $0[2]) }
                 .flatMap(if:   { index in index.hasConflicts },
                          then: { _ in .failure(WTF("three way merge didn't implemented")) },
                          else: { index in
