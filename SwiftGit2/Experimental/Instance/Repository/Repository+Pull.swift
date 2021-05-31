@@ -50,12 +50,21 @@ public extension Repository {
             let message = combine(theirReference, baseCommit)
                 .map { their, base in "Three Way MERGE \(their.nameAsReference) -> \(ourLocal.nameAsReference) with BASE \(base)" }
             
+            let ourCommit = ourOID.flatMap { self.commit(oid: $0) }
+            let theirCommit = theirOID.flatMap { self.commit(oid: $0) }
+            
+            let parents = combine(ourCommit, theirCommit)
+                .map { [$0,$1] }
             
             return combine(ourOID.tree(self), theirOID.tree(self), baseCommit.tree(self))
                 .flatMap { self.merge(our: $0, their: $1, ancestor: $2) }
                 .flatMap(if:   { index in index.hasConflicts },
                          then: { _ in .failure(WTF("three way merge didn't implemented")) },
-                         else: { index in index.commit(into: self, signature: signature, message: "message", parents: []) } )
+                         else: { index in
+                            combine(message, parents)
+                                .flatMap { index.commit(into: self, signature: signature, message: $0, parents: $1)}
+                         }
+                )
         }
         
         return .failure(WTF("pull: unexpected MergeAnalysis value: \(anal.rawValue)"))
@@ -75,8 +84,4 @@ internal extension Index {
             .flatMap { tree in repo.commitCreate(signature: signature, message: message, tree: tree, parents: parents) }
             .map { _ in () }
     }
-}
-
-private func message(their: Reference, our: Branch) -> String {
-    "Three Way MERGE \(their.nameAsReference) -> \(our.nameAsReference)"
 }
