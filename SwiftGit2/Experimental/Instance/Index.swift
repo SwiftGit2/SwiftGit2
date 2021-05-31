@@ -118,24 +118,23 @@ fileprivate extension Repository {
     func commit( tree treeOID: OID, parents: [Commit], message: String, signature: Signature ) -> Result<Commit, Error> {
         return combine(gitTreeLookup(tree: treeOID), signature.make(), Buffer.prettify(message: message))
             .flatMap { tree, signature, msgBuffer in
-            
-            // libgit2 expects a C-like array of parent git_commit pointer
-            let parentGitCommits: [OpaquePointer?] = parents.map { $0.pointer }
-            let parentsContiguous = ContiguousArray(parentGitCommits)
-            
-            return parentsContiguous.withUnsafeBufferPointer { unsafeBuffer in
-                var commitOID = git_oid()
-                let parentsPtr = UnsafeMutablePointer(mutating: unsafeBuffer.baseAddress)
                 
-                return _result( { OID(commitOID) } , pointOfFailure: "git_commit_create") {
-                    git_commit_create( &commitOID, self.pointer, "HEAD", signature.pointer, signature.pointer,
-                                       "UTF-8", msgBuffer.buf.ptr, tree.pointer, parents.count, parentsPtr )
-                }
-                .flatMap{ currOID in
-                    self.instanciate(currOID)
+                // libgit2 expects a C-like array of parent git_commit pointer
+                let parentGitCommits: [OpaquePointer?] = parents.map { $0.pointer }
+                
+                return parentGitCommits.withUnsafeBufferPointer { unsafeBuffer in
+                        var commitOID = git_oid()
+                        let parentsPtr = UnsafeMutablePointer(mutating: unsafeBuffer.baseAddress)
+                        
+                        return _result( { OID(commitOID) } , pointOfFailure: "git_commit_create") {
+                            git_commit_create( &commitOID, self.pointer, "HEAD", signature.pointer, signature.pointer,
+                                               "UTF-8", msgBuffer.buf.ptr, tree.pointer, parents.count, parentsPtr )
+                        }
+                        .flatMap{ currOID in
+                            self.instanciate(currOID)
+                        }
                 }
             }
-        }
     }
     
     private func gitTreeLookup(tree treeOID: OID) -> Result<Tree, Error> {
