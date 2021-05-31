@@ -7,6 +7,7 @@
 //
 
 import Clibgit2
+import Essentials
 
 public final class Index : InstanceProtocol {
     public var pointer: OpaquePointer
@@ -115,32 +116,27 @@ fileprivate extension Repository {
     /// If no parents write "[]"
     /// Perform a commit with arbitrary numbers of parent commits.
     func commit( tree treeOID: OID, parents: [Commit], message: String, signature: Signature ) -> Result<Commit, Error> {
-        // create commit signature
-        return signature.makeUnsafeSignature().flatMap { signature in
-            defer { git_signature_free(signature) }
+        return combine(gitTreeLookup(tree: treeOID), signature.make()).flatMap { tree, signature in
+            // Clean up excess whitespace
+            // + make sure there is a trailing newline in the message
+            var msgBuf = git_buf()
+            defer { git_buf_free(&msgBuf) }
+            git_message_prettify(&msgBuf, message, 0, /* ascii for # */ 35)
             
-            return gitTreeLookup(tree: treeOID).flatMap { tree in
-                // Clean up excess whitespace
-                // + make sure there is a trailing newline in the message
-                var msgBuf = git_buf()
-                defer { git_buf_free(&msgBuf) }
-                git_message_prettify(&msgBuf, message, 0, /* ascii for # */ 35)
+            // libgit2 expects a C-like array of parent git_commit pointer
+            let parentGitCommits: [OpaquePointer?] = parents.map { $0.pointer }
+            let parentsContiguous = ContiguousArray(parentGitCommits)
+            
+            return parentsContiguous.withUnsafeBufferPointer { unsafeBuffer in
+                var commitOID = git_oid()
+                let parentsPtr = UnsafeMutablePointer(mutating: unsafeBuffer.baseAddress)
                 
-                // libgit2 expects a C-like array of parent git_commit pointer
-                let parentGitCommits: [OpaquePointer?] = parents.map { $0.pointer }
-                let parentsContiguous = ContiguousArray(parentGitCommits)
-                
-                return parentsContiguous.withUnsafeBufferPointer { unsafeBuffer in
-                    var commitOID = git_oid()
-                    let parentsPtr = UnsafeMutablePointer(mutating: unsafeBuffer.baseAddress)
-                    
-                    return _result( { OID(commitOID) } , pointOfFailure: "git_commit_create") {
-                        git_commit_create( &commitOID, self.pointer, "HEAD", signature, signature,
-                                           "UTF-8", msgBuf.ptr, tree.pointer, parents.count, parentsPtr )
-                    }
-                    .flatMap{ currOID in
-                        self.instanciate(currOID)
-                    }
+                return _result( { OID(commitOID) } , pointOfFailure: "git_commit_create") {
+                    git_commit_create( &commitOID, self.pointer, "HEAD", signature.pointer, signature.pointer,
+                                       "UTF-8", msgBuf.ptr, tree.pointer, parents.count, parentsPtr )
+                }
+                .flatMap{ currOID in
+                    self.instanciate(currOID)
                 }
             }
         }
