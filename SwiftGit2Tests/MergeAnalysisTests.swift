@@ -33,7 +33,7 @@ class MergeAnalysisTests: XCTestCase {
         repo1.mergeAnalysis()
             .assertEqual(to: .upToDate, "merge analysis")
         
-        repo1.fetch()
+        repo1.fetch(.HEAD)
             .assertFailure("fetch")
         
         repo1.mergeAnalysis()

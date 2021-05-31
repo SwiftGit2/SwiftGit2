@@ -12,15 +12,12 @@ import Essentials
 
 public extension Repository {
     
-    func pull(auth: Auth) -> Result<(), Error> {
-        let branch = self.HEAD()
-            .flatMap { $0.asBranch() }
-        
-        return combine(mergeAnalysis(), branch)
-            .flatMap { anal, branch in self.pull(anal: anal, ourLocal: branch)}
+    func pull(options: FetchOptions = FetchOptions(auth: .auto)) -> Result<(), Error> {
+        return combine(self.fetch(.HEAD, options: options), mergeAnalysis(.HEAD))
+            .flatMap { branch, anal in self.pull(anal: anal, ourLocal: branch)}
     }
     
-    func pull(anal: MergeAnalysis, ourLocal: Branch) -> Result<(), Error>  {
+    private func pull(anal: MergeAnalysis, ourLocal: Branch) -> Result<(), Error>  {
         
         if anal == .upToDate {
             

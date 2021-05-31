@@ -49,13 +49,18 @@ public extension Repository {
             }
     }
     
-    func mergeAnalysis() -> Result<MergeAnalysis, Error> {
-        HEAD()
-            .flatMap { $0.asBranch() }
-            .flatMap { $0.upstream() }
-            .flatMap { $0.targetOID }
-            .flatMap { self.annotatedCommit(oid: $0) }
-            .flatMap { self.mergeAnalysis(their_head: $0) }
+    func mergeAnalysis(_ target: FetchTarget) -> Result<MergeAnalysis, Error> {
+        switch target {
+        case .HEAD:
+            return self.HEAD()
+                .flatMap { $0.asBranch() }
+                .flatMap { self.mergeAnalysis(.branch($0)) }    // fancy recursion
+        case .branch(let branch):
+            return branch.upstream()
+                .flatMap { $0.targetOID }
+                .flatMap { self.annotatedCommit(oid: $0) }
+                .flatMap { self.mergeAnalysis(their_head: $0) }
+        }
     }
     
     // Analyzes the given branch(es) and determines the opportunities for merging them into the HEAD of the repository.
