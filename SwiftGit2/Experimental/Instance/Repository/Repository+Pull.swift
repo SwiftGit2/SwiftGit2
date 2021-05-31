@@ -26,6 +26,9 @@ public extension Repository {
             
             return .success(())
         } else if anal.contains(.fastForward) || anal.contains(.unborn) {
+            /////////////////////////////////////
+            // FAST-FORWARD MERGE
+            /////////////////////////////////////
             
             let theirReference = ourLocal
                 .upstream()
@@ -39,21 +42,16 @@ public extension Repository {
                 .flatMap { self.checkout(branch: $0) }
             
         } else if anal.contains(.normal) {
-            let ourOID = ourLocal.targetOID
+            /////////////////////////////////
+            // THREE-WAY MERGE
+            /////////////////////////////////
+            
+            let ourOID   = ourLocal.targetOID
             let theirOID = ourLocal.upstream().flatMap { $0.targetOID }
             
-            let baseTree = combine(ourOID, theirOID)
-                .flatMap { self.mergeBase(one: $0, two: $1) }
-                .flatMap { self.commit(oid: $0) }
-                .flatMap { $0.tree() }
-            
-            let ourTree = ourOID
-                .flatMap { self.commit(oid: $0) }
-                .flatMap { $0.tree() }
-            
-            let theirTree = theirOID
-                .flatMap { self.commit(oid: $0) }
-                .flatMap { $0.tree() }
+            let baseTree    = combine(ourOID, theirOID).flatMap { self.mergeBase(one: $0, two: $1) }.tree(self)
+            let ourTree     = ourOID.tree(self)
+            let theirTree   = theirOID.tree(self)
             
             return combine(ourTree, theirTree, baseTree)
                 .flatMap { self.merge(our: $0, their: $1, ancestor: $2) }
@@ -63,6 +61,12 @@ public extension Repository {
         }
         
         return .failure(WTF("pull: unexpected MergeAnalysis value: \(anal.rawValue)"))
-        
+    }
+}
+
+private extension Result where Success == OID, Failure == Error {
+    func tree(_ repo: Repository) -> Result<Tree, Error> {
+        self.flatMap { repo.commit(oid: $0) }
+            .flatMap { $0.tree() }
     }
 }
