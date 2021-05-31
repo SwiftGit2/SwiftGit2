@@ -65,6 +65,6 @@ public extension Commit {
 
 extension Commit : CustomDebugStringConvertible {
     public var debugDescription: String {
-        return "Git2.Commit: [\(time)] - <\(author.email)> : " + summary
+        return "Git2.Commit: [\(time)] - <\(String(cString: author.email))> : " + summary
     }
 }

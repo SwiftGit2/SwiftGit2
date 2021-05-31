@@ -80,7 +80,7 @@ class RepositoryLocalTests: XCTestCase {
 extension Repository {
     func detachHEAD() -> Result<(), Error> {
         HEAD()
-            .flatMap { $0.commitOID }
+            .flatMap { $0.targetOID }
             .flatMap { self.setHEAD_detached($0) }
     }
 }
