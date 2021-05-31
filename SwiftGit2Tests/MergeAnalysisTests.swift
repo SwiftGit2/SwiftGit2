@@ -12,7 +12,7 @@ class MergeAnalysisTests: XCTestCase {
         guard let repo = Repository.clone(from: info.urlSsh, to: info.localPath)
                 .assertFailure("clone") else { fatalError() }
         
-        repo.mergeAnalysis()
+        repo.mergeAnalysis(.HEAD)
             .assertEqual(to: .upToDate, "merge analysis")
     }
     
@@ -30,13 +30,13 @@ class MergeAnalysisTests: XCTestCase {
         repo2.push()
             .assertFailure("push")
 
-        repo1.mergeAnalysis()
+        repo1.mergeAnalysis(.HEAD)
             .assertEqual(to: .upToDate, "merge analysis")
         
         repo1.fetch(.HEAD)
             .assertFailure("fetch")
         
-        repo1.mergeAnalysis()
+        repo1.mergeAnalysis(.HEAD)
             .assertEqual(to: [.fastForward, .normal], "merge analysis")
         
         //repo1
