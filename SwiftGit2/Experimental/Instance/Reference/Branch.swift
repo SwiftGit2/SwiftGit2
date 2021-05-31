@@ -25,6 +25,8 @@ public protocol Branch: InstanceProtocol {
     var isRemote            : Bool      { get }
     
     var targetOID           : Result<OID, Error> { get }
+    
+    func set(target: OID, message: String) -> Result<Reference,Error>
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

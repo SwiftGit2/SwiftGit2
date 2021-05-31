@@ -11,50 +11,62 @@ import Clibgit2
 import Essentials
 
 public extension Repository {
-    func currentRemote() -> Result<Remote,Error> {
-        return self.HEAD()
-            .flatMap{ $0.asBranch() }
-            .flatMap{ Duo($0, self).remote() }
-    }
     
-    func localCommit() -> Result<Commit, Error> {
-        self.HEAD()
+    func pull(auth: Auth) -> Result<(), Error> {
+        let branch = self.HEAD()
             .flatMap { $0.asBranch() }
-            .flatMap { $0.targetOID }
-            .flatMap { self.instanciate($0) }
+        
+        return combine(mergeAnalysis(), branch)
+            .flatMap { anal, branch in self.pull(anal: anal, ourLocal: branch)}
     }
     
-    func upstreamCommit() -> Result<Commit, Error> {
-        self.HEAD()
-            .flatMap { $0.asBranch() }
-            .flatMap { $0.upstream() }
-            .flatMap { $0.targetOID }
-            .flatMap { self.commit(oid: $0) }
-    }
-    
-    func pull(auth: Auth) {
-        mergeAnalysis()
-            //.flatMap(if: <#T##(MergeAnalysis) -> Bool#>, then: <#T##(MergeAnalysis) -> Result<NewSuccess, Error>#>, else: <#T##(MergeAnalysis) -> Result<NewSuccess, Error>#>)
-    }
-    
-    func pull(anal: MergeAnalysis, branch: Reference, commit: Commit) -> Result<(), Error>  {
+    func pull(anal: MergeAnalysis, ourLocal: Branch) -> Result<(), Error>  {
         
         if anal == .upToDate {
+            
             return .success(())
-            
         } else if anal.contains(.fastForward) || anal.contains(.unborn) {
+            /////////////////////////////////////
+            // FAST-FORWARD MERGE
+            /////////////////////////////////////
             
-            return branch
-                .set(target: commit.oid, message: "Fast-forward merge: REMOTE NAME -> \(branch.nameAsReference)")
+            let theirReference = ourLocal
+                .upstream()
+            
+            let targetOID = theirReference
+                .flatMap { $0.targetOID }
+            
+            return combine(theirReference, targetOID)
+                .flatMap { their, oid in ourLocal.set(target: oid, message: "Fast Forward MERGE \(their.nameAsReference) -> \(ourLocal.nameAsReference)") }
                 .flatMap { $0.asBranch() }
                 .flatMap { self.checkout(branch: $0) }
             
         } else if anal.contains(.normal) {
+            /////////////////////////////////
+            // THREE-WAY MERGE
+            /////////////////////////////////
             
-            return .failure(WTF("three way merge didn't implemented"))
+            let ourOID   = ourLocal.targetOID
+            let theirOID = ourLocal.upstream().flatMap { $0.targetOID }
+            
+            let baseTree    = combine(ourOID, theirOID).flatMap { self.mergeBase(one: $0, two: $1) }.tree(self)
+            let ourTree     = ourOID.tree(self)
+            let theirTree   = theirOID.tree(self)
+            
+            return combine(ourTree, theirTree, baseTree)
+                .flatMap { self.merge(our: $0, their: $1, ancestor: $2) }
+                .flatMap(if: { $0.hasConflicts },
+                         then: { _ in .failure(WTF("three way merge didn't implemented")) },
+                         else: { _ in .failure(WTF("three way merge didn't implemented")) } )
         }
         
         return .failure(WTF("pull: unexpected MergeAnalysis value: \(anal.rawValue)"))
-        
+    }
+}
+
+private extension Result where Success == OID, Failure == Error {
+    func tree(_ repo: Repository) -> Result<Tree, Error> {
+        self.flatMap { repo.commit(oid: $0) }
+            .flatMap { $0.tree() }
     }
 }

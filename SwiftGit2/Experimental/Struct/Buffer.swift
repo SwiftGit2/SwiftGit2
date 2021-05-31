@@ -11,66 +11,76 @@ import Clibgit2
 import Essentials
 
 public final class Buffer {
-	var buf : git_buf
-	
-	public init(buf: git_buf) {
-		self.buf = buf
-	}
-	
-	public init?(_ str : String) {
-		buf = git_buf(ptr: nil, asize: 0, size: 0)
-		
-		guard let _ = try? set(string: str).get() else { return nil }
-	}
-	
-	deinit {
-		dispose()
-	}
-	
-	public func dispose() {
-		git_buf_dispose(&buf)
-	}
+    var buf : git_buf
+    
+    public init(buf: git_buf) {
+        self.buf = buf
+    }
+    
+    public init?(_ str : String) {
+        buf = git_buf(ptr: nil, asize: 0, size: 0)
+        
+        guard let _ = try? set(string: str).get() else { return nil }
+    }
+    
+    deinit {
+        dispose()
+    }
+    
+    public func dispose() {
+        git_buf_dispose(&buf)
+    }
 }
 
 public extension Buffer {
-	var isBinary 		: Bool { 1 == git_buf_is_binary(&buf) }
-	var containsNul 	: Bool { 1 == git_buf_contains_nul(&buf) }
-	var size			: Int  { buf.size }
-	var ptr				: UnsafeMutablePointer<Int8> { buf.ptr }
-	
-	func set(string: String) -> Result<(),Error> {
-		guard let data = string.data(using: .utf8) else {
-			return .failure(NSError(gitError: 0, pointOfFailure: "string.data(using: .utf8)"))
-		}
-		return set(data: data)
-	}
-	
-	func set(data: Data) -> Result<(),Error> {
-		let nsData = data as NSData
-		
-		return _result( { () }, pointOfFailure: "git_buf_set"){
-			git_buf_set(&buf, nsData.bytes, nsData.length)
-		}
-	}
-	
-	func asString() -> Result<String, Error> {
-		guard !isBinary else {
-			return .failure(WTF("can't get string from binary buffer"))
-		}
-		
-		let data = Data(bytesNoCopy: buf.ptr, count: buf.size, deallocator: .none)
-		
-		guard let str = String(data: data, encoding: .utf8) else {
-			return .failure(WTF("can't read utf8 from buffer"))
-		}
-		
-		return .success( str )
-	}
-	
-	func asDiff() -> Result<Diff, Error> {
-		var diff: OpaquePointer? = nil
-		return _result( { Diff(diff!) }, pointOfFailure: "git_diff_from_buffer") {
-			git_diff_from_buffer(&diff, ptr, size)
-		}
-	}
+    var isBinary 		: Bool { 1 == git_buf_is_binary(&buf) }
+    var containsNul 	: Bool { 1 == git_buf_contains_nul(&buf) }
+    var size			: Int  { buf.size }
+    var ptr				: UnsafeMutablePointer<Int8> { buf.ptr }
+    
+    func set(string: String) -> Result<(),Error> {
+        guard let data = string.data(using: .utf8) else {
+            return .failure(NSError(gitError: 0, pointOfFailure: "string.data(using: .utf8)"))
+        }
+        return set(data: data)
+    }
+    
+    func set(data: Data) -> Result<(),Error> {
+        let nsData = data as NSData
+        
+        return _result( { () }, pointOfFailure: "git_buf_set"){
+            git_buf_set(&buf, nsData.bytes, nsData.length)
+        }
+    }
+    
+    func asString() -> Result<String, Error> {
+        guard !isBinary else {
+            return .failure(WTF("can't get string from binary buffer"))
+        }
+        
+        let data = Data(bytesNoCopy: buf.ptr, count: buf.size, deallocator: .none)
+        
+        guard let str = String(data: data, encoding: .utf8) else {
+            return .failure(WTF("can't read utf8 from buffer"))
+        }
+        
+        return .success( str )
+    }
+    
+    func asDiff() -> Result<Diff, Error> {
+        var diff: OpaquePointer? = nil
+        return _result( { Diff(diff!) }, pointOfFailure: "git_diff_from_buffer") {
+            git_diff_from_buffer(&diff, ptr, size)
+        }
+    }
+    
+    // Clean up excess whitespace
+    // + make sure there is a trailing newline in the message
+    static func prettify(message: String) -> Result<Buffer, Error> {
+        var out = git_buf()
+        
+        return git_try("git_message_prettify") {
+            git_message_prettify(&out, message, 0, /* ascii for # */ 35)
+        }.map { Buffer(buf: out) }
+    }
 }
