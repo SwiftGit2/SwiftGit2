@@ -11,6 +11,16 @@ import Clibgit2
 import Essentials
 
 public extension Repository {
+    func mergeBase(one: OID, two: OID) -> Result<OID, Error> {
+        var out = git_oid()
+        
+        return git_try("git_merge_base") {
+            var one_ = one.oid
+            var two_ = two.oid
+            return git_merge_base(&out, self.pointer, &one_, &two_)
+        }.map { OID(out) }
+    }
+    
     func merge(our: Tree, their: Tree, ancestor: Tree) -> Result<Index, Error> {
         var options = MergeOptions()
         var indexPointer : OpaquePointer? = nil

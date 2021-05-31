@@ -39,14 +39,27 @@ public extension Repository {
                 .flatMap { self.checkout(branch: $0) }
             
         } else if anal.contains(.normal) {
+            let ourOID = ourLocal.targetOID
+            let theirOID = ourLocal.upstream().flatMap { $0.targetOID }
             
-            let theirTree = ourLocal.upstream()
-                .flatMap { $0.targetOID }
+            let baseTree = combine(ourOID, theirOID)
+                .flatMap { self.mergeBase(one: $0, two: $1) }
                 .flatMap { self.commit(oid: $0) }
                 .flatMap { $0.tree() }
             
+            let ourTree = ourOID
+                .flatMap { self.commit(oid: $0) }
+                .flatMap { $0.tree() }
             
-            return .failure(WTF("three way merge didn't implemented"))
+            let theirTree = theirOID
+                .flatMap { self.commit(oid: $0) }
+                .flatMap { $0.tree() }
+            
+            return combine(ourTree, theirTree, baseTree)
+                .flatMap { self.merge(our: $0, their: $1, ancestor: $2) }
+                .flatMap(if: { $0.hasConflicts },
+                         then: { _ in .failure(WTF("three way merge didn't implemented")) },
+                         else: { _ in .failure(WTF("three way merge didn't implemented")) } )
         }
         
         return .failure(WTF("pull: unexpected MergeAnalysis value: \(anal.rawValue)"))
