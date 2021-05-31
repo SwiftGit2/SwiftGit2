@@ -31,8 +31,8 @@ public class Commit : Object {
     ///Description + \n\n + Subject
     //public var message 	: String 	{ String(validatingUTF8: git_commit_message(pointer)) ?? "" }
     
-    public var author 	: Signature { Signature(git_commit_author(pointer).pointee) }
-    public var commiter	: Signature { Signature(git_commit_committer(pointer).pointee) }
+    public var author 	: git_signature { git_commit_author(pointer).pointee }
+    public var commiter	: git_signature { git_commit_committer(pointer).pointee }
     public var time		: Date 		{ Date(timeIntervalSince1970: Double(git_commit_time(pointer))) }
 }
 

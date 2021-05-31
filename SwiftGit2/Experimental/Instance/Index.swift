@@ -155,3 +155,10 @@ fileprivate extension Repository {
         }
     }
 }
+
+//internal extension Repository {
+//    func commitCreate() {
+//        var outOID = git_oid()
+//        git_commit_create(&outOID, self.pointer, "HEAD", <#T##author: UnsafePointer<git_signature>!##UnsafePointer<git_signature>!#>, <#T##committer: UnsafePointer<git_signature>!##UnsafePointer<git_signature>!#>, <#T##message_encoding: UnsafePointer<CChar>!##UnsafePointer<CChar>!#>, <#T##message: UnsafePointer<CChar>!##UnsafePointer<CChar>!#>, <#T##tree: OpaquePointer!##OpaquePointer!#>, <#T##parent_count: Int##Int#>, <#T##parents: UnsafeMutablePointer<OpaquePointer?>!##UnsafeMutablePointer<OpaquePointer?>!#>)
+//    }
+//}
