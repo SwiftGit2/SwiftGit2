@@ -45,9 +45,9 @@ public extension Repository {
             
             let ourOID   = ourLocal.targetOID
             let theirOID = ourLocal.upstream().flatMap { $0.targetOID }
-            let baseCommit  = combine(ourOID, theirOID).flatMap { self.mergeBase(one: $0, two: $1) }
+            let baseOID  = combine(ourOID, theirOID).flatMap { self.mergeBase(one: $0, two: $1) }
             
-            let message = combine(theirReference, baseCommit)
+            let message = combine(theirReference, baseOID)
                 .map { their, base in "Three Way MERGE \(their.nameAsReference) -> \(ourLocal.nameAsReference) with BASE \(base)" }
             
             let ourCommit = ourOID.flatMap { self.commit(oid: $0) }
@@ -56,7 +56,7 @@ public extension Repository {
             let parents = combine(ourCommit, theirCommit)
                 .map { [$0,$1] }
             
-            return combine(ourOID.tree(self), theirOID.tree(self), baseCommit.tree(self))
+            return combine(ourOID.tree(self), theirOID.tree(self), baseOID.tree(self))
                 .flatMap { self.merge(our: $0, their: $1, ancestor: $2) }
                 .flatMap(if:   { index in index.hasConflicts },
                          then: { _ in .failure(WTF("three way merge didn't implemented")) },
