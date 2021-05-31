@@ -12,29 +12,29 @@ import Essentials
 
 public extension Repository {
     
-    func pull(options: FetchOptions = FetchOptions(auth: .auto)) -> Result<(), Error> {
+    func pull(options: FetchOptions = FetchOptions(auth: .auto), signature: Signature) -> Result<(), Error> {
         return combine(self.fetch(.HEAD, options: options), mergeAnalysis(.HEAD))
-            .flatMap { branch, anal in self.pull(anal: anal, ourLocal: branch)}
+            .flatMap { branch, anal in self.mergeFromUpstream(anal: anal, ourLocal: branch, signature: signature)}
     }
     
-    private func pull(anal: MergeAnalysis, ourLocal: Branch) -> Result<(), Error>  {
+    private func mergeFromUpstream(anal: MergeAnalysis, ourLocal: Branch, signature: Signature) -> Result<(), Error>  {
+        guard !anal.contains(.upToDate) else { return .success(()) }
         
-        if anal == .upToDate {
-            
-            return .success(())
-        } else if anal.contains(.fastForward) || anal.contains(.unborn) {
+        let theirReference = ourLocal
+            .upstream()
+        
+        if anal.contains(.fastForward) || anal.contains(.unborn) {
             /////////////////////////////////////
             // FAST-FORWARD MERGE
             /////////////////////////////////////
             
-            let theirReference = ourLocal
-                .upstream()
-            
             let targetOID = theirReference
                 .flatMap { $0.targetOID }
             
-            return combine(theirReference, targetOID)
-                .flatMap { their, oid in ourLocal.set(target: oid, message: "Fast Forward MERGE \(their.nameAsReference) -> \(ourLocal.nameAsReference)") }
+            let message = theirReference.map { their in "Fast Forward MERGE \(their.nameAsReference) -> \(ourLocal.nameAsReference)" }
+            
+            return combine(targetOID, message)
+                .flatMap { oid, message in ourLocal.set(target: oid, message: message) }
                 .flatMap { $0.asBranch() }
                 .flatMap { self.checkout(branch: $0) }
             
@@ -45,16 +45,17 @@ public extension Repository {
             
             let ourOID   = ourLocal.targetOID
             let theirOID = ourLocal.upstream().flatMap { $0.targetOID }
+            let baseCommit  = combine(ourOID, theirOID).flatMap { self.mergeBase(one: $0, two: $1) }
             
-            let baseTree    = combine(ourOID, theirOID).flatMap { self.mergeBase(one: $0, two: $1) }.tree(self)
-            let ourTree     = ourOID.tree(self)
-            let theirTree   = theirOID.tree(self)
+            let message = combine(theirReference, baseCommit)
+                .map { their, base in "Three Way MERGE \(their.nameAsReference) -> \(ourLocal.nameAsReference) with BASE \(base)" }
             
-            return combine(ourTree, theirTree, baseTree)
+            
+            return combine(ourOID.tree(self), theirOID.tree(self), baseCommit.tree(self))
                 .flatMap { self.merge(our: $0, their: $1, ancestor: $2) }
-                .flatMap(if: { $0.hasConflicts },
+                .flatMap(if:   { index in index.hasConflicts },
                          then: { _ in .failure(WTF("three way merge didn't implemented")) },
-                         else: { _ in .failure(WTF("three way merge didn't implemented")) } )
+                         else: { index in index.commit(into: self, signature: signature, message: "message", parents: []) } )
         }
         
         return .failure(WTF("pull: unexpected MergeAnalysis value: \(anal.rawValue)"))
@@ -69,8 +70,13 @@ private extension Result where Success == OID, Failure == Error {
 }
 
 internal extension Index {
-    func commit(into repo: Repository, signature: Signature, message: String, parents: [Commit]) -> Result<Commit, Error> {
+    func commit(into repo: Repository, signature: Signature, message: String, parents: [Commit]) -> Result<Void, Error> {
         self.writeTree(to: repo)
             .flatMap { tree in repo.commitCreate(signature: signature, message: message, tree: tree, parents: parents) }
+            .map { _ in () }
     }
+}
+
+private func message(their: Reference, our: Branch) -> String {
+    "Three Way MERGE \(their.nameAsReference) -> \(our.nameAsReference)"
 }
