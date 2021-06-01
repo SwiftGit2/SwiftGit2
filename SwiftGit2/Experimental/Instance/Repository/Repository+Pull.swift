@@ -64,14 +64,20 @@ public extension Repository {
             let parents = combine(ourCommit, theirCommit)
                 .map { [$0,$1] }
             
+            let branchName = ourLocal.nameAsReference
+            
             return [ourOID, theirOID, baseOID]
                 .flatMap { $0.tree(self) }
                 .flatMap { self.merge(our: $0[0], their: $0[1], ancestor: $0[2]) } // -> Index
                 .if(\.hasConflicts,
-                    then: { .success(.threeWayConflict($0)) },
+                    then: { idx in
+                        self.checkout(index: idx, strategy: .UseTheirs)
+                            .flatMap { _ in .success(.threeWayConflict(idx)) } },
+                    
                     else: { index in
                         combine(message, parents)
                             .flatMap { index.commit(into: self, signature: signature, message: $0, parents: $1)}
+                            .flatMap { _ in self.checkout(branch: branchName, strategy: .Force) }
                             .map { _ in .threeWaySuccess }
                     }
                 )

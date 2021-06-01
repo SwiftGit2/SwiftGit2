@@ -97,11 +97,11 @@ extension Result {
 
 extension String {
     func print<T>(success: T) {
-        Swift.print("\(self) succeeded with: \(success)")
+        Swift.print("\(self) SUCCEEDED with: \(success)")
     }
     
     func print(failure: Error) {
-        Swift.print("\(self) succeeded with: \(failure.localizedDescription)")
+        Swift.print("\(self) FAILED with: \(failure.localizedDescription)")
     }
     
     func write(to file: URL) -> Result<(),Error> {

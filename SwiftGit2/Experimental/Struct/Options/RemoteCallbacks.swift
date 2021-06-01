@@ -33,7 +33,7 @@ public class RemoteCallbacks : GitPayload {
     
     #if DEBUG
     deinit {
-        print("RemoteCallbacks deinit")
+        //print("RemoteCallbacks deinit")
     }
     #endif
 }

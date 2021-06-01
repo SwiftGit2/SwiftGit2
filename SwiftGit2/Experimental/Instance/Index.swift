@@ -68,8 +68,8 @@ public extension Index {
         _result((), pointOfFailure: "git_index_clear") { git_index_clear(pointer) }
     }
     
-    private func write() -> Result<(),Error> {
-        _result((), pointOfFailure: "git_index_write") { git_index_write(pointer) }
+    internal func write() -> Result<(),Error> {
+        git_try("git_index_write") { git_index_write(pointer) }
     }
     
     func writeTree() -> Result<git_oid, Error> {
