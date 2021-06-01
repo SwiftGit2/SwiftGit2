@@ -19,8 +19,8 @@ public enum PullResult {
 
 public extension Repository {
     
-    func pull(options: FetchOptions = FetchOptions(auth: .auto), signature: Signature) -> Result<PullResult, Error> {
-        return combine(self.fetch(.HEAD, options: options), mergeAnalysis(.HEAD))
+    func pull(_ target: FetchTarget, options: FetchOptions = FetchOptions(auth: .auto), signature: Signature) -> Result<PullResult, Error> {
+        return combine(self.fetch(target, options: options), mergeAnalysis(target))
             .flatMap { branch, anal in self.mergeFromUpstream(anal: anal, ourLocal: branch, signature: signature)}
     }
     
