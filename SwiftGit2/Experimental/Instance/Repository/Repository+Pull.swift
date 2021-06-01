@@ -43,7 +43,7 @@ public extension Repository {
             return combine(targetOID, message)
                 .flatMap { oid, message in ourLocal.set(target: oid, message: message) }
                 .flatMap { $0.asBranch() }
-                .flatMap { self.checkout(branch: $0) }
+                .flatMap { self.checkout(branch: $0, strategy: .Force) }
                 .map { _ in .fastForward }
             
         } else if anal.contains(.normal) {
@@ -95,3 +95,34 @@ internal extension Index {
             .map { _ in () }
     }
 }
+
+
+extension PullResult : Equatable {
+    var hasConflict : Bool {
+        if case .threeWayConflict = self {
+            return true
+        } else {
+            return false
+        }
+    }
+    public static func == (lhs: PullResult, rhs: PullResult) -> Bool {
+        switch (lhs, rhs) {
+        case (.upToDate, .upToDate): return true
+        case (.fastForward, .fastForward): return true
+        case (.threeWaySuccess, .threeWaySuccess): return true
+        default:
+            return false
+        }
+    }
+    
+    
+}
+//public static func == (lhs: DetachedHeadFix, rhs: DetachedHeadFix) -> Bool {
+//    switch (lhs, rhs) {
+//    case (.fixed, .fixed): return true
+//    case (.notNecessary, .notNecessary): return true
+//    case let (.ambiguous(a_l), .ambiguous(a_r)):
+//        return a_l == a_r
+//    default: return false
+//    }
+//}
