@@ -21,6 +21,10 @@ public class Tree: InstanceProtocol {
     }
 }
 
+public extension Tree {
+    var oid : OID { OID(git_tree_id(self.pointer).pointee) }
+}
+
 // High level func's
 public extension Repository {
     func headDiff() -> Result<[Diff], Error> {
