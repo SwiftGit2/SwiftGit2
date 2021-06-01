@@ -6,43 +6,76 @@ import Essentials
 
 class MergeAnalysisTests: XCTestCase {
     
-    func testUpToDate() throws {
+    var repo1 : Repository!
+    var repo2 : Repository!
+    
+    override func setUpWithError() throws {
         let info = PublicTestRepo()
+
+        repo1 = Repository.clone(from: info.urlSsh, to: info.localPath)
+                .assertFailure("clone 1")
+
+        repo2 = Repository.clone(from: info.urlSsh, to: info.localPath2)
+                .assertFailure("clone 2")
+    }
+
+    override func tearDownWithError() throws { }
+    
+    func testFastForward() throws {
+        repo2.t_push_commit(file: .fileA, with: .random, msg: "for FAST FORWARD MERGE Test")
+            .assertFailure()
+
+        repo1.mergeAnalysis(.HEAD)
+            .assertEqual(to: .upToDate)
         
-        guard let repo = Repository.clone(from: info.urlSsh, to: info.localPath)
-                .assertFailure("clone") else { fatalError() }
+        repo1.fetch(.HEAD)
+            .assertFailure()
         
-        repo.mergeAnalysis()
-            .assertEqual(to: .upToDate, "merge analysis")
+        repo1.mergeAnalysis(.HEAD)
+            .assertEqual(to: [.fastForward, .normal])
+        
+        repo1.pull(.HEAD, signature: GitTest.signature)
+            .assertEqual(to: .fastForward, "pull fast forward merge")
     }
     
-    func testNormal() throws {
-        let info = PublicTestRepo()
-
-        guard let repo1 = Repository.clone(from: info.urlSsh, to: info.localPath)
-                .assertFailure("clone 1") else { fatalError() }
-
-        guard let repo2 = Repository.clone(from: info.urlSsh, to: info.localPath2)
-                .assertFailure("clone 2") else { fatalError() }
-
-        repo2.t_commit(file: .fileA, with: .random, msg: "fileA commit")
-            .assertFailure("t_commit")
-        repo2.push()
-            .assertFailure("push")
-
-        repo1.mergeAnalysis()
-            .assertEqual(to: .upToDate, "merge analysis")
+    func testThreWaySuccess() throws {
+        repo2.t_push_commit(file: .fileA, with: .random, msg: "[THEIR] for THREE WAY **SUCCESSFUL** MERGE test")
+            .assertFailure()
         
-        repo1.fetch()
-            .assertFailure("fetch")
+        repo1.t_commit(file: .fileB, with: .random, msg: "[OUR] for THREE WAY **SUCCESSFUL** MERGE test")
+            .assertFailure()
         
-        repo1.mergeAnalysis()
-            .assertEqual(to: [.fastForward, .normal], "merge analysis")
+        repo1.fetch(.HEAD)
+            .assertFailure()
         
-        //repo1
-        //repo2.push(remoteRepoName: <#T##String#>, localBranchName: <#T##String#>, auth: <#T##Auth#>)
-
-        print(repo1, repo2)
+        let merge = repo1.mergeAnalysis(.HEAD)
+            .assertNotEqual(to: [.fastForward], "merge analysis")
+        
+        XCTAssert(merge == .normal)
+        
+        repo1.pull(.HEAD, signature: GitTest.signature)
+            .assertEqual(to: .threeWaySuccess )
+    }
+    
+    func testThreeWayConflict() throws {
+        // fileA
+        repo2.t_push_commit(file: .fileA, with: .random, msg: "[THEIR] for THREE WAY **SUCCESSFUL** MERGE test")
+            .assertFailure()
+        
+        // Same fileA
+        repo1.t_commit(file: .fileA, with: .random, msg: "[OUR] for THREE WAY **SUCCESSFUL** MERGE test")
+            .assertFailure()
+        
+        repo1.fetch(.HEAD)
+            .assertFailure()
+        
+        let merge = repo1.mergeAnalysis(.HEAD)
+            .assertNotEqual(to: [.fastForward])
+        
+        XCTAssert(merge == .normal)
+        
+        repo1.pull(.HEAD, signature: GitTest.signature)
+            .assertBlock("pull has conflict") { $0.hasConflict }
     }
     
 }

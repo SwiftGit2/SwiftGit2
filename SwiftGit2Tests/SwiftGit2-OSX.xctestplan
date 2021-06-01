@@ -1,0 +1,28 @@
+{
+  "configurations" : [
+    {
+      "id" : "FA66D7EC-FDC5-4705-AF69-CE8349F5FA68",
+      "name" : "Configuration 1",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+    "targetForVariableExpansion" : {
+      "containerPath" : "container:SwiftGit2.xcodeproj",
+      "identifier" : "BEB31F221A0D6F7A00F525B9",
+      "name" : "SwiftGit2-OSX"
+    }
+  },
+  "testTargets" : [
+    {
+      "target" : {
+        "containerPath" : "container:SwiftGit2.xcodeproj",
+        "identifier" : "E6332DCB265167F0004990E7",
+        "name" : "SwiftGit2Tests"
+      }
+    }
+  ],
+  "version" : 1
+}

@@ -9,12 +9,23 @@
 import Foundation
 import Clibgit2
 
+public enum FetchTarget {
+    case HEAD
+    case branch(Branch)
+}
+
 public extension Repository {
-    func fetch(options: FetchOptions = FetchOptions()) -> Result<(), Error> {
-        HEAD()
-            .flatMap { $0.asBranch() }
-            .flatMap { Duo($0,self).remote() }
-            .flatMap { $0.fetch(options: options)}
+    func fetch(_ target : FetchTarget, options: FetchOptions = FetchOptions()) -> Result<Branch, Error> {
+        switch target {
+        case .HEAD:
+            return HEAD()
+                .flatMap { $0.asBranch() }
+                .flatMap { self.fetch(.branch($0))} // very fancy recursion
+        case .branch(let branch):
+            return Duo(branch,self).remote()
+                .flatMap { $0.fetch(options: options) }
+                .map { branch }
+        }
     }
 }
 

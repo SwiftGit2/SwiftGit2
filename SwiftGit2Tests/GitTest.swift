@@ -28,58 +28,64 @@ struct PublicTestRepo {
 
 extension Result {
     @discardableResult
-    func assertFailure(_ topic: String? = nil) -> Success? {
+    func assertBlock(_ topic: String? = nil, block: (Success)->Bool) -> Success? {
         self.onSuccess {
-            if let topic = topic {
-                print("\(topic) succeeded with: \($0)")
-            }
+            topic?.print(success: $0)
+            XCTAssert(block($0))
         }.onFailure {
-            if let topic = topic {
-                print("\(topic) failed with: \($0.localizedDescription)")
-            }
+            topic?.print(failure: $0)
             XCTAssert(false)
         }
-        switch self {
-        case .success(let s):
-            return s
-        default:
-            return nil
+        return maybeSuccess
+    }
+    
+    @discardableResult
+    func assertFailure(_ topic: String? = nil) -> Success? {
+        self.onSuccess {
+            topic?.print(success: $0)
+        }.onFailure {
+            topic?.print(failure: $0)
+            XCTAssert(false)
         }
+        return maybeSuccess
     }
     
     @discardableResult
     func assertSuccess(_ topic: String? = nil) -> Success? {
         self.onSuccess {
-            if let topic = topic {
-                print("\(topic) succeeded with: \($0)")
-            }
+            topic?.print(success: $0)
             XCTAssert(false)
         }.onFailure {
-            if let topic = topic {
-                print("\(topic) failed with: \($0.localizedDescription)")
-            }
+            topic?.print(failure: $0)
         }
-        switch self {
-        case .success(let s):
-            return s
-        default:
-            return nil
-        }
+        return maybeSuccess
     }
     
     @discardableResult
     func assertEqual(to: Success, _ topic: String? = nil) -> Success? where Success: Equatable {
         self.onSuccess {
             XCTAssert(to == $0)
-            if let topic = topic {
-                print("\(topic) succeeded with: \($0)")
-            }
+            topic?.print(success: $0)
         }.onFailure {
-            if let topic = topic {
-                print("\(topic) failed with: \($0.localizedDescription)")
-            }
+            topic?.print(failure: $0)
             XCTAssert(false)
         }
+        return maybeSuccess
+    }
+    
+    @discardableResult
+    func assertNotEqual(to: Success, _ topic: String? = nil) -> Success? where Success: Equatable {
+        self.onSuccess {
+            XCTAssert(to != $0)
+            topic?.print(success: $0)
+        }.onFailure {
+            topic?.print(failure: $0)
+            XCTAssert(false)
+        }
+        return maybeSuccess
+    }
+    
+    var maybeSuccess : Success? {
         switch self {
         case .success(let s):
             return s
@@ -90,6 +96,14 @@ extension Result {
 }
 
 extension String {
+    func print<T>(success: T) {
+        Swift.print("\(self) SUCCEEDED with: \(success)")
+    }
+    
+    func print(failure: Error) {
+        Swift.print("\(self) FAILED with: \(failure.localizedDescription)")
+    }
+    
     func write(to file: URL) -> Result<(),Error> {
         do {
             try self.write(toFile: file.path, atomically: true, encoding: .utf8)
