@@ -8,26 +8,26 @@
 
 import Foundation
 
-internal protocol GitPayload { }
+internal protocol GitPayload {}
 
 internal class Wrapper<T> {
-	let value: T
+    let value: T
 
-	init(_ value: T) {
-		self.value = value
-	}
+    init(_ value: T) {
+        self.value = value
+    }
 }
 
 internal extension GitPayload {
-	static func unretained(pointer: UnsafeMutableRawPointer) -> Self {
-		return Unmanaged<Wrapper<Self>>.fromOpaque(UnsafeRawPointer(pointer)).takeUnretainedValue().value
-	}
-	
-	func toRetainedPointer() -> UnsafeMutableRawPointer {
-		return Unmanaged.passRetained(Wrapper(self)).toOpaque()
-	}
-	
-	static func release(pointer: UnsafeMutableRawPointer) {
-		Unmanaged<Wrapper<Self>>.fromOpaque(UnsafeRawPointer(pointer)).release()
-	}
+    static func unretained(pointer: UnsafeMutableRawPointer) -> Self {
+        return Unmanaged<Wrapper<Self>>.fromOpaque(UnsafeRawPointer(pointer)).takeUnretainedValue().value
+    }
+
+    func toRetainedPointer() -> UnsafeMutableRawPointer {
+        return Unmanaged.passRetained(Wrapper(self)).toOpaque()
+    }
+
+    static func release(pointer: UnsafeMutableRawPointer) {
+        Unmanaged<Wrapper<Self>>.fromOpaque(UnsafeRawPointer(pointer)).release()
+    }
 }

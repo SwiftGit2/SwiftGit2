@@ -14,26 +14,25 @@ public extension Duo where T1 == Branch, T2 == Repository {
         let (branch, repo) = value
         return branch.targetOID.flatMap { repo.instanciate($0) }
     }
-    
+
     fileprivate func remoteName() -> Result<String, Error> {
-        let (branch, repo) = self.value
+        let (branch, repo) = value
         var buf = git_buf(ptr: nil, asize: 0, size: 0)
-        
+
         return git_try("git_branch_upstream_remote") {
             return branch.nameAsReference.withCString { branchName in
-                git_branch_upstream_remote(&buf, repo.pointer, branchName);
+                git_branch_upstream_remote(&buf, repo.pointer, branchName)
             }
         }.flatMap { Buffer(buf: buf).asString() }
     }
-    
-    ///Gets REMOTE item from local branch. Doesn't works with remote branch
+
+    /// Gets REMOTE item from local branch. Doesn't works with remote branch
     func remote() -> Result<Remote, Error> {
-        let (_, repo) = self.value
-        
+        let (_, repo) = value
+
         return remoteName()
             .flatMap { remoteName in
                 repo.remoteRepo(named: remoteName)
             }
-        
     }
 }

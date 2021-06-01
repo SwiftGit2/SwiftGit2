@@ -19,22 +19,22 @@ public enum BranchLocation {
 }
 
 public protocol Branch: InstanceProtocol {
-    var nameAsBranch        : String?   { get }
-    var nameAsReference     : String    { get }
-    var isBranch            : Bool      { get }
-    var isRemote            : Bool      { get }
-    
-    var targetOID           : Result<OID, Error> { get }
-    
-    func set(target: OID, message: String) -> Result<Reference,Error>
+    var nameAsBranch: String? { get }
+    var nameAsReference: String { get }
+    var isBranch: Bool { get }
+    var isRemote: Bool { get }
+
+    var targetOID: Result<OID, Error> { get }
+
+    func set(target: OID, message: String) -> Result<Reference, Error>
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /// Reference
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-extension Branch {
-    public var nameAsBranch 	: String? 	{ ( try? branchName.get() ) }
+public extension Branch {
+    var nameAsBranch: String? { try? branchName.get() }
 }
 
 public extension Branch {
@@ -43,39 +43,39 @@ public extension Branch {
     /// newName looks like "BrowserGridItemView" BUT NOT LIKE "refs/heads/BrowserGridItemView"
     func setUpstreamName(newName: String) -> Result<Branch, Error> {
         let cleanedName = newName.replace(of: "refs/heads/", to: "")
-        
-        return _result({ self }, pointOfFailure: "git_branch_set_upstream" ) {
+
+        return _result({ self }, pointOfFailure: "git_branch_set_upstream") {
             cleanedName.withCString { newBrName in
-                git_branch_set_upstream(self.pointer, newBrName);
+                git_branch_set_upstream(self.pointer, newBrName)
             }
         }
     }
-    
+
     /// can be called only for local branch;
     func upstreamName(clean: Bool = false) -> Result<String, Error> {
         if clean {
-            return upstream().map{ $0.nameAsReference.replace(of: "refs/remotes/", to: "") }
+            return upstream().map { $0.nameAsReference.replace(of: "refs/remotes/", to: "") }
         }
-        
-        return upstream().map{ $0.nameAsReference }
+
+        return upstream().map { $0.nameAsReference }
     }
-    
+
     /// Can be used only on local branch
     func upstream() -> Result<Branch, Error> {
-        var resolved: OpaquePointer? = nil
-        
+        var resolved: OpaquePointer?
+
         return git_try("git_branch_upstream") { git_branch_upstream(&resolved, self.pointer) }
             .flatMap { Reference(resolved!).asBranch() }
     }
-    
+
     /// can be called only for local branch;
     ///
     /// newNameWithPath MUST BE WITH "refs/heads/"
     /// Will reset assigned upstream Name
     func setLocalName(newNameWithPath: String) -> Result<Branch, Error> {
-        guard   newNameWithPath.contains("refs/heads/")
+        guard newNameWithPath.contains("refs/heads/")
         else { return .failure(BranchError.NameIsNotLocal as Error) }
-        
+
         return (self as! Reference).rename(.full(newNameWithPath)).flatMap { $0.asBranch() }
     }
 }
@@ -86,26 +86,25 @@ public extension Branch {
 
 // High Level code
 
-
 // Low Level code
 public extension Repository {
-    func branches( _ location: BranchLocation) -> Result<[Branch], Error> {
+    func branches(_ location: BranchLocation) -> Result<[Branch], Error> {
         switch location {
         case .local:
             return references(withPrefix: "refs/heads/")
                 .flatMap { $0.flatMap { $0.asBranch() } }
-            
+
         case .remote:
             return references(withPrefix: "refs/remotes/")
                 .flatMap { $0.flatMap { $0.asBranch() } }
         }
     }
-    
+
     /// Get upstream name by branchName
     func upstreamName(branchName: String) -> Result<String, Error> {
         var buf = git_buf(ptr: nil, asize: 0, size: 0)
-        
-        return  _result({Buffer(buf: buf)}, pointOfFailure: "" ) {
+
+        return _result({ Buffer(buf: buf) }, pointOfFailure: "") {
             branchName.withCString { refname in
                 git_branch_upstream_name(&buf, self.pointer, refname)
             }
@@ -115,9 +114,9 @@ public extension Repository {
 }
 
 private extension Branch {
-    private var branchName : Result<String, Error> {
-        var pointer: UnsafePointer<Int8>? = nil // Pointer to the abbreviated reference name. Owned by ref, do not free.
-        
+    private var branchName: Result<String, Error> {
+        var pointer: UnsafePointer<Int8>? // Pointer to the abbreviated reference name. Owned by ref, do not free.
+
         return git_try("git_branch_name") {
             git_branch_name(&pointer, self.pointer)
         }
@@ -125,20 +124,20 @@ private extension Branch {
     }
 }
 
-fileprivate extension String {
+private extension String {
     func replace(of: String, to: String) -> String {
-        return self.replacingOccurrences(of: of, with: to, options: .regularExpression, range: nil)
+        return replacingOccurrences(of: of, with: to, options: .regularExpression, range: nil)
     }
 }
 
 ////////////////////////////////////////////////////////////////////
-///ERRORS
+/// ERRORS
 ////////////////////////////////////////////////////////////////////
 
 enum BranchError: Error {
-    //case BranchNameIncorrectFormat
+    // case BranchNameIncorrectFormat
     case NameIsNotLocal
-    //case NameMustNotContainsRefsRemotes
+    // case NameMustNotContainsRefsRemotes
 }
 
 extension BranchError: LocalizedError {
@@ -148,8 +147,8 @@ extension BranchError: LocalizedError {
         //	  return "Name must include 'refs' or 'home' block"
         case .NameIsNotLocal:
             return "Name must be Local. It must have include 'refs/heads/'"
-        //	case .NameMustNotContainsRefsRemotes:
-        //	  return "Name must be Remote. But it must not contain 'refs/remotes/'"
+            //	case .NameMustNotContainsRefsRemotes:
+            //	  return "Name must be Remote. But it must not contain 'refs/remotes/'"
         }
     }
 }

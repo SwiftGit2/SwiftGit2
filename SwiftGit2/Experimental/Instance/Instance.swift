@@ -6,11 +6,11 @@
 //  Copyright © 2020 GitHub, Inc. All rights reserved.
 //
 
-import Foundation
 import Clibgit2
+import Foundation
 
 public protocol InstanceProtocol {
-	var pointer: OpaquePointer { get }
-	
-	init(_ pointer: OpaquePointer)
+    var pointer: OpaquePointer { get }
+
+    init(_ pointer: OpaquePointer)
 }

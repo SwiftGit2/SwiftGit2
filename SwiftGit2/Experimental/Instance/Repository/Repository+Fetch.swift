@@ -6,8 +6,8 @@
 //  Copyright © 2021 GitHub, Inc. All rights reserved.
 //
 
-import Foundation
 import Clibgit2
+import Foundation
 
 public enum FetchTarget {
     case HEAD
@@ -15,23 +15,22 @@ public enum FetchTarget {
 }
 
 public extension Repository {
-    func fetch(_ target : FetchTarget, options: FetchOptions = FetchOptions()) -> Result<Branch, Error> {
+    func fetch(_ target: FetchTarget, options: FetchOptions = FetchOptions()) -> Result<Branch, Error> {
         switch target {
         case .HEAD:
             return HEAD()
                 .flatMap { $0.asBranch() }
-                .flatMap { self.fetch(.branch($0))} // very fancy recursion
-        case .branch(let branch):
-            return Duo(branch,self).remote()
+                .flatMap { self.fetch(.branch($0)) } // very fancy recursion
+        case let .branch(branch):
+            return Duo(branch, self).remote()
                 .flatMap { $0.fetch(options: options) }
                 .map { branch }
         }
     }
 }
 
-
 public extension Remote {
-    func fetch(options: FetchOptions) -> Result<(), Error> {
+    func fetch(options: FetchOptions) -> Result<Void, Error> {
         return git_try("git_remote_fetch") {
             options.with_git_fetch_options {
                 git_remote_fetch(pointer, nil, &$0, nil)

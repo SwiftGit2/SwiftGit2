@@ -6,12 +6,12 @@
 //  Copyright © 2021 GitHub, Inc. All rights reserved.
 //
 
-import Foundation
 import Clibgit2
+import Foundation
 
 public class ProxyOptions {
     private var proxy_options = git_proxy_options()
-    
+
     public init() {
         git_proxy_options_init(&proxy_options, UInt32(GIT_PROXY_OPTIONS_VERSION))
     }

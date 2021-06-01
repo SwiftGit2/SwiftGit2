@@ -26,7 +26,7 @@ func _result<T>(_ value: () -> T, pointOfFailure: String, block: () -> Int32) ->
     }
 }
 
-func git_try(_ id: String, block: () -> Int32) -> Result<(), Error> {
+func git_try(_ id: String, block: () -> Int32) -> Result<Void, Error> {
     let result = block()
     if result == GIT_OK.rawValue {
         return .success(())
@@ -35,8 +35,8 @@ func git_try(_ id: String, block: () -> Int32) -> Result<(), Error> {
     }
 }
 
-func git_instance<T:InstanceProtocol>(of type:T.Type, _ id: String, block: (_ pointer: inout OpaquePointer?) -> Int32) -> Result<T, Error> {
-    var pointer: OpaquePointer? = nil
+func git_instance<T: InstanceProtocol>(of _: T.Type, _ id: String, block: (_ pointer: inout OpaquePointer?) -> Int32) -> Result<T, Error> {
+    var pointer: OpaquePointer?
     let result = block(&pointer)
     if result == GIT_OK.rawValue {
         return .success(T(pointer!))

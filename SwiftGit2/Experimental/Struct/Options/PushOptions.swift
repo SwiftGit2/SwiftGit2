@@ -6,20 +6,20 @@
 //  Copyright © 2021 GitHub, Inc. All rights reserved.
 //
 
-import Foundation
 import Clibgit2
+import Foundation
 
 public class PushOptions {
     let callbacks: RemoteCallbacks
     private var push_options = git_push_options()
-    
+
     public init(callbacks: RemoteCallbacks) {
         self.callbacks = callbacks
-        
+
         let result = git_push_init_options(&push_options, UInt32(GIT_PUSH_OPTIONS_VERSION))
         assert(result == GIT_OK.rawValue)
     }
-    
+
     public convenience init(auth: Auth = .auto) {
         self.init(callbacks: RemoteCallbacks(auth: auth))
     }
@@ -33,4 +33,3 @@ extension PushOptions {
         }
     }
 }
-

@@ -10,27 +10,27 @@ import Clibgit2
 import Essentials
 
 public extension Repository {
-    func push(options: PushOptions = PushOptions()) -> Result<(), Error> {
-        let branch = self.HEAD()
+    func push(options: PushOptions = PushOptions()) -> Result<Void, Error> {
+        let branch = HEAD()
             .flatMap { $0.asBranch() }
-            
+
         let remote = branch
-            .flatMap { Duo($0,self).remote() }
-        
+            .flatMap { Duo($0, self).remote() }
+
         return combine(remote, branch)
             .flatMap { $0.push(branchName: $1.nameAsReference, options: options) }
     }
-    
-    func push(remoteName: String, branchName: String, options: PushOptions) -> Result<(), Error> {
+
+    func push(remoteName: String, branchName: String, options: PushOptions) -> Result<Void, Error> {
         remote(name: remoteName)
             .flatMap { $0.push(branchName: branchName, options: options) }
     }
 }
 
 extension Remote {
-    func push(branchName: String, options: PushOptions ) -> Result<(), Error> {
-        print("Trying to push ''\(branchName)'' to remote ''\(self.name)'' with URL:''\(self.url)''")
-        
+    func push(branchName: String, options: PushOptions) -> Result<Void, Error> {
+        print("Trying to push ''\(branchName)'' to remote ''\(name)'' with URL:''\(url)''")
+
         return git_try("git_remote_push") {
             options.with_git_push_options { push_options in
                 [branchName].with_git_strarray { strarray in
@@ -43,8 +43,8 @@ extension Remote {
 
 public extension Duo where T1 == Branch, T2 == Remote {
     /// Push local branch changes to remote branch
-    func push(auth: Auth = .auto) -> Result<(), Error> {
+    func push(auth: Auth = .auto) -> Result<Void, Error> {
         let (branch, remote) = value
-        return remote.push(branchName: branch.nameAsReference, options: PushOptions(auth: auth) )
+        return remote.push(branchName: branch.nameAsReference, options: PushOptions(auth: auth))
     }
 }

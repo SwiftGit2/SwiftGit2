@@ -1,5 +1,5 @@
-import Foundation
 import Clibgit2
+import Foundation
 
 internal extension NSError {
     /// Returns an NSError with an error domain and message for libgit2 errors.
@@ -11,14 +11,13 @@ internal extension NSError {
     convenience init(gitError errorCode: Int32, pointOfFailure: String? = nil) {
         let code = Int(errorCode)
         var userInfo: [String: String] = [:]
-        
+
         var domain = "lib."
         if let pointOfFailure = pointOfFailure {
             userInfo[NSLocalizedFailureReasonErrorKey] = "\(pointOfFailure) failed."
             domain += "\(pointOfFailure) failed: "
         }
-        
-        
+
         if let message = errorMessage(errorCode) {
             userInfo[NSLocalizedDescriptionKey] = message + "(\(pointOfFailure ?? "")"
             domain += message
@@ -26,10 +25,7 @@ internal extension NSError {
             userInfo[NSLocalizedDescriptionKey] = "Unknown libgit2 error."
             domain += "unknown"
         }
-        
-        
-        
-        
+
         self.init(domain: domain, code: code, userInfo: userInfo)
     }
 }
