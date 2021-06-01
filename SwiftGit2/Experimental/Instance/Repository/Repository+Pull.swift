@@ -10,15 +10,22 @@ import Foundation
 import Clibgit2
 import Essentials
 
+public enum PullResult {
+    case upToDate
+    case fastForward
+    case threeWaySuccess
+    case threeWayConflict(Index)
+}
+
 public extension Repository {
     
-    func pull(options: FetchOptions = FetchOptions(auth: .auto), signature: Signature) -> Result<(), Error> {
+    func pull(options: FetchOptions = FetchOptions(auth: .auto), signature: Signature) -> Result<PullResult, Error> {
         return combine(self.fetch(.HEAD, options: options), mergeAnalysis(.HEAD))
             .flatMap { branch, anal in self.mergeFromUpstream(anal: anal, ourLocal: branch, signature: signature)}
     }
     
-    private func mergeFromUpstream(anal: MergeAnalysis, ourLocal: Branch, signature: Signature) -> Result<(), Error>  {
-        guard !anal.contains(.upToDate) else { return .success(()) }
+    private func mergeFromUpstream(anal: MergeAnalysis, ourLocal: Branch, signature: Signature) -> Result<PullResult, Error>  {
+        guard !anal.contains(.upToDate) else { return .success(.upToDate) }
         
         let theirReference = ourLocal
             .upstream()
@@ -37,6 +44,7 @@ public extension Repository {
                 .flatMap { oid, message in ourLocal.set(target: oid, message: message) }
                 .flatMap { $0.asBranch() }
                 .flatMap { self.checkout(branch: $0) }
+                .map { _ in .fastForward }
             
         } else if anal.contains(.normal) {
             /////////////////////////////////
@@ -60,10 +68,11 @@ public extension Repository {
                 .flatMap { $0.tree(self) }
                 .flatMap { self.merge(our: $0[0], their: $0[1], ancestor: $0[2]) } // -> Index
                 .if(\.hasConflicts,
-                    then: { _ in .failure(WTF("three way merge didn't implemented")) },
+                    then: { .success(.threeWayConflict($0)) },
                     else: { index in
                         combine(message, parents)
                             .flatMap { index.commit(into: self, signature: signature, message: $0, parents: $1)}
+                            .map { _ in .threeWaySuccess }
                     }
                 )
         }
