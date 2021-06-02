@@ -686,7 +686,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = script/update_libgit2_ios;
+			shellScript = "script/update_libgit2_ios\n";
 		};
 		621E66E81C729EB800A0F352 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -699,7 +699,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = script/update_libssl_ios;
+			shellScript = "script/update_libssl_ios\n";
 		};
 		621E66EE1C729EBB00A0F352 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -725,7 +725,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = script/update_libgit2;
+			shellScript = "script/update_libgit2\n";
 		};
 		C9CE0DD61E0710C20053205D /* Lint Sources */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -1021,14 +1021,15 @@
 				);
 				INFOPLIST_FILE = SwiftGit2/Info.plist;
 				LIBRARY_SEARCH_PATHS = (
-					External,
+					"External/libgit2-mac",
+					External/,
 					"$(inherited)",
 				);
 				OTHER_LDFLAGS = (
-					"-lgit2",
 					"-force_load",
-					External/libgit2.a,
+					"External/libgit2-mac/libgit2-mac.a",
 					/usr/local/lib/libssh2.a,
+					"-lgit2-mac",
 					"-lcrypto",
 					"-lssl",
 					"-lcurl",
@@ -1036,6 +1037,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "org.libgit2.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = SwiftGit2;
 				SWIFT_INCLUDE_PATHS = "$(SRCROOT)/libgit2";
+				VALID_ARCHS = "arm64 arm64e i386 x86_64\n";
 			};
 			name = Debug;
 		};
@@ -1049,14 +1051,15 @@
 				);
 				INFOPLIST_FILE = SwiftGit2/Info.plist;
 				LIBRARY_SEARCH_PATHS = (
-					External,
+					"External/libgit2-mac",
+					External/,
 					"$(inherited)",
 				);
 				OTHER_LDFLAGS = (
-					"-lgit2",
 					"-force_load",
-					External/libgit2.a,
+					"External/libgit2-mac/libgit2-mac.a",
 					/usr/local/lib/libssh2.a,
+					"-lgit2-mac",
 					"-lcrypto",
 					"-lssl",
 					"-lcurl",
@@ -1064,6 +1067,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "org.libgit2.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = SwiftGit2;
 				SWIFT_INCLUDE_PATHS = "$(SRCROOT)/libgit2";
+				VALID_ARCHS = "arm64 arm64e i386 x86_64\n";
 			};
 			name = Release;
 		};

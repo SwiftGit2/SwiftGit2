@@ -9,7 +9,7 @@ function setup_build_environment ()
     # e.g. via brew. Xcode's Run Script phase doesn't seem to honor
     # ~/.MacOSX/environment.plist
     PATH="/usr/local/bin:/opt/boxen/homebrew/bin:$PATH"
-    
+
     pushd "$SCRIPT_DIR/.." > /dev/null
     ROOT_PATH="$PWD"
     popd > /dev/null
@@ -22,7 +22,7 @@ function setup_build_environment ()
     MACOSX_DEPLOYMENT_TARGET=""
 
     XCODE_MAJOR_VERSION=$(xcode_major_version)
-    
+
     CAN_BUILD_64BIT="0"
 
     # If IPHONEOS_DEPLOYMENT_TARGET has not been specified
@@ -32,7 +32,7 @@ function setup_build_environment ()
     then
         IPHONEOS_DEPLOYMENT_TARGET="6.0"
     fi
-    
+
     # Determine if we can be building 64-bit binaries
     if [ "${XCODE_MAJOR_VERSION}" -ge "5" ] && [ $(echo ${IPHONEOS_DEPLOYMENT_TARGET} '>=' 6.0 | bc -l) == "1" ]
     then
@@ -51,7 +51,7 @@ function setup_build_environment ()
 function build_all_archs ()
 {
     setup_build_environment
-    
+
     local setup=$1
     local build_arch=$2
     local finish_build=$3
@@ -80,8 +80,8 @@ function build_all_archs ()
         fi
 
         SDKNAME="${PLATFORM}${SDKVERSION}"
-        SDKROOT="$(ios_sdk_path ${SDKNAME})"
-        
+        SDKROOT="$(sdk_path ${SDKNAME})"
+
         echo "Building ${LIBRARY_NAME} for ${SDKNAME} ${ARCH}"
         echo "Please stand by..."
 
@@ -92,4 +92,3 @@ function build_all_archs ()
     # finish the build (usually lipo)
     eval $finish_build
 }
-
