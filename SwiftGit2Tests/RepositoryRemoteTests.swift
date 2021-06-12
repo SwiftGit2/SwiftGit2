@@ -44,16 +44,11 @@ class RepositoryRemoteTests: XCTestCase {
             .flatMap { $0.connect(direction: .push, auth: .credentials(.default)) } // should fail
             .assertSuccess("retmote.connect .push")
         
-        var creds = [GitTest.credentials_01, GitTest.credentials_bullshit]
-        
-        let closure = { () -> Credentials in
-            print("pop")
-            return creds.popLast() ?? Credentials.default
-        }
+        let creds = [GitTest.credentials_01, GitTest.credentials_bullshit] // last will be tried first
         
         repo.getRemoteFirst()
-            .flatMap { $0.connect(direction: .push, auth: .match { _, _ in closure() }) } // should succeed
-            .assertFailure("retmote.connect .push")
+            .flatMap { $0.connect(direction: .push, possibleCreds: creds) }
+            .assertFailure("retmote.connect .push") // should succeed
     }
 
     func testPush() {

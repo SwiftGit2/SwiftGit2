@@ -27,6 +27,17 @@ public extension Remote {
     var name        : String    { String(validatingUTF8: git_remote_name(pointer))! }
     var url         : String    { String(validatingUTF8: git_remote_url(pointer))! }
     var connected   : Bool      { git_remote_connected(pointer) == 1 }
+    
+    // tries different credentials sequentially: last item will be tried first
+    // returns first working Credentials instance
+    func connect(direction: Direction, possibleCreds: [Credentials]) -> R<(String, Credentials)> {
+        var creds = possibleCreds
+        let closure = { () -> Credentials in
+            return creds.popLast() ?? Credentials.none
+        }
+        
+        return connect(direction: direction, auth: .match { _, _ in closure() } )
+    }
 
     func connect(direction: Direction, auth: Auth) -> R<(String, Credentials)> {
         let callbacks = RemoteCallbacks(auth: auth)
