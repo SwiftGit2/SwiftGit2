@@ -19,7 +19,11 @@ internal extension NSError {
         }
 
         if let message = errorMessage(errorCode) {
-            userInfo[NSLocalizedDescriptionKey] = message + "(\(pointOfFailure ?? "")"
+            if let pof = pointOfFailure {
+                userInfo[NSLocalizedDescriptionKey] = "[\(pof)]: \(message)"
+            } else {
+                userInfo[NSLocalizedDescriptionKey] = message
+            }
             domain += message
         } else {
             userInfo[NSLocalizedDescriptionKey] = "Unknown libgit2 error."

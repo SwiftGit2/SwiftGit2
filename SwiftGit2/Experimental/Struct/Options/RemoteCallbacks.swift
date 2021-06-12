@@ -20,6 +20,7 @@ public enum Auth {
 
 public class RemoteCallbacks: GitPayload {
     let auth: Auth
+    var recentCredentials = Credentials.default
     private var remote_callbacks = git_remote_callbacks()
     public var transferProgress: TransferProgressCB?
 
@@ -68,10 +69,13 @@ private func credentialsCallback(
     let name = username.map(String.init(cString:))
 
     let result: Int32
+    
+    let _payload = RemoteCallbacks.unretained(pointer: payload)
+    _payload.recentCredentials = _payload.auth.credentials(url: url, name: name)
 
-    switch RemoteCallbacks.unretained(pointer: payload).auth.credentials(url: url, name: name) {
+    switch _payload.recentCredentials {
     case .none:
-        return -1
+        return 1    // will fail with: [git_remote_connect]: remote authentication required but no callback set
     case .default:
         result = git_credential_default_new(cred)
     case .sshAgent:

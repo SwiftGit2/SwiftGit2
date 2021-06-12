@@ -10,6 +10,8 @@ import Essentials
 @testable import SwiftGit2
 import XCTest
 
+
+
 class RepositoryRemoteTests: XCTestCase {
     override func setUpWithError() throws {}
     override func tearDownWithError() throws {}
@@ -41,6 +43,17 @@ class RepositoryRemoteTests: XCTestCase {
         repo.getRemoteFirst()
             .flatMap { $0.connect(direction: .push, auth: .credentials(.default)) } // should fail
             .assertSuccess("retmote.connect .push")
+        
+        var creds = [GitTest.credentials_01, GitTest.credentials_bullshit]
+        
+        let closure = { () -> Credentials in
+            print("pop")
+            return creds.popLast() ?? Credentials.default
+        }
+        
+        repo.getRemoteFirst()
+            .flatMap { $0.connect(direction: .push, auth: .match { _, _ in closure() }) } // should succeed
+            .assertFailure("retmote.connect .push")
     }
 
     func testPush() {
