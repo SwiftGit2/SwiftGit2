@@ -104,7 +104,7 @@ private func transferCallback(stats: UnsafePointer<git_indexer_progress>?, paylo
     return 0
 }
 
-extension Auth {
+public extension Auth {
     func credentials(url: String?, name: String?) -> Credentials {
         switch self {
         case .auto:
