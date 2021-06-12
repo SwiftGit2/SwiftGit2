@@ -38,3 +38,30 @@ extension Credentials {
         }
     }
 }
+
+// Debug output with HIDDEN sensetive information
+// example: Credentials.plaintext(username: example@gmail.com, password: ***************)
+extension Credentials : CustomStringConvertible {
+    public var description: String {
+        switch self {
+        case .none:
+            return "Credentials.none"
+        case .default:
+            return "Credentials.default"
+        case .sshAgent:
+            return "Credentials.sshAgent"
+        case .plaintext(username: let username, password: let password):
+            return "Credentials.plaintext(username: \(username), password: \(password.asPassword))"
+        case .sshMemory(username: let username, publicKey: _, privateKey: _, passphrase: _):
+            return "Credentials.sshMemory(username: \(username) ...)"
+        case .ssh(publicKey: let publicKey, privateKey: _, passphrase: _):
+            return "Credentials.ssh(publicKey: \(publicKey) ...)"
+        }
+    }
+}
+
+private extension String {
+    var asPassword : String {
+        return String(self.map { _ in "*" })
+    }
+}

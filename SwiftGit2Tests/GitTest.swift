@@ -9,6 +9,9 @@ struct GitTest {
     static var localRoot = URL(fileURLWithPath: "/tmp/\(prefix)", isDirectory: true)
     static var tmpURL: Result<URL, Error> { URL.tmp(.systemUnique, prefix: GitTest.prefix) }
     static let signature = Signature(name: "XCode Unit Test", email: "email@domain.com")
+    
+    static let credentials_bullshit = Credentials.plaintext(username: "bullshit@gmail.com", password: "bullshit")
+    static let credentials_01 = Credentials.plaintext(username: "xr.satan@gmail.com", password: "y2XvsUpdAw7PC28")
 }
 
 struct PublicTestRepo {
