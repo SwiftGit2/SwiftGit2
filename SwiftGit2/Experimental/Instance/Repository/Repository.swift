@@ -215,3 +215,49 @@ extension RepositoryError: LocalizedError {
         }
     }
 }
+
+///////////////////////////////////////////
+/// STAGE and unstage all files
+///////////////////////////////////////////
+public extension Repository {
+    /// stageAllFiles
+    func addAllFiles() -> Result<(),Error> {
+        let statOpt = StatusOptions()
+        
+        return combine(self.directoryURL, self.status(options: statOpt))
+            .map { repoUrl, status in
+                status
+                    .compactMap{ $0.indexToWorkDir }
+                    .map{ $0.getFileAbsPathUsing(repoPath: repoUrl.path) }
+            }
+            .flatMap { paths -> Result<(),Error> in
+                self.index()
+                    .flatMap {
+                        $0.add(paths: paths)
+                    }
+            }
+            
+    }
+
+    /// unstageAllFiles
+    func resetAllFiles() -> Result<(),Error>  {
+        let statOpt = StatusOptions()
+
+        return combine(self.directoryURL, self.status(options: statOpt))
+            .map { repoUrl, status in
+                status
+                    .compactMap{ $0.headToIndex }
+                    .map{ $0.getFileAbsPathUsing(repoPath: repoUrl.path) }
+            }
+            .flatMap {
+                self.reset(paths: $0)
+            }
+            .flatMap{ _ in .success(()) }
+    }
+}
+
+fileprivate extension Diff.Delta {
+    func getFileAbsPathUsing(repoPath: String) -> String {
+        return "\(repoPath)/" + ( (self.newFile?.path ?? self.oldFile?.path) ?? "" )
+    }
+}
