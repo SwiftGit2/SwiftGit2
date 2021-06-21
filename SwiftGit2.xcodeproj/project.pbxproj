@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 52;
+	objectVersion = 46;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -33,7 +33,6 @@
 		E623A3142634883100484E11 /* CloneOptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = E623A3132634883100484E11 /* CloneOptions.swift */; };
 		E623A31F2634885800484E11 /* CheckoutOptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = E623A31E2634885800484E11 /* CheckoutOptions.swift */; };
 		E623A35A2634D4AE00484E11 /* RemoteCallbacks.swift in Sources */ = {isa = PBXBuildFile; fileRef = E623A3592634D4AE00484E11 /* RemoteCallbacks.swift */; };
-		E632D5C0262874990039FF01 /* Essentials in Frameworks */ = {isa = PBXBuildFile; productRef = E632D5BF262874990039FF01 /* Essentials */; };
 		E6332B9126496F95004990E7 /* SubmoduleUpdateOptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6332B9026496F95004990E7 /* SubmoduleUpdateOptions.swift */; };
 		E6332C2B264BEFA1004990E7 /* MergeOptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6332C2A264BEFA1004990E7 /* MergeOptions.swift */; };
 		E6332C35264C24E0004990E7 /* StatusOptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6332C34264C24E0004990E7 /* StatusOptions.swift */; };
@@ -43,8 +42,6 @@
 		E6332D7326501055004990E7 /* Repository+Pull.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6332D7226501055004990E7 /* Repository+Pull.swift */; };
 		E6332DCF265167F0004990E7 /* RepositoryRemoteTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6332DCE265167F0004990E7 /* RepositoryRemoteTests.swift */; };
 		E6332DD1265167F0004990E7 /* SwiftGit2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BEB31F231A0D6F7A00F525B9 /* SwiftGit2.framework */; };
-		E6332DEF265179C7004990E7 /* Essentials in Frameworks */ = {isa = PBXBuildFile; productRef = E6332DEE265179C7004990E7 /* Essentials */; };
-		E6332DF1265179C7004990E7 /* Essentials in Embed Frameworks */ = {isa = PBXBuildFile; productRef = E6332DEE265179C7004990E7 /* Essentials */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		E6332E082652D20E004990E7 /* GitPayload.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6332E072652D20E004990E7 /* GitPayload.swift */; };
 		E6332E0D265302AD004990E7 /* PushOptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6332E0C265302AD004990E7 /* PushOptions.swift */; };
 		E63EDF6C265BC0F200A3D048 /* MergeAnalysisTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E63EDF6B265BC0F200A3D048 /* MergeAnalysisTests.swift */; };
@@ -90,7 +87,6 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				E6332DF1265179C7004990E7 /* Essentials in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -190,7 +186,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E632D5C0262874990039FF01 /* Essentials in Frameworks */,
 				BEB31FA01A0E595600F525B9 /* libz.dylib in Frameworks */,
 				BEB31F9E1A0E595100F525B9 /* libiconv.dylib in Frameworks */,
 			);
@@ -201,7 +196,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				E6332DD1265167F0004990E7 /* SwiftGit2.framework in Frameworks */,
-				E6332DEF265179C7004990E7 /* Essentials in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -506,7 +500,6 @@
 			);
 			name = "SwiftGit2-OSX";
 			packageProductDependencies = (
-				E632D5BF262874990039FF01 /* Essentials */,
 			);
 			productName = "SwiftGit2-OSX";
 			productReference = BEB31F231A0D6F7A00F525B9 /* SwiftGit2.framework */;
@@ -528,7 +521,6 @@
 			);
 			name = SwiftGit2Tests;
 			packageProductDependencies = (
-				E6332DEE265179C7004990E7 /* Essentials */,
 			);
 			productName = SwiftGit2Tests;
 			productReference = E6332DCC265167F0004990E7 /* SwiftGit2Tests.xctest */;
@@ -550,6 +542,7 @@
 					};
 					E6332DCB265167F0004990E7 = {
 						CreatedOnToolsVersion = 12.4;
+						ProvisioningStyle = Manual;
 					};
 				};
 			};
@@ -563,7 +556,6 @@
 			);
 			mainGroup = BEB31F191A0D6F7A00F525B9;
 			packageReferences = (
-				E632D5BE262874990039FF01 /* XCRemoteSwiftPackageReference "essentials" */,
 			);
 			productRefGroup = BEB31F241A0D6F7A00F525B9 /* Products */;
 			projectDirPath = "";
@@ -815,11 +807,7 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				INFOPLIST_FILE = SwiftGit2Tests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/../Frameworks",
-					"@loader_path/../Frameworks",
-				);
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 11.3;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
@@ -881,11 +869,7 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				INFOPLIST_FILE = SwiftGit2Tests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/../Frameworks",
-					"@loader_path/../Frameworks",
-				);
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 11.3;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
@@ -893,8 +877,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SDKROOT = macosx;
-				SWIFT_COMPILATION_MODE = wholemodule;
-				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
 				SWIFT_VERSION = 5.0;
 			};
 			name = Release;
@@ -930,30 +913,6 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
-
-/* Begin XCRemoteSwiftPackageReference section */
-		E632D5BE262874990039FF01 /* XCRemoteSwiftPackageReference "essentials" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "git@gitlab.com:sergiy.vynnychenko/essentials.git";
-			requirement = {
-				branch = master;
-				kind = branch;
-			};
-		};
-/* End XCRemoteSwiftPackageReference section */
-
-/* Begin XCSwiftPackageProductDependency section */
-		E632D5BF262874990039FF01 /* Essentials */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = E632D5BE262874990039FF01 /* XCRemoteSwiftPackageReference "essentials" */;
-			productName = Essentials;
-		};
-		E6332DEE265179C7004990E7 /* Essentials */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = E632D5BE262874990039FF01 /* XCRemoteSwiftPackageReference "essentials" */;
-			productName = Essentials;
-		};
-/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = BEB31F1A1A0D6F7A00F525B9 /* Project object */;
 }
