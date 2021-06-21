@@ -39,3 +39,4 @@ fastlane/screenshots/screenshots.html
 fastlane/test_output
 test_output
 .DS_Store
+/SwiftGit2.xcodeproj/project.xcworkspace/xcshareddata/swiftpm

@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 46;
+	objectVersion = 52;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -33,6 +33,8 @@
 		E623A3142634883100484E11 /* CloneOptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = E623A3132634883100484E11 /* CloneOptions.swift */; };
 		E623A31F2634885800484E11 /* CheckoutOptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = E623A31E2634885800484E11 /* CheckoutOptions.swift */; };
 		E623A35A2634D4AE00484E11 /* RemoteCallbacks.swift in Sources */ = {isa = PBXBuildFile; fileRef = E623A3592634D4AE00484E11 /* RemoteCallbacks.swift */; };
+		E62B73C4268092B400B7D881 /* Essentials in Frameworks */ = {isa = PBXBuildFile; productRef = E62B73C3268092B400B7D881 /* Essentials */; };
+		E62B73C5268092B400B7D881 /* Essentials in Embed Frameworks */ = {isa = PBXBuildFile; productRef = E62B73C3268092B400B7D881 /* Essentials */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		E6332B9126496F95004990E7 /* SubmoduleUpdateOptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6332B9026496F95004990E7 /* SubmoduleUpdateOptions.swift */; };
 		E6332C2B264BEFA1004990E7 /* MergeOptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6332C2A264BEFA1004990E7 /* MergeOptions.swift */; };
 		E6332C35264C24E0004990E7 /* StatusOptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6332C34264C24E0004990E7 /* StatusOptions.swift */; };
@@ -81,6 +83,17 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
+		E62B73C6268092B400B7D881 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				E62B73C5268092B400B7D881 /* Essentials in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		E6332DF0265179C7004990E7 /* Embed Frameworks */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
@@ -186,6 +199,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E62B73C4268092B400B7D881 /* Essentials in Frameworks */,
 				BEB31FA01A0E595600F525B9 /* libz.dylib in Frameworks */,
 				BEB31F9E1A0E595100F525B9 /* libiconv.dylib in Frameworks */,
 			);
@@ -493,6 +507,7 @@
 				BEB31F1E1A0D6F7A00F525B9 /* Sources */,
 				BEB31F1F1A0D6F7A00F525B9 /* Frameworks */,
 				BEB31F201A0D6F7A00F525B9 /* Headers */,
+				E62B73C6268092B400B7D881 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
@@ -500,6 +515,7 @@
 			);
 			name = "SwiftGit2-OSX";
 			packageProductDependencies = (
+				E62B73C3268092B400B7D881 /* Essentials */,
 			);
 			productName = "SwiftGit2-OSX";
 			productReference = BEB31F231A0D6F7A00F525B9 /* SwiftGit2.framework */;
@@ -556,6 +572,7 @@
 			);
 			mainGroup = BEB31F191A0D6F7A00F525B9;
 			packageReferences = (
+				E62B73C2268092B400B7D881 /* XCRemoteSwiftPackageReference "essentials" */,
 			);
 			productRefGroup = BEB31F241A0D6F7A00F525B9 /* Products */;
 			projectDirPath = "";
@@ -807,7 +824,11 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				INFOPLIST_FILE = SwiftGit2Tests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/../Frameworks",
+				);
 				MACOSX_DEPLOYMENT_TARGET = 11.3;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
@@ -869,7 +890,11 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				INFOPLIST_FILE = SwiftGit2Tests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/../Frameworks",
+				);
 				MACOSX_DEPLOYMENT_TARGET = 11.3;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
@@ -877,7 +902,8 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SDKROOT = macosx;
-				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
 				SWIFT_VERSION = 5.0;
 			};
 			name = Release;
@@ -913,6 +939,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		E62B73C2268092B400B7D881 /* XCRemoteSwiftPackageReference "essentials" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "git@gitlab.com:sergiy.vynnychenko/essentials.git";
+			requirement = {
+				branch = master;
+				kind = branch;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		E62B73C3268092B400B7D881 /* Essentials */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = E62B73C2268092B400B7D881 /* XCRemoteSwiftPackageReference "essentials" */;
+			productName = Essentials;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = BEB31F1A1A0D6F7A00F525B9 /* Project object */;
 }
