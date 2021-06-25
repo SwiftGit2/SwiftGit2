@@ -156,13 +156,13 @@ public extension Repository {
 
 // index
 public extension Repository {
-    func reset(paths: [String]) -> Result<Void, Error> {
+    func reset(relPaths: [String]) -> Result<Void, Error> {
         return HEAD()
             .flatMap { $0.targetOID }
             .flatMap { self.commit(oid: $0) }
             .flatMap { commit in
                 git_try("git_reset_default") {
-                    paths.with_git_strarray { strarray in
+                    relPaths.with_git_strarray { strarray in
                         git_reset_default(self.pointer, commit.pointer, &strarray)
                     }
                 }
@@ -250,7 +250,7 @@ public extension Repository {
                     .map{ $0.getFileAbsPathUsing(repoPath: repoUrl.path) }
             }
             .flatMap {
-                self.reset(paths: $0)
+                self.reset(relPaths: $0)
             }
             .flatMap{ _ in .success(()) }
     }
