@@ -55,8 +55,8 @@ public extension Index {
         }
     }
 
-    func remove(path: [String]) -> Result<Void, Error> {
-        return path.with_git_strarray { strarray in
+    func remove(relPaths: [String]) -> Result<Void, Error> {
+        return relPaths.with_git_strarray { strarray in
             _result((), pointOfFailure: "git_index_add_all") {
                 git_index_remove_all(pointer, &strarray, nil, nil)
             }

@@ -156,6 +156,7 @@ public extension Repository {
 
 // index
 public extension Repository {
+    //Unstage files by relative path
     func reset(relPaths: [String]) -> Result<Void, Error> {
         return HEAD()
             .flatMap { $0.targetOID }
