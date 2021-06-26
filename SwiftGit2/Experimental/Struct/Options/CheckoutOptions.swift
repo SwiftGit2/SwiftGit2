@@ -8,10 +8,10 @@ public class CheckoutOptions: GitPayload {
     private var checkout_options = git_checkout_options()
     fileprivate var checkoutProgressCB: CheckoutProgressBlock?
 
-    public init(strategy: CheckoutStrategy = .Safe, paths: [String]? = nil, progress: CheckoutProgressBlock? = nil) {
+    public init(strategy: CheckoutStrategy = .Safe, relPaths: [String]? = nil, progress: CheckoutProgressBlock? = nil) {
         checkoutProgressCB = progress
         
-        if let paths = paths {
+        if let paths = relPaths {
             paths.with_git_strarray {
                 checkout_options.paths = $0
             }
