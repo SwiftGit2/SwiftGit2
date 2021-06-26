@@ -25,8 +25,11 @@ public extension Repository {
         checkout(commit.oid, strategy: strategy, progress: progress)
     }
     
+    //works only with unstaged files
     func discardChanges(of absPaths: [String])  -> Result<Void, Error> {
-        let options = CheckoutOptions(strategy: [.Force], paths: absPaths)
+        print(absPaths)
+        
+        let options = CheckoutOptions(strategy: .Force, paths: absPaths)
         
         return git_try("git_checkout_index") {
             options.with_git_checkout_options { opt in
@@ -35,13 +38,16 @@ public extension Repository {
         }
     }
     
+    //works only with unstaged files
     func discardChanges()  -> Result<Void, Error> {
         let options = CheckoutOptions(strategy: .Force)
+        
         return git_try("git_checkout_index") {
-            options.with_git_checkout_options { opt in
-                git_checkout_index(self.pointer, nil, &opt)
-            }
-        }
+                    options.with_git_checkout_options { opt in
+                        git_checkout_index(self.pointer, nil, &opt)
+                    }
+                }
+            
     }
 }
 

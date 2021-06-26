@@ -169,6 +169,10 @@ public extension Repository {
                 }
             }
     }
+    
+    func add(relPaths: [String]) -> R<()> {
+        index().flatMap { $0.add(paths: relPaths) }
+    }
 }
 
 // Remote

@@ -11,9 +11,8 @@ public class CheckoutOptions: GitPayload {
     public init(strategy: CheckoutStrategy = .Safe, paths: [String]? = nil, progress: CheckoutProgressBlock? = nil) {
         checkoutProgressCB = progress
         
-        if let paths = paths{
+        if let paths = paths {
             paths.with_git_strarray {
-                checkout_options.file_mode = 499
                 checkout_options.paths = $0
             }
         }
