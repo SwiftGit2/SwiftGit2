@@ -161,7 +161,7 @@ public extension Repository {
 
 // index
 public extension Repository {
-    //Unstage files by relative path
+    ///Unstage files by relative path
     func reset(relPaths: [String]) -> Result<Void, Error> {
         return HEAD()
             .flatMap { $0.targetOID }
@@ -175,8 +175,14 @@ public extension Repository {
             }
     }
     
+    ///Stage files by relative path
     func add(relPaths: [String]) -> R<()> {
         index().flatMap { $0.add(paths: relPaths) }
+    }
+    
+    func remove(relPaths: [String]) -> R<()> {
+         index()
+            .flatMap { $0.remove(relPaths: relPaths) }
     }
 }
 
