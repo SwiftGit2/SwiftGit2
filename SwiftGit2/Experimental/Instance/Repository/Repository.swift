@@ -80,6 +80,11 @@ public extension Repository {
         case let .branch(b): return Duo(b, self).commit().flatMap { c in createBranch(from: c, name: name, checkout: checkout) }
         }
     }
+    
+    func branchLookup(name: String) -> R<Branch>{
+        reference(name: name)
+            .flatMap{ $0.asBranch() }
+    }
 
     func headCommit() -> Result<Commit, Error> {
         var oid = git_oid()
