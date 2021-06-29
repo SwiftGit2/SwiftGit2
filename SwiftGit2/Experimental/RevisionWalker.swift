@@ -7,10 +7,27 @@
 //
 import Clibgit2
 import Foundation
+import Essentials
+
+enum RevwalkTarget {
+    case PushRange(String)
+}
 
 public extension Repository {
+    func commitsToPush(_ target: FetchTarget) -> R<[Commit]> {
+        switch target {
+        case .HEAD:
+            return HEAD()
+                | { $0.asBranch() }
+                | { self.commitsToPush(.branch($0)) } // very fancy recursion
+        case let .branch(branch):
+            return branch.upstream()
+                | { $0.nameAsReference }
+                | { commitsToPush(branchToHide: branch.nameAsReference, branchToPush: $0) }
+        }
+    }
     /// Method needed to collect not pushed or not pulled commits
-    func getChangedCommits(branchToHide: String, branchToPush: String) -> Result<[Commit], Error> {
+    func commitsToPush(branchToHide: String, branchToPush: String) -> Result<[Commit], Error> {
         return walk(hideRef: branchToHide, pushRef: branchToPush)
     }
 }
@@ -18,13 +35,36 @@ public extension Repository {
 extension Repository {
     func walk(hideRef: String, pushRef: String) -> Result<[Commit], Error> {
         let walker = RevisionWalker(repo: self, hideRef: hideRef, pushRef: pushRef)
-        var result: [Result<Commit, Error>] = []
+        return Array(walker).flatMap { $0 }
+    }
+}
 
-        for elem in walker {
-            result.append(elem)
+private class Revwalk : InstanceProtocol {
+    var pointer: OpaquePointer
+    
+    required init(_ pointer: OpaquePointer) {
+        self.pointer = pointer
+    }
+    
+    static func new(in repo: Repository) -> R<Revwalk> {
+        git_instance(of: Revwalk.self, "git_revwalk_new") { git_revwalk_new(&$0, repo.pointer) }
+    }
+    
+    func push(range: String) -> R<Revwalk> {
+        git_try("git_revwalk_push_range") { git_revwalk_push_range(pointer, range) } | { self }
+    }
+    
+    private func _next() -> Next {
+        var oid = git_oid()
+
+        switch git_revwalk_next(&oid, pointer) {
+        case GIT_ITEROVER.rawValue:
+            return .over
+        case GIT_OK.rawValue:
+            return .okay(OID(oid))
+        default:
+            return .error(NSError(gitError: GIT_ERROR.rawValue, pointOfFailure: "git_revwalk_next"))
         }
-
-        return result.flatMap { $0 }
     }
 }
 
@@ -34,6 +74,11 @@ private class RevisionWalker: IteratorProtocol, Sequence {
     let repo: Repository
     private var pointer: OpaquePointer?
 
+    init(repo: Repository, target: FetchTarget) {
+        self.repo = repo
+        git_revwalk_new(&pointer, repo.pointer)
+    }
+    
     /// localBranchToHide: "refs/heads/master"
     /// remoteBranchToPush: "refs/remotes/origin/master"
     init(repo: Repository, hideRef: String, pushRef: String) {
