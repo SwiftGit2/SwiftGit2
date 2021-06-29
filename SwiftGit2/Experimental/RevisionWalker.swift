@@ -39,8 +39,8 @@ extension Repository {
     }
 }
 
-private class Revwalk : InstanceProtocol, ResultIterator {
-    typealias Success = Revwalk
+internal class Revwalk : InstanceProtocol, ResultIterator {
+    typealias Success = OID
     
     var pointer: OpaquePointer
     
@@ -56,22 +56,34 @@ private class Revwalk : InstanceProtocol, ResultIterator {
         git_try("git_revwalk_push_range") { git_revwalk_push_range(pointer, range) } | { self }
     }
     
-    func next() -> Result<Revwalk?, Error> {
+    func push(ref: String) -> R<Revwalk> {
+        git_try("git_revwalk_push_ref") { git_revwalk_push_ref(pointer, ref) } | { self }
+    }
+    
+    func hide(oid: OID) -> R<Revwalk> {
+        var oid = oid.oid
+        return git_try("git_revwalk_hide") { git_revwalk_hide(pointer, &oid) } | { self }
+    }
+    
+    func hide(ref: String) -> R<Revwalk> {
+        return git_try("git_revwalk_hide") { git_revwalk_hide_ref(pointer, ref) } | { self }
+    }
+    
+    // calls by all() in ResultIterator
+    func next() -> Result<OID?, Error> {
         var oid = git_oid()
 
         switch git_revwalk_next(&oid, pointer) {
         case GIT_ITEROVER.rawValue:
             return .success(nil)
         case GIT_OK.rawValue:
-            return .success(self)
+            return .success(OID(oid))
         default:
             return .failure(NSError(gitError: GIT_ERROR.rawValue, pointOfFailure: "git_revwalk_next"))
         }
     }
 
-    func walk() {
-        
-    }
+    
 }
 
 private class RevisionWalker: IteratorProtocol, Sequence {

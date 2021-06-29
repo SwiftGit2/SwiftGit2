@@ -70,6 +70,9 @@
 		E6D4A92224DF1B4300E8041E /* Object.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6D4A92124DF1B4300E8041E /* Object.swift */; };
 		E6D4A92424DF40CA00E8041E /* Index.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6D4A92324DF40CA00E8041E /* Index.swift */; };
 		E6D4A92824DF55E400E8041E /* Reference+Write.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6D4A92724DF55E400E8041E /* Reference+Write.swift */; };
+		E6E99235268BBF5E00F8E8BD /* RevwalkTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6E99234268BBF5E00F8E8BD /* RevwalkTests.swift */; };
+		E6E99239268BC1BE00F8E8BD /* Essentials in Frameworks */ = {isa = PBXBuildFile; productRef = E6E99238268BC1BE00F8E8BD /* Essentials */; };
+		E6E9923A268BC1BE00F8E8BD /* Essentials in Embed Frameworks */ = {isa = PBXBuildFile; productRef = E6E99238268BC1BE00F8E8BD /* Essentials */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -100,6 +103,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
+				E6E9923A268BC1BE00F8E8BD /* Essentials in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -192,6 +196,7 @@
 		E6D4A92124DF1B4300E8041E /* Object.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Object.swift; sourceTree = "<group>"; };
 		E6D4A92324DF40CA00E8041E /* Index.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Index.swift; sourceTree = "<group>"; };
 		E6D4A92724DF55E400E8041E /* Reference+Write.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Reference+Write.swift"; sourceTree = "<group>"; };
+		E6E99234268BBF5E00F8E8BD /* RevwalkTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RevwalkTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -210,6 +215,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				E6332DD1265167F0004990E7 /* SwiftGit2.framework in Frameworks */,
+				E6E99239268BC1BE00F8E8BD /* Essentials in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -396,6 +402,7 @@
 		E6332DCD265167F0004990E7 /* SwiftGit2Tests */ = {
 			isa = PBXGroup;
 			children = (
+				E6E99234268BBF5E00F8E8BD /* RevwalkTests.swift */,
 				E68A3AD126658A9E00B0244C /* SwiftGit2-OSX.xctestplan */,
 				E63EDF73265C0A6B00A3D048 /* RepositoryLocalTests.swift */,
 				E63EDF6B265BC0F200A3D048 /* MergeAnalysisTests.swift */,
@@ -537,6 +544,7 @@
 			);
 			name = SwiftGit2Tests;
 			packageProductDependencies = (
+				E6E99238268BC1BE00F8E8BD /* Essentials */,
 			);
 			productName = SwiftGit2Tests;
 			productReference = E6332DCC265167F0004990E7 /* SwiftGit2Tests.xctest */;
@@ -658,6 +666,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E6E99235268BBF5E00F8E8BD /* RevwalkTests.swift in Sources */,
 				E6332DCF265167F0004990E7 /* RepositoryRemoteTests.swift in Sources */,
 				E63EDF74265C0A6B00A3D048 /* RepositoryLocalTests.swift in Sources */,
 				E63EDF6E265BC30800A3D048 /* GitTest.swift in Sources */,
@@ -961,6 +970,11 @@
 
 /* Begin XCSwiftPackageProductDependency section */
 		E62B73C3268092B400B7D881 /* Essentials */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = E62B73C2268092B400B7D881 /* XCRemoteSwiftPackageReference "essentials" */;
+			productName = Essentials;
+		};
+		E6E99238268BC1BE00F8E8BD /* Essentials */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = E62B73C2268092B400B7D881 /* XCRemoteSwiftPackageReference "essentials" */;
 			productName = Essentials;
