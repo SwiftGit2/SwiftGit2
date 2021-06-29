@@ -39,7 +39,9 @@ extension Repository {
     }
 }
 
-private class Revwalk : InstanceProtocol {
+private class Revwalk : InstanceProtocol, ResultIterator {
+    typealias Success = Revwalk
+    
     var pointer: OpaquePointer
     
     required init(_ pointer: OpaquePointer) {
@@ -54,17 +56,21 @@ private class Revwalk : InstanceProtocol {
         git_try("git_revwalk_push_range") { git_revwalk_push_range(pointer, range) } | { self }
     }
     
-    private func _next() -> Next {
+    func next() -> Result<Revwalk?, Error> {
         var oid = git_oid()
 
         switch git_revwalk_next(&oid, pointer) {
         case GIT_ITEROVER.rawValue:
-            return .over
+            return .success(nil)
         case GIT_OK.rawValue:
-            return .okay(OID(oid))
+            return .success(self)
         default:
-            return .error(NSError(gitError: GIT_ERROR.rawValue, pointOfFailure: "git_revwalk_next"))
+            return .failure(NSError(gitError: GIT_ERROR.rawValue, pointOfFailure: "git_revwalk_next"))
         }
+    }
+
+    func walk() {
+        
     }
 }
 
