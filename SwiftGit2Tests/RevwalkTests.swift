@@ -62,12 +62,5 @@ class RevwalkTests: XCTestCase {
             .flatMap { $0.all() }
             .map { $0.count }
             .assertFailure("hide remotes, push heads")
-        
-        Revwalk.new(in: repo2)
-            .flatMap { $0.hide(ref: "refs/heads/master") }
-            .flatMap { $0.push(ref: "refs/remotes/origin/master") }
-            .flatMap { $0.all() }
-            .map { $0.count }
-            .assertFailure("hide heads, push remotes")
     }
 }
