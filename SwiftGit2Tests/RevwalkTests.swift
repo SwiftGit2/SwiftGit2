@@ -33,22 +33,15 @@ class RevwalkTests: XCTestCase {
             .map { $0.count }
             .assertFailure("Revwalk.push(range")
         
-        repo1.references(withPrefix: "refs/heads")
-            .map { $0.map { $0.nameAsReference } }
-            .assertFailure("references(withPrefix")
-        
         repo1.t_commit(msg: "commit for Revvalk")
-            .assertFailure("commit for Revvalk")
-        
-        Revwalk.new(in: repo1)
-            .flatMap { $0.push(ref: "refs/heads/master") }
-            .flatMap { $0.hide(ref: "refs/remotes/origin/master") }
-            .flatMap { $0.all() }
+            .assertFailure()
+
+        repo1.pendingCommits(.HEAD, .push)
             .map { $0.count }
-            .assertFailure("Revwalk.push ..heads.., Revalk.hide ..remotes..")
-        
+            .assertEqual(to: 1, "repo1.pendingCommits(.HEAD, .push)")
+                
         repo1.push()
-            .assertFailure("")
+            .assertFailure("push")
         
         repo2.fetch(.HEAD)
             .assertFailure()
@@ -56,11 +49,8 @@ class RevwalkTests: XCTestCase {
         repo2.mergeAnalysis(.HEAD)
             .assertEqual(to: [.fastForward, .normal])
         
-        Revwalk.new(in: repo2)
-            .flatMap { $0.push(ref: "refs/remotes/origin/master") }
-            .flatMap { $0.hide(ref: "refs/heads/master") }
-            .flatMap { $0.all() }
+        repo2.pendingCommits(.HEAD, .fetch)
             .map { $0.count }
-            .assertFailure("hide remotes, push heads")
+            .assertEqual(to: 1, "repo2.pendingCommits(.HEAD, .fetch)")
     }
 }
