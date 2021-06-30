@@ -10,6 +10,13 @@ import Foundation
 import Essentials
 
 public extension Repository {
+    func pendingCommitsCount(_ target: FetchTarget) -> R<(Int,Int)> {
+        let push = pendingCommits(target, .push)    | { $0.count }
+        let fetch = pendingCommits(target, .fetch)  | { $0.count }
+        
+        return combine(push, fetch)
+    }
+    
     func pendingCommits(_ target: FetchTarget, _ direction: Direction) -> R<[Commit]> {
         switch target {
         case .HEAD:
