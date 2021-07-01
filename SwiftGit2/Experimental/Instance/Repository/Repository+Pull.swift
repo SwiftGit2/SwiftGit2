@@ -17,7 +17,27 @@ public enum PullResult {
     case threeWayConflict(Index)
 }
 
+public enum PullPushResult {
+    case conflict(Index)
+    case success
+}
+
 public extension Repository {
+    func pullAndPush(_ target: FetchTarget, fetchOptions: FetchOptions = FetchOptions(auth: .auto), pushOptions: PushOptions = PushOptions(), signature: Signature) -> R<PullPushResult> {
+        switch pull(target, options: fetchOptions, signature: signature) {
+        case let .success(result):
+            switch result {
+            case let .threeWayConflict(index):
+                return .success(.conflict(index))
+            default:
+                return push(options: pushOptions)
+                    .map { .success }
+            }
+        case let .failure(error):
+            return .failure(error)
+        }
+    }
+    
     func pull(_ target: FetchTarget, options: FetchOptions = FetchOptions(auth: .auto), signature: Signature) -> Result<PullResult, Error> {
         return combine(fetch(target, options: options), mergeAnalysis(target))
             .flatMap { branch, anal in self.mergeFromUpstream(anal: anal, ourLocal: branch, signature: signature) }
@@ -120,13 +140,3 @@ extension PullResult: Equatable {
         }
     }
 }
-
-// public static func == (lhs: DetachedHeadFix, rhs: DetachedHeadFix) -> Bool {
-//    switch (lhs, rhs) {
-//    case (.fixed, .fixed): return true
-//    case (.notNecessary, .notNecessary): return true
-//    case let (.ambiguous(a_l), .ambiguous(a_r)):
-//        return a_l == a_r
-//    default: return false
-//    }
-// }
