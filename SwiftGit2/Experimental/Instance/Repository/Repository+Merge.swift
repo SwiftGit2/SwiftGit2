@@ -48,7 +48,7 @@ public extension Repository {
             }
     }
 
-    func mergeAnalysis(_ target: FetchTarget) -> Result<MergeAnalysis, Error> {
+    func mergeAnalysis(_ target: GitTarget) -> Result<MergeAnalysis, Error> {
         switch target {
         case .HEAD:
             return HEAD()

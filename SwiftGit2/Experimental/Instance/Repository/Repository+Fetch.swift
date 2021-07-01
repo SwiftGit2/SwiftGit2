@@ -9,13 +9,13 @@
 import Clibgit2
 import Foundation
 
-public enum FetchTarget {
+public enum GitTarget {
     case HEAD
     case branch(Branch)
 }
 
 public extension Repository {
-    func fetch(_ target: FetchTarget, options: FetchOptions = FetchOptions()) -> Result<Branch, Error> {
+    func fetch(_ target: GitTarget, options: FetchOptions = FetchOptions()) -> Result<Branch, Error> {
         switch target {
         case .HEAD:
             return HEAD()

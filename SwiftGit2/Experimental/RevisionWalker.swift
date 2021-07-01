@@ -9,15 +9,23 @@ import Clibgit2
 import Foundation
 import Essentials
 
+public enum PendingCommits {
+    case pushpull(Int,Int) // push/pull
+    case push(Int)          // no upastream
+}
+
 public extension Repository {
-    func pendingCommitsCount(_ target: FetchTarget) -> R<(Int,Int)> {
+    func pendingCommitsCount(_ target: GitTarget) -> R<(Int,Int)> {
+        return .failure(WTF(""))
+    }
+    func _pendingCommitsCount(_ target: GitTarget) -> R<(Int,Int)> {
         let push = pendingCommits(target, .push)    | { $0.count }
         let fetch = pendingCommits(target, .fetch)  | { $0.count }
         
         return combine(push, fetch)
     }
     
-    func pendingCommits(_ target: FetchTarget, _ direction: Direction) -> R<[Commit]> {
+    func pendingCommits(_ target: GitTarget, _ direction: Direction) -> R<[Commit]> {
         switch target {
         case .HEAD:
             return HEAD()
