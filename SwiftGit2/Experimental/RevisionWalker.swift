@@ -15,9 +15,11 @@ public enum PendingCommits {
 }
 
 public extension Repository {
-    func pendingCommitsCount(_ target: GitTarget) -> R<(Int,Int)> {
-        return .failure(WTF(""))
+    func pendingCommitsCount(_ target: GitTarget) -> R<PendingCommits> {
+        _pendingCommitsCount(target)
+            .map { .pushpull($0, $1) }
     }
+    
     func _pendingCommitsCount(_ target: GitTarget) -> R<(Int,Int)> {
         let push = pendingCommits(target, .push)    | { $0.count }
         let fetch = pendingCommits(target, .fetch)  | { $0.count }

@@ -72,7 +72,7 @@ public enum BranchBase {
     case branch(Branch)
 }
 
-public extension Repository {
+public extension Repository {    
     func createBranch(from base: BranchBase, name: String, checkout: Bool) -> Result<Reference, Error> {
         switch base {
         case .head: return headCommit().flatMap { createBranch(from: $0, name: name, checkout: checkout) }

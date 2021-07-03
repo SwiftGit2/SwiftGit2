@@ -101,4 +101,18 @@ class RepositoryRemoteTests: XCTestCase {
         repo.push()
             .assertSuccess("push")
     }
+    
+    func testUpstreamExists() {
+        let info = PublicTestRepo()
+
+        guard let repo = Repository.clone(from: info.urlHttps, to: info.localPath, options: CloneOptions(fetch: FetchOptions(auth: .auto)))
+            .assertFailure("clone") else { fatalError() }
+        
+        repo.upstreamExistsFor(.HEAD)
+            .assertFailure("upstreamExistsFor")
+        
+        repo.createBranch(from: .head, name: "newBranch", checkout: true)
+            .flatMap { repo.upstreamExistsFor(.branch($0)) }
+            .assertEqual(to: false, "upstreamExistsFor newBranch")
+    }
 }

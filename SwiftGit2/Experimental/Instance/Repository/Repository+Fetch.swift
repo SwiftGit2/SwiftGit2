@@ -8,6 +8,7 @@
 
 import Clibgit2
 import Foundation
+import Essentials
 
 public enum GitTarget {
     case HEAD
@@ -35,6 +36,31 @@ public extension Remote {
             options.with_git_fetch_options {
                 git_remote_fetch(pointer, nil, &$0, nil)
             }
+        }
+    }
+}
+
+internal extension Repository {
+    func upstreamExistsFor(_ target: GitTarget) -> R<Bool> {
+        switch target {
+        case .HEAD:
+            return HEAD()
+                .flatMap { $0.asBranch() }
+                .flatMap { self.upstreamExistsFor(.branch($0)) } // very fancy recursion
+        case let .branch(branch):
+            return branch
+                .upstream()
+                .map { _ in true }
+                .flatMapError {
+                    let error = $0 as NSError
+                    
+                    if let reason = error.localizedFailureReason, reason.starts(with: "git_branch_upstream") {
+                        if error.code == -3 {
+                            return .success(false)
+                        }
+                    }
+                    return .failure(error)
+                }
         }
     }
 }
