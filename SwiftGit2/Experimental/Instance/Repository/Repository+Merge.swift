@@ -48,7 +48,7 @@ public extension Repository {
             }
     }
 
-    func mergeAnalysis(_ target: GitTarget) -> Result<MergeAnalysis, Error> {
+    func mergeAnalysis(_ target: BranchTarget) -> Result<MergeAnalysis, Error> {
         return target.branch(in: self)
             | { $0.upstream() }
             | { $0.targetOID }

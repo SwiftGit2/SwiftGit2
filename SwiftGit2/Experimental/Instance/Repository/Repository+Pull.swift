@@ -23,7 +23,7 @@ public enum PullPushResult {
 }
 
 public extension Repository {
-    func pullAndPush(_ target: GitTarget, fetchOptions: FetchOptions = FetchOptions(auth: .auto), pushOptions: PushOptions = PushOptions(), signature: Signature) -> R<PullPushResult> {
+    func pullAndPush(_ target: BranchTarget, fetchOptions: FetchOptions = FetchOptions(auth: .auto), pushOptions: PushOptions = PushOptions(), signature: Signature) -> R<PullPushResult> {
         switch pull(target, options: fetchOptions, signature: signature) {
         case let .success(result):
             switch result {
@@ -38,7 +38,7 @@ public extension Repository {
         }
     }
     
-    func pull(_ target: GitTarget, options: FetchOptions = FetchOptions(auth: .auto), signature: Signature) -> Result<PullResult, Error> {
+    func pull(_ target: BranchTarget, options: FetchOptions = FetchOptions(auth: .auto), signature: Signature) -> Result<PullResult, Error> {
         return combine(fetch(target, options: options), mergeAnalysis(target))
             .flatMap { branch, anal in self.mergeFromUpstream(anal: anal, ourLocal: branch, signature: signature) }
     }

@@ -10,7 +10,7 @@ import Clibgit2
 import Foundation
 import Essentials
 
-public enum GitTarget {
+public enum BranchTarget {
     case HEAD
     case branch(Branch)
     case branchShortName(String)
@@ -28,7 +28,7 @@ public enum GitTarget {
 }
 
 public extension Repository {
-    func fetch(_ target: GitTarget, options: FetchOptions = FetchOptions()) -> Result<Branch, Error> {
+    func fetch(_ target: BranchTarget, options: FetchOptions = FetchOptions()) -> Result<Branch, Error> {
         let branch = target.branch(in: self)
         return branch
             .flatMap { Duo($0, self).remote() }
@@ -48,7 +48,7 @@ public extension Remote {
 }
 
 internal extension Repository {
-    func upstreamExistsFor(_ target: GitTarget) -> R<Bool> {
+    func upstreamExistsFor(_ target: BranchTarget) -> R<Bool> {
         return target.branch(in: self)
             .flatMap { $0.upstream() }
             .map { _ in true }
