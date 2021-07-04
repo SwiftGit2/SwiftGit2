@@ -39,7 +39,7 @@ public extension Repository {
         }.map { Index(indexPointer!) }
     }
 
-    @available(*, deprecated, message: "Commit messaged should be: Fast Forward MERGE theirReference.nameAsReference -> ourReference.nameAsReference ")
+    @available(*, deprecated, message: "Commit message should be: Fast Forward MERGE theirReference.nameAsReference -> ourReference.nameAsReference ")
     func mergeAndCommit(our: Commit, their: Commit, signature: Signature) -> Result<Commit, Error> {
         return merge(our: our, their: their)
             .flatMap { index in
