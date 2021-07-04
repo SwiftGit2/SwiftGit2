@@ -16,10 +16,6 @@ public struct OID {
     public init(_ oid: git_oid) {
         self.oid = oid
     }
-
-    // MARK: - Properties
-
-    
     
     public static func create(from string: String) -> Result<OID, Error> {
         if string.lengthOfBytes(using: String.Encoding.ascii) > 40 {
@@ -32,11 +28,7 @@ public struct OID {
             .map { OID(oid) }
     }
 
-    // MARK: - Initializers
-
-    /// Create an instance from a hex formatted string.
-    ///
-    /// string - A 40-byte hex formatted string.
+    // TODO: result
     public init?(string: String) {
         // libgit2 doesn't enforce a maximum length
         if string.lengthOfBytes(using: String.Encoding.ascii) > 40 {
