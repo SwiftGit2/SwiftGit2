@@ -58,24 +58,12 @@ public extension Repository {
         
         let local = target.branch(in: self) | { $0.targetOID }
         let upstream = branches.findMainBranch().flatMap { $0.targetOID }
-        
+        //
         return combine(local,upstream)
-            .map { graphAheadBehind(local: $0, upstream: $1) }
+            .map { _graphAheadBehind(local: $0, upstream: $1) }
             .map { .push($0) }
     }
-    
-    func graphAheadBehind(local: OID, upstream: OID) -> Int {
-        var ahead : Int = 0 //number of unique from commits in `upstream`
-        var behind : Int = 0 //number of unique from commits in `local`
-        var localOID = local.oid
-        var upstreamOID = upstream.oid
-        
-        let r =  Int(git_graph_ahead_behind(&ahead,&behind,self.pointer,&localOID,&upstreamOID))
-        
-        return r
-    }
-    
-    
+
     func _pendingCommitsCount(_ target: GitTarget) -> R<(Int,Int)> {
         let push = pendingCommits(target, .push)    | { $0.count }
         let fetch = pendingCommits(target, .fetch)  | { $0.count }
