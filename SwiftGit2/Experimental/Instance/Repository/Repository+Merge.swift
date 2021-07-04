@@ -49,17 +49,12 @@ public extension Repository {
     }
 
     func mergeAnalysis(_ target: GitTarget) -> Result<MergeAnalysis, Error> {
-        switch target {
-        case .HEAD:
-            return HEAD()
-                .flatMap { $0.asBranch() }
-                .flatMap { self.mergeAnalysis(.branch($0)) } // fancy recursion
-        case let .branch(branch):
-            return branch.upstream()
-                .flatMap { $0.targetOID }
-                .flatMap { self.annotatedCommit(oid: $0) }
-                .flatMap { self.mergeAnalysis(their_head: $0) }
-        }
+        return target.branch(in: self)
+            | { $0.upstream() }
+            | { $0.targetOID }
+            | { self.annotatedCommit(oid: $0) }
+            | { self.mergeAnalysis(their_head: $0) }
+        
     }
 
     // Analyzes the given branch(es) and determines the opportunities for merging them into the HEAD of the repository.

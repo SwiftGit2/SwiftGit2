@@ -56,7 +56,7 @@ public extension Repository {
             return .success(.undefined)
         }
         
-        let local = oid(target: target)
+        let local = target.branch(in: self) | { $0.targetOID }
         let upstream = branches.findMainBranch().flatMap { $0.targetOID }
         
         return combine(local,upstream)
@@ -64,24 +64,13 @@ public extension Repository {
             .map { .push($0) }
     }
     
-    func oid(target: GitTarget) -> R<OID> {
-        switch target {
-        case .HEAD:
-            return HEAD()
-                .flatMap { $0.asBranch() }
-                .flatMap { oid(target: .branch($0)) } // very fancy recursion
-        case let .branch(branch):
-            return branch.targetOID
-        }
-    }
-    
     func graphAheadBehind(local: OID, upstream: OID) -> Int {
-        var ahead : Int = 0
-        var behind : Int = 0
-        var local = local.oid
-        var upstream = upstream.oid
+        var ahead : Int = 0 //number of unique from commits in `upstream`
+        var behind : Int = 0 //number of unique from commits in `local`
+        var localOID = local.oid
+        var upstreamOID = upstream.oid
         
-        let r =  Int(git_graph_ahead_behind(&ahead,&behind,self.pointer,&local,&upstream))
+        let r =  Int(git_graph_ahead_behind(&ahead,&behind,self.pointer,&localOID,&upstreamOID))
         
         return r
     }
@@ -95,19 +84,13 @@ public extension Repository {
     }
     
     func pendingCommits(_ target: GitTarget, _ direction: Direction) -> R<[Commit]> {
-        switch target {
-        case .HEAD:
-            return HEAD()
-                | { $0.asBranch() }
-                | { self.pendingCommits(.branch($0), direction) } // very fancy recursion
-        case let .branch(branch):
-            return branch.upstream()
-                | { $0.nameAsReference }
-                | { pendingCommits(local: branch.nameAsReference, remote: $0, direction: direction) }
-        }
+        let branch = target.branch(in: self)
+        let branchName = branch | { $0.nameAsReference }
+        let upstreamName = branch | { $0.upstream() } | { $0.nameAsReference }
+  
+        return combine(branchName, upstreamName)
+            | { pendingCommits(local: $0, remote: $1, direction: direction) }
     }
-    
-    
 }
 
 internal extension Repository {
