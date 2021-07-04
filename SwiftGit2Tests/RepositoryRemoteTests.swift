@@ -114,5 +114,10 @@ class RepositoryRemoteTests: XCTestCase {
         repo.createBranch(from: .head, name: "newBranch", checkout: true)
             .flatMap { repo.upstreamExistsFor(.branch($0)) }
             .assertEqual(to: false, "upstreamExistsFor newBranch")
+        
+        repo.branchLookup(name: "newBranch")
+            .flatMap { repo.pendingCommits(.branch($0), .push)}
+            .assertFailure("repo.pendingCommits(.branch($0), .push)")
+        //
     }
 }

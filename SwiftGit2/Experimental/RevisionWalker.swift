@@ -9,16 +9,83 @@ import Clibgit2
 import Foundation
 import Essentials
 
+internal extension Array where Element == Branch {
+    func findMainBranch() -> R<Branch> {
+        for item in self {
+            if item.nameAsBranch == "main" {
+                return .success(item)
+            }
+            
+            if item.nameAsBranch == "master" {
+                return .success(item)
+            }
+        }
+        
+        if let item = self.first {
+            return .success(item)
+        }
+        return .failure(WTF("findMainBranch(): array is empty"))
+    }
+}
+
+
 public enum PendingCommits {
     case pushpull(Int,Int) // push/pull
     case push(Int)          // no upastream
+    case undefined
 }
 
 public extension Repository {
     func pendingCommitsCount(_ target: GitTarget) -> R<PendingCommits> {
-        _pendingCommitsCount(target)
-            .map { .pushpull($0, $1) }
+        if headIsDetached {
+            return .success(.undefined)
+        }
+        
+        return upstreamExistsFor(target)
+            .if(\.self, then: { _ in
+                _pendingCommitsCount(target)
+                    .map { PendingCommits.pushpull($0, $1) }
+            }, else: { _ in
+                self.branches(.remote).flatMap { _pendingCommits(remoteBranches: $0, target: target) }
+            })
     }
+    
+    func _pendingCommits(remoteBranches branches : [Branch], target: GitTarget) -> R<PendingCommits> {
+        let names = branches.compactMap { $0.nameAsBranch }
+        if names.isEmpty {
+            return .success(.undefined)
+        }
+        
+        let local = oid(target: target)
+        let upstream = branches.findMainBranch().flatMap { $0.targetOID }
+        
+        return combine(local,upstream)
+            .map { graphAheadBehind(local: $0, upstream: $1) }
+            .map { .push($0) }
+    }
+    
+    func oid(target: GitTarget) -> R<OID> {
+        switch target {
+        case .HEAD:
+            return HEAD()
+                .flatMap { $0.asBranch() }
+                .flatMap { oid(target: .branch($0)) } // very fancy recursion
+        case let .branch(branch):
+            return branch.targetOID
+        }
+    }
+    
+    func graphAheadBehind(local: OID, upstream: OID) -> Int {
+        var ahead : Int = 0
+        var behind : Int = 0
+        var local = local.oid
+        var upstream = upstream.oid
+        
+        let r =  Int(git_graph_ahead_behind(&ahead,&behind,self.pointer,&local,&upstream))
+        
+        return r
+    }
+    
     
     func _pendingCommitsCount(_ target: GitTarget) -> R<(Int,Int)> {
         let push = pendingCommits(target, .push)    | { $0.count }

@@ -11,6 +11,16 @@ import Essentials
 
 /// An identifier for a Git object.
 public struct OID {
+    public let oid: git_oid
+    /// Create an instance from a libgit2 `git_oid`.
+    public init(_ oid: git_oid) {
+        self.oid = oid
+    }
+
+    // MARK: - Properties
+
+    
+    
     public static func create(from string: String) -> Result<OID, Error> {
         if string.lengthOfBytes(using: String.Encoding.ascii) > 40 {
             return .failure(WTF("string length > 40"))
@@ -45,14 +55,7 @@ public struct OID {
         pointer.deallocate()
     }
 
-    /// Create an instance from a libgit2 `git_oid`.
-    public init(_ oid: git_oid) {
-        self.oid = oid
-    }
 
-    // MARK: - Properties
-
-    public let oid: git_oid
 }
 
 extension OID: CustomStringConvertible {
