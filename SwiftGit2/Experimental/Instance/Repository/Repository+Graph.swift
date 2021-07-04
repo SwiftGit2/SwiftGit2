@@ -11,17 +11,6 @@ import Clibgit2
 import Essentials
 
 public extension Repository {
-    func _graphAheadBehind(local: OID, upstream: OID) -> Int {
-        var ahead : Int = 0 //number of unique from commits in `upstream`
-        var behind : Int = 0 //number of unique from commits in `local`
-        var localOID = local.oid
-        var upstreamOID = upstream.oid
-        
-        let r =  Int(git_graph_ahead_behind(&ahead,&behind,self.pointer,&localOID,&upstreamOID))
-        
-        return r
-    }
-    
     func graphAheadBehind(local: OID, upstream: OID) -> R<(Int,Int)> {
         var ahead : Int = 0 //number of unique from commits in `upstream`
         var behind : Int = 0 //number of unique from commits in `local`

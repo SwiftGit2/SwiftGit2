@@ -35,6 +35,19 @@ public enum PendingCommits {
     case undefined
 }
 
+extension PendingCommits: Equatable {
+    public static func == (lhs: PendingCommits, rhs: PendingCommits) -> Bool {
+        switch (lhs, rhs) {
+        case (.undefined, .undefined): return true
+        case let (.push(lp), .push(rp)): return lp == rp
+        case let (.pushpull(lpush,lpull), .pushpull(rpush, rpull)): return lpush == rpush && lpull == rpull
+        default:
+            return false
+        }
+    }
+}
+
+
 public extension Repository {
     func pendingCommitsCount(_ target: GitTarget) -> R<PendingCommits> {
         if headIsDetached {
@@ -60,8 +73,8 @@ public extension Repository {
         let upstream = branches.findMainBranch().flatMap { $0.targetOID }
         //
         return combine(local,upstream)
-            .map { _graphAheadBehind(local: $0, upstream: $1) }
-            .map { .push($0) }
+            .flatMap { graphAheadBehind(local: $0, upstream: $1) }
+            .map { ahead, behind in .push(ahead) }
     }
 
     func _pendingCommitsCount(_ target: GitTarget) -> R<(Int,Int)> {
