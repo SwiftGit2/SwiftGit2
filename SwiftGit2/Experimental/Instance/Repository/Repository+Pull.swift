@@ -17,27 +17,7 @@ public enum PullResult {
     case threeWayConflict(Index)
 }
 
-public enum PullPushResult {
-    case conflict(Index)
-    case success
-}
-
-public extension Repository {
-    func pullAndPush(_ target: BranchTarget, fetchOptions: FetchOptions = FetchOptions(auth: .auto), pushOptions: PushOptions = PushOptions(), signature: Signature) -> R<PullPushResult> {
-        switch pull(target, options: fetchOptions, signature: signature) {
-        case let .success(result):
-            switch result {
-            case let .threeWayConflict(index):
-                return .success(.conflict(index))
-            default:
-                return push(options: pushOptions)
-                    .map { .success }
-            }
-        case let .failure(error):
-            return .failure(error)
-        }
-    }
-    
+public extension Repository {    
     func pull(_ target: BranchTarget, options: FetchOptions = FetchOptions(auth: .auto), signature: Signature) -> Result<PullResult, Error> {
         return combine(fetch(target, options: options), mergeAnalysis(target))
             .flatMap { branch, anal in self.mergeFromUpstream(anal: anal, ourLocal: branch, signature: signature) }
