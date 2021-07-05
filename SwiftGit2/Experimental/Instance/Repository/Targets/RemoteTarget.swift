@@ -26,14 +26,23 @@ public enum RemoteTarget : DuoUser {
 
 public extension Duo where T1 == RemoteTarget, T2 == Repository {
     var remoteInstance: R<Remote> { value.0.remote(in: value.1) }
+    var repo : Repository { value.1 }
+    var target : RemoteTarget { value.0 }
     
     func createUpstream(for target: BranchTarget) -> R<Branch> {
-        target.with(value.1).branchInstance | { createUpstream(for: $0) }
+        target.with(repo).branchInstance | { _createUpstream(for: $0, force: true) }
     }
-    
-    func createUpstream(for branch: Branch) -> R<Branch> {
-        return remoteInstance
+}
+
+private extension Duo where T1 == RemoteTarget, T2 == Repository {
+    func _createUpstream(for branch: Branch, force: Bool) -> R<Branch> {
+        let oid = branch.targetOID
+        let name = remoteInstance
             | { branch.nameAsReference.replace(of: "heads", to: "remotes/\($0.name)") }
+        
+        return combine(name, oid)
+            | { repo.createReference(name: $0, oid: $1, force: force, reflog: "REFLOG") }
+            | { _ in name }
             | { branch.setUpstream(name: $0)}
     }
 }

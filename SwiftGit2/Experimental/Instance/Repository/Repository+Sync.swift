@@ -37,9 +37,10 @@ public extension Repository {
                     self._pullAndPush(.HEAD, fetchOptions: fetchOptions, pushOptions: pushOptions, signature: signature)
             }, else: { _ in
                 remoteTarget.with(self).createUpstream(for: branchTarget)
+                    .map { _ in .success }
                     
                 
-                return .failure(WTF("upstreamExistsFor"))
+                //return .failure(WTF("upstreamExistsFor"))
             })
     }
 }
