@@ -41,16 +41,14 @@ public extension Branch {
     /// can be called only for local branch;
     ///
     /// newName looks like "BrowserGridItemView" BUT NOT LIKE "refs/heads/BrowserGridItemView"
-    func setUpstream(name: String) -> Result<Branch, Error> {
+    func setUpstream(name: String) -> R<Branch> {
         return git_try("git_branch_set_upstream") {
             git_branch_set_upstream(self.pointer, name)
         }.map { self }
     }
     
-    func createUpstream() -> R<Void> {
-        branchName //| { self.setUpstream(name: ) }
-            .onSuccess { print($0) }
-        return .failure(WTF(""))
+    func createUpstream() -> R<Branch> {
+        branchName | { self.setUpstream(name: $0 ) }
     }
 
     /// can be called only for local branch;
