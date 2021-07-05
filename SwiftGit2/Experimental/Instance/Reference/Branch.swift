@@ -48,7 +48,7 @@ public extension Branch {
     }
     
     func createUpstream() -> R<Branch> {
-        branchName | { self.setUpstream(name: $0 ) }
+        branchName | { self.setUpstream(name: "origin/" + $0 ) }
     }
 
     /// can be called only for local branch;
