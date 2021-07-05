@@ -13,8 +13,26 @@ public extension Repository {
         commit(message: msg, signature: signature)
             .flatMap { _ in self.pullAndPush(.firstRemote, .HEAD, fetchOptions: fetchOptions, pushOptions: pushOptions, signature: signature)}
     }
+    
+    func pullAndPush(_ remoteTarget: RemoteTarget, _ branchTarget: BranchTarget, fetchOptions: FetchOptions = FetchOptions(auth: .auto), pushOptions: PushOptions = PushOptions(), signature: Signature) -> R<PullPushResult> {
+        return upstreamExistsFor(.HEAD)
+            .if(\.self, then: { _ in
+                
+                    self._pullAndPush(.HEAD, fetchOptions: fetchOptions, pushOptions: pushOptions, signature: signature)
+                
+            }, else: { _ in
+                
+                remoteTarget.with(self).createUpstream(for: branchTarget, force: true)
+                    | { _ in self._pullAndPush(.HEAD, fetchOptions: fetchOptions, pushOptions: pushOptions, signature: signature) }
+                
+            })
+    }
 
-    func _pullAndPush(_ target: BranchTarget, fetchOptions: FetchOptions = FetchOptions(auth: .auto), pushOptions: PushOptions = PushOptions(), signature: Signature) -> R<PullPushResult> {
+
+}
+
+public extension Repository {
+    func _pullAndPush(_ target: BranchTarget, fetchOptions: FetchOptions, pushOptions: PushOptions, signature: Signature) -> R<PullPushResult> {
         switch pull(target, options: fetchOptions, signature: signature) {
         case let .success(result):
             switch result {
@@ -28,19 +46,6 @@ public extension Repository {
             return .failure(error)
         }
     }
+
 }
 
-public extension Repository {
-    func pullAndPush(_ remoteTarget: RemoteTarget, _ branchTarget: BranchTarget, fetchOptions: FetchOptions = FetchOptions(auth: .auto), pushOptions: PushOptions = PushOptions(), signature: Signature) -> R<PullPushResult> {
-        return upstreamExistsFor(.HEAD)
-            .if(\.self, then: { _ in
-                    self._pullAndPush(.HEAD, fetchOptions: fetchOptions, pushOptions: pushOptions, signature: signature)
-            }, else: { _ in
-                remoteTarget.with(self).createUpstream(for: branchTarget)
-                    .map { _ in .success }
-                    
-                
-                //return .failure(WTF("upstreamExistsFor"))
-            })
-    }
-}

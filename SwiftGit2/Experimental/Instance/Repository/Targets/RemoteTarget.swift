@@ -29,8 +29,8 @@ public extension Duo where T1 == RemoteTarget, T2 == Repository {
     var repo : Repository { value.1 }
     var target : RemoteTarget { value.0 }
     
-    func createUpstream(for target: BranchTarget) -> R<Branch> {
-        target.with(repo).branchInstance | { _createUpstream(for: $0, force: true) }
+    func createUpstream(for target: BranchTarget, force: Bool) -> R<Branch> {
+        target.with(repo).branchInstance | { _createUpstream(for: $0, force: force) }
     }
 }
 
