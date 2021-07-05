@@ -48,6 +48,7 @@ public extension Branch {
     }
     
     func createUpstream() -> R<Branch> {
+        //self.n
         branchName | { self.setUpstream(name: "origin/" + $0 ) }
     }
 

@@ -65,6 +65,8 @@
 		E6AF6288269256CD007D0585 /* Repository+Graph.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6AF6287269256CD007D0585 /* Repository+Graph.swift */; };
 		E6AF628B26925C6D007D0585 /* PendingCommitsCount.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6AF628A26925C6D007D0585 /* PendingCommitsCount.swift */; };
 		E6AF628D26938457007D0585 /* Repository+Sync.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6AF628C26938457007D0585 /* Repository+Sync.swift */; };
+		E6AF629026939D31007D0585 /* BranchTarget.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6AF628F26939D31007D0585 /* BranchTarget.swift */; };
+		E6AF629226939D65007D0585 /* RemoteTarget.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6AF629126939D65007D0585 /* RemoteTarget.swift */; };
 		E6D4A91824DEA8EC00E8041E /* Instance.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6D4A91724DEA8EC00E8041E /* Instance.swift */; };
 		E6D4A91A24DEA93E00E8041E /* Commit.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6D4A91924DEA93E00E8041E /* Commit.swift */; };
 		E6D4A91C24DEA9AD00E8041E /* Branch.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6D4A91B24DEA9AD00E8041E /* Branch.swift */; };
@@ -194,6 +196,8 @@
 		E6AF6287269256CD007D0585 /* Repository+Graph.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Repository+Graph.swift"; sourceTree = "<group>"; };
 		E6AF628A26925C6D007D0585 /* PendingCommitsCount.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PendingCommitsCount.swift; sourceTree = "<group>"; };
 		E6AF628C26938457007D0585 /* Repository+Sync.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Repository+Sync.swift"; sourceTree = "<group>"; };
+		E6AF628F26939D31007D0585 /* BranchTarget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BranchTarget.swift; sourceTree = "<group>"; };
+		E6AF629126939D65007D0585 /* RemoteTarget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteTarget.swift; sourceTree = "<group>"; };
 		E6D4A91724DEA8EC00E8041E /* Instance.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Instance.swift; sourceTree = "<group>"; };
 		E6D4A91924DEA93E00E8041E /* Commit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Commit.swift; sourceTree = "<group>"; };
 		E6D4A91B24DEA9AD00E8041E /* Branch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Branch.swift; sourceTree = "<group>"; };
@@ -231,6 +235,7 @@
 		1DB0F84F24EFFD7B00637B9B /* Repository */ = {
 			isa = PBXGroup;
 			children = (
+				E6AF628E26939D15007D0585 /* Targets */,
 				E6AF628926925BCE007D0585 /* Graph */,
 				E6D4A91F24DEACC000E8041E /* Repository.swift */,
 				E63EDF75265D255500A3D048 /* Repository+HEAD.swift */,
@@ -484,6 +489,15 @@
 			path = Graph;
 			sourceTree = "<group>";
 		};
+		E6AF628E26939D15007D0585 /* Targets */ = {
+			isa = PBXGroup;
+			children = (
+				E6AF628F26939D31007D0585 /* BranchTarget.swift */,
+				E6AF629126939D65007D0585 /* RemoteTarget.swift */,
+			);
+			path = Targets;
+			sourceTree = "<group>";
+		};
 		E6D4A92524DF43DB00E8041E /* Reference */ = {
 			isa = PBXGroup;
 			children = (
@@ -650,6 +664,7 @@
 				E6D4A92024DEACC000E8041E /* Repository.swift in Sources */,
 				E6AF628D26938457007D0585 /* Repository+Sync.swift in Sources */,
 				E6AF6288269256CD007D0585 /* Repository+Graph.swift in Sources */,
+				E6AF629026939D31007D0585 /* BranchTarget.swift in Sources */,
 				1D5B38A825228C790019E593 /* Repository+Diff.swift in Sources */,
 				E6D4A91A24DEA93E00E8041E /* Commit.swift in Sources */,
 				1D764BD8252CD148008417A7 /* Submodule.swift in Sources */,
@@ -670,6 +685,7 @@
 				E6D4A92224DF1B4300E8041E /* Object.swift in Sources */,
 				1DDFC0FB261B4DBD00EBBDE9 /* RevisionWalker.swift in Sources */,
 				E6332B9126496F95004990E7 /* SubmoduleUpdateOptions.swift in Sources */,
+				E6AF629226939D65007D0585 /* RemoteTarget.swift in Sources */,
 				E653907A23E7328200C08416 /* Diff+Delta.swift in Sources */,
 				E6D4A91E24DEAA3000E8041E /* Reference.swift in Sources */,
 				DA5914761A94579000AED74C /* Errors.swift in Sources */,
