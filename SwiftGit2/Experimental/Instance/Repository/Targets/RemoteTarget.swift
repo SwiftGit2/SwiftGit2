@@ -37,12 +37,12 @@ public extension Duo where T1 == RemoteTarget, T2 == Repository {
 private extension Duo where T1 == RemoteTarget, T2 == Repository {
     func _createUpstream(for branch: Branch, force: Bool) -> R<Branch> {
         let oid = branch.targetOID
-        let name = remoteInstance
-            | { branch.nameAsReference.replace(of: "heads", to: "remotes/\($0.name)") }
+        let referenceName = remoteInstance | { branch.nameAsReference.replace(of: "heads", to: "remotes/\($0.name)") }
+        let upstreamName  = referenceName  | { $0.replace(of: "refs/remotes/", to: "") }
         
-        return combine(name, oid)
+        return combine(referenceName, oid)
             | { repo.createReference(name: $0, oid: $1, force: force, reflog: "REFLOG") }
-            | { _ in name }
+            | { _ in upstreamName }
             | { branch.setUpstream(name: $0)}
     }
 }
