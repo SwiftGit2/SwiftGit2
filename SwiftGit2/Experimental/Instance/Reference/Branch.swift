@@ -46,6 +46,12 @@ public extension Branch {
             git_branch_set_upstream(self.pointer, name)
         }.map { self }
     }
+    
+    func createUpstream() -> R<Void> {
+        branchName //| { self.setUpstream(name: ) }
+            .onSuccess { print($0) }
+        return .failure(WTF(""))
+    }
 
     /// can be called only for local branch;
     func upstreamName(clean: Bool = false) -> Result<String, Error> {

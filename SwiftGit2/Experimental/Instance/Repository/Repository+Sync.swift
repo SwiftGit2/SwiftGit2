@@ -11,7 +11,7 @@ public extension Repository {
     
     func sync(msg: String, fetchOptions: FetchOptions = FetchOptions(auth: .auto), pushOptions: PushOptions = PushOptions(), signature: Signature) -> R<PullPushResult> {
         commit(message: msg, signature: signature)
-            .flatMap { _ in self.pullAndPush(.HEAD, fetchOptions: fetchOptions, pushOptions: pushOptions, signature: signature)}
+            .flatMap { _ in self._pullAndPush(.HEAD, fetchOptions: fetchOptions, pushOptions: pushOptions, signature: signature)}
     }
 
     func pullAndPush(_ target: BranchTarget, fetchOptions: FetchOptions = FetchOptions(auth: .auto), pushOptions: PushOptions = PushOptions(), signature: Signature) -> R<PullPushResult> {
@@ -36,7 +36,8 @@ private extension Repository {
             .if(\.self, then: { _ in
                     self.pullAndPush(.HEAD, fetchOptions: fetchOptions, pushOptions: pushOptions, signature: signature)
             }, else: { _ in
-                //target.branch(in: self)
+                target.branch(in: self)
+                    .flatMap { $0.createUpstream() }
                     
                 
                 return .failure(WTF(""))
