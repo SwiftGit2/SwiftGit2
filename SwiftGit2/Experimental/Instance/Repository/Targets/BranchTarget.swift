@@ -2,7 +2,7 @@ import Clibgit2
 import Foundation
 import Essentials
 
-public enum BranchTarget {
+public enum BranchTarget : DuoUser {
     case HEAD
     case branch(Branch)
     case branchShortName(String)
@@ -17,4 +17,8 @@ public enum BranchTarget {
             return repo.branchLookup(name: "refs/heads/\(name)")
         }
     }
+}
+
+public extension Duo where T1 == BranchTarget, T2 == Repository {
+    var branchInstance: R<Branch> { value.0.branch(in: value.1) }
 }

@@ -11,7 +11,7 @@ public extension Repository {
     
     func sync(msg: String, fetchOptions: FetchOptions = FetchOptions(auth: .auto), pushOptions: PushOptions = PushOptions(), signature: Signature) -> R<PullPushResult> {
         commit(message: msg, signature: signature)
-            .flatMap { _ in self.pullAndPush(.HEAD, fetchOptions: fetchOptions, pushOptions: pushOptions, signature: signature)}
+            .flatMap { _ in self.pullAndPush(.firstRemote, .HEAD, fetchOptions: fetchOptions, pushOptions: pushOptions, signature: signature)}
     }
 
     func _pullAndPush(_ target: BranchTarget, fetchOptions: FetchOptions = FetchOptions(auth: .auto), pushOptions: PushOptions = PushOptions(), signature: Signature) -> R<PullPushResult> {
@@ -31,16 +31,15 @@ public extension Repository {
 }
 
 public extension Repository {
-    func pullAndPush(_ target: BranchTarget, fetchOptions: FetchOptions = FetchOptions(auth: .auto), pushOptions: PushOptions = PushOptions(), signature: Signature) -> R<PullPushResult> {
+    func pullAndPush(_ remoteTarget: RemoteTarget, _ branchTarget: BranchTarget, fetchOptions: FetchOptions = FetchOptions(auth: .auto), pushOptions: PushOptions = PushOptions(), signature: Signature) -> R<PullPushResult> {
         return upstreamExistsFor(.HEAD)
             .if(\.self, then: { _ in
                     self._pullAndPush(.HEAD, fetchOptions: fetchOptions, pushOptions: pushOptions, signature: signature)
             }, else: { _ in
-                target.branch(in: self)
-                    .flatMap { $0.createUpstream() }
+                remoteTarget.with(self).createUpstream(for: branchTarget)
                     
                 
-                return .failure(WTF(""))
+                return .failure(WTF("upstreamExistsFor"))
             })
     }
 }
