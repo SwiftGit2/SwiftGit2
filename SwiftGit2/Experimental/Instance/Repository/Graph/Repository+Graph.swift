@@ -11,6 +11,13 @@ import Clibgit2
 import Essentials
 
 public extension Repository {
+    /*
+     branch is X commits behind means that there are X new (unmerged) commits on the branch
+     which is being tracked by your current branch.
+     
+     branch is X commits ahead analogously means that your branch has X new commits,
+     which haven't been merged into the tracked branch yet.
+     */
     func graphAheadBehind(local: OID, upstream: OID) -> R<(Int,Int)> {
         var ahead : Int = 0 //number of unique from commits in `upstream`
         var behind : Int = 0 //number of unique from commits in `local`
@@ -18,7 +25,10 @@ public extension Repository {
         var upstreamOID = upstream.oid
         
         return git_try("git_graph_ahead_behind") {
-            git_graph_ahead_behind(&ahead,&behind,self.pointer,&localOID,&upstreamOID)
+            let tmp = git_graph_ahead_behind(&ahead,&behind,self.pointer,&localOID,&upstreamOID)
+            let repoURL = (try? self.directoryURL.get())?.path ?? "error"
+            print("\(repoURL): ahead \(ahead), behind \(behind)")
+            return tmp
         } | { (ahead, behind) }
     }
     
