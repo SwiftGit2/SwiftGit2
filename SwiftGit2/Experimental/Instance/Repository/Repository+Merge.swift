@@ -39,7 +39,7 @@ public extension Repository {
         }.map { Index(indexPointer!) }
     }
 
-    @available(*, deprecated, message: "Commit messaged should be: Fast Forward MERGE theirReference.nameAsReference -> ourReference.nameAsReference ")
+    @available(*, deprecated, message: "Commit message should be: Fast Forward MERGE theirReference.nameAsReference -> ourReference.nameAsReference ")
     func mergeAndCommit(our: Commit, their: Commit, signature: Signature) -> Result<Commit, Error> {
         return merge(our: our, their: their)
             .flatMap { index in
@@ -48,18 +48,13 @@ public extension Repository {
             }
     }
 
-    func mergeAnalysis(_ target: GitTarget) -> Result<MergeAnalysis, Error> {
-        switch target {
-        case .HEAD:
-            return HEAD()
-                .flatMap { $0.asBranch() }
-                .flatMap { self.mergeAnalysis(.branch($0)) } // fancy recursion
-        case let .branch(branch):
-            return branch.upstream()
-                .flatMap { $0.targetOID }
-                .flatMap { self.annotatedCommit(oid: $0) }
-                .flatMap { self.mergeAnalysis(their_head: $0) }
-        }
+    func mergeAnalysis(_ target: BranchTarget) -> Result<MergeAnalysis, Error> {
+        return target.branch(in: self)
+            | { $0.upstream() }
+            | { $0.targetOID }
+            | { self.annotatedCommit(oid: $0) }
+            | { self.mergeAnalysis(their_head: $0) }
+        
     }
 
     // Analyzes the given branch(es) and determines the opportunities for merging them into the HEAD of the repository.

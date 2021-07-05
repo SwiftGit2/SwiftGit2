@@ -10,23 +10,13 @@ import Clibgit2
 import Foundation
 import Essentials
 
-public enum GitTarget {
-    case HEAD
-    case branch(Branch)
-}
-
 public extension Repository {
-    func fetch(_ target: GitTarget, options: FetchOptions = FetchOptions()) -> Result<Branch, Error> {
-        switch target {
-        case .HEAD:
-            return HEAD()
-                .flatMap { $0.asBranch() }
-                .flatMap { self.fetch(.branch($0)) } // very fancy recursion
-        case let .branch(branch):
-            return Duo(branch, self).remote()
-                .flatMap { $0.fetch(options: options) }
-                .map { branch }
-        }
+    func fetch(_ target: BranchTarget, options: FetchOptions = FetchOptions()) -> Result<Branch, Error> {
+        let branch = target.branch(in: self)
+        return branch
+            .flatMap { Duo($0, self).remote() }
+            .flatMap { $0.fetch(options: options) }
+            .flatMap { branch }
     }
 }
 
@@ -41,26 +31,19 @@ public extension Remote {
 }
 
 internal extension Repository {
-    func upstreamExistsFor(_ target: GitTarget) -> R<Bool> {
-        switch target {
-        case .HEAD:
-            return HEAD()
-                .flatMap { $0.asBranch() }
-                .flatMap { self.upstreamExistsFor(.branch($0)) } // very fancy recursion
-        case let .branch(branch):
-            return branch
-                .upstream()
-                .map { _ in true }
-                .flatMapError {
-                    let error = $0 as NSError
-                    
-                    if let reason = error.localizedFailureReason, reason.starts(with: "git_branch_upstream") {
-                        if error.code == -3 {
-                            return .success(false)
-                        }
+    func upstreamExistsFor(_ target: BranchTarget) -> R<Bool> {
+        return target.branch(in: self)
+            .flatMap { $0.upstream() }
+            .map { _ in true }
+            .flatMapError {
+                let error = $0 as NSError
+                
+                if let reason = error.localizedFailureReason, reason.starts(with: "git_branch_upstream") {
+                    if error.code == -3 {
+                        return .success(false)
                     }
-                    return .failure(error)
                 }
-        }
+                return .failure(error)
+            }
     }
 }

@@ -9,38 +9,16 @@ import Clibgit2
 import Foundation
 import Essentials
 
-public enum PendingCommits {
-    case pushpull(Int,Int) // push/pull
-    case push(Int)          // no upastream
-}
 
 public extension Repository {
-    func pendingCommitsCount(_ target: GitTarget) -> R<PendingCommits> {
-        _pendingCommitsCount(target)
-            .map { .pushpull($0, $1) }
+    func pendingCommits(_ target: BranchTarget, _ direction: Direction) -> R<[Commit]> {
+        let branch = target.branch(in: self)
+        let branchName = branch | { $0.nameAsReference }
+        let upstreamName = branch | { $0.upstream() } | { $0.nameAsReference }
+  
+        return combine(branchName, upstreamName)
+            | { pendingCommits(local: $0, remote: $1, direction: direction) }
     }
-    
-    func _pendingCommitsCount(_ target: GitTarget) -> R<(Int,Int)> {
-        let push = pendingCommits(target, .push)    | { $0.count }
-        let fetch = pendingCommits(target, .fetch)  | { $0.count }
-        
-        return combine(push, fetch)
-    }
-    
-    func pendingCommits(_ target: GitTarget, _ direction: Direction) -> R<[Commit]> {
-        switch target {
-        case .HEAD:
-            return HEAD()
-                | { $0.asBranch() }
-                | { self.pendingCommits(.branch($0), direction) } // very fancy recursion
-        case let .branch(branch):
-            return branch.upstream()
-                | { $0.nameAsReference }
-                | { pendingCommits(local: branch.nameAsReference, remote: $0, direction: direction) }
-        }
-    }
-    
-    
 }
 
 internal extension Repository {
