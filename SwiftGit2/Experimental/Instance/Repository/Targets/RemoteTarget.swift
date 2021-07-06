@@ -25,15 +25,18 @@ public enum RemoteTarget : DuoUser {
 }
 
 public extension Duo where T1 == RemoteTarget, T2 == Repository {
-    var remoteInstance: R<Remote> { value.0.remote(in: value.1) }
-    var repo : Repository { value.1 }
-    var target : RemoteTarget { value.0 }
-    
     func createUpstream(for target: BranchTarget, force: Bool) -> R<Branch> {
         target.with(repo).branchInstance | { _createUpstream(for: $0, force: force) }
     }
 }
 
+public extension Duo where T1 == RemoteTarget, T2 == Repository {
+    var remoteInstance: R<Remote> { value.0.remote(in: value.1) }
+    var repo : Repository { value.1 }
+    var target : RemoteTarget { value.0 }
+}
+
+//***************************************************************************
 private extension Duo where T1 == RemoteTarget, T2 == Repository {
     func _createUpstream(for branch: Branch, force: Bool) -> R<Branch> {
         let oid = branch.targetOID
@@ -41,7 +44,7 @@ private extension Duo where T1 == RemoteTarget, T2 == Repository {
         let upstreamName  = referenceName  | { $0.replace(of: "refs/remotes/", to: "") }
         
         return combine(referenceName, oid)
-            | { repo.createReference(name: $0, oid: $1, force: force, reflog: "REFLOG") }
+            | { repo.createReference(name: $0, oid: $1, force: force, reflog: "TaoSync: upstream for \(branch.nameAsReference)") }
             | { _ in upstreamName }
             | { branch.setUpstream(name: $0)}
     }

@@ -66,7 +66,7 @@ public extension Repository {
     }
 }
 
-public enum BranchBase {
+public enum BranchBase { 
     case head
     case commit(Commit)
     case branch(Branch)

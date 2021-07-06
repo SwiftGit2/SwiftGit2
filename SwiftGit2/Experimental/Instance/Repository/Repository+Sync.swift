@@ -23,7 +23,8 @@ public extension Repository {
             }, else: { _ in
                 
                 remoteTarget.with(self).createUpstream(for: branchTarget, force: true)
-                    | { _ in self._pullAndPush(.HEAD, fetchOptions: fetchOptions, pushOptions: pushOptions, signature: signature) }
+                    | { _ in self.push(options: pushOptions) }
+                    | { .success }
                 
             })
     }
