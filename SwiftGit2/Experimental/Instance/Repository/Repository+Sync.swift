@@ -11,10 +11,23 @@ public extension Repository {
     
     func sync(msg: String, fetchOptions: FetchOptions = FetchOptions(auth: .auto), pushOptions: PushOptions = PushOptions(), signature: Signature) -> R<PullPushResult> {
         commit(message: msg, signature: signature)
-            .flatMap { _ in self.pullAndPush(.HEAD, fetchOptions: fetchOptions, pushOptions: pushOptions, signature: signature)}
+            .flatMap { _ in sync(.firstRemote, .HEAD, fetchOptions: fetchOptions, pushOptions: pushOptions, signature: signature)}
+    }
+    
+    func sync(_ remoteTarget: RemoteTarget, _ branchTarget: BranchTarget, fetchOptions: FetchOptions = FetchOptions(auth: .auto), pushOptions: PushOptions = PushOptions(), signature: Signature) -> R<PullPushResult> {
+        return upstreamExistsFor(.HEAD)
+            .if(\.self, then: { _ in
+                
+                pullAndPush(.HEAD, fetchOptions: fetchOptions, pushOptions: pushOptions, signature: signature)
+            }, else: { _ in
+                
+                remoteTarget.with(self).createUpstream(for: branchTarget, force: true)
+                    | { _ in push(options: pushOptions) }
+                    | { .success }
+            })
     }
 
-    func _pullAndPush(_ target: BranchTarget, fetchOptions: FetchOptions = FetchOptions(auth: .auto), pushOptions: PushOptions = PushOptions(), signature: Signature) -> R<PullPushResult> {
+    func pullAndPush(_ target: BranchTarget, fetchOptions: FetchOptions, pushOptions: PushOptions, signature: Signature) -> R<PullPushResult> {
         switch pull(target, options: fetchOptions, signature: signature) {
         case let .success(result):
             switch result {
@@ -28,19 +41,6 @@ public extension Repository {
             return .failure(error)
         }
     }
+
 }
 
-public extension Repository {
-    func pullAndPush(_ target: BranchTarget, fetchOptions: FetchOptions = FetchOptions(auth: .auto), pushOptions: PushOptions = PushOptions(), signature: Signature) -> R<PullPushResult> {
-        return upstreamExistsFor(.HEAD)
-            .if(\.self, then: { _ in
-                    self._pullAndPush(.HEAD, fetchOptions: fetchOptions, pushOptions: pushOptions, signature: signature)
-            }, else: { _ in
-                target.branch(in: self)
-                    .flatMap { $0.createUpstream() }
-                    
-                
-                return .failure(WTF(""))
-            })
-    }
-}

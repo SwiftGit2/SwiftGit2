@@ -42,14 +42,9 @@ public extension Branch {
     ///
     /// newName looks like "BrowserGridItemView" BUT NOT LIKE "refs/heads/BrowserGridItemView"
     func setUpstream(name: String) -> R<Branch> {
-        return git_try("git_branch_set_upstream") {
+        git_try("git_branch_set_upstream") {
             git_branch_set_upstream(self.pointer, name)
         }.map { self }
-    }
-    
-    func createUpstream() -> R<Branch> {
-        //self.n
-        branchName | { self.setUpstream(name: "origin/" + $0 ) }
     }
 
     /// can be called only for local branch;
@@ -122,12 +117,6 @@ private extension Branch {
             git_branch_name(&pointer, self.pointer)
         }
         .flatMap { String.validatingUTF8(cString: pointer!) }
-    }
-}
-
-private extension String {
-    func replace(of: String, to: String) -> String {
-        return replacingOccurrences(of: of, with: to, options: .regularExpression, range: nil)
     }
 }
 

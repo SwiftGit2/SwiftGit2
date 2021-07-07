@@ -66,13 +66,21 @@ public extension Repository {
     }
 }
 
-public enum BranchBase {
+public enum BranchBase { 
     case head
     case commit(Commit)
     case branch(Branch)
 }
 
-public extension Repository {    
+public extension Repository {
+    func createReference(name: String, oid: OID, force: Bool, reflog: String)-> R<Reference> {
+        var oid = oid.oid
+
+        return git_instance(of: Reference.self, "git_reference_create") { pointer in
+            git_reference_create(&pointer, self.pointer, name, &oid, force ? 1 : 0, reflog)
+        }
+    }
+    
     func createBranch(from base: BranchBase, name: String, checkout: Bool) -> Result<Reference, Error> {
         switch base {
         case .head: return headCommit().flatMap { createBranch(from: $0, name: name, checkout: checkout) }
