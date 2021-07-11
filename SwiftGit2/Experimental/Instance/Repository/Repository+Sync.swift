@@ -22,7 +22,7 @@ public extension Repository {
             }, else: { _ in
                 
                 remoteTarget.with(self).createUpstream(for: branchTarget, force: true)
-                    | { _ in push(options: pushOptions) }
+                    | { _ in push(branchTarget, options: pushOptions) }
                     | { .success }
             })
     }
@@ -34,7 +34,7 @@ public extension Repository {
             case let .threeWayConflict(index):
                 return .success(.conflict(index))
             default:
-                return push(options: pushOptions)
+                return push(target, options: pushOptions)
                     .map { .success }
             }
         case let .failure(error):

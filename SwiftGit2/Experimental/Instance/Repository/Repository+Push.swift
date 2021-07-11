@@ -10,9 +10,8 @@ import Clibgit2
 import Essentials
 
 public extension Repository {
-    func push(options: PushOptions = PushOptions()) -> Result<Void, Error> {
-        let branch = HEAD()
-            .flatMap { $0.asBranch() }
+    func push(_ target: BranchTarget, options: PushOptions = PushOptions()) -> Result<Void, Error> {
+        let branch = target.with(self).branchInstance
 
         let remote = branch
             .flatMap { Duo($0, self).remote() }
