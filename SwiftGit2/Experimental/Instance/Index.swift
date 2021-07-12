@@ -45,22 +45,16 @@ public extension Index {
         }
         return .success(entries)
     }
-
+    
     func add(paths: [String]) -> Result<Void, Error> {
-        return paths.with_git_strarray { strarray in
-            _result((), pointOfFailure: "git_index_add_all") {
-                git_index_add_all(pointer, &strarray, 0, nil, nil)
-            }
-            .flatMap { self.write() }
+        paths.with_git_strarray { strarray in
+            git_try("git_index_add_all") { git_index_add_all(pointer, &strarray, 0, nil, nil) } | { self.write() }
         }
     }
 
-    func remove(relPaths: [String]) -> Result<Void, Error> {
-        return relPaths.with_git_strarray { strarray in
-            _result((), pointOfFailure: "git_index_add_all") {
-                git_index_remove_all(pointer, &strarray, nil, nil)
-            }
-            .flatMap { self.write() }
+    func remove(paths: [String]) -> Result<Void, Error> {
+        paths.with_git_strarray { strarray in
+            git_try("git_index_remove_all") { git_index_remove_all(pointer, &strarray, nil, nil) } | { self.write() }
         }
     }
 

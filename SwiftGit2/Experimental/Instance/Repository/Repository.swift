@@ -190,7 +190,7 @@ public extension Repository {
     
     func remove(relPaths: [String]) -> R<()> {
          index()
-            .flatMap { $0.remove(relPaths: relPaths) }
+            .flatMap { $0.remove(paths: relPaths) }
     }
 }
 
@@ -246,37 +246,20 @@ extension RepositoryError: LocalizedError {
 public extension Repository {
     /// stageAllFiles
     func addAllFiles() -> Result<(),Error> {
-        let statOpt = StatusOptions()
-        
-        return combine(self.directoryURL, self.status(options: statOpt))
-            .map { repoUrl, status in
-                status
-                    .compactMap{ $0.indexToWorkDir }
-                    .map{ $0.getFileAbsPathUsing(repoPath: repoUrl.path) }
-            }
-            .flatMap { paths -> Result<(),Error> in
-                self.index()
-                    .flatMap {
-                        $0.add(paths: paths)
-                    }
-            }
-            
+        let entries = self.status() | { $0.compactMap { $0.indexToWorkDir }}
+
+        return combine(entries, directoryURL)
+            | { entries, url in entries | { $0.getFileAbsPathUsing(repoPath: url.path) } }
+            | { paths in self.index()   | { $0.add(paths: paths) } }
     }
 
     /// unstageAllFiles
     func resetAllFiles() -> Result<(),Error>  {
-        let statOpt = StatusOptions()
+        let entries = self.status() | { $0.compactMap { $0.indexToWorkDir }}
 
-        return combine(self.directoryURL, self.status(options: statOpt))
-            .map { repoUrl, status in
-                status
-                    .compactMap{ $0.headToIndex }
-                    .map{ $0.getFileAbsPathUsing(repoPath: repoUrl.path) }
-            }
-            .flatMap {
-                self.reset(relPaths: $0)
-            }
-            .flatMap{ _ in .success(()) }
+        return combine(entries, directoryURL)
+            | { entries, url in entries | { $0.getFileAbsPathUsing(repoPath: url.path) } }
+            | { paths in self.index()   | { _ in self.reset(relPaths: paths) } }
     }
 }
 
