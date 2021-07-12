@@ -170,17 +170,19 @@ public extension Repository {
 // index
 public extension Repository {
     ///Unstage files by relative path
-    func reset(relPaths: [String]) -> Result<Void, Error> {
+    func reset(relPaths: [String]) -> R<Void> {
         return HEAD()
-            .flatMap { $0.targetOID }
-            .flatMap { self.commit(oid: $0) }
-            .flatMap { commit in
-                git_try("git_reset_default") {
-                    relPaths.with_git_strarray { strarray in
-                        git_reset_default(self.pointer, commit.pointer, &strarray)
-                    }
-                }
+            | { $0.targetOID }
+            | { self.commit(oid: $0) }
+            | { resetDefault(commit: $0, paths: relPaths) }
+    }
+    
+    func resetDefault(commit: Commit, paths: [String]) -> R<Void> {
+        git_try("git_reset_default") {
+            paths.with_git_strarray { strarray in
+                git_reset_default(self.pointer, commit.pointer, &strarray)
             }
+        }
     }
     
     ///Stage files by relative path
