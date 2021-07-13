@@ -143,6 +143,13 @@ public extension Repository {
 }
 
 public extension Repository {
+    class func exists(at url: URL) -> Bool {
+        if case .success(_) = at(url: url) {
+            return true
+        }
+        return false
+    }
+    
     class func at(url: URL, fixDetachedHead: Bool = true) -> Result<Repository, Error> {
         var pointer: OpaquePointer?
 
