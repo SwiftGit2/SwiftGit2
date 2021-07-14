@@ -27,27 +27,6 @@ public extension Repository {
     }
     
     //works only with unstaged files
-    func discardChanges(of relPaths: [String])  -> Result<Void, Error> {
-        print(relPaths)
-        let repo = self
-        
-        let options = CheckoutOptions(strategy: .Force, relPaths: relPaths)
-        
-        return git_try("git_checkout_index") {
-            options.with_git_checkout_options { opt in
-                git_checkout_index(self.pointer, nil, &opt)
-            }
-        }
-        //Uncomment me when all will be ready
-        //-------------------
-        //Delete files that wasn't added into repo
-//        .flatMap{ repo.directoryURL }
-//        .map { $0.path }
-//        .map { repoPath in relPaths.map{ [repoPath, $0].joined(separator: "/") } }
-//        .map { absPaths in absPaths.map{ FS.delete( $0 ) } }
-    }
-    
-    //works only with unstaged files
     func discardChanges()  -> Result<Void, Error> {
         let options = CheckoutOptions(strategy: .Force)
         

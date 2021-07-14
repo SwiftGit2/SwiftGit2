@@ -1,5 +1,6 @@
 
 import Clibgit2
+import Essentials
 
 extension StatusEntry: Identifiable {
     public var id: String {
@@ -63,5 +64,49 @@ public extension StatusEntry {
         public static let workTreeUnreadable = Status(rawValue: GIT_STATUS_WT_UNREADABLE.rawValue)
         public static let ignored = Status(rawValue: GIT_STATUS_IGNORED.rawValue)
         public static let conflicted = Status(rawValue: GIT_STATUS_CONFLICTED.rawValue)
+    }
+}
+
+public extension StatusEntry {
+    var headToIndexNEWFilePath : R<String> {
+        headToIndex.asNonOptional("headToIndex") | { $0.newFilePath }
+    }
+    
+    var headToIndexOLDFilePath : R<String> {
+        headToIndex.asNonOptional("headToIndex") | { $0.oldFilePath }
+    }
+    
+    var indexToWorkDirNEWFilePath : R<String> {
+        indexToWorkDir.asNonOptional("indexToWorkDir") | { $0.newFilePath }
+    }
+    
+    var indexToWorkDirOLDFilePath : R<String> {
+        indexToWorkDir.asNonOptional("indexToWorkDir") | { $0.newFilePath }
+    }
+
+}
+
+extension StatusEntry : DuoUser { }
+public extension Duo where T1 == StatusEntry, T2 == Repository {
+    var headToIndexNewFileURL : R<URL> {
+        let (entry, repo) = self.value
+        let path = entry.headToIndexNEWFilePath
+        return combine(repo.directoryURL, path) | { $0.appendingPathComponent($1) }
+    }
+    
+    var indexToWorkDirNewFileURL : R<URL> {
+        let (entry, repo) = self.value
+        let path = entry.indexToWorkDirNEWFilePath
+        return combine(repo.directoryURL, path) | { $0.appendingPathComponent($1) }
+    }
+}
+
+public extension Diff.Delta {
+    var newFilePath : R<String> {
+        self.newFile.asNonOptional("newFile") | { $0.path }
+    }
+    
+    var oldFilePath : R<String> {
+        self.oldFile.asNonOptional("oldFile") | { $0.path }
     }
 }
