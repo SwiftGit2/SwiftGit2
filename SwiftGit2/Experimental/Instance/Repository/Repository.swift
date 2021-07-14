@@ -192,7 +192,7 @@ public extension Repository {
         }
     }
     
-    func resetHard(paths: [String]) -> R<Void> {
+    func resetHard(paths: [String] = []) -> R<Void> {
         BranchTarget.HEAD.with(self).commitInstance | { self.resetHard(commit: $0, paths: paths) }
     }
     
@@ -200,8 +200,9 @@ public extension Repository {
         git_try("git_reset") {
             options.with_git_checkout_options { options in
                 paths.with_git_strarray { strarray in
-                    
-                    options.paths = strarray
+                    if strarray.count > 0 {
+                        options.paths = strarray
+                    }
                     
                     return git_reset(self.pointer, commit.pointer, GIT_RESET_HARD, &options)
                 }
