@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		1D0AFF642534AC440045D68D /* StatusOptions+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D0AFF632534AC440045D68D /* StatusOptions+.swift */; };
+		1D0AFF642534AC440045D68D /* StatusOptions.Flags.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D0AFF632534AC440045D68D /* StatusOptions.Flags.swift */; };
 		1D496A4225372FA800789177 /* git_strarray.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D496A4125372FA800789177 /* git_strarray.swift */; };
 		1D5B38A825228C790019E593 /* Repository+Diff.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D5B38A725228C790019E593 /* Repository+Diff.swift */; };
 		1D6EFB2A252BA5A1000D0BE1 /* Tree.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D6EFB29252BA5A1000D0BE1 /* Tree.swift */; };
@@ -117,7 +117,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		1D0AFF632534AC440045D68D /* StatusOptions+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "StatusOptions+.swift"; sourceTree = "<group>"; };
+		1D0AFF632534AC440045D68D /* StatusOptions.Flags.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatusOptions.Flags.swift; sourceTree = "<group>"; };
 		1D496A4125372FA800789177 /* git_strarray.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = git_strarray.swift; sourceTree = "<group>"; };
 		1D5B38A725228C790019E593 /* Repository+Diff.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Repository+Diff.swift"; sourceTree = "<group>"; };
 		1D6EFB29252BA5A1000D0BE1 /* Tree.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tree.swift; sourceTree = "<group>"; };
@@ -474,7 +474,7 @@
 				E68A3ACD2665346800B0244C /* User */,
 				E623A3122634881B00484E11 /* Options */,
 				E6EAA4A7269F4C2000D86506 /* StatusEntry.swift */,
-				1D0AFF632534AC440045D68D /* StatusOptions+.swift */,
+				1D0AFF632534AC440045D68D /* StatusOptions.Flags.swift */,
 				AA89482E23F1671A0074288B /* Buffer.swift */,
 				E6332D06264EA35D004990E7 /* IndexEntry.swift */,
 				E6332E072652D20E004990E7 /* GitPayload.swift */,
@@ -641,7 +641,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				1D0AFF642534AC440045D68D /* StatusOptions+.swift in Sources */,
+				1D0AFF642534AC440045D68D /* StatusOptions.Flags.swift in Sources */,
 				1D6EFB2A252BA5A1000D0BE1 /* Tree.swift in Sources */,
 				E69D5CEE2573AC8E00AEBA28 /* Repository+Submodules.swift in Sources */,
 				1D991AE12518FA7900335255 /* Duo.swift in Sources */,
