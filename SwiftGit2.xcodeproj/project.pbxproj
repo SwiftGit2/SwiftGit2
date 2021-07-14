@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		1D0AFF642534AC440045D68D /* Status.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D0AFF632534AC440045D68D /* Status.swift */; };
+		1D0AFF642534AC440045D68D /* StatusOptions+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D0AFF632534AC440045D68D /* StatusOptions+.swift */; };
 		1D496A4225372FA800789177 /* git_strarray.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D496A4125372FA800789177 /* git_strarray.swift */; };
 		1D5B38A825228C790019E593 /* Repository+Diff.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D5B38A725228C790019E593 /* Repository+Diff.swift */; };
 		1D6EFB2A252BA5A1000D0BE1 /* Tree.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D6EFB29252BA5A1000D0BE1 /* Tree.swift */; };
@@ -78,6 +78,7 @@
 		E6E99235268BBF5E00F8E8BD /* RevwalkTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6E99234268BBF5E00F8E8BD /* RevwalkTests.swift */; };
 		E6E99239268BC1BE00F8E8BD /* Essentials in Frameworks */ = {isa = PBXBuildFile; productRef = E6E99238268BC1BE00F8E8BD /* Essentials */; };
 		E6E9923A268BC1BE00F8E8BD /* Essentials in Embed Frameworks */ = {isa = PBXBuildFile; productRef = E6E99238268BC1BE00F8E8BD /* Essentials */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		E6EAA4A8269F4C2000D86506 /* StatusEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6EAA4A7269F4C2000D86506 /* StatusEntry.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -116,7 +117,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		1D0AFF632534AC440045D68D /* Status.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Status.swift; sourceTree = "<group>"; };
+		1D0AFF632534AC440045D68D /* StatusOptions+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "StatusOptions+.swift"; sourceTree = "<group>"; };
 		1D496A4125372FA800789177 /* git_strarray.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = git_strarray.swift; sourceTree = "<group>"; };
 		1D5B38A725228C790019E593 /* Repository+Diff.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Repository+Diff.swift"; sourceTree = "<group>"; };
 		1D6EFB29252BA5A1000D0BE1 /* Tree.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tree.swift; sourceTree = "<group>"; };
@@ -207,6 +208,7 @@
 		E6D4A92324DF40CA00E8041E /* Index.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Index.swift; sourceTree = "<group>"; };
 		E6D4A92724DF55E400E8041E /* Reference+Write.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Reference+Write.swift"; sourceTree = "<group>"; };
 		E6E99234268BBF5E00F8E8BD /* RevwalkTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RevwalkTests.swift; sourceTree = "<group>"; };
+		E6EAA4A7269F4C2000D86506 /* StatusEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatusEntry.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -471,7 +473,8 @@
 			children = (
 				E68A3ACD2665346800B0244C /* User */,
 				E623A3122634881B00484E11 /* Options */,
-				1D0AFF632534AC440045D68D /* Status.swift */,
+				E6EAA4A7269F4C2000D86506 /* StatusEntry.swift */,
+				1D0AFF632534AC440045D68D /* StatusOptions+.swift */,
 				AA89482E23F1671A0074288B /* Buffer.swift */,
 				E6332D06264EA35D004990E7 /* IndexEntry.swift */,
 				E6332E072652D20E004990E7 /* GitPayload.swift */,
@@ -638,7 +641,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				1D0AFF642534AC440045D68D /* Status.swift in Sources */,
+				1D0AFF642534AC440045D68D /* StatusOptions+.swift in Sources */,
 				1D6EFB2A252BA5A1000D0BE1 /* Tree.swift in Sources */,
 				E69D5CEE2573AC8E00AEBA28 /* Repository+Submodules.swift in Sources */,
 				1D991AE12518FA7900335255 /* Duo.swift in Sources */,
@@ -658,6 +661,7 @@
 				AA89482F23F1671A0074288B /* Buffer.swift in Sources */,
 				E68A3ACC2663A26300B0244C /* Branch+Repository.swift in Sources */,
 				E6332D7326501055004990E7 /* Repository+Pull.swift in Sources */,
+				E6EAA4A8269F4C2000D86506 /* StatusEntry.swift in Sources */,
 				1D496A4225372FA800789177 /* git_strarray.swift in Sources */,
 				E623A31F2634885800484E11 /* CheckoutOptions.swift in Sources */,
 				E63EDF7C265DBAE500A3D048 /* ProxyOptions.swift in Sources */,

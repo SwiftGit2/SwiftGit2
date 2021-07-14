@@ -177,17 +177,34 @@ public extension Repository {
 // index
 public extension Repository {
     ///Unstage files by relative path
-    func reset(relPaths: [String]) -> R<Void> {
+    func resetDefault(paths: [String]) -> R<Void> {
         return HEAD()
             | { $0.targetOID }
             | { self.commit(oid: $0) }
-            | { resetDefault(commit: $0, paths: relPaths) }
+            | { resetDefault(commit: $0, paths: paths) }
     }
     
     func resetDefault(commit: Commit, paths: [String]) -> R<Void> {
         git_try("git_reset_default") {
             paths.with_git_strarray { strarray in
                 git_reset_default(self.pointer, commit.pointer, &strarray)
+            }
+        }
+    }
+    
+    func resetHard(paths: [String]) -> R<Void> {
+        BranchTarget.HEAD.with(self).commitInstance | { self.resetHard(commit: $0, paths: paths) }
+    }
+    
+    func resetHard(commit: Commit, paths: [String], options: CheckoutOptions = CheckoutOptions()) -> R<Void> {
+        git_try("git_reset") {
+            options.with_git_checkout_options { options in
+                paths.with_git_strarray { strarray in
+                    
+                    options.paths = strarray
+                    
+                    return git_reset(self.pointer, commit.pointer, GIT_RESET_HARD, &options)
+                }
             }
         }
     }
@@ -268,7 +285,7 @@ public extension Repository {
 
         return combine(entries, directoryURL)
             | { entries, url in entries | { $0.getFileAbsPathUsing(repoPath: url.path) } }
-            | { paths in self.index()   | { _ in self.reset(relPaths: paths) } }
+            | { paths in self.index()   | { _ in self.resetDefault(paths: paths) } }
     }
 }
 
