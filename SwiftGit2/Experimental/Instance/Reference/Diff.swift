@@ -21,12 +21,11 @@ public class Diff: InstanceProtocol {
         git_diff_free(pointer)
     }
 
-    public func findSimilar(options: FindOptions) -> Result<Void, Error> {
+    public func findSimilar(options: FindOptions) -> Result<Diff, Error> {
         var opt = git_diff_find_options(version: 1, flags: options.rawValue, rename_threshold: 50, rename_from_rewrite_threshold: 50, copy_threshold: 50, break_rewrite_threshold: 60, rename_limit: 200, metric: nil)
 
-        return _result((), pointOfFailure: "git_diff_find_options") {
-            git_diff_find_similar(pointer, &opt)
-        }
+        return git_try("git_diff_find_options") { git_diff_find_similar(pointer, &opt) }
+            .map { self }
     }
 
     public func patch() -> Result<Patch, Error> {
