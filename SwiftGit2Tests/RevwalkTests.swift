@@ -40,7 +40,7 @@ class RevwalkTests: XCTestCase {
             .map { $0.count }
             .assertEqual(to: 1, "repo1.pendingCommits(.HEAD, .push)")
                 
-        repo1.push()
+        repo1.push(.HEAD)
             .assertFailure("push")
         
         repo2.fetch(.HEAD)

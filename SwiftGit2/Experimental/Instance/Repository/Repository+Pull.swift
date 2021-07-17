@@ -70,7 +70,7 @@ public extension Repository {
                 .flatMap { self.merge(our: $0[0], their: $0[1], ancestor: $0[2]) } // -> Index
                 .if(\.hasConflicts,
                     then: { idx in
-                        self.checkout(index: idx, strategy: .UseTheirs)
+                        self.checkout(index: idx, strategy: [.Force, .AllowConflicts, .ConflictStyleMerge, .ConflictStyleDiff3])
                             .flatMap { _ in .success(.threeWayConflict(idx)) }
                     },
 

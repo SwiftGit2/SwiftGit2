@@ -62,12 +62,12 @@ class RepositoryRemoteTests: XCTestCase {
 
         repo.detachHEAD().assertFailure("detachHEAD")
 
-        repo.push()
+        repo.push(.HEAD)
             .assertSuccess("push")
 
         repo.detachedHeadFix().assertFailure("detachedHeadFix")
 
-        repo.push()
+        repo.push(.HEAD)
             .assertFailure("push")
     }
 
@@ -82,7 +82,7 @@ class RepositoryRemoteTests: XCTestCase {
             .assertFailure("t_commit")
 
         // push should FAIL
-        repo.push()
+        repo.push(.HEAD)
             .assertSuccess("push")
     }
 
@@ -98,7 +98,7 @@ class RepositoryRemoteTests: XCTestCase {
             .assertFailure("t_commit")
 
         // push should FAIL
-        repo.push()
+        repo.push(.HEAD)
             .assertSuccess("push")
     }
     
