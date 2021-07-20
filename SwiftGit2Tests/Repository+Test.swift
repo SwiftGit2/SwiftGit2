@@ -12,7 +12,7 @@ extension Repository {
 
     func t_push_commit(file: TestFile = .fileA, with content: TestFileContent = .oneLine1, msg: String) -> Result<Void, Error> {
         t_commit(file: file, with: content, msg: msg)
-            .flatMap { _ in self.push() }
+            .flatMap { _ in self.push(.HEAD) }
     }
 
     func t_commit(file: TestFile = .fileA, with content: TestFileContent = .oneLine1, msg: String) -> Result<Commit, Error> {
