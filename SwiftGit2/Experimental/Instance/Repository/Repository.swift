@@ -42,6 +42,13 @@ extension Repository: CustomDebugStringConvertible {
 
 // Remotes
 public extension Repository {
+    
+    var childrenURLs : R<[URL]> {
+        let url = self.directoryURL
+        let paths = submodules().map { $0.map { $0.path } }
+        return combine(url, paths).map { url, paths in paths.map { url.appendingPathComponent($0) } }
+    }
+
     func getRemoteFirst() -> Result<Remote, Error> {
         return getRemotesNames()
             .flatMap { arr -> Result<Remote, Error> in
