@@ -22,6 +22,10 @@ public class Blob: Object {
     public var oid: OID { OID(git_object_id(pointer).pointee) }
 }
 
+public extension Blob {
+    var isBinary: Bool { git_blob_is_binary(pointer) == 1 }
+}
+
 public extension Repository {
     func hunksBetweenBlobs(old: Blob?, new: Blob?, options: DiffOptions = DiffOptions()) -> Result<[Diff.Hunk], Error> {
         var cb = DiffEachCallbacks()
