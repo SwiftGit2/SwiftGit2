@@ -25,6 +25,12 @@ public extension Repository {
     func checkout(commit: Commit, strategy: CheckoutStrategy = .Safe, progress: CheckoutProgressBlock? = nil) -> Result<Void, Error> {
         checkout(commit.oid, strategy: strategy, progress: progress)
     }
+    
+    func checkout(_ oid: OID, strategy: CheckoutStrategy, progress: CheckoutProgressBlock? = nil) -> Result<Void, Error> {
+        setHEAD_detached(oid)
+            .flatMap { checkoutHead(strategy: strategy, progress: progress) }
+    }
+
 }
 
 internal extension Repository {
@@ -46,11 +52,6 @@ internal extension Repository {
             CheckoutOptions(strategy: strategy, progress: progress)
                 .with_git_checkout_options { git_checkout_head(self.pointer, &$0) }
         }
-    }
-
-    func checkout(_ oid: OID, strategy: CheckoutStrategy, progress: CheckoutProgressBlock? = nil) -> Result<Void, Error> {
-        setHEAD_detached(oid)
-            .flatMap { checkoutHead(strategy: strategy, progress: progress) }
     }
 
     func checkout(reference: Reference, strategy: CheckoutStrategy, progress: CheckoutProgressBlock? = nil) -> Result<Reference, Error> {
