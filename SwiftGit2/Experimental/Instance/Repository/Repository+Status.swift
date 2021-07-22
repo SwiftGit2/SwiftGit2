@@ -7,6 +7,7 @@
 //
 
 import Clibgit2
+import Essentials
 
 public final class StatusIterator {
     public var pointer: OpaquePointer?
@@ -67,4 +68,117 @@ public extension Repository {
             }
         }
     }
+}
+
+//////////////////////////////////////////
+//////////////////////////////////////////
+//////////////////////////////////////////
+//////////////////////////////////////////
+//////////////////////////////////////////
+/////////////////////////////////////////
+
+public final class StatusIteratorNew {
+    public var repo: Repository
+    public var iterator: StatusIterator
+
+    public init( iterator: StatusIterator, repo: Repository ) {
+        self.iterator = iterator
+        self.repo = repo
+    }
+}
+
+extension StatusIteratorNew: RandomAccessCollection {
+    public typealias Element = UiStatusEntryX
+    public typealias Index = Int
+    public typealias SubSequence = StatusIteratorNew
+    public typealias Indices = DefaultIndices<StatusIteratorNew>
+    
+    public subscript(position: Int) -> UiStatusEntryX {
+        let entry = iterator[position]
+        
+        var stagedPatch: R<Patch?>
+        var unStagedPatch: R<Patch?>
+        
+        if let hti = entry.headToIndex {
+            stagedPatch = repo.patchFrom(delta: hti)
+                .map{ patch -> Patch? in patch }
+        } else {
+            stagedPatch = .success(nil)
+        }
+        
+        if let itw =  entry.indexToWorkDir {
+            unStagedPatch = repo.patchFrom(delta: itw)
+                .map{ patch -> Patch? in patch }
+        } else {
+            unStagedPatch = .success(nil)
+        }
+        
+        return StatusEntryNew(iterator[position], stagedPatch: stagedPatch, unStagedPatch: unStagedPatch)
+    }
+    
+    public var startIndex: Int { 0 }
+    public var endIndex: Int { iterator.endIndex }
+    
+    public func index(before i: Int) -> Int { return i - 1 }
+    public func index(after i: Int) -> Int { return i + 1 }
+}
+
+private struct StatusEntryNew: UiStatusEntryX {
+    private var entry: StatusEntry
+    private var stagedPatch_: Result<Patch?, Error>
+    private var unStagedPatch_: Result<Patch?, Error>
+    
+    init(_ entry: StatusEntry, stagedPatch: Result<Patch?, Error>, unStagedPatch: Result<Patch?, Error>) {
+        self.entry = entry
+        self.stagedPatch_ = stagedPatch
+        self.unStagedPatch_ = unStagedPatch
+    }
+    
+    public var oldFileRelPath: String? { entry.headToIndex?.oldFile?.path ?? entry.indexToWorkDir?.oldFile?.path }
+    
+    public var newFileRelPath: String? { entry.headToIndex?.newFile?.path ?? entry.indexToWorkDir?.newFile?.path }
+    
+    public var stagedPatch: Result<Patch?, Error> { stagedPatch_ }
+    
+    public var unstagedPatch: Result<Patch?, Error> { unStagedPatch_ }
+    
+    public var stageState: StageState {
+        if entry.headToIndex != nil && entry.indexToWorkDir != nil {
+            return .mixed
+        }
+        
+        if let _ = entry.headToIndex {
+            return .staged
+        }
+        
+        if let _ = entry.indexToWorkDir {
+            return .unstaged
+        }
+        
+        assert(false)
+        return .mixed
+    }
+}
+
+
+
+
+
+/////////////////////////////////
+// NEW STATUS ENTRY
+/////////////////////////////////
+
+public protocol UiStatusEntryX {
+    var stageState: StageState { get }
+    var stagedPatch: Result<Patch?, Error> { get }
+    var unstagedPatch: Result<Patch?, Error> { get }
+    
+    var oldFileRelPath: String? { get }
+    var newFileRelPath: String? { get }
+}
+
+public enum StageState {
+    case mixed
+    case staged
+    case unstaged
 }
