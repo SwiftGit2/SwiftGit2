@@ -28,7 +28,7 @@ public extension Repository {
     
     func checkout(_ oid: OID, strategy: CheckoutStrategy, progress: CheckoutProgressBlock? = nil) -> Result<Repository, Error> {
         setHEAD_detached(oid)
-            .flatMap { checkoutHead(strategy: strategy, progress: progress) }
+            | { checkoutHead(strategy: strategy, progress: progress) }
             | { self }
     }
 
