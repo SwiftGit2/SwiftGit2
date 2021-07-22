@@ -23,12 +23,13 @@ public extension Repository {
     }
 
     func checkout(commit: Commit, strategy: CheckoutStrategy = .Safe, progress: CheckoutProgressBlock? = nil) -> Result<Void, Error> {
-        checkout(commit.oid, strategy: strategy, progress: progress)
+        checkout(commit.oid, strategy: strategy, progress: progress) | { _ in () }
     }
     
-    func checkout(_ oid: OID, strategy: CheckoutStrategy, progress: CheckoutProgressBlock? = nil) -> Result<Void, Error> {
+    func checkout(_ oid: OID, strategy: CheckoutStrategy, progress: CheckoutProgressBlock? = nil) -> Result<Repository, Error> {
         setHEAD_detached(oid)
             .flatMap { checkoutHead(strategy: strategy, progress: progress) }
+            | { self }
     }
 
 }
