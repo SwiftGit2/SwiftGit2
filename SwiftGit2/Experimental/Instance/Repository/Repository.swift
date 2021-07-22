@@ -42,6 +42,16 @@ extension Repository: CustomDebugStringConvertible {
 
 // Remotes
 public extension Repository {
+    //TEST
+    func blobCreateFromDisk(path: String) -> R<OID> {
+        var oid = git_oid()
+        
+        return _result({ OID(oid) }, pointOfFailure: "git_blob_create_from_disk") {
+            path.withCString{ path1 in
+                Clibgit2.git_blob_create_from_disk(&oid, self.pointer, path1)
+            }
+        }
+    }
     
     var childrenURLs : R<[URL]> {
         let url = self.directoryURL
