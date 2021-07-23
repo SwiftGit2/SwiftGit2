@@ -67,27 +67,26 @@ public extension StatusEntry {
     }
 }
 
-public extension StatusEntry {
+public extension UiStatusEntryX {
     var headToIndexNEWFilePath : R<String> {
-        headToIndex.asNonOptional("headToIndex") | { $0.newFilePath }
+        unStagedDeltas.asNonOptional("headToIndex") | { $0.newFilePath }
     }
     
     var headToIndexOLDFilePath : R<String> {
-        headToIndex.asNonOptional("headToIndex") | { $0.oldFilePath }
+        unStagedDeltas.asNonOptional("headToIndex") | { $0.oldFilePath }
     }
     
     var indexToWorkDirNEWFilePath : R<String> {
-        indexToWorkDir.asNonOptional("indexToWorkDir") | { $0.newFilePath }
+        stagedDeltas.asNonOptional("indexToWorkDir") | { $0.newFilePath }
     }
     
     var indexToWorkDirOLDFilePath : R<String> {
-        indexToWorkDir.asNonOptional("indexToWorkDir") | { $0.newFilePath }
+        stagedDeltas.asNonOptional("indexToWorkDir") | { $0.newFilePath }
     }
 
 }
 
-extension StatusEntry : DuoUser { }
-public extension Duo where T1 == StatusEntry, T2 == Repository {
+public extension Duo where T1 == UiStatusEntryX, T2 == Repository {
     var headToIndexNewFileURL : R<URL> {
         let (entry, repo) = self.value
         let path = entry.headToIndexNEWFilePath

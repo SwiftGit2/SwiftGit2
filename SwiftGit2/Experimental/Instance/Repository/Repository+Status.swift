@@ -55,11 +55,13 @@ public extension Repository {
         git_repository_is_bare(pointer) == 1 ? true : false
     }
 
-    func status(options: StatusOptions = StatusOptions()) -> Result<StatusIterator, Error> {
+    func status(options: StatusOptions = StatusOptions()) -> Result<StatusIteratorNew, Error> {
         var pointer: OpaquePointer?
 
         if repoIsBare {
-            return .success(StatusIterator(nil))
+            let si = StatusIterator(nil)
+            
+            return .success( StatusIteratorNew(iterator: si, repo: self)  )
         }
 
         return options.with_git_status_options { options in
@@ -67,6 +69,7 @@ public extension Repository {
                 git_status_list_new(&pointer, self.pointer, &options)
             }
         }
+        .map{ StatusIteratorNew(iterator: $0, repo: self )}
     }
 }
 
@@ -142,6 +145,10 @@ private struct StatusEntryNew: UiStatusEntryX {
     
     public var unstagedPatch: Result<Patch?, Error> { unStagedPatch_ }
     
+    var stagedDeltas: Diff.Delta? { entry.indexToWorkDir }
+    
+    var unStagedDeltas: Diff.Delta? { entry.headToIndex }
+    
     public var stageState: StageState {
         if entry.headToIndex != nil && entry.indexToWorkDir != nil {
             return .mixed
@@ -158,9 +165,29 @@ private struct StatusEntryNew: UiStatusEntryX {
         assert(false)
         return .mixed
     }
+    
+    var status: StatusEntry.Status { entry.status }
+    
+    func statusFull() -> [Diff.Delta.Status] {
+        if let status = stagedDeltas?.status,
+           unStagedDeltas == nil {
+                return [status]
+        }
+        if let status = unStagedDeltas?.status,
+            stagedDeltas == nil {
+                return [status]
+        }
+        
+        guard let workDir = stagedDeltas?.status else { return [.unmodified] }
+        guard let index = unStagedDeltas?.status else { return [.unmodified] }
+        
+        if workDir == index {
+            return [workDir]
+        }
+        
+        return [workDir, index]
+    }
 }
-
-
 
 
 
@@ -173,8 +200,15 @@ public protocol UiStatusEntryX {
     var stagedPatch: Result<Patch?, Error> { get }
     var unstagedPatch: Result<Patch?, Error> { get }
     
+    var stagedDeltas: Diff.Delta? { get }
+    var unStagedDeltas: Diff.Delta? { get }
+    
     var oldFileRelPath: String? { get }
     var newFileRelPath: String? { get }
+    
+    var status: StatusEntry.Status { get }
+    
+    func statusFull() -> [Diff.Delta.Status]
 }
 
 public enum StageState {
