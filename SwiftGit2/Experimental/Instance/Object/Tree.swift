@@ -94,4 +94,18 @@ public extension Repository {
 
         return .success(Diff(diff!))
     }
+    
+    func diffTreeToWorkdir(tree: Tree, options: DiffOptions = DiffOptions()) -> Result<Diff, Error> {
+        var diff: OpaquePointer?
+        
+        let result = options.with_diff_options { options in
+            git_diff_tree_to_workdir(&diff, pointer, tree.pointer, &options)
+        }
+
+        guard result == GIT_OK.rawValue else {
+            return Result.failure(NSError(gitError: result, pointOfFailure: "git_diff_tree_to_workdir"))
+        }
+
+        return .success(Diff(diff!))
+    }
 }

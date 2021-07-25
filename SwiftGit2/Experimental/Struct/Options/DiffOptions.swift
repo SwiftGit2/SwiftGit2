@@ -11,9 +11,25 @@ import Foundation
 
 public class DiffOptions {
     var diff_options = git_diff_options()
+    let pathspec: [String]
 
-    public init() {
+    public init(pathspec: [String] = []) {
+        self.pathspec = pathspec
+        
         let result = git_diff_options_init(&diff_options, UInt32(GIT_DIFF_OPTIONS_VERSION))
         assert(result == GIT_OK.rawValue)
+    }
+}
+
+extension DiffOptions {
+    func with_diff_options<T>(_ body: (inout git_diff_options) -> T) -> T {
+        if pathspec.isEmpty {
+            return body(&diff_options)
+        } else {
+            return pathspec.with_git_strarray { strarray in
+                diff_options.pathspec = strarray
+                return body(&diff_options)
+            }
+        }
     }
 }

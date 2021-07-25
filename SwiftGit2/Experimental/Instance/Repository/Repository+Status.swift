@@ -116,7 +116,28 @@ extension StatusIteratorNew: RandomAccessCollection {
             unStagedPatch = .success(nil)
         }
         
-        return StatusEntryNew(iterator[position], stagedPatch: stagedPatch, unStagedPatch: unStagedPatch)
+        let changes = try? getChanged(position: position).flatMap{ $0.asDeltas() }.get()
+        let changesDelta = changes?.first
+        
+        // Path spec works perfectly!
+        // print(iterator[position].relPath)
+        // print( (changesDelta?.newFile?.path ?? changesDelta?.oldFile?.path)! )
+        
+        return StatusEntryNew(iterator[position], stagedPatch: stagedPatch, unStagedPatch: unStagedPatch, changesDeltas: changesDelta)
+    }
+    
+    private func getChanged(position: Int) -> Result<Diff, Error> {
+        let path = iterator[position].relPath
+        
+        let repo = self.repo
+        
+        return repo.headCommit()
+            .flatMap{ $0.tree() }
+            .flatMap { headTree -> Result<Diff, Error>in
+                let options = DiffOptions(pathspec: [path])
+                
+                return repo.diffTreeToWorkdir(tree: headTree, options: options)
+            }
     }
     
     public var startIndex: Int { 0 }
@@ -131,10 +152,11 @@ private struct StatusEntryNew: UiStatusEntryX {
     private var stagedPatch_: Result<Patch?, Error>
     private var unStagedPatch_: Result<Patch?, Error>
     
-    init(_ entry: StatusEntry, stagedPatch: Result<Patch?, Error>, unStagedPatch: Result<Patch?, Error>) {
+    init(_ entry: StatusEntry, stagedPatch: Result<Patch?, Error>, unStagedPatch: Result<Patch?, Error>, changesDeltas: Diff.Delta?) {
         self.entry = entry
         self.stagedPatch_ = stagedPatch
         self.unStagedPatch_ = unStagedPatch
+        self.changesDeltas = changesDeltas
     }
     
     public var oldFileRelPath: String? { entry.headToIndex?.oldFile?.path ?? entry.indexToWorkDir?.oldFile?.path }
@@ -148,6 +170,8 @@ private struct StatusEntryNew: UiStatusEntryX {
     var stagedDeltas: Diff.Delta? { entry.indexToWorkDir }
     
     var unStagedDeltas: Diff.Delta? { entry.headToIndex }
+    
+    var changesDeltas: Diff.Delta?
     
     public var stageState: StageState {
         if entry.headToIndex != nil && entry.indexToWorkDir != nil {
@@ -202,6 +226,7 @@ public protocol UiStatusEntryX {
     
     var stagedDeltas: Diff.Delta? { get }
     var unStagedDeltas: Diff.Delta? { get }
+    var changesDeltas: Diff.Delta? { get }
     
     var oldFileRelPath: String? { get }
     var newFileRelPath: String? { get }
@@ -215,4 +240,11 @@ public enum StageState {
     case mixed
     case staged
     case unstaged
+}
+
+fileprivate extension StatusEntry{
+    var relPath: String {
+        self.headToIndex?.newFile?.path     ?? self.indexToWorkDir?.newFile?.path ??
+            self.headToIndex?.oldFile?.path ?? self.indexToWorkDir?.oldFile?.path ?? ""
+    }
 }
