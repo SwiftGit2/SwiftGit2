@@ -87,6 +87,8 @@ public extension Diff {
             size = diffFile.size
             flags = Flags(rawValue: diffFile.flags)
         }
+        
+        public var isBinary: Bool? { blob?.isBinary }
     }
 
     struct Hunk {

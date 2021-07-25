@@ -116,8 +116,10 @@ extension StatusIteratorNew: RandomAccessCollection {
             unStagedPatch = .success(nil)
         }
         
-        let changes = try? getChanged(position: position).flatMap{ $0.asDeltas() }.get()
-        let changesDelta = changes?.first
+        //let changes = try? getChanged(position: position).flatMap{ $0.asDeltas() }.get()
+        //let changesDelta = changes?.first
+        
+        let changesDelta = getChanged(position: position)
         
         // Path spec works perfectly!
         // print(iterator[position].relPath)
@@ -126,17 +128,28 @@ extension StatusIteratorNew: RandomAccessCollection {
         return StatusEntryNew(iterator[position], stagedPatch: stagedPatch, unStagedPatch: unStagedPatch, changesDeltas: changesDelta)
     }
     
-    private func getChanged(position: Int) -> Result<Diff, Error> {
-        let path = iterator[position].relPath
-        
+    private func getChanged(position: Int) -> R<[Diff.Delta]?> {
+        let relPath = iterator[position].relPath
+//
         let repo = self.repo
+//
+//        return repo.headCommit()
+//            .flatMap{ $0.tree() }
+//            .flatMap { headTree -> Result<Diff, Error>in
+//                let options = DiffOptions(pathspec: [path])
+//
+//                return repo.diffTreeToWorkdir(tree: headTree, options: options)
+//            }
         
-        return repo.headCommit()
-            .flatMap{ $0.tree() }
-            .flatMap { headTree -> Result<Diff, Error>in
-                let options = DiffOptions(pathspec: [path])
-                
-                return repo.diffTreeToWorkdir(tree: headTree, options: options)
+        var file = iterator[position].headToIndex?.oldFile
+        repo.loadBlobFor(file: &file)
+        
+        guard let blobHead = file?.blob else { return .success(nil)}
+        
+        
+        return repo.blobCreateFromWorkdirAsBlob(relPath: relPath)
+            .map { workdirBlob in
+                repo.diffBlobs(old: blobHead, new: workdirBlob)
             }
     }
     
