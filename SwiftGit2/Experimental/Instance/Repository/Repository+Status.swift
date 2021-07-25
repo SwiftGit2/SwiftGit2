@@ -119,7 +119,7 @@ extension StatusIteratorNew: RandomAccessCollection {
         //let changes = try? getChanged(position: position).flatMap{ $0.asDeltas() }.get()
         //let changesDelta = changes?.first
         
-        let changesDelta = getChanged(position: position)
+        let changesDelta = try? getChanged(position: position).get()
         
         // Path spec works perfectly!
         // print(iterator[position].relPath)
@@ -148,9 +148,10 @@ extension StatusIteratorNew: RandomAccessCollection {
         
         
         return repo.blobCreateFromWorkdirAsBlob(relPath: relPath)
-            .map { workdirBlob in
+            .flatMap { workdirBlob in
                 repo.diffBlobs(old: blobHead, new: workdirBlob)
             }
+            .map{ delta -> [Diff.Delta]? in delta }
     }
     
     public var startIndex: Int { 0 }
@@ -165,11 +166,11 @@ private struct StatusEntryNew: UiStatusEntryX {
     private var stagedPatch_: Result<Patch?, Error>
     private var unStagedPatch_: Result<Patch?, Error>
     
-    init(_ entry: StatusEntry, stagedPatch: Result<Patch?, Error>, unStagedPatch: Result<Patch?, Error>, changesDeltas: Diff.Delta?) {
+    init(_ entry: StatusEntry, stagedPatch: Result<Patch?, Error>, unStagedPatch: Result<Patch?, Error>, changesDeltas: [Diff.Delta]?) {
         self.entry = entry
         self.stagedPatch_ = stagedPatch
         self.unStagedPatch_ = unStagedPatch
-        self.changesDeltas = changesDeltas
+        self.changesDeltas = changesDeltas?.first
     }
     
     public var oldFileRelPath: String? { entry.headToIndex?.oldFile?.path ?? entry.indexToWorkDir?.oldFile?.path }
