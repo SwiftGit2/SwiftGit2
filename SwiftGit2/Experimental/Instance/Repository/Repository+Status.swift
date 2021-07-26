@@ -1,4 +1,6 @@
 //
+
+
 //  Repository+Status.swift
 //  SwiftGit2-OSX
 //
@@ -142,11 +144,16 @@ extension StatusIteratorNew: RandomAccessCollection {
 //            }
         
         
-        var file = iterator[position].indexToWorkDir?.oldFile
+        var file = iterator[position].headToIndex?.oldFile ??  iterator[position].indexToWorkDir?.oldFile
         repo.loadBlobFor(file: &file)
         
         guard let blobHead = file?.blob else { return .success(nil)}
         
+        print(blobHead.oid)
+        
+        blobHead.content()
+            .onSuccess{ print($0) }
+            .onFailure{ print($0) }
         
         
         return repo.blobCreateFromWorkdirAsBlob(relPath: relPath)
@@ -154,6 +161,8 @@ extension StatusIteratorNew: RandomAccessCollection {
                 repo.diffBlobs(old: blobHead, new: workdirBlob)
             }
             .map{ delta -> [Diff.Delta]? in delta }
+        
+        
     }
     
     public var startIndex: Int { 0 }

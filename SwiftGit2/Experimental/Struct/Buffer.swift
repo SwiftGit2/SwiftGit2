@@ -16,6 +16,14 @@ public final class Buffer {
     public init(buf: git_buf) {
         self.buf = buf
     }
+    
+    public init(data: UnsafeRawPointer?, size: Int) {
+        var buf = git_buf()
+        
+        let a = git_buf_set(&buf, data, size)
+        
+        self.buf = buf
+    }
 
     public init?(_ str: String) {
         buf = git_buf(ptr: nil, asize: 0, size: 0)

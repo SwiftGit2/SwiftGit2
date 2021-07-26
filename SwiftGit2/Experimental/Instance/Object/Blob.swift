@@ -7,6 +7,7 @@
 //
 
 import Clibgit2
+import Essentials
 
 public class Blob: Object {
     public let pointer: OpaquePointer
@@ -24,6 +25,16 @@ public class Blob: Object {
 
 public extension Blob {
     var isBinary: Bool { git_blob_is_binary(pointer) == 1 }
+    
+    func content() -> R<String>{
+        let buffPointer = git_blob_rawcontent(self.pointer)
+        
+        let size = git_blob_rawsize(pointer)
+        
+        let a = Buffer(data: buffPointer, size: size.bitWidth)
+        
+        return a.asString()
+    }
 }
 
 public extension Repository {
