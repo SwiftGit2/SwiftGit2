@@ -173,8 +173,10 @@ private struct StatusEntryNew: UiStatusEntryX {
     
     public var unstagedPatch: Result<Patch?, Error> { unStagedPatch_ }
     
+    ///indexToWorkDir
     var stagedDeltas: Diff.Delta? { entry.indexToWorkDir }
     
+    ///headToIndex
     var unStagedDeltas: Diff.Delta? { entry.headToIndex }
     
     var changesDeltas: Diff.Delta?
