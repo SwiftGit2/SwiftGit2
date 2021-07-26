@@ -173,11 +173,9 @@ private struct StatusEntryNew: UiStatusEntryX {
     
     public var unstagedPatch: Result<Patch?, Error> { unStagedPatch_ }
     
-    ///indexToWorkDir
-    var stagedDeltas: Diff.Delta? { entry.indexToWorkDir }
+    var unStagedDeltas: Diff.Delta? { entry.indexToWorkDir }
     
-    ///headToIndex
-    var unStagedDeltas: Diff.Delta? { entry.headToIndex }
+    var stagedDeltas: Diff.Delta? { entry.headToIndex }
     
     var changesDeltas: Diff.Delta?
     
@@ -201,17 +199,17 @@ private struct StatusEntryNew: UiStatusEntryX {
     var status: StatusEntry.Status { entry.status }
     
     func statusFull() -> [Diff.Delta.Status] {
-        if let status = stagedDeltas?.status,
-           unStagedDeltas == nil {
+        if let status = unStagedDeltas?.status,
+           stagedDeltas == nil {
                 return [status]
         }
-        if let status = unStagedDeltas?.status,
-            stagedDeltas == nil {
+        if let status = stagedDeltas?.status,
+            unStagedDeltas == nil {
                 return [status]
         }
         
-        guard let workDir = stagedDeltas?.status else { return [.unmodified] }
-        guard let index = unStagedDeltas?.status else { return [.unmodified] }
+        guard let workDir = unStagedDeltas?.status else { return [.unmodified] }
+        guard let index = stagedDeltas?.status else { return [.unmodified] }
         
         if workDir == index {
             return [workDir]
@@ -232,8 +230,11 @@ public protocol UiStatusEntryX {
     var stagedPatch: Result<Patch?, Error> { get }
     var unstagedPatch: Result<Patch?, Error> { get }
     
-    var stagedDeltas: Diff.Delta? { get }
+    ///indexToWorkDir
     var unStagedDeltas: Diff.Delta? { get }
+    
+    ///headToIndex
+    var stagedDeltas: Diff.Delta? { get }
     var changesDeltas: Diff.Delta? { get }
     
     var oldFileRelPath: String? { get }

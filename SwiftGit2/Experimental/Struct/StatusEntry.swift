@@ -69,19 +69,19 @@ public extension StatusEntry {
 
 public extension UiStatusEntryX {
     var headToIndexNEWFilePath : R<String> {
-        unStagedDeltas.asNonOptional("headToIndex") | { $0.newFilePath }
+        stagedDeltas.asNonOptional("headToIndex") | { $0.newFilePath }
     }
     
     var headToIndexOLDFilePath : R<String> {
-        unStagedDeltas.asNonOptional("headToIndex") | { $0.oldFilePath }
+        stagedDeltas.asNonOptional("headToIndex") | { $0.oldFilePath }
     }
     
     var indexToWorkDirNEWFilePath : R<String> {
-        stagedDeltas.asNonOptional("indexToWorkDir") | { $0.newFilePath }
+        unStagedDeltas.asNonOptional("indexToWorkDir") | { $0.newFilePath }
     }
     
     var indexToWorkDirOLDFilePath : R<String> {
-        stagedDeltas.asNonOptional("indexToWorkDir") | { $0.newFilePath }
+        unStagedDeltas.asNonOptional("indexToWorkDir") | { $0.newFilePath }
     }
 
 }
