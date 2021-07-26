@@ -132,37 +132,18 @@ extension StatusIteratorNew: RandomAccessCollection {
     
     private func getChanged(position: Int) -> R<[Diff.Delta]?> {
         let relPath = iterator[position].relPath
-//
+        
         let repo = self.repo
-//
-//        return repo.headCommit()
-//            .flatMap{ $0.tree() }
-//            .flatMap { headTree -> Result<Diff, Error>in
-//                let options = DiffOptions(pathspec: [path])
-//
-//                return repo.diffTreeToWorkdir(tree: headTree, options: options)
-//            }
         
+        let file = iterator[position].headToIndex?.oldFile ?? iterator[position].indexToWorkDir?.oldFile
         
-        var file = iterator[position].headToIndex?.oldFile ??  iterator[position].indexToWorkDir?.oldFile
-        repo.loadBlobFor(file: &file)
-        
-        guard let blobHead = file?.blob else { return .success(nil)}
-        
-        print(blobHead.oid)
-        
-        blobHead.content()
-            .onSuccess{ print($0) }
-            .onFailure{ print($0) }
-        
+        guard let blobHead = file?.getSameFileWithBlob(from: repo).blob else { return .success(nil)}
         
         return repo.blobCreateFromWorkdirAsBlob(relPath: relPath)
             .flatMap { workdirBlob in
                 repo.diffBlobs(old: blobHead, new: workdirBlob)
             }
             .map{ delta -> [Diff.Delta]? in delta }
-        
-        
     }
     
     public var startIndex: Int { 0 }
