@@ -141,10 +141,12 @@ extension StatusIteratorNew: RandomAccessCollection {
 //                return repo.diffTreeToWorkdir(tree: headTree, options: options)
 //            }
         
-        var file = iterator[position].headToIndex?.oldFile
+        
+        var file = iterator[position].indexToWorkDir?.oldFile
         repo.loadBlobFor(file: &file)
         
         guard let blobHead = file?.blob else { return .success(nil)}
+        
         
         
         return repo.blobCreateFromWorkdirAsBlob(relPath: relPath)
