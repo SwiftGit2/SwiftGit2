@@ -34,7 +34,10 @@ function setup_build_environment ()
     CAN_BUILD_ARM="0"
 
     # Determine if we can be building for ARM Macs
-    if [ "${XCODE_MAJOR_VERSION}" -ge "12" ] && [ "${XCODE_MINOR_VERSION}" -ge "2" ]
+    if [ "${XCODE_MAJOR_VERSION}" -ge "13" ]
+    then
+        CAN_BUILD_ARM="1"
+    elif  [ "${XCODE_MAJOR_VERSION}" -eq "12" ] && [ "${XCODE_MINOR_VERSION}" -ge "2" ]
     then
         CAN_BUILD_ARM="1"
     fi
