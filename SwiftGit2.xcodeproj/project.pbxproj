@@ -1028,7 +1028,7 @@
 				OTHER_LDFLAGS = (
 					"-force_load",
 					"External/libgit2-mac/libgit2-mac.a",
-					/usr/local/lib/libssh2.a,
+					/opt/homebrew/lib/libssh2.a,
 					"-lgit2-mac",
 					"-lcrypto",
 					"-lssl",
@@ -1058,7 +1058,7 @@
 				OTHER_LDFLAGS = (
 					"-force_load",
 					"External/libgit2-mac/libgit2-mac.a",
-					/usr/local/lib/libssh2.a,
+					/opt/homebrew/lib/libssh2.a,
 					"-lgit2-mac",
 					"-lcrypto",
 					"-lssl",
