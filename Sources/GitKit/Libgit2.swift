@@ -24,6 +24,6 @@ extension git_strarray {
 
 // TODO: Find something better than this.
 /// Initializes the Git globals. This function must be called before any other libgit2 function in order to set up global state and threading.
-func initializeGit() {
+public func initializeGit() {
 	git_libgit2_init()
 }
