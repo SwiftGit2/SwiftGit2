@@ -1,0 +1,14 @@
+{
+  "pins" : [
+    {
+      "identity" : "clibgit2",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/allotropeinc/Clibgit2.git",
+      "state" : {
+        "branch" : "main",
+        "revision" : "b284fd06ed4c9ee1f747e09b85a208c36968d9eb"
+      }
+    }
+  ],
+  "version" : 2
+}
