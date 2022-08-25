@@ -1,10 +1,6 @@
-# SwiftGit2
-[![Build Status](https://travis-ci.org/SwiftGit2/SwiftGit2.svg)](https://travis-ci.org/SwiftGit2/SwiftGit2)
-[![Carthage compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)](#carthage)
-[![GitHub release](https://img.shields.io/github/release/SwiftGit2/SwiftGit2.svg)](https://github.com/SwiftGit2/SwiftGit2/releases)
-![Swift 5.3.x](https://img.shields.io/badge/Swift-5.3.x-orange.svg)
+# GitKit
 
-Swift bindings to [libgit2](https://github.com/libgit2/libgit2).
+A Swift Git handling library *very* heavilby based on [SwiftGit2](https://github.com/SwiftGit2/SwiftGit2).
 
 ```swift
 let URL: URL = ...
