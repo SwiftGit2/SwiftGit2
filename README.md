@@ -1,6 +1,6 @@
 # GitKit
 
-A Swift Git handling library *very* heavilby based on [SwiftGit2](https://github.com/SwiftGit2/SwiftGit2).
+A Swift Git handling library *very* heavily based on [SwiftGit2](https://github.com/SwiftGit2/SwiftGit2).
 
 ```swift
 let URL: URL = ...
