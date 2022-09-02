@@ -29,7 +29,7 @@ public class CommitIterator: IteratorProtocol, Sequence {
 		}
 	}
 
-	init(repo: Repository, root: git_oid) {
+	public init(repo: Repository, root: git_oid) {
 		self.repo = repo
 		setupRevisionWalker(root: root)
 	}
