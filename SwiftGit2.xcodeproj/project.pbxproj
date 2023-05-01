@@ -989,8 +989,8 @@
 				INSTALL_GROUP = "";
 				INSTALL_MODE_FLAG = "";
 				INSTALL_OWNER = "";
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
-				MACOSX_DEPLOYMENT_TARGET = 10.9;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				MACOSX_DEPLOYMENT_TARGET = 10.13;
 				SWIFT_VERSION = 5.0;
 			};
 			name = Debug;
@@ -1005,8 +1005,8 @@
 				INSTALL_GROUP = "";
 				INSTALL_MODE_FLAG = "";
 				INSTALL_OWNER = "";
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
-				MACOSX_DEPLOYMENT_TARGET = 10.9;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				MACOSX_DEPLOYMENT_TARGET = 10.13;
 				SWIFT_VERSION = 5.0;
 			};
 			name = Release;
@@ -1076,7 +1076,6 @@
 			baseConfigurationReference = BEB31F531A0D75EE00F525B9 /* macOS-Application.xcconfig */;
 			buildSettings = {
 				INFOPLIST_FILE = SwiftGit2Tests/Info.plist;
-				MACOSX_DEPLOYMENT_TARGET = 10.10;
 				PRODUCT_BUNDLE_IDENTIFIER = "org.libgit2.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
@@ -1087,7 +1086,6 @@
 			baseConfigurationReference = BEB31F531A0D75EE00F525B9 /* macOS-Application.xcconfig */;
 			buildSettings = {
 				INFOPLIST_FILE = SwiftGit2Tests/Info.plist;
-				MACOSX_DEPLOYMENT_TARGET = 10.10;
 				PRODUCT_BUNDLE_IDENTIFIER = "org.libgit2.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
