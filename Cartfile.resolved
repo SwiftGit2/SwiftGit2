@@ -1,4 +1,4 @@
-github "Quick/Nimble" "v8.1.2"
-github "Quick/Quick" "v2.2.1"
-github "ZipArchive/ZipArchive" "v2.2.3"
+github "Quick/Nimble" "v12.3.0"
+github "Quick/Quick" "v7.3.0"
+github "ZipArchive/ZipArchive" "2.5.5"
 github "jspahrsummers/xcconfigs" "1.1"
