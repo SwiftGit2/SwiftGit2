@@ -111,7 +111,7 @@ function build_libgit2 ()
     LOG="${INSTALL_PREFIX}/build-libgit2.log"
     echo "$LOG"
 
-    MACOSX_DEPLOYMENT_TARGET="10.9" cmake \
+    MACOSX_DEPLOYMENT_TARGET="10.13" cmake \
         -DBUILD_SHARED_LIBS:BOOL=OFF \
         -DCMAKE_PREFIX_PATH:PATH="${ROOT_PATH}/External/libssh2-mac/bin/${SDKNAME}-${ARCH}.sdk" \
         -DCMAKE_INSTALL_PREFIX:PATH="${INSTALL_PREFIX}/" \
