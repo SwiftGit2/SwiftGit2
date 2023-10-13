@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 46;
+	objectVersion = 54;
 	objects = {
 
 /* Begin PBXAggregateTarget section */
@@ -677,6 +677,7 @@
 /* Begin PBXShellScriptBuildPhase section */
 		621E66DD1C729CE500A0F352 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
 			buildActionMask = 2147483647;
 			files = (
 			);
@@ -690,6 +691,7 @@
 		};
 		621E66E81C729EB800A0F352 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
 			buildActionMask = 2147483647;
 			files = (
 			);
@@ -703,6 +705,7 @@
 		};
 		621E66EE1C729EBB00A0F352 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
 			buildActionMask = 2147483647;
 			files = (
 			);
@@ -712,10 +715,11 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = script/update_libssh2_ios;
+			shellScript = "script/update_libssh2_ios\n";
 		};
 		BEB31F931A0E567000F525B9 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
 			buildActionMask = 2147483647;
 			files = (
 			);
@@ -729,6 +733,7 @@
 		};
 		C9CE0DD61E0710C20053205D /* Lint Sources */ = {
 			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
 			buildActionMask = 2147483647;
 			files = (
 			);
@@ -739,7 +744,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "if which swiftlint >/dev/null; then\n    swiftlint --lenient\nelse\n    echo \"warning: SwiftLint is not installed\"\nfi";
+			shellScript = "if which swiftlint >/dev/null; then\n    swiftlint --lenient\nelse\n    echo \"warning: SwiftLint is not installed\"\nfi\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
