@@ -16,7 +16,7 @@ function setup ()
     LIBRARY_NAME="libssh2"
 }
 
-function build_ssh2 () 
+function build_ssh2 ()
 {
     mkdir -p "${ROOT_PATH}/External/libssh2-ios/lib" "${ROOT_PATH}/External/libssh2-ios/lib" "${ROOT_PATH}/External/libssh2-ios/src"
 
@@ -47,7 +47,7 @@ function fat_binary ()
 
     lipo -create "${BUILT_LIBS[@]}" -output "${ROOT_PATH}/External/libssh2-ios/lib/libssh2-ios.a"
     mkdir -p "${ROOT_PATH}/External/libssh2-ios/include/libssh2"
-    cp -R "${ROOT_PATH}/External/libssh2-ios/bin/iphonesimulator${SDKVERSION}-i386.sdk/include/libssh2.h" "${ROOT_PATH}/External/libssh2-ios/include/libssh2/"
+    cp -R "${ROOT_PATH}/External/libssh2-ios/bin/iphonesimulator${SDKVERSION}-x86_64.sdk/include/libssh2.h" "${ROOT_PATH}/External/libssh2-ios/include/libssh2/"
 
     echo "Building done."
 }
