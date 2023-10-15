@@ -49,6 +49,8 @@ function build_libgit2 ()
         -DPKG_CONFIG_USE_CMAKE_PREFIX_PATH:BOOL=ON \
         -DCMAKE_INSTALL_PREFIX:PATH="${INSTALL_PREFIX}/" \
         -DBUILD_CLAR:BOOL=OFF \
+        -DBUILD_TESTS:BOOL=OFF \
+        -DREGEX_BACKEND:STRING="builtin" \
         -DTHREADSAFE:BOOL=ON \
         -DCURL:BOOL=OFF \
         -DCMAKE_C_FLAGS:STRING="-fembed-bitcode" \
