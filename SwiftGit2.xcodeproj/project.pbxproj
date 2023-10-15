@@ -28,6 +28,8 @@
 		25499D325997CAB9BEFFCA4D /* CommitIterator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25499A996CA7BD416620A397 /* CommitIterator.swift */; };
 		3F5181B1258FE7D10048F1EF /* StatusOptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F5181B0258FE7D10048F1EF /* StatusOptions.swift */; };
 		3F5181B2258FE7D10048F1EF /* StatusOptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F5181B0258FE7D10048F1EF /* StatusOptions.swift */; };
+		50A682E32ADBF65F00FDB557 /* libgit2.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 50A682E12ADBF64E00FDB557 /* libgit2.xcframework */; };
+		50A682E42ADBF65F00FDB557 /* libgit2.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 50A682E12ADBF64E00FDB557 /* libgit2.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		621E66A01C72958800A0F352 /* OID.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE70B3E41A1ACB1A002C3F4E /* OID.swift */; };
 		621E66A11C72958800A0F352 /* Remotes.swift in Sources */ = {isa = PBXBuildFile; fileRef = BECB5F6D1A57284700999413 /* Remotes.swift */; };
 		621E66A21C72958800A0F352 /* CheckoutStrategy.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE276B281ACCD3CF00D6DAD7 /* CheckoutStrategy.swift */; };
@@ -127,12 +129,27 @@
 		};
 /* End PBXContainerItemProxy section */
 
+/* Begin PBXCopyFilesBuildPhase section */
+		50A682E52ADBF65F00FDB557 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				50A682E42ADBF65F00FDB557 /* libgit2.xcframework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
 		232861421F4A3A2E00276D65 /* Diffs.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Diffs.swift; sourceTree = "<group>"; };
 		237731C61F46542B0020A3FE /* repository-with-status.zip */ = {isa = PBXFileReference; lastKnownFileType = archive.zip; path = "repository-with-status.zip"; sourceTree = "<group>"; };
 		25499A996CA7BD416620A397 /* CommitIterator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CommitIterator.swift; sourceTree = "<group>"; };
 		3F5181B0258FE7D10048F1EF /* StatusOptions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatusOptions.swift; sourceTree = "<group>"; };
 		50A682D82AD9901000FDB557 /* script */ = {isa = PBXFileReference; lastKnownFileType = folder; path = script; sourceTree = "<group>"; };
+		50A682E12ADBF64E00FDB557 /* libgit2.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = libgit2.xcframework; path = "External/libgit2-ios/libgit2.xcframework"; sourceTree = "<group>"; };
 		621E66B41C72958800A0F352 /* SwiftGit2.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SwiftGit2.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		621E66CE1C72958D00A0F352 /* SwiftGit2-iOSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "SwiftGit2-iOSTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		621E66E11C729CE500A0F352 /* libgit2.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libgit2.a; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -198,6 +215,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				621E67001C72A60B00A0F352 /* libz.tbd in Frameworks */,
+				50A682E32ADBF65F00FDB557 /* libgit2.xcframework in Frameworks */,
 				621E66FE1C72A5FF00A0F352 /* libiconv.tbd in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -239,6 +257,7 @@
 		50A682D92AD994C500FDB557 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				50A682E12ADBF64E00FDB557 /* libgit2.xcframework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -464,6 +483,7 @@
 				621E669F1C72958800A0F352 /* Sources */,
 				621E66AA1C72958800A0F352 /* Frameworks */,
 				621E66AE1C72958800A0F352 /* Headers */,
+				50A682E52ADBF65F00FDB557 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
@@ -686,6 +706,7 @@
 			inputPaths = (
 			);
 			outputPaths = (
+				"$(SRCROOT)/External/libgit2-ios/libgit2.xcframework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -844,6 +865,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = BEB31F501A0D75EE00F525B9 /* iOS-Framework.xcconfig */;
 			buildSettings = {
+				FRAMEWORK_SEARCH_PATHS = "$(SRCROOT)/External/libgit-ios";
 				HEADER_SEARCH_PATHS = (
 					"$(SRCROOT)/External/libgit2/include",
 					"$(inherited)",
@@ -856,9 +878,6 @@
 					"$(inherited)",
 				);
 				OTHER_LDFLAGS = (
-					"-force_load",
-					"External/libgit2-ios/libgit2-ios.a",
-					"-lgit2-ios",
 					"-lssl",
 					"-lcrypto",
 					"-lssh2-ios",
@@ -873,6 +892,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = BEB31F501A0D75EE00F525B9 /* iOS-Framework.xcconfig */;
 			buildSettings = {
+				FRAMEWORK_SEARCH_PATHS = "$(SRCROOT)/External/libgit-ios";
 				HEADER_SEARCH_PATHS = (
 					"$(SRCROOT)/External/libgit2/include",
 					"$(inherited)",
@@ -885,9 +905,6 @@
 					"$(inherited)",
 				);
 				OTHER_LDFLAGS = (
-					"-force_load",
-					"External/libgit2-ios/libgit2-ios.a",
-					"-lgit2-ios",
 					"-lssl",
 					"-lcrypto",
 					"-lssh2-ios",
