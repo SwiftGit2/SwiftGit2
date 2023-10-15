@@ -66,11 +66,15 @@ function build_all_archs ()
 
     for ARCH in ${ARCHS}
     do
-        if [ "${ARCH}" == "i386" ] || [ "${ARCH}" == "x86_64" ]
+        PLATFORMS=""
+        if [ "${ARCH}" == "i386" ] || [ "${ARCH}" == "x86_64" ] || [ "${ARCH}" == "arm64" ]
         then
-            PLATFORM="iphonesimulator"
-        else
-            PLATFORM="iphoneos"
+            PLATFORMS="${PLATFORMS} iphonesimulator"
+        fi
+
+        if [ "${ARCH}" == "arm64" ]
+        then
+            PLATFORMS="${PLATFORMS} iphoneos"
         fi
 
         SDKVERSION=$(ios_sdk_version)
@@ -82,14 +86,19 @@ function build_all_archs ()
             HOST="${ARCH}-apple-darwin"
         fi
 
-        SDKNAME="${PLATFORM}${SDKVERSION}"
-        SDKROOT="$(sdk_path ${SDKNAME})"
+        echo "Building ${ARCH} for ${PLATFORMS}"
 
-        echo "Building ${LIBRARY_NAME} for ${SDKNAME} ${ARCH}"
-        echo "Please stand by..."
+        for PLATFORM in ${PLATFORMS}
+        do
+            SDKNAME="${PLATFORM}${SDKVERSION}"
+            SDKROOT="$(sdk_path ${SDKNAME})"
 
-        # run the per arch build command
-        eval $build_arch
+            echo "Building ${LIBRARY_NAME} for ${SDKNAME} ${ARCH} on ${PLATFORM}"
+            echo "Please stand by..."
+
+            # run the per arch build command
+            eval $build_arch
+        done
     done
 
     # finish the build (usually lipo)
