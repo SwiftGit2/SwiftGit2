@@ -18,27 +18,16 @@ function setup_build_environment ()
     CC="${CLANG}"
     CPP="${CLANG} -E"
 
-    # We need to clear this so that cmake doesn't have a conniption
-    MACOSX_DEPLOYMENT_TARGET=""
-
     XCODE_MAJOR_VERSION=$(xcode_major_version)
     XCODE_MINOR_VERSION=$(xcode_minor_version)
 
-    # Determine if we can be building for ARM Macs
-    CAN_BUILD_ARM="0"
-    if [ "${XCODE_MAJOR_VERSION}" -ge "13" ]
+    if [ "${XCODE_MAJOR_VERSION}" -lt "14" ]
     then
-        CAN_BUILD_ARM="1"
-    elif  [ "${XCODE_MAJOR_VERSION}" -eq "12" ] && [ "${XCODE_MINOR_VERSION}" -ge "2" ]
-    then
-        CAN_BUILD_ARM="1"
+        echo "Requires Xcode 14 or newer."
+        exit 1
     fi
 
-    ARCHS="x86_64"
-    if [ "${CAN_BUILD_ARM}" -eq "1" ]
-    then
-        ARCHS="${ARCHS} arm64"
-    fi
+    ARCHS="x86_64 arm64"
 }
 
 function setup ()
