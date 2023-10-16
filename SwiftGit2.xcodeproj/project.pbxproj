@@ -30,7 +30,6 @@
 		3F5181B2258FE7D10048F1EF /* StatusOptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F5181B0258FE7D10048F1EF /* StatusOptions.swift */; };
 		50A682E32ADBF65F00FDB557 /* libgit2.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 50A682E12ADBF64E00FDB557 /* libgit2.xcframework */; };
 		50A682E42ADBF65F00FDB557 /* libgit2.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 50A682E12ADBF64E00FDB557 /* libgit2.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		50A6835B2ADD33CE00FDB557 /* libgit2-mac.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 50A6835A2ADD33CE00FDB557 /* libgit2-mac.a */; };
 		621E66A01C72958800A0F352 /* OID.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE70B3E41A1ACB1A002C3F4E /* OID.swift */; };
 		621E66A11C72958800A0F352 /* Remotes.swift in Sources */ = {isa = PBXBuildFile; fileRef = BECB5F6D1A57284700999413 /* Remotes.swift */; };
 		621E66A21C72958800A0F352 /* CheckoutStrategy.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE276B281ACCD3CF00D6DAD7 /* CheckoutStrategy.swift */; };
@@ -237,7 +236,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				50A6835B2ADD33CE00FDB557 /* libgit2-mac.a in Frameworks */,
 				BEB31FA01A0E595600F525B9 /* libz.dylib in Frameworks */,
 				BEB31F9E1A0E595100F525B9 /* libiconv.dylib in Frameworks */,
 			);
@@ -1036,8 +1034,6 @@
 					"$(PROJECT_DIR)/External/libgit2-mac",
 				);
 				OTHER_LDFLAGS = (
-					"-force_load",
-					"External/libgit2-mac/libgit2-mac.a",
 					/opt/homebrew/lib/libssh2.a,
 					"-lgit2-mac",
 					"-lcrypto",
@@ -1067,8 +1063,6 @@
 					"$(PROJECT_DIR)/External/libgit2-mac",
 				);
 				OTHER_LDFLAGS = (
-					"-force_load",
-					"External/libgit2-mac/libgit2-mac.a",
 					/opt/homebrew/lib/libssh2.a,
 					"-lgit2-mac",
 					"-lcrypto",
