@@ -867,7 +867,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = BEB31F501A0D75EE00F525B9 /* iOS-Framework.xcconfig */;
 			buildSettings = {
-				FRAMEWORK_SEARCH_PATHS = "$(SRCROOT)/External/libgit-ios";
+				FRAMEWORK_SEARCH_PATHS = "$(SRCROOT)/External/libgit2-ios";
 				HEADER_SEARCH_PATHS = (
 					"$(SRCROOT)/External/libgit2/include",
 					"$(inherited)",
@@ -894,7 +894,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = BEB31F501A0D75EE00F525B9 /* iOS-Framework.xcconfig */;
 			buildSettings = {
-				FRAMEWORK_SEARCH_PATHS = "$(SRCROOT)/External/libgit-ios";
+				FRAMEWORK_SEARCH_PATHS = "$(SRCROOT)/External/libgit2-ios";
 				HEADER_SEARCH_PATHS = (
 					"$(SRCROOT)/External/libgit2/include",
 					"$(inherited)",
