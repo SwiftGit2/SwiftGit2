@@ -18,6 +18,8 @@ function setup_build_environment ()
     CC="${CLANG}"
     CPP="${CLANG} -E"
 
+    MACOSX_DEPLOYMENT_TARGET="10.13"
+
     XCODE_MAJOR_VERSION=$(xcode_major_version)
     XCODE_MINOR_VERSION=$(xcode_minor_version)
 
@@ -60,13 +62,14 @@ function build_libgit2 ()
     LOG="${INSTALL_PREFIX}/build-libgit2.log"
     echo "$LOG"
 
-    MACOSX_DEPLOYMENT_TARGET="10.13" cmake \
+    cmake \
         -DBUILD_SHARED_LIBS:BOOL=OFF \
         -DCMAKE_PREFIX_PATH:PATH="${ROOT_PATH}/External/libssh2-mac/bin/${SDKNAME}-${ARCH}.sdk" \
         -DCMAKE_INSTALL_PREFIX:PATH="${INSTALL_PREFIX}/" \
         -DBUILD_CLAR:BOOL=OFF \
         -DTHREADSAFE:BOOL=ON \
         -DCMAKE_OSX_ARCHITECTURES:STRING="${ARCH}" \
+        -DCMAKE_OSX_DEPLOYMENT_TARGET:STRING="${MACOSX_DEPLOYMENT_TARGET}" \
         .. >> "${LOG}" 2>&1
     cmake --build . --target install >> "${LOG}" 2>&1
 
