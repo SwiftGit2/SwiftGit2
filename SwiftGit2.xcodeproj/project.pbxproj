@@ -30,6 +30,7 @@
 		3F5181B2258FE7D10048F1EF /* StatusOptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F5181B0258FE7D10048F1EF /* StatusOptions.swift */; };
 		50A682E32ADBF65F00FDB557 /* libgit2.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 50A682E12ADBF64E00FDB557 /* libgit2.xcframework */; };
 		50A682E42ADBF65F00FDB557 /* libgit2.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 50A682E12ADBF64E00FDB557 /* libgit2.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		50A6835B2ADD33CE00FDB557 /* libgit2-mac.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 50A6835A2ADD33CE00FDB557 /* libgit2-mac.a */; };
 		621E66A01C72958800A0F352 /* OID.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE70B3E41A1ACB1A002C3F4E /* OID.swift */; };
 		621E66A11C72958800A0F352 /* Remotes.swift in Sources */ = {isa = PBXBuildFile; fileRef = BECB5F6D1A57284700999413 /* Remotes.swift */; };
 		621E66A21C72958800A0F352 /* CheckoutStrategy.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE276B281ACCD3CF00D6DAD7 /* CheckoutStrategy.swift */; };
@@ -150,6 +151,7 @@
 		3F5181B0258FE7D10048F1EF /* StatusOptions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatusOptions.swift; sourceTree = "<group>"; };
 		50A682D82AD9901000FDB557 /* script */ = {isa = PBXFileReference; lastKnownFileType = folder; path = script; sourceTree = "<group>"; };
 		50A682E12ADBF64E00FDB557 /* libgit2.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = libgit2.xcframework; path = "External/libgit2-ios/libgit2.xcframework"; sourceTree = "<group>"; };
+		50A6835A2ADD33CE00FDB557 /* libgit2-mac.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libgit2-mac.a"; path = "External/libgit2-mac/libgit2-mac.a"; sourceTree = "<group>"; };
 		621E66B41C72958800A0F352 /* SwiftGit2.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SwiftGit2.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		621E66CE1C72958D00A0F352 /* SwiftGit2-iOSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "SwiftGit2-iOSTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		621E66E11C729CE500A0F352 /* libgit2.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libgit2.a; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -235,6 +237,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				50A6835B2ADD33CE00FDB557 /* libgit2-mac.a in Frameworks */,
 				BEB31FA01A0E595600F525B9 /* libz.dylib in Frameworks */,
 				BEB31F9E1A0E595100F525B9 /* libiconv.dylib in Frameworks */,
 			);
@@ -257,6 +260,7 @@
 		50A682D92AD994C500FDB557 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				50A6835A2ADD33CE00FDB557 /* libgit2-mac.a */,
 				50A682E12ADBF64E00FDB557 /* libgit2.xcframework */,
 			);
 			name = Frameworks;
@@ -1029,6 +1033,7 @@
 					"External/libgit2-mac",
 					External/,
 					"$(inherited)",
+					"$(PROJECT_DIR)/External/libgit2-mac",
 				);
 				OTHER_LDFLAGS = (
 					"-force_load",
@@ -1059,6 +1064,7 @@
 					"External/libgit2-mac",
 					External/,
 					"$(inherited)",
+					"$(PROJECT_DIR)/External/libgit2-mac",
 				);
 				OTHER_LDFLAGS = (
 					"-force_load",
