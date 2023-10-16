@@ -8,9 +8,6 @@ source "${SCRIPT_DIR}/xcode_functions.sh"
 
 function setup_build_environment ()
 {
-    # augment path to help it find cmake via homebrew
-    PATH="/opt/homebrew/bin:/usr/local/bin:$PATH"
-
     pushd "$SCRIPT_DIR/.." > /dev/null
     ROOT_PATH="$PWD"
     popd > /dev/null
