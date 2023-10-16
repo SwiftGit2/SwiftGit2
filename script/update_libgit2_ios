@@ -42,7 +42,7 @@ function build_libgit2 ()
     LOG="${INSTALL_PREFIX}/build-libgit2.log"
     echo "$LOG"
 
-    IOS_DEPLOYMENT_TARGET="12.0" cmake \
+    cmake \
         -DCMAKE_C_COMPILER_WORKS:BOOL=ON \
         -DBUILD_SHARED_LIBS:BOOL=OFF \
         -DCMAKE_PREFIX_PATH:PATH="${ROOT_PATH}/External/libssh2-ios/bin/${SDKNAME}-${ARCH}.sdk" \
