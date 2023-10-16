@@ -2,15 +2,13 @@
 
 set -e
 
-# augment path to help it find cmake installed in /usr/local/bin,
-# e.g. via brew. Xcode's Run Script phase doesn't seem to honor
-# ~/.MacOSX/environment.plist
+# augment path to help it find cmake via homebrew
 if [[ `uname -m` == 'arm64' ]]; then
   echo "** Running on a Apple Silicon M1"
   PATH="/opt/homebrew/bin:$PATH"
 else
   echo "** Running on a Apple x86"
-  PATH="/usr/local/bin:$PATH"
+  PATH="/opt/homebrew/bin:/usr/local/bin:$PATH"
 fi
 
 SCRIPT_DIR=$(dirname "$0")
