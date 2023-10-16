@@ -28,7 +28,7 @@ function setup_build_environment ()
     # directly (ie not from an Xcode proj)
     if [ -z "${IPHONEOS_DEPLOYMENT_TARGET}" ]
     then
-        IPHONEOS_DEPLOYMENT_TARGET="6.0"
+        IPHONEOS_DEPLOYMENT_TARGET="12.0"
     fi
 
     # Determine if we can be building 64-bit binaries
