@@ -37,7 +37,7 @@ function setup_build_environment ()
     ARCHS="x86_64"
     if [ "${CAN_BUILD_ARM}" -eq "1" ]
     then
-        ARCHS="${ARCHS} arm64 arm64e"
+        ARCHS="${ARCHS} arm64"
     fi
 }
 
