@@ -85,11 +85,14 @@ function fat_binary ()
         esac
     done
 
+    SIMULATOR_LIB_DIR="${ROOT_PATH}/External/libgit2-ios/iphonesimulator"
+    mkdir -p "${SIMULATOR_LIB_DIR}"
+
     echo "... from ${SIMULATOR_LIB_PATHS[@]}"
-    lipo -create "${SIMULATOR_LIB_PATHS[@]}" -output "${ROOT_PATH}/External/libgit2-ios/libgit2-ios-simulator.a"
+    lipo -create "${SIMULATOR_LIB_PATHS[@]}" -output "${SIMULATOR_LIB_DIR}/libgit2.a"
 
     echo "Copying shared simulator header from ${HEADER_PATH}"
-    cp HEADER_PATH "${ROOT_PATH}/External/libgit2-ios/libgit2-ios-simulator.h"
+    cp "${HEADER_PATH}" "${SIMULATOR_LIB_DIR}/libgit2.h"
 
     echo "Building done."
 }
@@ -112,8 +115,8 @@ function xcframework ()
         esac
     done
 
-    args+=("-library" "${ROOT_PATH}/External/libgit2-ios/libgit2-ios-simulator.a")
-    args+=("-headers" "${ROOT_PATH}/External/libgit2-ios/libgit2-ios-simulator.h")
+    args+=("-library" "${SIMULATOR_LIB_DIR}/libgit2.a")
+    args+=("-headers" "${SIMULATOR_LIB_DIR}/libgit2.h")
 
     echo "... from ${args[@]}"
     xcodebuild -create-xcframework \
