@@ -487,7 +487,7 @@ public final class Repository {
 		return reference(named: "refs/tags/" + name).map { $0 as! TagReference }
 	}
 
-	/// Returns the name of the upstream branch.
+	/// - Returns: The name of the upstream branch.
 	public func upstreamName(for branch: Branch) -> String? {
 		var namePointer = git_buf()
 		git_branch_upstream_name(&namePointer, pointer, branch.longName)
