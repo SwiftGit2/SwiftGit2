@@ -13,12 +13,11 @@ jobs:
       fail-fast: false
       matrix:
         xcode: [ Xcode_14.3, Xcode_15.2.0 ]
+        scheme: [ SwiftGit2-OSX, SwiftGit2-iOS ]
         os: [ macos-13 ]
-        architecture: [ x86_64 ]
 #        include:
 #          - xcode: Xcode
 #            os: ARM64
-#            architecture: arm64
     steps:
       - name: ls Xcode
         run: ls -la /Applications/Xcode*
@@ -34,8 +33,8 @@ jobs:
       - name: update_libgit2
         run: script/update_libgit2
       - name: bootstrap
-        run: script/bootstrap
-#      - name: cibuild
-#        run: script/cibuild
-      - name: Build project
-        run: xcodebuild -workspace SwiftGit2.xcworkspace -scheme SwiftGit2-OSX -archivePath ./SwiftGit2 archive ARCHS="${{ matrix.architecture }}"
+        run: |
+          SCHEME=${{ matrix.scheme }}
+          echo "SCHEME=$SCHEME"
+          script/bootstrap
+          script/cibuild
