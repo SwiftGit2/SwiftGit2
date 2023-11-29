@@ -20,10 +20,19 @@
 # - TRAVIS: indicates when the build is being run by travis, used to invoke
 #           the xcpretty-travis-formatter gem for output.
 
+echo "In script SCHEME=$SCHEME"
 if [ -z "$SCHEME" ]; then
   echo "The SCHEME environment variable is empty. Please set this to one of:"
   echo "- SwiftGit2-OSX"
   echo "- SwiftGit2-iOS"
+  exit 1
+fi
+
+echo "In script ARCH=$ARCH"
+if [ -z "$ARCH" ]; then
+  echo "The ARCH environment variable is empty. Please set this to one of:"
+  echo "- x86"
+  echo "- arm64"
   exit 1
 fi
 
@@ -57,7 +66,6 @@ if [ "$SCHEME" == "SwiftGit2-OSX" ]; then
 
   xcodebuild -workspace "$XCWORKSPACE" \
     -scheme "$SCHEME" \
-    ${XCODE_OPTIONS[*]} \
     build test \
     2>&1 | xcpretty $XCPRETTY_FORMAT_OPTIONS
 elif [ "$SCHEME" == "SwiftGit2-iOS" ]; then
@@ -80,7 +88,6 @@ elif [ "$SCHEME" == "SwiftGit2-iOS" ]; then
     -scheme "$SCHEME" \
     -destination "id=$DESTINATION_ID" \
     -sdk iphonesimulator \
-    ${XCODE_OPTIONS[*]} \
     build test \
     2>&1 | xcpretty $XCPRETTY_FORMAT_OPTIONS
 fi
