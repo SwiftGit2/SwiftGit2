@@ -15,9 +15,11 @@ jobs:
         xcode: [ Xcode_14.1.0, Xcode_13.3 ]
         scheme: [ SwiftGit2-OSX, SwiftGit2-iOS ]
         os: [ macos-12 ]
+        architecture: [ x86_64 ]
 #        include:
 #          - xcode: Xcode
 #            os: ARM64
+#            architecture: arm64
     steps:
       - name: ls Xcode
         run: ls -la /Applications/Xcode*
@@ -34,7 +36,9 @@ jobs:
         run: script/update_libgit2
       - name: bootstrap
         run: |
-          SCHEME=${{ matrix.scheme }}
+          export SCHEME=${{ matrix.scheme }}
+          export ARCH=${{ matrix.architecture }}
           echo "SCHEME=$SCHEME"
+          echo "ARCH=$ARCH"
           script/bootstrap
           script/cibuild
