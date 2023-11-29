@@ -19,3 +19,5 @@
 [submodule "External/openssl"]
 	path = External/openssl
 	url = https://github.com/openssl/openssl.git
+[submodule "libgit2"]
+	url = https://github.com/libgit2/libgit2.git

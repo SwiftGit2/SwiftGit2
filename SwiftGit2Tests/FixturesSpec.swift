@@ -9,7 +9,7 @@
 import Quick
 
 class FixturesSpec: QuickSpec {
-	override func spec() {
+	override class func spec() {
 		beforeSuite {
 			Fixtures.sharedInstance.setUp()
 		}

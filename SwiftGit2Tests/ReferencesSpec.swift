@@ -25,7 +25,7 @@ private extension Repository {
 }
 
 class ReferenceSpec: FixturesSpec {
-	override func spec() {
+	override class func spec() {
 		describe("Reference(pointer)") {
 			it("should initialize its properties") {
 				let repo = Fixtures.simpleRepository
@@ -64,7 +64,7 @@ class ReferenceSpec: FixturesSpec {
 }
 
 class BranchSpec: QuickSpec {
-	override func spec() {
+	override class func spec() {
 		describe("Branch(pointer)") {
 			it("should initialize its properties") {
 				let repo = Fixtures.mantleRepository
@@ -119,7 +119,7 @@ class BranchSpec: QuickSpec {
 }
 
 class TagReferenceSpec: QuickSpec {
-	override func spec() {
+	override class func spec() {
 		describe("TagReference(pointer)") {
 			it("should work with an annotated tag") {
 				let repo = Fixtures.simpleRepository

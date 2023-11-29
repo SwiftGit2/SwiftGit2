@@ -82,7 +82,7 @@ check_deps ()
     done
 
     brew_prefix=`brew --prefix`
-    expected_prefix=/usr/local
+    expected_prefix=/opt/homebrew
 
     if [ "$brew_prefix" != "$expected_prefix" ]
     then

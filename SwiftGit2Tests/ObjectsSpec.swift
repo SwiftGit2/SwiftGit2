@@ -26,7 +26,7 @@ private extension Repository {
 }
 
 class SignatureSpec: FixturesSpec {
-	override func spec() {
+	override class func spec() {
 		describe("Signature(signature)") {
 			it("should initialize its properties") {
 				let repo = Fixtures.simpleRepository
@@ -88,7 +88,7 @@ class SignatureSpec: FixturesSpec {
 }
 
 class CommitSpec: QuickSpec {
-	override func spec() {
+	override class func spec() {
 		describe("Commit(pointer)") {
 			it("should initialize its properties") {
 				let repo = Fixtures.simpleRepository
@@ -169,7 +169,7 @@ class CommitSpec: QuickSpec {
 }
 
 class TreeEntrySpec: QuickSpec {
-	override func spec() {
+	override class func spec() {
 		describe("Tree.Entry(attributes:object:name:)") {
 			it("should set its properties") {
 				let attributes = Int32(GIT_FILEMODE_BLOB.rawValue)
@@ -230,7 +230,7 @@ class TreeEntrySpec: QuickSpec {
 }
 
 class TreeSpec: QuickSpec {
-	override func spec() {
+	override class func spec() {
 		describe("Tree(pointer)") {
 			it("should initialize its properties") {
 				let repo = Fixtures.simpleRepository
@@ -281,7 +281,7 @@ class TreeSpec: QuickSpec {
 }
 
 class BlobSpec: QuickSpec {
-	override func spec() {
+	override class func spec() {
 		describe("Blob(pointer)") {
 			it("should initialize its properties") {
 				let repo = Fixtures.simpleRepository
@@ -330,7 +330,7 @@ class BlobSpec: QuickSpec {
 }
 
 class TagSpec: QuickSpec {
-	override func spec() {
+	override class func spec() {
 		describe("Tag(pointer)") {
 			it("should set its properties") {
 				let repo = Fixtures.simpleRepository

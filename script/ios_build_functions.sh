@@ -1,15 +1,13 @@
 #!/bin/bash
 
+# augment path to help it find cmake via homebrew
+PATH="/opt/homebrew/bin:/usr/local/bin:$PATH"
+
 SCRIPT_DIR=$(dirname "$0")
 source "${SCRIPT_DIR}/xcode_functions.sh"
 
 function setup_build_environment ()
 {
-    # augment path to help it find cmake installed in /usr/local/bin,
-    # e.g. via brew. Xcode's Run Script phase doesn't seem to honor
-    # ~/.MacOSX/environment.plist
-    PATH="/usr/local/bin:/opt/boxen/homebrew/bin:$PATH"
-
     pushd "$SCRIPT_DIR/.." > /dev/null
     ROOT_PATH="$PWD"
     popd > /dev/null
@@ -30,7 +28,7 @@ function setup_build_environment ()
     # directly (ie not from an Xcode proj)
     if [ -z "${IPHONEOS_DEPLOYMENT_TARGET}" ]
     then
-        IPHONEOS_DEPLOYMENT_TARGET="6.0"
+        IPHONEOS_DEPLOYMENT_TARGET="12.0"
     fi
 
     # Determine if we can be building 64-bit binaries
@@ -39,12 +37,14 @@ function setup_build_environment ()
         CAN_BUILD_64BIT="1"
     fi
 
-    ARCHS="i386 armv7 armv7s"
+    ARCHS=""
     if [ "${CAN_BUILD_64BIT}" -eq "1" ]
     then
         # For some stupid reason cmake needs simulator
         # builds to be first
         ARCHS="x86_64 ${ARCHS} arm64"
+    else
+        ARCHS="i386 ${ARCHS} armv7 armv7s"
     fi
 }
 
@@ -63,11 +63,15 @@ function build_all_archs ()
 
     for ARCH in ${ARCHS}
     do
-        if [ "${ARCH}" == "i386" ] || [ "${ARCH}" == "x86_64" ]
+        PLATFORMS=""
+        if [ "${ARCH}" == "i386" ] || [ "${ARCH}" == "x86_64" ] || [ "${ARCH}" == "arm64" ]
         then
-            PLATFORM="iphonesimulator"
-        else
-            PLATFORM="iphoneos"
+            PLATFORMS="${PLATFORMS} iphonesimulator"
+        fi
+
+        if [ "${ARCH}" == "arm64" ]
+        then
+            PLATFORMS="${PLATFORMS} iphoneos"
         fi
 
         SDKVERSION=$(ios_sdk_version)
@@ -79,14 +83,19 @@ function build_all_archs ()
             HOST="${ARCH}-apple-darwin"
         fi
 
-        SDKNAME="${PLATFORM}${SDKVERSION}"
-        SDKROOT="$(sdk_path ${SDKNAME})"
+        echo "Building ${ARCH} for ${PLATFORMS}"
 
-        echo "Building ${LIBRARY_NAME} for ${SDKNAME} ${ARCH}"
-        echo "Please stand by..."
+        for PLATFORM in ${PLATFORMS}
+        do
+            SDKNAME="${PLATFORM}${SDKVERSION}"
+            SDKROOT="$(sdk_path ${SDKNAME})"
 
-        # run the per arch build command
-        eval $build_arch
+            echo "Building ${LIBRARY_NAME} for ${SDKNAME} ${ARCH} on ${PLATFORM}"
+            echo "Please stand by..."
+
+            # run the per arch build command
+            eval $build_arch
+        done
     done
 
     # finish the build (usually lipo)

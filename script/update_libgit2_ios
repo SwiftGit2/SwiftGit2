@@ -8,7 +8,7 @@ source "${SCRIPT_DIR}/ios_build_functions.sh"
 
 function setup ()
 {
-    if [ "${ROOT_PATH}/External/libgit2-ios/libgit2-ios.a" -nt "${ROOT_PATH}/External/libgit2" ]
+    if [ "${ROOT_PATH}/External/libgit2-ios/libgit2.xcframework" -nt "${ROOT_PATH}/External/libgit2" ]
     then
         echo "No update needed."
         exit 0
@@ -49,11 +49,14 @@ function build_libgit2 ()
         -DPKG_CONFIG_USE_CMAKE_PREFIX_PATH:BOOL=ON \
         -DCMAKE_INSTALL_PREFIX:PATH="${INSTALL_PREFIX}/" \
         -DBUILD_CLAR:BOOL=OFF \
+        -DBUILD_TESTS:BOOL=OFF \
+        -DREGEX_BACKEND:STRING="builtin" \
         -DTHREADSAFE:BOOL=ON \
         -DCURL:BOOL=OFF \
         -DCMAKE_C_FLAGS:STRING="-fembed-bitcode" \
         "${SYS_ROOT}" \
         -DCMAKE_OSX_ARCHITECTURES:STRING="${ARCH}" \
+        -DCMAKE_OSX_DEPLOYMENT_TARGET:STRING="${IPHONEOS_DEPLOYMENT_TARGET}" \
         .. >> "${LOG}" 2>&1
     cmake --build . --target install >> "${LOG}" 2>&1
 
@@ -64,13 +67,72 @@ function build_libgit2 ()
 
 function fat_binary ()
 {
-    echo "Building fat binary..."
+    echo "Building fat binary for simulator..."
 
-    lipo -create "${BUILT_LIB_PATHS[@]}" -output "${ROOT_PATH}/External/libgit2-ios/libgit2-ios.a"
+    # Collect all simulator build paths
+    for path in "${BUILT_LIB_PATHS[@]}"
+    do
+        case "$path" in
+            *libgit2-ios/iphonesimulator* )
+                SIMULATOR_LIB_PATHS+=("$path")
+                # Remember one header location (headers are the same, so overwriting doesn't matter)
+                base_dir=$(dirname $(dirname "${path}"))
+                HEADER_PATH="${base_dir}/include/git2.h"
+                ;;
+            * )
+                # Ignore libs build for the actual phone
+                ;;
+        esac
+    done
+
+    SIMULATOR_LIB_DIR="${ROOT_PATH}/External/libgit2-ios/iphonesimulator"
+    mkdir -p "${SIMULATOR_LIB_DIR}"
+
+    echo "... from ${SIMULATOR_LIB_PATHS[@]}"
+    lipo -create "${SIMULATOR_LIB_PATHS[@]}" -output "${SIMULATOR_LIB_DIR}/libgit2.a"
+
+    echo "Copying shared simulator header from ${HEADER_PATH}"
+    cp "${HEADER_PATH}" "${SIMULATOR_LIB_DIR}/libgit2.h"
 
     echo "Building done."
+}
+
+function xcframework ()
+{
+    echo "Building XCFramework..."
+
+    for path in "${BUILT_LIB_PATHS[@]}"
+    do
+        case "$path" in
+            *libgit2-ios/iphonesimulator* )
+                # Skip simulator library binaries
+                ;;
+            * )
+                args+=("-library" "${path}")
+                base_dir=$(dirname $(dirname "${path}"))
+                args+=("-headers" "${base_dir}/include/git2.h")
+                ;;
+        esac
+    done
+
+    args+=("-library" "${SIMULATOR_LIB_DIR}/libgit2.a")
+    args+=("-headers" "${SIMULATOR_LIB_DIR}/libgit2.h")
+
+    echo "... from ${args[@]}"
+    xcodebuild -create-xcframework \
+               "${args[@]}" \
+               -output "${ROOT_PATH}/External/libgit2-ios/libgit2.xcframework"
+
+    echo "Building done."
+}
+
+
+function combine_all_the_binaries ()
+{
+    fat_binary
+    xcframework
 
     popd > /dev/null
 }
 
-build_all_archs setup build_libgit2 fat_binary
+build_all_archs setup build_libgit2 combine_all_the_binaries

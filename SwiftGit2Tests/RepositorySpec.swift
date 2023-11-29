@@ -13,7 +13,7 @@ import Quick
 // swiftlint:disable cyclomatic_complexity
 
 class RepositorySpec: FixturesSpec {
-	override func spec() {
+	override class func spec() {
 		describe("Repository.Type.at(_:)") {
 			it("should work if the repo exists") {
 				let repo = Fixtures.simpleRepository
@@ -980,7 +980,7 @@ class RepositorySpec: FixturesSpec {
 		}
 	}
 
-	func temporaryURL(forPurpose purpose: String) -> URL {
+	static func temporaryURL(forPurpose purpose: String) -> URL {
 		let globallyUniqueString = ProcessInfo.processInfo.globallyUniqueString
 		let path = "\(NSTemporaryDirectory())\(globallyUniqueString)_\(purpose)"
 		return URL(fileURLWithPath: path)
