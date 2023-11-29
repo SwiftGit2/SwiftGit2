@@ -57,7 +57,7 @@ if [ "$SCHEME" == "SwiftGit2-OSX" ]; then
 
   xcodebuild -workspace "$XCWORKSPACE" \
     -scheme "$SCHEME" \
-    ${XCODE_OPTIONS[*]} \
+    "${XCODE_OPTIONS[*]}" \
     build test \
     2>&1 | xcpretty $XCPRETTY_FORMAT_OPTIONS
 elif [ "$SCHEME" == "SwiftGit2-iOS" ]; then
@@ -80,7 +80,7 @@ elif [ "$SCHEME" == "SwiftGit2-iOS" ]; then
     -scheme "$SCHEME" \
     -destination "id=$DESTINATION_ID" \
     -sdk iphonesimulator \
-    ${XCODE_OPTIONS[*]} \
+    "${XCODE_OPTIONS[*]}" \
     build test \
     2>&1 | xcpretty $XCPRETTY_FORMAT_OPTIONS
 fi
