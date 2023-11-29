@@ -37,5 +37,7 @@ jobs:
         run: script/bootstrap
 #      - name: cibuild
 #        run: script/cibuild
-      - name: Build project
+      - name: Build project OSX
         run: xcodebuild -workspace SwiftGit2.xcworkspace -scheme SwiftGit2-OSX -archivePath ./SwiftGit2 archive ARCHS="${{ matrix.architecture }}"
+      - name: Build project iOS
+        run: xcodebuild -workspace SwiftGit2.xcworkspace -scheme SwiftGit2-iOS -archivePath ./SwiftGit2 archive ARCHS="${{ matrix.architecture }}"
