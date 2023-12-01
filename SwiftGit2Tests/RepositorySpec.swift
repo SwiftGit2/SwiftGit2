@@ -23,8 +23,9 @@ class RepositorySpec: FixturesSpec {
 			it("should fail if the repo doesn't exist") {
 				let url = URL(fileURLWithPath: "blah")
 				let result = Repository.at(url)
-				expect(result.error?.domain) == libGit2ErrorDomain
-				expect(result.error?.localizedDescription).to(match("failed to resolve path"))
+
+				expect(result.error).to(beObjectNotFound())
+				expect(result.error?.underlyingError?.errorMessage).to(match("failed to resolve path"))
 			}
 		}
 
@@ -64,7 +65,7 @@ class RepositorySpec: FixturesSpec {
 				let result = Repository.isValid(url: localURL)
 
 				expect(result.value).to(beNil())
-				expect(result.error).notTo(beNil())
+				expect(result.error).to(beGenericError())
 			}
 		}
 
@@ -186,7 +187,7 @@ class RepositorySpec: FixturesSpec {
 				let oid = OID(string: "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")!
 
 				let result = repo.blob(oid)
-				expect(result.error?.domain) == libGit2ErrorDomain
+				expect(result.error).to(beObjectNotFound())
 			}
 
 			it("should error if the oid doesn't point to a blob") {
@@ -195,7 +196,7 @@ class RepositorySpec: FixturesSpec {
 				let oid = OID(string: "f93e3a1a1525fb5b91020da86e44810c87a2d7bc")!
 
 				let result = repo.blob(oid)
-				expect(result.error).notTo(beNil())
+				expect(result.error).to(beObjectNotFound())
 			}
 		}
 
@@ -213,7 +214,7 @@ class RepositorySpec: FixturesSpec {
 				let oid = OID(string: "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")!
 
 				let result = repo.commit(oid)
-				expect(result.error?.domain) == libGit2ErrorDomain
+				expect(result.error).to(beObjectNotFound())
 			}
 
 			it("should error if the oid doesn't point to a commit") {
@@ -222,7 +223,7 @@ class RepositorySpec: FixturesSpec {
 				let oid = OID(string: "f93e3a1a1525fb5b91020da86e44810c87a2d7bc")!
 
 				let result = repo.commit(oid)
-				expect(result.error?.domain) == libGit2ErrorDomain
+				expect(result.error).to(beObjectNotFound())
 			}
 		}
 
@@ -240,7 +241,7 @@ class RepositorySpec: FixturesSpec {
 				let oid = OID(string: "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")!
 
 				let result = repo.tag(oid)
-				expect(result.error?.domain) == libGit2ErrorDomain
+				expect(result.error).to(beObjectNotFound())
 			}
 
 			it("should error if the oid doesn't point to a tag") {
@@ -249,7 +250,7 @@ class RepositorySpec: FixturesSpec {
 				let oid = OID(string: "dc220a3f0c22920dab86d4a8d3a3cb7e69d6205a")!
 
 				let result = repo.tag(oid)
-				expect(result.error?.domain) == libGit2ErrorDomain
+				expect(result.error).to(beObjectNotFound())
 			}
 		}
 
@@ -267,7 +268,7 @@ class RepositorySpec: FixturesSpec {
 				let oid = OID(string: "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")!
 
 				let result = repo.tree(oid)
-				expect(result.error?.domain) == libGit2ErrorDomain
+				expect(result.error).to(beObjectNotFound())
 			}
 
 			it("should error if the oid doesn't point to a tree") {
@@ -276,7 +277,7 @@ class RepositorySpec: FixturesSpec {
 				let oid = OID(string: "dc220a3f0c22920dab86d4a8d3a3cb7e69d6205a")!
 
 				let result = repo.tree(oid)
-				expect(result.error?.domain) == libGit2ErrorDomain
+				expect(result.error).to(beObjectNotFound())
 			}
 		}
 
@@ -317,7 +318,7 @@ class RepositorySpec: FixturesSpec {
 				let repo   = Fixtures.simpleRepository
 				let oid    = OID(string: "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")!
 				let result = repo.object(oid)
-				expect(result.error?.domain) == libGit2ErrorDomain
+				expect(result.error).to(beObjectNotFound())
 			}
 		}
 
@@ -427,7 +428,7 @@ class RepositorySpec: FixturesSpec {
 			it("should error if the remote doesn't exist") {
 				let repo = Fixtures.simpleRepository
 				let result = repo.remote(named: "nonexistent")
-				expect(result.error?.domain) == libGit2ErrorDomain
+				expect(result.error).to(beObjectNotFound())
 			}
 		}
 
@@ -461,7 +462,7 @@ class RepositorySpec: FixturesSpec {
 
 			it("should error if the reference doesn't exist") {
 				let result = Fixtures.simpleRepository.reference(named: "refs/heads/nonexistent")
-				expect(result.error?.domain) == libGit2ErrorDomain
+				expect(result.error).to(beObjectNotFound())
 			}
 		}
 
@@ -516,7 +517,7 @@ class RepositorySpec: FixturesSpec {
 
 			it("should error if the branch doesn't exists") {
 				let result = Fixtures.simpleRepository.localBranch(named: "nonexistent")
-				expect(result.error?.domain) == libGit2ErrorDomain
+				expect(result.error).to(beObjectNotFound())
 			}
 		}
 
@@ -528,7 +529,7 @@ class RepositorySpec: FixturesSpec {
 
 			it("should error if the branch doesn't exists") {
 				let result = Fixtures.simpleRepository.remoteBranch(named: "origin/nonexistent")
-				expect(result.error?.domain) == libGit2ErrorDomain
+				expect(result.error).to(beObjectNotFound())
 			}
 		}
 
@@ -559,7 +560,7 @@ class RepositorySpec: FixturesSpec {
 
 			it("should error if the branch doesn't exists") {
 				let result = Fixtures.simpleRepository.tag(named: "nonexistent")
-				expect(result.error?.domain) == libGit2ErrorDomain
+				expect(result.error).to(beObjectNotFound())
 			}
 		}
 
@@ -984,5 +985,27 @@ class RepositorySpec: FixturesSpec {
 		let globallyUniqueString = ProcessInfo.processInfo.globallyUniqueString
 		let path = "\(NSTemporaryDirectory())\(globallyUniqueString)_\(purpose)"
 		return URL(fileURLWithPath: path)
+	}
+}
+
+func beObjectNotFound() -> Predicate<SwiftGit2Error?> {
+	Predicate.define("be <.objectNotFound>") { expression, message in
+		if let actual = try expression.evaluate(),
+		   case .objectNotFound = actual {
+			return PredicateResult(bool: true, message: message)
+		} else {
+			return PredicateResult(bool: false, message: message)
+		}
+	}
+}
+
+func beGenericError() -> Predicate<SwiftGit2Error?> {
+	Predicate.define("be <.genericError>") { expression, message in
+		if let actual = try expression.evaluate(),
+		   case .genericError = actual {
+			return PredicateResult(bool: true, message: message)
+		} else {
+			return PredicateResult(bool: false, message: message)
+		}
 	}
 }
