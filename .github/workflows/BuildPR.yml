@@ -12,30 +12,16 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        xcode: [ Xcode_14.1.0, Xcode_13.3 ]
-        os: [ macos-12 ]
-        architecture: [ x86_64 ]
-#        include:
-#          - xcode: Xcode
-#            os: ARM64
-#            architecture: arm64
+        xcode: [ Xcode_15.2 ]
+        os: [ macos-14 ]
     steps:
       - name: ls Xcode
         run: ls -la /Applications/Xcode*
       - name: Checkout
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-          submodules: recursive
-      - name: Set XCode Version
+      - name: Set Xcode Version
         run: sudo xcode-select -s /Applications/${{ matrix.xcode }}.app
-      - name: schemes list
-        run: xcodebuild -workspace SwiftGit2.xcworkspace -list
-      - name: update_libgit2
-        run: script/update_libgit2
-      - name: bootstrap
-        run: script/bootstrap
-#      - name: cibuild
-#        run: script/cibuild
       - name: Build project
-        run: xcodebuild -workspace SwiftGit2.xcworkspace -scheme SwiftGit2-OSX -archivePath ./SwiftGit2 archive ARCHS="${{ matrix.architecture }}"
+        run: swift build
+      - name: Test project
+        run: swift test
