@@ -8,34 +8,24 @@ on:
 
 jobs:
   build:
-    runs-on: ${{ matrix.os }}
-    strategy:
-      fail-fast: false
-      matrix:
-        xcode: [ Xcode_14.1.0, Xcode_13.3 ]
-        os: [ macos-12 ]
-        architecture: [ x86_64 ]
-#        include:
-#          - xcode: Xcode
-#            os: ARM64
-#            architecture: arm64
+    runs-on: macos-14
     steps:
       - name: ls Xcode
         run: ls -la /Applications/Xcode*
       - name: Checkout
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-          submodules: recursive
-      - name: Set XCode Version
-        run: sudo xcode-select -s /Applications/${{ matrix.xcode }}.app
-      - name: schemes list
-        run: xcodebuild -workspace SwiftGit2.xcworkspace -list
-      - name: update_libgit2
-        run: script/update_libgit2
-      - name: bootstrap
-        run: script/bootstrap
-#      - name: cibuild
-#        run: script/cibuild
-      - name: Build project
-        run: xcodebuild -workspace SwiftGit2.xcworkspace -scheme SwiftGit2-OSX -archivePath ./SwiftGit2 archive ARCHS="${{ matrix.architecture }}"
+      - name: Set Xcode Version
+        run: sudo xcode-select -s /Applications/Xcode_15.2.app
+      - name: Build and test on macOS
+        run: |
+          xcodebuild -scheme SwiftGit2 -destination "platform=macOS" build test
+      - name: Create iPhone Simuilator for testing
+        env:
+          SIMULATOR_NAME: "Custom Simulator"
+          DEVICE_ID: "com.apple.CoreSimulator.SimDeviceType.iPhone-15"
+          RUNTIME_ID: "com.apple.CoreSimulator.SimRuntime.iOS-17-2"
+        run: |
+          xcrun simctl create "$SIMULATOR_NAME" "$DEVICE_ID" "$RUNTIME_ID"
+      - name: Build and test on iOS
+        run: |
+          xcodebuild -scheme SwiftGit2 -destination "platform=iOS Simulator,name=iPhone 15,OS=17.2" build test
