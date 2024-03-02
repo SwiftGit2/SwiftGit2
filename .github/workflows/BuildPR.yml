@@ -8,20 +8,24 @@ on:
 
 jobs:
   build:
-    runs-on: ${{ matrix.os }}
-    strategy:
-      fail-fast: false
-      matrix:
-        xcode: [ Xcode_15.2 ]
-        os: [ macos-14 ]
+    runs-on: macos-14
     steps:
       - name: ls Xcode
         run: ls -la /Applications/Xcode*
       - name: Checkout
         uses: actions/checkout@v4
       - name: Set Xcode Version
-        run: sudo xcode-select -s /Applications/${{ matrix.xcode }}.app
-      - name: Build project
-        run: swift build
-      - name: Test project
-        run: swift test
+        run: sudo xcode-select -s /Applications/Xcode_15.2.app
+      - name: Build and test on macOS
+        run: |
+          xcodebuild -scheme SwiftGit2 -destination "platform=macOS" build test
+      - name: Create iPhone Simuilator for testing
+        env:
+          SIMULATOR_NAME: "Custom Simulator"
+          DEVICE_ID: "com.apple.CoreSimulator.SimDeviceType.iPhone-15"
+          RUNTIME_ID: "com.apple.CoreSimulator.SimRuntime.iOS-17-2"
+        run: |
+          xcrun simctl create "$SIMULATOR_NAME" "$DEVICE_ID" "$RUNTIME_ID"
+      - name: Build and test on iOS
+        run: |
+          xcodebuild -scheme SwiftGit2 -destination "platform=iOS Simulator,name=iPhone 15,OS=17.2" build test
