@@ -6,6 +6,12 @@
 
 Swift bindings to [libgit2](https://github.com/libgit2/libgit2).
 
+Instantiate the library first...
+
+```swift
+let _ = SwiftGit2.initialize()
+```
+Then...
 ```swift
 let URL: URL = ...
 let result = Repository.at(URL)
