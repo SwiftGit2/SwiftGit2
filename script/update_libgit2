@@ -5,18 +5,19 @@ set -e
 # augment path to help it find cmake installed in /usr/local/bin,
 # e.g. via brew. Xcode's Run Script phase doesn't seem to honor
 # ~/.MacOSX/environment.plist
-PATH="/usr/local/bin:$PATH"
+if [[ `uname -m` == 'arm64' ]]; then
+  echo "** Running on a Apple Silicon M1"
+  PATH="/usr/homebrew/bin:$PATH"
+else
+  echo "** Running on a Apple x86"
+  PATH="/usr/local/bin:$PATH"
+fi
 
 SCRIPT_DIR=$(dirname "$0")
 source "${SCRIPT_DIR}/xcode_functions.sh"
 
 function setup_build_environment ()
 {
-    # augment path to help it find cmake installed in /usr/local/bin,
-    # e.g. via brew. Xcode's Run Script phase doesn't seem to honor
-    # ~/.MacOSX/environment.plist
-    PATH="/usr/local/bin:$PATH"
-
     pushd "$SCRIPT_DIR/.." > /dev/null
     ROOT_PATH="$PWD"
     popd > /dev/null
