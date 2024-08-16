@@ -8,7 +8,7 @@
 import Foundation
 import libgit2
 
-public class SwiftGit2 {
+public enum SwiftGit2 {
     public static func initialize() -> Result<Int, NSError> {
         let status = git_libgit2_init()
         if status < 0 {
