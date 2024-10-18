@@ -7,28 +7,43 @@ on:
   pull_request:
 
 jobs:
-  build:
-    runs-on: macos-14
+  build-macos:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        xcode: [ Xcode_16 ]
+        os: [ macos-14, macos-15 ]
     steps:
-      - name: ls Xcode
-        run: ls -la /Applications/Xcode*
       - name: Checkout
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
           submodules: recursive
       - name: Set Xcode Version
-        run: sudo xcode-select -s /Applications/Xcode_15.2.app
+        run: sudo xcode-select -s /Applications/${{ matrix.xcode }}.app
       - name: Build and test on macOS
         run: |
           xcodebuild -scheme SwiftGit2 -destination "platform=macOS" build test
-      - name: Create iPhone Simuilator for testing
-        env:
-          SIMULATOR_NAME: "Custom Simulator"
-          DEVICE_ID: "com.apple.CoreSimulator.SimDeviceType.iPhone-15"
-          RUNTIME_ID: "com.apple.CoreSimulator.SimRuntime.iOS-17-2"
-        run: |
-          xcrun simctl create "$SIMULATOR_NAME" "$DEVICE_ID" "$RUNTIME_ID"
+
+  build-ios:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        xcode: [ Xcode_16 ]
+        os: [ macos-15-xlarge ]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          submodules: recursive
+      - name: Set Xcode Version
+        run: sudo xcode-select -s /Applications/${{ matrix.xcode }}.app
       - name: Build and test on iOS
         run: |
-          xcodebuild -scheme SwiftGit2 -destination "platform=iOS Simulator,name=iPhone 15,OS=17.2" build test
+          PLATFORM="iOS Simulator"
+          # xcrun xctrace returns via stderr, not the expected stdout (see https://developer.apple.com/forums/thread/663959)
+          DEVICE=`xcrun xctrace list devices 2>&1 | grep -oE 'iPhone.*?[^\(]+' | head -1 | awk '{$1=$1;print}' | sed -e "s/ Simulator$//"`
+          xcodebuild -scheme SwiftGit2 -destination "platform=$PLATFORM,name=$DEVICE" build test
