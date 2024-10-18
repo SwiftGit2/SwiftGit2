@@ -4,8 +4,13 @@ import PackageDescription
 
 let package = Package(
     name: "SwiftGit2",
-    // This is necessary because the test dependencies explicitly specify these platform versions.
-    platforms: [.macOS(.v10_15), .iOS("15.5"), .tvOS(.v13), .visionOS(.v1)],
+    platforms: [
+        .macOS(.v10_15),
+        .iOS("15.5"),
+        .tvOS(.v13),
+        .visionOS(.v1),
+        .macCatalyst(.v15),
+    ],
     products: [
         .library(
             name: "SwiftGit2",
