@@ -7,7 +7,7 @@ set -e
 # ~/.MacOSX/environment.plist
 if [[ `uname -m` == 'arm64' ]]; then
   echo "** Running on a Apple Silicon M1"
-  PATH="/usr/homebrew/bin:$PATH"
+  PATH="/opt/homebrew/bin:$PATH"
 else
   echo "** Running on a Apple x86"
   PATH="/usr/local/bin:$PATH"
