@@ -15,10 +15,10 @@ jobs:
         xcode: [ Xcode_14.3, Xcode_15.2.0 ]
         os: [ macos-13 ]
         architecture: [ x86_64 ]
-#        include:
-#          - xcode: Xcode
-#            os: ARM64
-#            architecture: arm64
+        include:
+          - xcode: Xcode
+            os: macos-14
+            architecture: arm64
     steps:
       - name: ls Xcode
         run: ls -la /Applications/Xcode*
