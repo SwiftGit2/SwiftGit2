@@ -1,4 +1,4 @@
-name: pull request
+name: Tests
 
 on:
   push:
@@ -7,35 +7,43 @@ on:
   pull_request:
 
 jobs:
-  build:
+  build-macos:
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
       matrix:
-        xcode: [ Xcode_14.3, Xcode_15.2.0 ]
-        os: [ macos-13 ]
-        architecture: [ x86_64 ]
-#        include:
-#          - xcode: Xcode
-#            os: ARM64
-#            architecture: arm64
+        xcode: [ Xcode_16 ]
+        os: [ macos-14, macos-15 ]
     steps:
-      - name: ls Xcode
-        run: ls -la /Applications/Xcode*
       - name: Checkout
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
           submodules: recursive
-      - name: Set XCode Version
+      - name: Set Xcode Version
         run: sudo xcode-select -s /Applications/${{ matrix.xcode }}.app
-      - name: schemes list
-        run: xcodebuild -workspace SwiftGit2.xcworkspace -list
-      - name: update_libgit2
-        run: script/update_libgit2
-      - name: bootstrap
-        run: script/bootstrap
-#      - name: cibuild
-#        run: script/cibuild
-      - name: Build project
-        run: xcodebuild -workspace SwiftGit2.xcworkspace -scheme SwiftGit2-OSX -archivePath ./SwiftGit2 archive ARCHS="${{ matrix.architecture }}"
+      - name: Build and test on macOS
+        run: |
+          xcodebuild -scheme SwiftGit2 -destination "platform=macOS" build test
+
+  build-ios:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        xcode: [ Xcode_16 ]
+        os: [ macos-15 ]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          submodules: recursive
+      - name: Set Xcode Version
+        run: sudo xcode-select -s /Applications/${{ matrix.xcode }}.app
+      - name: Build and test on iOS
+        run: |
+          PLATFORM="iOS Simulator"
+          # xcrun xctrace returns via stderr, not the expected stdout (see https://developer.apple.com/forums/thread/663959)
+          DEVICE=`xcrun xctrace list devices 2>&1 | grep -oE 'iPhone.*?[^\(]+' | head -1 | awk '{$1=$1;print}' | sed -e "s/ Simulator$//"`
+          xcodebuild -scheme SwiftGit2 -destination "platform=$PLATFORM,name=$DEVICE" build test
