@@ -62,7 +62,7 @@ check_deps ()
     fi
 
     # Ensure that we have libgit2's dependencies installed.
-    installed=`brew list`
+    installed=$(brew list)
 
     for tool in $REQUIRED_TOOLS
     do
@@ -81,7 +81,7 @@ check_deps ()
         brew install "$tool"
     done
 
-    brew_prefix=`brew --prefix`
+    brew_prefix=$(brew --prefix)
     expected_prefix=/usr/local
 
     if [ "$brew_prefix" != "$expected_prefix" ]
@@ -110,7 +110,7 @@ bootstrap_submodule ()
 
     if [ -e "$bootstrap" ]
     then
-        echo "*** Bootstrapping $name..."
+        echo "*** Bootstrapping ..."
         "$bootstrap" >/dev/null
     else
         update_submodules
