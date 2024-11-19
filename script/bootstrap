@@ -46,6 +46,7 @@ main ()
 
 check_deps ()
 {
+    echo "** check_deps **"
     # Check if Homebrew is installed
     which -s brew
     local result=$?
@@ -56,9 +57,17 @@ check_deps ()
         echo "Homebrew is not installed (http://brew.sh). You will need to manually ensure the following tools are installed:"
         echo "  $REQUIRED_TOOLS"
         echo
-        echo "Additionally, the following libssh2 files must be symlinked under /usr/local:"
+        echo "Additionally, the following libssh2 files must be symlinked under /usr/local or /opt/homebrew :"
         echo "  lib/libssh2.a include/libssh2.h include/libssh2_sftp.h include/libssh2_publickey.h"
-        exit $result
+
+        if [ ! -z "$CI" ]
+        then
+          echo
+          echo "I will try to install brew now on the github runner"
+          /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+          echo 'eval "$(/opt/homebrew/bin/brew shellenv)"' >> ~/.zprofile
+          eval "$(/opt/homebrew/bin/brew shellenv)"
+        fi
     fi
 
     # Ensure that we have libgit2's dependencies installed.
@@ -71,6 +80,7 @@ check_deps ()
 
         if [ "$code" -eq "0" ]
         then
+            echo "*** $tool is available 👍"
             continue
         elif [ "$code" -ne "1" ]
         then
@@ -82,26 +92,44 @@ check_deps ()
     done
 
     brew_prefix=$(brew --prefix)
-    expected_prefix=/usr/local
-
-    if [ "$brew_prefix" != "$expected_prefix" ]
-    then
-        echo "*** Adding soft links into $expected_prefix..."
-
-        products=(lib/libssh2.a include/libssh2.h include/libssh2_sftp.h include/libssh2_publickey.h)
-
-        for product in "${products[@]}"
-        do
-            destination="$expected_prefix/$product"
-            if [ -e "$destination" ]
-            then
-                continue
-            fi
-
-            sudo mkdir -p "$(dirname "$destination")"
-            sudo ln -s "$brew_prefix/$product" "$destination"
-        done
+    if [[ $(uname -m) == 'arm64' ]]; then
+      echo "** Running on a Apple Silicon M1"
+      expected_prefix=/opt/homebrew
+    else
+      echo "** Running on a Apple x86"
+      expected_prefix=/usr/local
     fi
+
+   install_path="./External"
+   pwd
+   set -x
+   cp "$brew_prefix"/lib/libcrypto.a $install_path
+   cp "$brew_prefix"/lib/libssl.a $install_path
+   cp "$brew_prefix"/lib/libssh2.a $install_path
+   set +x
+   if [ "$brew_prefix" != "$expected_prefix" ]
+   then
+       echo "*** Adding soft links into $expected_prefix..."
+
+       products=(lib/libssh2.a include/libssh2.h include/libssh2_sftp.h include/libssh2_publickey.h)
+
+       for product in "${products[@]}"
+       do
+           destination="$expected_prefix/$product"
+           if [ -e "$destination" ]
+           then
+               continue
+           fi
+
+           sudo mkdir -p "$(dirname "$destination")"
+           sudo ln -s "$brew_prefix/$product" "$destination"
+       done
+    fi
+
+    # openssl@1 is expected
+    #sslSource=$(find $brew_prefix -name libcrypto.a | grep openssl | sort | head -1 | xargs dirname)
+    #echo "Find libcrypto.a and take first $sslSource and copy to install_path=$install_path"
+    #cp $sslSource/* "$install_path" 2>/dev/null | echo "Copy and ignore subdirectory. This makes build work on x86 and arm64"
 }
 
 bootstrap_submodule ()
