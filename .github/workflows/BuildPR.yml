@@ -16,7 +16,10 @@ jobs:
         os: [ macos-13 ]
         architecture: [ x86_64 ]
         include:
-          - xcode: Xcode
+          - xcode: Xcode_15.4
+            os: macos-14
+            architecture: arm64
+          - xcode: Xcode_16
             os: macos-14
             architecture: arm64
     steps:
