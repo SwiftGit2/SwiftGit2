@@ -14,14 +14,11 @@ jobs:
       matrix:
         xcode: [ Xcode_14.3, Xcode_15.2.0 ]
         os: [ macos-13 ]
-        architecture: [ x86_64 ]
         include:
           - xcode: Xcode_15.4
             os: macos-14
-            architecture: arm64
           - xcode: Xcode_16
             os: macos-14
-            architecture: arm64
     steps:
       - name: ls Xcode
         run: ls -la /Applications/Xcode*
@@ -30,6 +27,10 @@ jobs:
         with:
           fetch-depth: 0
           submodules: recursive
+      - name: get architecture
+        run: |
+          echo "ARCHITECTURE=$(uname -m)" >> $GITHUB_ENV
+          echo $(uname -m)
       - name: Set XCode Version
         run: sudo xcode-select -s /Applications/${{ matrix.xcode }}.app
       - name: schemes list
@@ -41,4 +42,4 @@ jobs:
 #      - name: cibuild
 #        run: script/cibuild
       - name: Build project
-        run: xcodebuild -workspace SwiftGit2.xcworkspace -scheme SwiftGit2-OSX -archivePath ./SwiftGit2 archive ARCHS="${{ matrix.architecture }}"
+        run: xcodebuild -workspace SwiftGit2.xcworkspace -scheme SwiftGit2-OSX -archivePath ./SwiftGit2 archive ARCHS="${{ env.ARCHITECTURE }}"
