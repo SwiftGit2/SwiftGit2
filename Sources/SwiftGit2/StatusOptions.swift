@@ -2,7 +2,7 @@
 //  Copyright © 2020 GitHub, Inc. All rights reserved.
 //
 
-import libgit2
+import Clibgit2
 import Foundation
 
 public struct StatusOptions: OptionSet {

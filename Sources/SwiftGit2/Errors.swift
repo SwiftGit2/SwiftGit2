@@ -1,5 +1,5 @@
 import Foundation
-import libgit2
+import Clibgit2
 
 public let libGit2ErrorDomain = "org.libgit2.libgit2"
 

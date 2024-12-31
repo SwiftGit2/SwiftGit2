@@ -6,7 +6,7 @@
 //
 
 import Foundation
-import libgit2
+import Clibgit2
 
 public enum SwiftGit2 {
     public static func initialize() -> Result<Int, NSError> {

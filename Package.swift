@@ -25,15 +25,15 @@ let package = Package(
     targets: [
         .target(
             name: "SwiftGit2",
-            dependencies: ["libgit2"]
+            dependencies: ["Clibgit2"]
         ),
         .testTarget(
             name: "SwiftGit2Tests",
-            dependencies: ["SwiftGit2", "libgit2", "Quick", "Nimble", "ZipArchive"],
+            dependencies: ["SwiftGit2", "Clibgit2", "Quick", "Nimble", "ZipArchive"],
             resources: [.copy("Fixtures")]
         ),
         .target(
-            name: "libgit2",
+            name: "Clibgit2",
             path: "libgit2",
             exclude: [
                 "deps/llhttp/CMakeLists.txt",
