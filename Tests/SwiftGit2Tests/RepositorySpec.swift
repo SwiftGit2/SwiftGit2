@@ -125,7 +125,7 @@ class RepositorySpec: FixturesSpec {
 			}
 
 			it("should be able to clone a remote repository") {
-				let remoteRepoURL = URL(string: "https://github.com/libgit2/libgit2.github.com.git")
+				let remoteRepoURL = URL(string: "https://github.com/libgit2/TestGitRepository.git")
 				let localURL = self.temporaryURL(forPurpose: "public-remote-clone")
 				let cloneResult = Repository.clone(from: remoteRepoURL!, to: localURL)
 
