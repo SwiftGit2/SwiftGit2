@@ -12,13 +12,13 @@ import SwiftGit2
 class FixturesSpec: QuickSpec {
 	override class func spec() {
 		beforeSuite {
-            _ = SwiftGit2.initialize()
+            _ = SwiftGit2Init()
 			Fixtures.sharedInstance.setUp()
 		}
 
 		afterSuite {
 			Fixtures.sharedInstance.tearDown()
-            _ = SwiftGit2.shutdown()
+            _ = SwiftGit2Shutdown()
 		}
 	}
 }
