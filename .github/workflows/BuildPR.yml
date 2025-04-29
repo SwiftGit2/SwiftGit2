@@ -12,8 +12,13 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        xcode: [ '16' ]
-        os: [ macos-14, macos-15 ]
+        xcode: [ Xcode_14.3, Xcode_15.2.0 ]
+        os: [ macos-13 ]
+        include:
+          - xcode: Xcode_15.4
+            os: macos-14
+          - xcode: Xcode_16.2
+            os: macos-15
     steps:
       - name: Checkout
         uses: actions/checkout@v4
