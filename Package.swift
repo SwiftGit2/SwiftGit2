@@ -47,6 +47,7 @@ let package = Package(
                 "deps/zlib/CMakeLists.txt",
                 "deps/zlib/LICENSE",
                 "src/libgit2/CMakeLists.txt",
+                "src/libgit2/config.cmake.in",
                 "src/libgit2/experimental.h.in",
                 "src/libgit2/git2.rc",
                 "src/util/CMakeLists.txt",
