@@ -25,7 +25,7 @@ private extension Repository {
 }
 
 class RemoteSpec: FixturesSpec {
-	override func spec() {
+	override class func spec() {
 		describe("Remote(pointer)") {
 			it("should initialize its properties") {
 				let repo = Fixtures.mantleRepository

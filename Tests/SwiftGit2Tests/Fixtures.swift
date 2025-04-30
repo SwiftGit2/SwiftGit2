@@ -33,14 +33,8 @@ final class Fixtures {
 	func setUp() {
 		try! FileManager.default.createDirectory(at: directoryURL, withIntermediateDirectories: true, attributes: nil)
 
-		#if os(OSX)
-			let platform = "OSX"
-		#else
-			let platform = "iOS"
-		#endif
-		let bundleIdentifier = String(format: "org.libgit2.SwiftGit2-%@Tests", arguments: [platform])
-		let bundle = Bundle(identifier: bundleIdentifier)!
-		let zipURLs = bundle.urls(forResourcesWithExtension: "zip", subdirectory: nil)!
+        let bundle = Bundle.module
+		let zipURLs = bundle.urls(forResourcesWithExtension: "zip", subdirectory: "Fixtures")!
 
 		for URL in zipURLs {
 			SSZipArchive.unzipFile(atPath: URL.path, toDestination: directoryURL.path)
@@ -55,7 +49,7 @@ final class Fixtures {
 
 	func repository(named name: String) -> Repository {
 		let url = directoryURL.appendingPathComponent(name, isDirectory: true)
-		return Repository.at(url).value!
+        return Repository.at(url).value!
 	}
 
 	// MARK: - The Fixtures

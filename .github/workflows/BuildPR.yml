@@ -1,4 +1,4 @@
-name: pull request
+name: Tests
 
 on:
   push:
@@ -7,39 +7,53 @@ on:
   pull_request:
 
 jobs:
-  build:
+  build-macos:
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
       matrix:
-        xcode: [ Xcode_14.3, Xcode_15.2.0 ]
-        os: [ macos-13 ]
-        include:
-          - xcode: Xcode_15.4
-            os: macos-14
-          - xcode: Xcode_16.2
-            os: macos-14
+        xcode:
+          # The '^' stands for a semantic version range
+          - ^15
+          - ^16
+        os: 
+          - macos-14
+          - macos-15
     steps:
-      - name: ls Xcode
-        run: ls -la /Applications/Xcode*
       - name: Checkout
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
           submodules: recursive
-      - name: get architecture
-        run: |
-          echo "ARCHITECTURE=$(uname -m)" >> $GITHUB_ENV
-          echo $(uname -m)
-      - name: Set XCode Version
-        run: sudo xcode-select -s /Applications/${{ matrix.xcode }}.app
-      - name: schemes list
-        run: xcodebuild -workspace SwiftGit2.xcworkspace -list
-      - name: update_libgit2
-        run: script/update_libgit2
-      - name: bootstrap
-        run: script/bootstrap
-#      - name: cibuild
-#        run: script/cibuild
-      - name: Build project
-        run: xcodebuild -workspace SwiftGit2.xcworkspace -scheme SwiftGit2-OSX -archivePath ./SwiftGit2 archive ARCHS="${{ env.ARCHITECTURE }}"
+      - name: Build and test on macOS
+        uses: mxcl/xcodebuild@v3
+        with:
+          xcode: ${{ matrix.xcode }}
+          platform: macOS
+
+  build-ios:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        xcode:
+          - ^16
+        os:
+          - macos-15
+        platform:
+          - iOS
+        platform-version:
+          # The '^' stands for a semantic version range
+          - ^18
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          submodules: recursive
+      - name: Build and test on iOS
+        uses: mxcl/xcodebuild@v3
+        with:
+          platform-version: ${{ matrix.platform-version }}
+          platform: ${{ matrix.platform }}
+          xcode: ${{ matrix.xcode }}

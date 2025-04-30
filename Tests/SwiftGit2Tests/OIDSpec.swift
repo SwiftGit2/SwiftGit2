@@ -11,7 +11,7 @@ import Nimble
 import Quick
 
 class OIDSpec: QuickSpec {
-	override func spec() {
+	override class func spec() {
 		describe("OID(string:)") {
 			it("should be nil if string is too short") {
 				expect(OID(string: "123456789012345678901234567890123456789")).to(beNil())
