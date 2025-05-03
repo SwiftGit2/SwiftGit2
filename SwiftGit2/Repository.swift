@@ -103,14 +103,14 @@ public final class Repository {
 	/// URL - The URL of the repository.
 	///
 	/// Returns a `Result` with a `Repository` or an error.
-	public class func create(at url: URL) -> Result<Repository, NSError> {
+	public class func create(at url: URL) -> Result<Repository, SwiftGit2Error> {
 		var pointer: OpaquePointer? = nil
 		let result = url.withUnsafeFileSystemRepresentation {
 			git_repository_init(&pointer, $0, 0)
 		}
 
 		guard result == GIT_OK.rawValue else {
-			return Result.failure(NSError(gitError: result, pointOfFailure: "git_repository_init"))
+			return .failure(.init(libgitErrorCode: result, source: .git_repository_init))
 		}
 
 		let repository = Repository(pointer!)
@@ -122,18 +122,18 @@ public final class Repository {
 	/// URL - The URL of the repository.
 	///
 	/// Returns a `Result` with a `Repository` or an error.
-	public class func at(_ url: URL) -> Result<Repository, NSError> {
+	public class func at(_ url: URL) -> Result<Repository, SwiftGit2Error> {
 		var pointer: OpaquePointer? = nil
 		let result = url.withUnsafeFileSystemRepresentation {
 			git_repository_open(&pointer, $0)
 		}
 
 		guard result == GIT_OK.rawValue else {
-			return Result.failure(NSError(gitError: result, pointOfFailure: "git_repository_open"))
+			return .failure(.init(libgitErrorCode: result, source: .git_repository_open))
 		}
 
 		let repository = Repository(pointer!)
-		return Result.success(repository)
+		return .success(repository)
 	}
 
 	/// Clone the repository from a given URL.
@@ -149,7 +149,7 @@ public final class Repository {
 	/// Returns a `Result` with a `Repository` or an error.
 	public class func clone(from remoteURL: URL, to localURL: URL, localClone: Bool = false, bare: Bool = false,
 	                        credentials: Credentials = .default, checkoutStrategy: CheckoutStrategy = .Safe,
-	                        checkoutProgress: CheckoutProgressBlock? = nil) -> Result<Repository, NSError> {
+	                        checkoutProgress: CheckoutProgressBlock? = nil) -> Result<Repository, SwiftGit2Error> {
 		var options = cloneOptions(
 			bare: bare,
 			localClone: localClone,
@@ -163,11 +163,11 @@ public final class Repository {
 		}
 
 		guard result == GIT_OK.rawValue else {
-			return Result.failure(NSError(gitError: result, pointOfFailure: "git_clone"))
+			return .failure(.init(libgitErrorCode: result, source: .git_clone))
 		}
 
 		let repository = Repository(pointer!)
-		return Result.success(repository)
+		return .success(repository)
 	}
 
 	// MARK: - Initializers
@@ -207,13 +207,13 @@ public final class Repository {
 	/// Returns the result of calling `transform` or an error if the object
 	/// cannot be loaded.
 	private func withGitObject<T>(_ oid: OID, type: git_object_t,
-	                              transform: (OpaquePointer) -> Result<T, NSError>) -> Result<T, NSError> {
+	                              transform: (OpaquePointer) -> Result<T, SwiftGit2Error>) -> Result<T, SwiftGit2Error> {
 		var pointer: OpaquePointer? = nil
 		var oid = oid.oid
 		let result = git_object_lookup(&pointer, self.pointer, &oid, type)
 
 		guard result == GIT_OK.rawValue else {
-			return Result.failure(NSError(gitError: result, pointOfFailure: "git_object_lookup"))
+			return .failure(.init(libgitErrorCode: result, source: .git_object_lookup))
 		}
 
 		let value = transform(pointer!)
@@ -221,11 +221,11 @@ public final class Repository {
 		return value
 	}
 
-	private func withGitObject<T>(_ oid: OID, type: git_object_t, transform: (OpaquePointer) -> T) -> Result<T, NSError> {
-		return withGitObject(oid, type: type) { Result.success(transform($0)) }
+	private func withGitObject<T>(_ oid: OID, type: git_object_t, transform: (OpaquePointer) -> T) -> Result<T, SwiftGit2Error> {
+		return withGitObject(oid, type: type) { .success(transform($0)) }
 	}
 
-	private func withGitObjects<T>(_ oids: [OID], type: git_object_t, transform: ([OpaquePointer]) -> Result<T, NSError>) -> Result<T, NSError> {
+	private func withGitObjects<T>(_ oids: [OID], type: git_object_t, transform: ([OpaquePointer]) -> Result<T, SwiftGit2Error>) -> Result<T, SwiftGit2Error> {
 		var pointers = [OpaquePointer]()
 		defer {
 			for pointer in pointers {
@@ -239,7 +239,7 @@ public final class Repository {
 			let result = git_object_lookup(&pointer, self.pointer, &oid, type)
 
 			guard result == GIT_OK.rawValue else {
-				return Result.failure(NSError(gitError: result, pointOfFailure: "git_object_lookup"))
+				return .failure(.init(libgitErrorCode: result, source: .git_object_lookup))
 			}
 
 			pointers.append(pointer!)
@@ -253,27 +253,20 @@ public final class Repository {
 	/// oid - The OID of the blob to look up.
 	///
 	/// Returns a `Blob`, `Commit`, `Tag`, or `Tree` if one exists, or an error.
-	public func object(_ oid: OID) -> Result<ObjectType, NSError> {
+	public func object(_ oid: OID) -> Result<ObjectType, SwiftGit2Error> {
 		return withGitObject(oid, type: GIT_OBJECT_ANY) { object in
 			let type = git_object_type(object)
 			if type == Blob.type {
-				return Result.success(Blob(object))
+				return .success(Blob(object))
 			} else if type == Commit.type {
-				return Result.success(Commit(object))
+				return .success(Commit(object))
 			} else if type == Tag.type {
-				return Result.success(Tag(object))
+				return .success(Tag(object))
 			} else if type == Tree.type {
-				return Result.success(Tree(object))
+				return .success(Tree(object))
 			}
 
-			let error = NSError(
-				domain: "org.libgit2.SwiftGit2",
-				code: 1,
-				userInfo: [
-					NSLocalizedDescriptionKey: "Unrecognized git_object_t '\(type)' for oid '\(oid)'.",
-				]
-			)
-			return Result.failure(error)
+			return .failure(.unknownObjectType(type, oid))
 		}
 	}
 
@@ -282,7 +275,7 @@ public final class Repository {
 	/// oid - The OID of the blob to look up.
 	///
 	/// Returns the blob if it exists, or an error.
-	public func blob(_ oid: OID) -> Result<Blob, NSError> {
+	public func blob(_ oid: OID) -> Result<Blob, SwiftGit2Error> {
 		return withGitObject(oid, type: GIT_OBJECT_BLOB) { Blob($0) }
 	}
 
@@ -291,7 +284,7 @@ public final class Repository {
 	/// oid - The OID of the commit to look up.
 	///
 	/// Returns the commit if it exists, or an error.
-	public func commit(_ oid: OID) -> Result<Commit, NSError> {
+	public func commit(_ oid: OID) -> Result<Commit, SwiftGit2Error> {
 		return withGitObject(oid, type: GIT_OBJECT_COMMIT) { Commit($0) }
 	}
 
@@ -300,7 +293,7 @@ public final class Repository {
 	/// oid - The OID of the tag to look up.
 	///
 	/// Returns the tag if it exists, or an error.
-	public func tag(_ oid: OID) -> Result<Tag, NSError> {
+	public func tag(_ oid: OID) -> Result<Tag, SwiftGit2Error> {
 		return withGitObject(oid, type: GIT_OBJECT_TAG) { Tag($0) }
 	}
 
@@ -309,7 +302,7 @@ public final class Repository {
 	/// oid - The OID of the tree to look up.
 	///
 	/// Returns the tree if it exists, or an error.
-	public func tree(_ oid: OID) -> Result<Tree, NSError> {
+	public func tree(_ oid: OID) -> Result<Tree, SwiftGit2Error> {
 		return withGitObject(oid, type: GIT_OBJECT_TREE) { Tree($0) }
 	}
 
@@ -318,7 +311,7 @@ public final class Repository {
 	/// pointer - A pointer to an object.
 	///
 	/// Returns the object if it exists, or an error.
-	public func object<T>(from pointer: PointerTo<T>) -> Result<T, NSError> {
+	public func object<T>(from pointer: PointerTo<T>) -> Result<T, SwiftGit2Error> {
 		return withGitObject(pointer.oid, type: pointer.type) { T($0) }
 	}
 
@@ -327,7 +320,7 @@ public final class Repository {
 	/// pointer - A pointer to an object.
 	///
 	/// Returns the object if it exists, or an error.
-	public func object(from pointer: Pointer) -> Result<ObjectType, NSError> {
+	public func object(from pointer: Pointer) -> Result<ObjectType, SwiftGit2Error> {
 		switch pointer {
 		case let .blob(oid):
 			return blob(oid).map { $0 as ObjectType }
@@ -345,17 +338,17 @@ public final class Repository {
 	/// Loads all the remotes in the repository.
 	///
 	/// Returns an array of remotes, or an error.
-	public func allRemotes() -> Result<[Remote], NSError> {
+	public func allRemotes() -> Result<[Remote], SwiftGit2Error> {
 		let pointer = UnsafeMutablePointer<git_strarray>.allocate(capacity: 1)
 		let result = git_remote_list(pointer, self.pointer)
 
 		guard result == GIT_OK.rawValue else {
 			pointer.deallocate()
-			return Result.failure(NSError(gitError: result, pointOfFailure: "git_remote_list"))
+			return .failure(.init(libgitErrorCode: result, source: .git_remote_list))
 		}
 
 		let strarray = pointer.pointee
-		let remotes: [Result<Remote, NSError>] = strarray.map {
+		let remotes: [Result<Remote, SwiftGit2Error>] = strarray.map {
 			return self.remote(named: $0)
 		}
 		git_strarray_free(pointer)
@@ -364,14 +357,14 @@ public final class Repository {
 		return remotes.aggregateResult()
 	}
 
-	private func remoteLookup<A>(named name: String, _ callback: (Result<OpaquePointer, NSError>) -> A) -> A {
+	private func remoteLookup<A>(named name: String, _ callback: (Result<OpaquePointer, SwiftGit2Error>) -> A) -> A {
 		var pointer: OpaquePointer? = nil
 		defer { git_remote_free(pointer) }
 
 		let result = git_remote_lookup(&pointer, self.pointer, name)
 
 		guard result == GIT_OK.rawValue else {
-			return callback(.failure(NSError(gitError: result, pointOfFailure: "git_remote_lookup")))
+			return callback(.failure(.init(libgitErrorCode: result, source: .git_remote_lookup)))
 		}
 
 		return callback(.success(pointer!))
@@ -382,12 +375,12 @@ public final class Repository {
 	/// name - The name of the remote.
 	///
 	/// Returns the remote if it exists, or an error.
-	public func remote(named name: String) -> Result<Remote, NSError> {
+	public func remote(named name: String) -> Result<Remote, SwiftGit2Error> {
 		return remoteLookup(named: name) { $0.map(Remote.init) }
 	}
 
 	/// Download new data and update tips
-	public func fetch(_ remote: Remote) -> Result<(), NSError> {
+	public func fetch(_ remote: Remote) -> Result<(), SwiftGit2Error> {
 		return remoteLookup(named: remote.name) { remote in
 			remote.flatMap { pointer in
 				var opts = git_fetch_options()
@@ -396,8 +389,7 @@ public final class Repository {
 
 				let result = git_remote_fetch(pointer, nil, &opts, nil)
 				guard result == GIT_OK.rawValue else {
-					let err = NSError(gitError: result, pointOfFailure: "git_remote_fetch")
-					return .failure(err)
+					return .failure(.init(libgitErrorCode: result, source: .git_remote_fetch))
 				}
 				return .success(())
 			}
@@ -407,13 +399,13 @@ public final class Repository {
 	// MARK: - Reference Lookups
 
 	/// Load all the references with the given prefix (e.g. "refs/heads/")
-	public func references(withPrefix prefix: String) -> Result<[ReferenceType], NSError> {
+	public func references(withPrefix prefix: String) -> Result<[ReferenceType], SwiftGit2Error> {
 		let pointer = UnsafeMutablePointer<git_strarray>.allocate(capacity: 1)
 		let result = git_reference_list(pointer, self.pointer)
 
 		guard result == GIT_OK.rawValue else {
 			pointer.deallocate()
-			return Result.failure(NSError(gitError: result, pointOfFailure: "git_reference_list"))
+			return .failure(.init(libgitErrorCode: result, source: .git_reference_list))
 		}
 
 		let strarray = pointer.pointee
@@ -435,12 +427,12 @@ public final class Repository {
 	/// If the reference is a branch, a `Branch` will be returned. If the
 	/// reference is a tag, a `TagReference` will be returned. Otherwise, a
 	/// `Reference` will be returned.
-	public func reference(named name: String) -> Result<ReferenceType, NSError> {
+	public func reference(named name: String) -> Result<ReferenceType, SwiftGit2Error> {
 		var pointer: OpaquePointer? = nil
 		let result = git_reference_lookup(&pointer, self.pointer, name)
 
 		guard result == GIT_OK.rawValue else {
-			return Result.failure(NSError(gitError: result, pointOfFailure: "git_reference_lookup"))
+			return Result.failure(.init(libgitErrorCode: result, source: .git_reference_lookup))
 		}
 
 		let value = referenceWithLibGit2Reference(pointer!)
@@ -449,7 +441,7 @@ public final class Repository {
 	}
 
 	/// Load and return a list of all local branches.
-	public func localBranches() -> Result<[Branch], NSError> {
+	public func localBranches() -> Result<[Branch], SwiftGit2Error> {
 		return references(withPrefix: "refs/heads/")
 			.map { (refs: [ReferenceType]) in
 				return refs.map { $0 as! Branch }
@@ -457,7 +449,7 @@ public final class Repository {
 	}
 
 	/// Load and return a list of all remote branches.
-	public func remoteBranches() -> Result<[Branch], NSError> {
+	public func remoteBranches() -> Result<[Branch], SwiftGit2Error> {
 		return references(withPrefix: "refs/remotes/")
 			.map { (refs: [ReferenceType]) in
 				return refs.map { $0 as! Branch }
@@ -465,17 +457,17 @@ public final class Repository {
 	}
 
 	/// Load the local branch with the given name (e.g., "master").
-	public func localBranch(named name: String) -> Result<Branch, NSError> {
+	public func localBranch(named name: String) -> Result<Branch, SwiftGit2Error> {
 		return reference(named: "refs/heads/" + name).map { $0 as! Branch }
 	}
 
 	/// Load the remote branch with the given name (e.g., "origin/master").
-	public func remoteBranch(named name: String) -> Result<Branch, NSError> {
+	public func remoteBranch(named name: String) -> Result<Branch, SwiftGit2Error> {
 		return reference(named: "refs/remotes/" + name).map { $0 as! Branch }
 	}
 
 	/// Load and return a list of all the `TagReference`s.
-	public func allTags() -> Result<[TagReference], NSError> {
+	public func allTags() -> Result<[TagReference], SwiftGit2Error> {
 		return references(withPrefix: "refs/tags/")
 			.map { (refs: [ReferenceType]) in
 				return refs.map { $0 as! TagReference }
@@ -483,7 +475,7 @@ public final class Repository {
 	}
 
 	/// Load the tag with the given name (e.g., "tag-2").
-	public func tag(named name: String) -> Result<TagReference, NSError> {
+	public func tag(named name: String) -> Result<TagReference, SwiftGit2Error> {
 		return reference(named: "refs/tags/" + name).map { $0 as! TagReference }
 	}
 
@@ -492,40 +484,40 @@ public final class Repository {
 	/// Load the reference pointed at by HEAD.
 	///
 	/// When on a branch, this will return the current `Branch`.
-	public func HEAD() -> Result<ReferenceType, NSError> {
+	public func HEAD() -> Result<ReferenceType, SwiftGit2Error> {
 		var pointer: OpaquePointer? = nil
 		let result = git_repository_head(&pointer, self.pointer)
 		guard result == GIT_OK.rawValue else {
-			return Result.failure(NSError(gitError: result, pointOfFailure: "git_repository_head"))
+			return .failure(.init(libgitErrorCode: result, source:.git_repository_head))
 		}
 		let value = referenceWithLibGit2Reference(pointer!)
 		git_reference_free(pointer)
-		return Result.success(value)
+		return .success(value)
 	}
 
 	/// Set HEAD to the given oid (detached).
 	///
 	/// :param: oid The OID to set as HEAD.
 	/// :returns: Returns a result with void or the error that occurred.
-	public func setHEAD(_ oid: OID) -> Result<(), NSError> {
+	public func setHEAD(_ oid: OID) -> Result<(), SwiftGit2Error> {
 		var oid = oid.oid
 		let result = git_repository_set_head_detached(self.pointer, &oid)
 		guard result == GIT_OK.rawValue else {
-			return Result.failure(NSError(gitError: result, pointOfFailure: "git_repository_set_head"))
+			return .failure(.init(libgitErrorCode: result, source: .git_repository_set_head))
 		}
-		return Result.success(())
+		return .success(())
 	}
 
 	/// Set HEAD to the given reference.
 	///
 	/// :param: reference The reference to set as HEAD.
 	/// :returns: Returns a result with void or the error that occurred.
-	public func setHEAD(_ reference: ReferenceType) -> Result<(), NSError> {
+	public func setHEAD(_ reference: ReferenceType) -> Result<(), SwiftGit2Error> {
 		let result = git_repository_set_head(self.pointer, reference.longName)
 		guard result == GIT_OK.rawValue else {
-			return Result.failure(NSError(gitError: result, pointOfFailure: "git_repository_set_head"))
+			return .failure(.init(libgitErrorCode: result, source: .git_repository_set_head))
 		}
-		return Result.success(())
+		return .success(())
 	}
 
 	/// Check out HEAD.
@@ -533,15 +525,15 @@ public final class Repository {
 	/// :param: strategy The checkout strategy to use.
 	/// :param: progress A block that's called with the progress of the checkout.
 	/// :returns: Returns a result with void or the error that occurred.
-	public func checkout(strategy: CheckoutStrategy, progress: CheckoutProgressBlock? = nil) -> Result<(), NSError> {
+	public func checkout(strategy: CheckoutStrategy, progress: CheckoutProgressBlock? = nil) -> Result<(), SwiftGit2Error> {
 		var options = checkoutOptions(strategy: strategy, progress: progress)
 
 		let result = git_checkout_head(self.pointer, &options)
 		guard result == GIT_OK.rawValue else {
-			return Result.failure(NSError(gitError: result, pointOfFailure: "git_checkout_head"))
+			return .failure(.init(libgitErrorCode: result, source: .git_checkout_head))
 		}
 
-		return Result.success(())
+		return .success(())
 	}
 
 	/// Check out the given OID.
@@ -551,7 +543,7 @@ public final class Repository {
 	/// :param: progress A block that's called with the progress of the checkout.
 	/// :returns: Returns a result with void or the error that occurred.
 	public func checkout(_ oid: OID, strategy: CheckoutStrategy,
-	                     progress: CheckoutProgressBlock? = nil) -> Result<(), NSError> {
+	                     progress: CheckoutProgressBlock? = nil) -> Result<(), SwiftGit2Error> {
 		return setHEAD(oid).flatMap { self.checkout(strategy: strategy, progress: progress) }
 	}
 
@@ -562,7 +554,7 @@ public final class Repository {
 	/// :param: progress A block that's called with the progress of the checkout.
 	/// :returns: Returns a result with void or the error that occurred.
 	public func checkout(_ reference: ReferenceType, strategy: CheckoutStrategy,
-	                     progress: CheckoutProgressBlock? = nil) -> Result<(), NSError> {
+	                     progress: CheckoutProgressBlock? = nil) -> Result<(), SwiftGit2Error> {
 		return setHEAD(reference).flatMap { self.checkout(strategy: strategy, progress: progress) }
 	}
 
@@ -584,18 +576,17 @@ public final class Repository {
 	}
 
 	/// Get the index for the repo. The caller is responsible for freeing the index.
-	func unsafeIndex() -> Result<OpaquePointer, NSError> {
+	func unsafeIndex() -> Result<OpaquePointer, SwiftGit2Error> {
 		var index: OpaquePointer? = nil
 		let result = git_repository_index(&index, self.pointer)
 		guard result == GIT_OK.rawValue && index != nil else {
-			let err = NSError(gitError: result, pointOfFailure: "git_repository_index")
-			return .failure(err)
+			return .failure(.init(libgitErrorCode: result, source: .git_repository_index))
 		}
 		return .success(index!)
 	}
 
 	/// Stage the file(s) under the specified path.
-	public func add(path: String) -> Result<(), NSError> {
+	public func add(path: String) -> Result<(), SwiftGit2Error> {
 		var dirPointer = UnsafeMutablePointer<Int8>(mutating: (path as NSString).utf8String)
 		var paths = withUnsafeMutablePointer(to: &dirPointer) {
 			git_strarray(strings: $0, count: 1)
@@ -604,12 +595,12 @@ public final class Repository {
 			defer { git_index_free(index) }
 			let addResult = git_index_add_all(index, &paths, 0, nil, nil)
 			guard addResult == GIT_OK.rawValue else {
-				return .failure(NSError(gitError: addResult, pointOfFailure: "git_index_add_all"))
+				return .failure(.init(libgitErrorCode: addResult, source:.git_index_add_all))
 			}
 			// write index to disk
 			let writeResult = git_index_write(index)
 			guard writeResult == GIT_OK.rawValue else {
-				return .failure(NSError(gitError: writeResult, pointOfFailure: "git_index_write"))
+				return .failure(.init(libgitErrorCode: writeResult, source: .git_index_write))
 			}
 			return .success(())
 		}
@@ -621,7 +612,7 @@ public final class Repository {
 		parents: [Commit],
 		message: String,
 		signature: Signature
-	) -> Result<Commit, NSError> {
+	) -> Result<Commit, SwiftGit2Error> {
 		// create commit signature
 		return signature.makeUnsafeSignature().flatMap { signature in
 			defer { git_signature_free(signature) }
@@ -629,8 +620,7 @@ public final class Repository {
 			var treeOIDCopy = treeOID.oid
 			let lookupResult = git_tree_lookup(&tree, self.pointer, &treeOIDCopy)
 			guard lookupResult == GIT_OK.rawValue else {
-				let err = NSError(gitError: lookupResult, pointOfFailure: "git_tree_lookup")
-				return .failure(err)
+				return .failure(.init(libgitErrorCode: lookupResult, source: .git_tree_lookup))
 			}
 			defer { git_tree_free(tree) }
 
@@ -650,8 +640,7 @@ public final class Repository {
 				var oid = parentCommit.oid.oid
 				let lookupResult = git_commit_lookup(&parent, self.pointer, &oid)
 				guard lookupResult == GIT_OK.rawValue else {
-					let err = NSError(gitError: lookupResult, pointOfFailure: "git_commit_lookup")
-					return .failure(err)
+					return .failure(.init(libgitErrorCode: lookupResult, source: .git_commit_lookup))
 				}
 				parentGitCommits.append(parent!)
 			}
@@ -673,7 +662,7 @@ public final class Repository {
 					parentsPtr
 				)
 				guard result == GIT_OK.rawValue else {
-					return .failure(NSError(gitError: result, pointOfFailure: "git_commit_create"))
+					return .failure(.init(libgitErrorCode: result, source: .git_commit_create))
 				}
 				return commit(OID(commitOID))
 			}
@@ -682,19 +671,18 @@ public final class Repository {
 
 	/// Perform a commit of the staged files with the specified message and signature,
 	/// assuming we are not doing a merge and using the current tip as the parent.
-	public func commit(message: String, signature: Signature) -> Result<Commit, NSError> {
+	public func commit(message: String, signature: Signature) -> Result<Commit, SwiftGit2Error> {
 		return unsafeIndex().flatMap { index in
 			defer { git_index_free(index) }
 			var treeOID = git_oid()
 			let treeResult = git_index_write_tree(&treeOID, index)
 			guard treeResult == GIT_OK.rawValue else {
-				let err = NSError(gitError: treeResult, pointOfFailure: "git_index_write_tree")
-				return .failure(err)
+				return .failure(.init(libgitErrorCode: treeResult, source: .git_index_write_tree))
 			}
 			var parentID = git_oid()
 			let nameToIDResult = git_reference_name_to_id(&parentID, self.pointer, "HEAD")
 			guard nameToIDResult == GIT_OK.rawValue else {
-				return .failure(NSError(gitError: nameToIDResult, pointOfFailure: "git_reference_name_to_id"))
+				return .failure(.init(libgitErrorCode: nameToIDResult, source: .git_reference_name_to_id))
 			}
 			return commit(OID(parentID)).flatMap { parentCommit in
 				commit(tree: OID(treeOID), parents: [parentCommit], message: message, signature: signature)
@@ -704,7 +692,7 @@ public final class Repository {
 
 	// MARK: - Diffs
 
-	public func diff(for commit: Commit) -> Result<Diff, NSError> {
+	public func diff(for commit: Commit) -> Result<Diff, SwiftGit2Error> {
 		guard !commit.parents.isEmpty else {
 			// Initial commit in a repository
 			return self.diff(from: nil, to: commit.oid)
@@ -724,22 +712,22 @@ public final class Repository {
 					} else {
 						let mergeResult = git_diff_merge(mergeDiff, newDiff)
 						guard mergeResult == GIT_OK.rawValue else {
-							return NSError(gitError: mergeResult, pointOfFailure: "git_diff_merge")
+							return .init(libgitErrorCode: mergeResult, source: .git_diff_merge)
 						}
 					}
 					return nil
 				}
 			}
 
-			if error != nil {
-				return Result<Diff, NSError>.failure(error!)
+			if let error = error {
+				return .failure(error)
 			}
 		}
 
 		return .success(Diff(mergeDiff!))
 	}
 
-	private func diff(from oldCommitOid: OID?, to newCommitOid: OID?, transform: (Result<OpaquePointer, NSError>) -> NSError?) -> NSError? {
+	private func diff(from oldCommitOid: OID?, to newCommitOid: OID?, transform: (Result<OpaquePointer, SwiftGit2Error>) -> SwiftGit2Error?) -> SwiftGit2Error? {
 		assert(oldCommitOid != nil || newCommitOid != nil, "It is an error to pass nil for both the oldOid and newOid")
 
 		var oldTree: OpaquePointer? = nil
@@ -772,15 +760,14 @@ public final class Repository {
 		                                       nil)
 
 		guard diffResult == GIT_OK.rawValue else {
-			return transform(.failure(NSError(gitError: diffResult,
-			                                  pointOfFailure: "git_diff_tree_to_tree")))
+			return transform(.failure(.init(libgitErrorCode: diffResult, source: .git_diff_tree_to_tree)))
 		}
 
-		return transform(Result<OpaquePointer, NSError>.success(diff!))
+		return transform(.success(diff!))
 	}
 
 	/// Memory safe
-	private func diff(from oldCommitOid: OID?, to newCommitOid: OID?) -> Result<Diff, NSError> {
+	private func diff(from oldCommitOid: OID?, to newCommitOid: OID?) -> Result<Diff, SwiftGit2Error> {
 		assert(oldCommitOid != nil || newCommitOid != nil, "It is an error to pass nil for both the oldOid and newOid")
 
 		var oldTree: Tree? = nil
@@ -835,13 +822,12 @@ public final class Repository {
 			})
 		}
 
-		return .failure(NSError(gitError: -1, pointOfFailure: "diff(from: to:)"))
+		return .failure(.diffError)
 	}
 
-	private func processTreeToTreeDiff(_ diffResult: Int32, diff: OpaquePointer?) -> Result<Diff, NSError> {
+	private func processTreeToTreeDiff(_ diffResult: Int32, diff: OpaquePointer?) -> Result<Diff, SwiftGit2Error> {
 		guard diffResult == GIT_OK.rawValue else {
-			return .failure(NSError(gitError: diffResult,
-			                        pointOfFailure: "git_diff_tree_to_tree"))
+			return .failure(.init(libgitErrorCode: diffResult, source: .git_diff_tree_to_tree))
 		}
 
 		let diffObj = Diff(diff!)
@@ -849,7 +835,7 @@ public final class Repository {
 		return .success(diffObj)
 	}
 
-	private func processDiffDeltas(_ diffResult: OpaquePointer) -> Result<[Diff.Delta], NSError> {
+	private func processDiffDeltas(_ diffResult: OpaquePointer) -> Result<[Diff.Delta], SwiftGit2Error> {
 		var returnDict = [Diff.Delta]()
 
 		let count = git_diff_num_deltas(diffResult)
@@ -861,11 +847,10 @@ public final class Repository {
 			returnDict.append(gitDiffDelta)
 		}
 
-		let result = Result<[Diff.Delta], NSError>.success(returnDict)
-		return result
+		return .success(returnDict)
 	}
 
-	private func safeTreeForCommitId(_ oid: OID) -> Result<Tree, NSError> {
+	private func safeTreeForCommitId(_ oid: OID) -> Result<Tree, SwiftGit2Error> {
 		return withGitObject(oid, type: GIT_OBJECT_COMMIT) { commit in
 			let treeId = git_commit_tree_id(commit)
 			return tree(OID(treeId!.pointee))
@@ -873,12 +858,12 @@ public final class Repository {
 	}
 
 	/// Caller responsible to free returned tree with git_object_free
-	private func unsafeTreeForCommitId(_ oid: OID) -> Result<OpaquePointer, NSError> {
+	private func unsafeTreeForCommitId(_ oid: OID) -> Result<OpaquePointer, SwiftGit2Error> {
 		var commit: OpaquePointer? = nil
 		var oid = oid.oid
 		let commitResult = git_object_lookup(&commit, self.pointer, &oid, GIT_OBJECT_COMMIT)
 		guard commitResult == GIT_OK.rawValue else {
-			return .failure(NSError(gitError: commitResult, pointOfFailure: "git_object_lookup"))
+			return .failure(.init(libgitErrorCode: commitResult, source: .git_object_lookup))
 		}
 
 		var tree: OpaquePointer? = nil
@@ -888,22 +873,22 @@ public final class Repository {
 		git_object_free(commit)
 
 		guard treeResult == GIT_OK.rawValue else {
-			return .failure(NSError(gitError: treeResult, pointOfFailure: "git_object_lookup"))
+			return .failure(.init(libgitErrorCode: treeResult, source: .git_object_lookup))
 		}
 
-		return Result<OpaquePointer, NSError>.success(tree!)
+		return .success(tree!)
 	}
 
 	// MARK: - Status
 
-	public func status(options: StatusOptions = [.includeUntracked]) -> Result<[StatusEntry], NSError> {
+	public func status(options: StatusOptions = [.includeUntracked]) -> Result<[StatusEntry], SwiftGit2Error> {
 		var returnArray = [StatusEntry]()
 
 		// Do this because GIT_STATUS_OPTIONS_INIT is unavailable in swift
 		let pointer = UnsafeMutablePointer<git_status_options>.allocate(capacity: 1)
 		let optionsResult = git_status_init_options(pointer, UInt32(GIT_STATUS_OPTIONS_VERSION))
 		guard optionsResult == GIT_OK.rawValue else {
-			return .failure(NSError(gitError: optionsResult, pointOfFailure: "git_status_init_options"))
+			return .failure(.init(libgitErrorCode: optionsResult, source: .git_status_init_options))
 		}
 		var listOptions = pointer.move()
 		listOptions.flags = options.rawValue
@@ -913,7 +898,7 @@ public final class Repository {
 		defer { git_status_list_free(unsafeStatus) }
 		let statusResult = git_status_list_new(&unsafeStatus, self.pointer, &listOptions)
 		guard statusResult == GIT_OK.rawValue, let unwrapStatusResult = unsafeStatus else {
-			return .failure(NSError(gitError: statusResult, pointOfFailure: "git_status_list_new"))
+			return .failure(.init(libgitErrorCode: statusResult, source: .git_status_list_new))
 		}
 
 		let count = git_status_list_entrycount(unwrapStatusResult)
@@ -936,7 +921,7 @@ public final class Repository {
 	/// - returns: `.success(true)` iff there is a git repository at `url`,
 	///   `.success(false)` if there isn't,
 	///   and a `.failure` if there's been an error.
-	public static func isValid(url: URL) -> Result<Bool, NSError> {
+	public static func isValid(url: URL) -> Result<Bool, SwiftGit2Error> {
 		var pointer: OpaquePointer?
 
 		let result = url.withUnsafeFileSystemRepresentation {
@@ -949,13 +934,13 @@ public final class Repository {
 		case GIT_OK.rawValue:
 			return .success(true)
 		default:
-			return .failure(NSError(gitError: result, pointOfFailure: "git_repository_open_ext"))
+			return .failure(.init(libgitErrorCode: result, source: .git_repository_open_ext))
 		}
 	}
 }
 
 private extension Array {
-	func aggregateResult<Value, Error>() -> Result<[Value], Error> where Element == Result<Value, Error> {
+	func aggregateResult<Value>() -> Result<[Value], SwiftGit2Error> where Element == Result<Value, SwiftGit2Error> {
 		var values: [Value] = []
 		for result in self {
 			switch result {
