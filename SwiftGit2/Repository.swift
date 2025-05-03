@@ -487,6 +487,17 @@ public final class Repository {
 		return reference(named: "refs/tags/" + name).map { $0 as! TagReference }
 	}
 
+	/// - Returns: The name of the upstream branch.
+	public func upstreamName(for branch: Branch) -> String? {
+		var namePointer = git_buf()
+		git_branch_upstream_name(&namePointer, pointer, branch.longName)
+		defer {
+			git_buf_free(&namePointer)
+		}
+
+		return git_buf_contains_nul(&namePointer) == 0 ? String(cString: namePointer.ptr) : nil
+	}
+
 	// MARK: - Working Directory
 
 	/// Load the reference pointed at by HEAD.
