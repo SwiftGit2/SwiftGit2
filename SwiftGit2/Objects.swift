@@ -61,14 +61,13 @@ public struct Signature {
 
 	/// Return an unsafe pointer to the `git_signature` struct.
 	/// Caller is responsible for freeing it with `git_signature_free`.
-	func makeUnsafeSignature() -> Result<UnsafeMutablePointer<git_signature>, NSError> {
+	func makeUnsafeSignature() -> Result<UnsafeMutablePointer<git_signature>, SwiftGit2Error> {
 		var signature: UnsafeMutablePointer<git_signature>? = nil
 		let time = git_time_t(self.time.timeIntervalSince1970)	// Unix epoch time
 		let offset = Int32(timeZone.secondsFromGMT(for: self.time) / 60)
 		let signatureResult = git_signature_new(&signature, name, email, time, offset)
 		guard signatureResult == GIT_OK.rawValue, let signatureUnwrap = signature else {
-			let err = NSError(gitError: signatureResult, pointOfFailure: "git_signature_new")
-			return .failure(err)
+			return .failure(.init(libgitErrorCode: signatureResult, source: .git_signature_new))
 		}
 		return .success(signatureUnwrap)
 	}
