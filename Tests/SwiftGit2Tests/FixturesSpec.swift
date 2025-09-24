@@ -7,15 +7,18 @@
 //
 
 import Quick
+import SwiftGit2
 
 class FixturesSpec: QuickSpec {
-	override func spec() {
+	override class func spec() {
 		beforeSuite {
+            _ = SwiftGit2Init()
 			Fixtures.sharedInstance.setUp()
 		}
 
 		afterSuite {
 			Fixtures.sharedInstance.tearDown()
+            _ = SwiftGit2Shutdown()
 		}
 	}
 }

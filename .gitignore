@@ -1,5 +1,6 @@
 .vscode/
 .build/
+.swiftpm/
 
 # Xcode
 #

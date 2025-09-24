@@ -6,6 +6,7 @@
 //  Copyright (c) 2014 GitHub, Inc. All rights reserved.
 //
 
+import Foundation
 import SwiftGit2
 import Nimble
 import Quick
@@ -13,7 +14,7 @@ import Quick
 // swiftlint:disable cyclomatic_complexity
 
 class RepositorySpec: FixturesSpec {
-	override func spec() {
+	override class func spec() {
 		describe("Repository.Type.at(_:)") {
 			it("should work if the repo exists") {
 				let repo = Fixtures.simpleRepository
@@ -124,7 +125,7 @@ class RepositorySpec: FixturesSpec {
 			}
 
 			it("should be able to clone a remote repository") {
-				let remoteRepoURL = URL(string: "https://github.com/libgit2/libgit2.github.com.git")
+				let remoteRepoURL = URL(string: "https://github.com/libgit2/TestGitRepository.git")
 				let localURL = self.temporaryURL(forPurpose: "public-remote-clone")
 				let cloneResult = Repository.clone(from: remoteRepoURL!, to: localURL)
 
@@ -980,7 +981,7 @@ class RepositorySpec: FixturesSpec {
 		}
 	}
 
-	func temporaryURL(forPurpose purpose: String) -> URL {
+	static func temporaryURL(forPurpose purpose: String) -> URL {
 		let globallyUniqueString = ProcessInfo.processInfo.globallyUniqueString
 		let path = "\(NSTemporaryDirectory())\(globallyUniqueString)_\(purpose)"
 		return URL(fileURLWithPath: path)
