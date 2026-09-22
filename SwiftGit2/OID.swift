@@ -46,12 +46,12 @@ public struct OID {
 
 extension OID: CustomStringConvertible {
 	public var description: String {
-		let length = Int(GIT_OID_RAWSZ) * 2
-		let string = UnsafeMutablePointer<Int8>.allocate(capacity: length)
 		var oid = self.oid
-		git_oid_fmt(string, &oid)
-
-		return String(bytesNoCopy: string, length: length, encoding: .ascii, freeWhenDone: true)!
+		let length = Int(GIT_OID_RAWSZ) * 2
+		return withUnsafeTemporaryAllocation(of: CChar.self, capacity: length) { buffer in
+			git_oid_fmt(buffer.baseAddress, &oid)
+			return String(decoding: UnsafeRawBufferPointer(buffer), as: UTF8.self)
+		}
 	}
 }
 
