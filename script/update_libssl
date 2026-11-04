@@ -32,17 +32,20 @@ if [ "${CAN_BUILD_ARM}" -eq "1" ]; then
     ARCHS="${ARCHS} arm64 arm64e"
 fi
 
-# Skip if fat binaries already exist with x86_64
+LIBRARY_NAME="OpenSSL"
+LIB_PATH="${ROOT_PATH}/External/openssl-mac"
+STAMP="${LIB_PATH}/BUILT_FROM"
+WANTED="openssl $(source_rev "${ROOT_PATH}/External/openssl") archs:${ARCHS} min:${NATIVE_DEPLOYMENT_TARGET}"
+
+# Skip if the universal libraries were already built from this exact source.
 if [ -f "${ROOT_PATH}/External/libssl.a" ] && \
    [ -f "${ROOT_PATH}/External/libcrypto.a" ] && \
-   lipo -info "${ROOT_PATH}/External/libssl.a" 2>/dev/null | grep -q "x86_64"
+   [ "$(cat "${STAMP}" 2>/dev/null)" == "${WANTED}" ]
 then
     echo "No update needed."
     exit 0
 fi
 
-LIBRARY_NAME="OpenSSL"
-LIB_PATH="${ROOT_PATH}/External/openssl-mac"
 rm -rf "${LIB_PATH}"
 mkdir -p "${LIB_PATH}"
 
@@ -63,36 +66,43 @@ for ARCH in ${ARCHS}; do
     LOG="${INSTALL_PREFIX}/build-openssl.log"
     echo "${LOG}"
 
+    # Build in a space-free temp path ("Repo Man" in the checkout path breaks
+    # OpenSSL's Makefiles).
     TMP_BUILD="/tmp/openssl-mac-build-${ARCH}"
     TMP_INSTALL="/tmp/openssl-mac-install-${ARCH}"
 
     rm -rf "${TMP_BUILD}" "${TMP_INSTALL}"
-    cp -r "${ROOT_PATH}/External/openssl" "${TMP_BUILD}"
+    cp -R "${ROOT_PATH}/External/openssl" "${TMP_BUILD}"
     pushd "${TMP_BUILD}" > /dev/null
 
-    # BSD-generic64 avoids arch-specific asm that may not cross-compile cleanly.
-    # Install to a space-free temp path; OpenSSL 1.0.2 Makefiles break on spaces.
-    ./Configure BSD-generic64 no-gost no-asm \
+    if [ "${ARCH}" == "x86_64" ]; then
+        TARGET="darwin64-x86_64-cc"
+    else
+        # arm64e uses the arm64 target, retargeted below.
+        TARGET="darwin64-arm64-cc"
+    fi
+
+    # Static libcrypto/libssl only (consumed by libssh2). no-asm keeps the
+    # cross-arch builds (x86_64 / arm64e on an arm64 host) simple and safe.
+    CC="${CLANG} -arch ${ARCH} -isysroot ${SDKROOT} -mmacosx-version-min=${NATIVE_DEPLOYMENT_TARGET}" \
+    ./Configure "${TARGET}" \
+        no-shared no-module no-engine no-asm no-tests no-docs no-apps \
         --prefix="${TMP_INSTALL}" \
-        --openssldir="${TMP_INSTALL}" >> "${LOG}" 2>&1
+        --openssldir="${TMP_INSTALL}/ssl" \
+        --libdir=lib >> "${LOG}" 2>&1
 
-    perl -i -pe "s|^CC= gcc|CC= ${CLANG} -arch ${ARCH} |g" Makefile >> "${LOG}" 2>&1
-    perl -i -pe "s|^CFLAG= (.*)|CFLAG= -isysroot ${SDKROOT} \$1|g" Makefile >> "${LOG}" 2>&1
+    # darwin64-arm64-cc hardcodes "-arch arm64" in its flags; retarget the
+    # generated Makefile so the arm64e slice really is arm64e.
+    if [ "${ARCH}" == "arm64e" ]; then
+        perl -i -pe 's/-arch arm64(?![e\w])/-arch arm64e/g' Makefile
+    fi
 
-    # Build serially: OpenSSL 1.0.2's recursive make is not parallel-safe.
-    # Subdirectories each run "ar r ../libcrypto.a", and concurrent calls
-    # read-modify-write the same archive, so one silently drops the other's
-    # objects (cryptlib.o, o_time.o and friends go missing).
-    #
-    # build_libs stops after libcrypto/libssl; "all" would additionally link
-    # the openssl apps and test binaries, which we don't ship.
-    make build_libs >> "${LOG}" 2>&1
+    # build_libs stops after libcrypto/libssl.
+    make -j"$(sysctl -n hw.ncpu)" build_libs >> "${LOG}" 2>&1
 
     mkdir -p "${INSTALL_PREFIX}/lib" "${INSTALL_PREFIX}/include"
     cp libcrypto.a libssl.a "${INSTALL_PREFIX}/lib/"
-    # include/openssl is a tree of symlinks into the build dir; -L resolves
-    # them so the prefix stays valid after TMP_BUILD is removed. libssh2
-    # configures against this prefix via --with-libssl-prefix.
+    # libssh2 configures against this prefix (OPENSSL_ROOT_DIR).
     cp -RL include/openssl "${INSTALL_PREFIX}/include/"
 
     popd > /dev/null
@@ -105,5 +115,6 @@ done
 echo "Building fat binaries..."
 lipo -create "${BUILT_CRYPTO_PATHS[@]}" -output "${ROOT_PATH}/External/libcrypto.a"
 lipo -create "${BUILT_SSL_PATHS[@]}" -output "${ROOT_PATH}/External/libssl.a"
+echo "${WANTED}" > "${STAMP}"
 
 echo "OpenSSL has been updated."

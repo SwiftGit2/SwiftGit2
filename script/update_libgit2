@@ -84,14 +84,20 @@ function build_all_archs ()
 
 function setup ()
 {
-    if [ "${ROOT_PATH}/External/libgit2-mac/libgit2-mac.a" -nt "${ROOT_PATH}/External/libgit2" ]
+    LIBRARY_NAME="libgit2"
+    LIB_PATH="${ROOT_PATH}/External/libgit2-mac"
+    STAMP="${LIB_PATH}/BUILT_FROM"
+    # libgit2 compiles against libssh2's headers, so a libssh2 rebuild
+    # (recorded in its stamp) means a libgit2 rebuild too.
+    WANTED="libgit2 $(source_rev "${ROOT_PATH}/External/libgit2") $(cat "${ROOT_PATH}/External/libssh2-mac/BUILT_FROM" 2>/dev/null) archs:${ARCHS}"
+
+    if [ -f "${LIB_PATH}/libgit2-mac.a" ] && \
+       [ "$(cat "${STAMP}" 2>/dev/null)" == "${WANTED}" ]
     then
         echo "No update needed."
         exit 0
     fi
 
-    LIBRARY_NAME="libgit2"
-    LIB_PATH="${ROOT_PATH}/External/libgit2-mac"
     rm -rf "${LIB_PATH}"
 
     pushd "${ROOT_PATH}/External/libgit2" > /dev/null
@@ -113,21 +119,43 @@ function build_libgit2 ()
     echo "$LOG"
 
     # Make pkg-config (required by libgit2's cmake to find libssh2) findable
-    # in Xcode's restricted build environment, and point it at Homebrew's
-    # libssh2 .pc file.
+    # in Xcode's restricted build environment, and point it ONLY at the
+    # libssh2 built by update_libssh2 -- that's the library the framework
+    # links, so its headers are the ones libgit2 must compile against
+    # (never a Homebrew libssh2 of some other version).
+    #
+    # pkg-config can't express paths containing spaces ("Repo Man"), and the
+    # .pc that libssh2 installs requires a libcrypto package OpenSSL's
+    # build_libs doesn't produce -- either makes libgit2 silently build
+    # WITHOUT SSH. So stage headers + static libs in a space-free temp prefix
+    # with a minimal libssh2.pc of our own.
     BREW_BIN="$(brew --prefix 2>/dev/null)/bin"
-    LIBSSH2_BREW="$(brew --prefix libssh2 2>/dev/null || echo '')"
     LIBSSH2_LOCAL="${ROOT_PATH}/External/libssh2-mac/bin/${SDKNAME}-${ARCH}.sdk"
-    SSH2_PREFIX_PATH="${LIBSSH2_LOCAL}"
-    if [ -n "${LIBSSH2_BREW}" ]; then
-        SSH2_PREFIX_PATH="${SSH2_PREFIX_PATH};${LIBSSH2_BREW}"
-        export PKG_CONFIG_PATH="${LIBSSH2_BREW}/lib/pkgconfig:${PKG_CONFIG_PATH}"
-    fi
+    OPENSSL_LOCAL="${ROOT_PATH}/External/openssl-mac/bin/${SDKNAME}-${ARCH}.sdk"
+    SSH2_STAGE="/tmp/libgit2-mac-libssh2-${ARCH}"
+    rm -rf "${SSH2_STAGE}"
+    mkdir -p "${SSH2_STAGE}/lib/pkgconfig" "${SSH2_STAGE}/include"
+    cp -R "${LIBSSH2_LOCAL}/include/." "${SSH2_STAGE}/include/"
+    cp "${LIBSSH2_LOCAL}/lib/libssh2.a" "${OPENSSL_LOCAL}/lib/libcrypto.a" "${OPENSSL_LOCAL}/lib/libssl.a" "${SSH2_STAGE}/lib/"
+    cat > "${SSH2_STAGE}/lib/pkgconfig/libssh2.pc" <<PC
+prefix=${SSH2_STAGE}
+libdir=\${prefix}/lib
+includedir=\${prefix}/include
+
+Name: libssh2
+Description: libssh2 built by SwiftGit2/script/update_libssh2
+Version: 1.11
+Libs: -L\${libdir} -lssh2 -lcrypto
+Cflags: -I\${includedir}
+PC
+    SSH2_PREFIX_PATH="${SSH2_STAGE}"
+    export PKG_CONFIG_PATH="${SSH2_STAGE}/lib/pkgconfig"
+    export PKG_CONFIG_LIBDIR="${SSH2_STAGE}/lib/pkgconfig"
     export PATH="${BREW_BIN}:${PATH}"
 
     # Pre-cache HAVE_LIBSSH2_MEMORY_CREDENTIALS so cmake skips the cross-arch
     # link test (which fails when building x86_64 on Apple Silicon).
-    # Homebrew libssh2 ≥1.9 always has libssh2_userauth_publickey_frommemory.
+    # libssh2 >= 1.9 always has libssh2_userauth_publickey_frommemory.
     MACOSX_DEPLOYMENT_TARGET="10.9" cmake \
         -DBUILD_SHARED_LIBS:BOOL=OFF \
         -DCMAKE_PREFIX_PATH:PATH="${SSH2_PREFIX_PATH}" \
@@ -136,8 +164,19 @@ function build_libgit2 ()
         -DTHREADSAFE:BOOL=ON \
         -DCMAKE_OSX_ARCHITECTURES:STRING="${ARCH}" \
         -DHAVE_LIBSSH2_MEMORY_CREDENTIALS:BOOL=ON \
+        -DUSE_HTTPS:STRING=SecureTransport \
+        -DUSE_SHA1:STRING=CollisionDetection \
         .. >> "${LOG}" 2>&1
     cmake --build . --target install >> "${LOG}" 2>&1
+    rm -rf "${SSH2_STAGE}"
+
+    # Refuse to produce a libgit2 without SSH: every git@ remote would fail.
+    # (Generated config lives in the build dir, the current directory.)
+    if ! grep -q "GIT_SSH 1" src/git2/sys/features.h || \
+       ! grep -q "GIT_SSH_MEMORY_CREDENTIALS 1" src/git2/sys/features.h; then
+        echo "error: libgit2 was configured without SSH / in-memory key support (see ${LOG})" >&2
+        exit 1
+    fi
 
     # push the built library into the list
     BUILT_LIB_PATHS+=("${INSTALL_PREFIX}/lib/libgit2.a")
@@ -149,6 +188,7 @@ function fat_binary ()
     echo "Building fat binary..."
 
     lipo -create "${BUILT_LIB_PATHS[@]}" -output "${ROOT_PATH}/External/libgit2-mac/libgit2-mac.a"
+    echo "${WANTED}" > "${STAMP}"
 
     echo "Building done."
 

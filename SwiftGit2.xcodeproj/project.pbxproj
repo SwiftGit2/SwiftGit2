@@ -80,6 +80,7 @@
 		BEB31FA01A0E595600F525B9 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = BEB31F9F1A0E595600F525B9 /* libz.dylib */; };
 		BECB5F6A1A56F19900999413 /* References.swift in Sources */ = {isa = PBXBuildFile; fileRef = BECB5F691A56F19900999413 /* References.swift */; };
 		BECB5F6C1A56F1B400999413 /* ReferencesSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = BECB5F6B1A56F1B400999413 /* ReferencesSpec.swift */; };
+		5F7A000000000000000000A2 /* SFTP.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F7A000000000000000000A1 /* SFTP.swift */; };
 		BECB5F6E1A57284700999413 /* Remotes.swift in Sources */ = {isa = PBXBuildFile; fileRef = BECB5F6D1A57284700999413 /* Remotes.swift */; };
 		BECB5F701A57286200999413 /* RemotesSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = BECB5F6F1A57286200999413 /* RemotesSpec.swift */; };
 		C98A2BA22263FDB9007A4E3A /* ResultShims.swift in Sources */ = {isa = PBXBuildFile; fileRef = C98A2B9F2263E017007A4E3A /* ResultShims.swift */; };
@@ -191,6 +192,7 @@
 		BEB31F9F1A0E595600F525B9 /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
 		BECB5F691A56F19900999413 /* References.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = References.swift; sourceTree = "<group>"; };
 		BECB5F6B1A56F1B400999413 /* ReferencesSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReferencesSpec.swift; sourceTree = "<group>"; };
+		5F7A000000000000000000A1 /* SFTP.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SFTP.swift; sourceTree = "<group>"; };
 		BECB5F6D1A57284700999413 /* Remotes.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Remotes.swift; sourceTree = "<group>"; };
 		BECB5F6F1A57286200999413 /* RemotesSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RemotesSpec.swift; sourceTree = "<group>"; };
 		C98A2B9F2263E017007A4E3A /* ResultShims.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResultShims.swift; sourceTree = "<group>"; };
@@ -317,6 +319,7 @@
 				BEB31F6C1A0D78F300F525B9 /* Repository.swift */,
 				BECB5F691A56F19900999413 /* References.swift */,
 				BECB5F6D1A57284700999413 /* Remotes.swift */,
+				5F7A000000000000000000A1 /* SFTP.swift */,
 				25499A996CA7BD416620A397 /* CommitIterator.swift */,
 				3F5181B0258FE7D10048F1EF /* StatusOptions.swift */,
 			);
@@ -805,6 +808,7 @@
 			files = (
 				BE70B3E51A1ACB1A002C3F4E /* OID.swift in Sources */,
 				BECB5F6E1A57284700999413 /* Remotes.swift in Sources */,
+				5F7A000000000000000000A2 /* SFTP.swift in Sources */,
 				BE276B291ACCD3CF00D6DAD7 /* CheckoutStrategy.swift in Sources */,
 				622726341C84E52500C53D17 /* Credentials.swift in Sources */,
 				BEB31F6D1A0D78F300F525B9 /* Repository.swift in Sources */,
@@ -1055,7 +1059,10 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "org.libgit2.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = SwiftGit2;
-				SWIFT_INCLUDE_PATHS = "$(SRCROOT)/libgit2";
+				SWIFT_INCLUDE_PATHS = (
+					"$(SRCROOT)/libgit2",
+					"$(SRCROOT)/libssh2",
+				);
 				VALID_ARCHS = "arm64 arm64e i386 x86_64\n";
 			};
 			name = Debug;
@@ -1085,7 +1092,10 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "org.libgit2.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = SwiftGit2;
-				SWIFT_INCLUDE_PATHS = "$(SRCROOT)/libgit2";
+				SWIFT_INCLUDE_PATHS = (
+					"$(SRCROOT)/libgit2",
+					"$(SRCROOT)/libssh2",
+				);
 				VALID_ARCHS = "arm64 arm64e i386 x86_64\n";
 			};
 			name = Release;

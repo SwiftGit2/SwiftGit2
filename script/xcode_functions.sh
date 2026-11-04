@@ -50,3 +50,17 @@ function sdk_path ()
 {
     /usr/bin/xcodebuild -version -sdk 2> /dev/null | grep -i $1 | grep 'Path:' | awk '{ print $2 }'
 }
+
+# Prints the checked-out commit of the git checkout at $1 (a submodule under
+# External/), or "unknown" outside a git checkout. The update_* scripts write
+# this into a BUILT_FROM stamp next to their output and rebuild when it no
+# longer matches, so bumping a submodule is enough to trigger a rebuild.
+function source_rev ()
+{
+    git -C "$1" rev-parse HEAD 2> /dev/null || echo "unknown"
+}
+
+# Minimum macOS for the vendored static libraries. Without it they inherit the
+# SDK's version (e.g. 27.0) and the linker warns -- and the binary may not run
+# -- when the app targets an older macOS. 11.0 is the first arm64 macOS.
+NATIVE_DEPLOYMENT_TARGET="11.0"

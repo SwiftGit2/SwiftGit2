@@ -32,16 +32,20 @@ if [ "${CAN_BUILD_ARM}" -eq "1" ]; then
     ARCHS="${ARCHS} arm64 arm64e"
 fi
 
-# Skip if fat binary already exists with x86_64
+LIBRARY_NAME="libssh2"
+LIB_PATH="${ROOT_PATH}/External/libssh2-mac"
+STAMP="${LIB_PATH}/BUILT_FROM"
+# libssh2 is linked against OpenSSL, so a new OpenSSL also means a rebuild.
+WANTED="libssh2 $(source_rev "${ROOT_PATH}/External/libssh2") openssl $(source_rev "${ROOT_PATH}/External/openssl") archs:${ARCHS} min:${NATIVE_DEPLOYMENT_TARGET}"
+
+# Skip if the universal library was already built from this exact source.
 if [ -f "${ROOT_PATH}/External/libssh2.a" ] && \
-   lipo -info "${ROOT_PATH}/External/libssh2.a" 2>/dev/null | grep -q "x86_64"
+   [ "$(cat "${STAMP}" 2>/dev/null)" == "${WANTED}" ]
 then
     echo "No update needed."
     exit 0
 fi
 
-LIBRARY_NAME="libssh2"
-LIB_PATH="${ROOT_PATH}/External/libssh2-mac"
 rm -rf "${LIB_PATH}"
 mkdir -p "${LIB_PATH}"
 
@@ -62,51 +66,35 @@ for ARCH in ${ARCHS}; do
     LOG="${INSTALL_PREFIX}/build-libssh2.log"
     echo "${LOG}"
 
-    # Build under space-free temp paths. libssh2's configure uses autoconf's
-    # AC_LIB_HAVE_LINKFLAGS, which interpolates the OpenSSL prefix into the
-    # link test unquoted -- a space anywhere in the path (e.g. "Repo Man")
-    # splits the argument and the crypto check fails with "No crypto library
-    # found". The OpenSSL build sidesteps the same problem the same way.
-    TMP_BUILD="/tmp/libssh2-mac-build-${ARCH}"
-    TMP_INSTALL="/tmp/libssh2-mac-install-${ARCH}"
-    TMP_OPENSSL="/tmp/libssh2-mac-openssl-${ARCH}"
+    BUILD_DIR="/tmp/libssh2-mac-build-${ARCH}"
+    rm -rf "${BUILD_DIR}"
 
-    rm -rf "${TMP_BUILD}" "${TMP_INSTALL}" "${TMP_OPENSSL}"
-    cp -R "${ROOT_PATH}/External/libssh2" "${TMP_BUILD}"
-    cp -R "${OPENSSL_PREFIX}" "${TMP_OPENSSL}"
-    pushd "${TMP_BUILD}" > /dev/null
-
-    if [ "${ARCH}" == "arm64" ] || [ "${ARCH}" == "arm64e" ]; then
-        HOST="aarch64-apple-darwin"
-    else
-        HOST="${ARCH}-apple-darwin"
-    fi
-
-    export CC="${CLANG} -arch ${ARCH}"
-    export CFLAGS="-arch ${ARCH} -isysroot ${SDKROOT}"
-    export CPPFLAGS="-arch ${ARCH} -isysroot ${SDKROOT}"
-
-    ./buildconf >> "${LOG}" 2>&1
-    ./configure \
-        --host="${HOST}" \
-        --prefix="${TMP_INSTALL}" \
-        --with-openssl \
-        --with-libssl-prefix="${TMP_OPENSSL}" \
-        --disable-shared \
-        --enable-static >> "${LOG}" 2>&1
-    make >> "${LOG}" 2>&1
-    make install >> "${LOG}" 2>&1
-
-    popd > /dev/null
-
-    mkdir -p "${INSTALL_PREFIX}/lib"
-    cp "${TMP_INSTALL}/lib/libssh2.a" "${INSTALL_PREFIX}/lib/"
-    rm -rf "${TMP_BUILD}" "${TMP_INSTALL}" "${TMP_OPENSSL}"
+    # CMake (unlike libssh2's autoconf) copes with spaces in paths. The
+    # install prefix also gets lib/pkgconfig/libssh2.pc, which libgit2's
+    # cmake uses to find this build.
+    cmake -S "${ROOT_PATH}/External/libssh2" -B "${BUILD_DIR}" \
+        -DCMAKE_BUILD_TYPE=Release \
+        -DCMAKE_OSX_ARCHITECTURES="${ARCH}" \
+        -DCMAKE_OSX_SYSROOT="${SDKROOT}" \
+        -DCMAKE_OSX_DEPLOYMENT_TARGET="${NATIVE_DEPLOYMENT_TARGET}" \
+        -DCMAKE_INSTALL_PREFIX="${INSTALL_PREFIX}" \
+        -DCMAKE_INSTALL_LIBDIR=lib \
+        -DBUILD_SHARED_LIBS=OFF \
+        -DBUILD_STATIC_LIBS=ON \
+        -DBUILD_EXAMPLES=OFF \
+        -DBUILD_TESTING=OFF \
+        -DENABLE_ZLIB_COMPRESSION=OFF \
+        -DCRYPTO_BACKEND=OpenSSL \
+        -DOPENSSL_ROOT_DIR="${OPENSSL_PREFIX}" \
+        -DOPENSSL_USE_STATIC_LIBS=TRUE >> "${LOG}" 2>&1
+    cmake --build "${BUILD_DIR}" --target install -j"$(sysctl -n hw.ncpu)" >> "${LOG}" 2>&1
+    rm -rf "${BUILD_DIR}"
 
     BUILT_LIBS+=("${INSTALL_PREFIX}/lib/libssh2.a")
 done
 
 echo "Building fat binary..."
 lipo -create "${BUILT_LIBS[@]}" -output "${ROOT_PATH}/External/libssh2.a"
+echo "${WANTED}" > "${STAMP}"
 
 echo "libssh2 has been updated."
